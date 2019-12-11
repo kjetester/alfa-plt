@@ -1,10 +1,9 @@
 package ru.alfabank.platform.pages;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.*;
 
-import static ru.alfabank.platform.helpers.DriverSingleton.getDriver;
-import static ru.alfabank.platform.helpers.DriverSingleton.waitForElementBecomesVisible;
+import static ru.alfabank.platform.helpers.DriverSingleton.*;
 
 public class MainPage {
 

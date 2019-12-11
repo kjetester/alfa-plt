@@ -1,9 +1,7 @@
 package ru.alfabank.platform.apitest;
 
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.introspect.*;
-import io.restassured.authentication.*;
-import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.*;
 import io.restassured.http.*;
 import io.restassured.specification.*;
 import org.testng.annotations.*;
@@ -11,7 +9,7 @@ import ru.alfabank.platform.businessobjects.*;
 
 import java.util.*;
 
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 
 public class BaseTest {
 
@@ -72,5 +70,12 @@ public class BaseTest {
 		testWidget = widgetMap.get(testPage.getId()).get(0);
 		testProperty = testWidget.getProperties().get(0);
 		testPropertyValue = testProperty.getValues().get(0);
+	}
+
+	@AfterSuite
+	public void tearDown() {
+		given().spec(spec)
+				.pathParam("pageId", testPage.getId())
+				.get("content-store/admin-panel/pages/drafts/{pageId}");
 	}
 }

@@ -1,14 +1,11 @@
 package ru.alfabank.platform.tests;
 
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
+import org.openqa.selenium.*;
+import org.testng.annotations.*;
 
 import java.util.concurrent.*;
 
-import static ru.alfabank.platform.helpers.DriverSingleton.getDriver;
-import static ru.alfabank.platform.helpers.DriverSingleton.killDriver;
+import static ru.alfabank.platform.helpers.DriverSingleton.*;
 
 public class BaseTest {
 

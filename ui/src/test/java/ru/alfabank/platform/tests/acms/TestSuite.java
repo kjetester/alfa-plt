@@ -1,8 +1,8 @@
 package ru.alfabank.platform.tests.acms;
 
-import org.openqa.selenium.support.PageFactory;
-import org.testng.annotations.Test;
-import ru.alfabank.platform.pages.MainPage;
+import org.openqa.selenium.support.*;
+import org.testng.annotations.*;
+import ru.alfabank.platform.pages.*;
 import ru.alfabank.platform.tests.*;
 
 import static org.assertj.core.api.Assertions.*;

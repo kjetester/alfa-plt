@@ -1,23 +1,17 @@
 package ru.alfabank.platform.tests.alfasite;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.*;
 import org.assertj.core.api.Assertions;
-import org.openqa.selenium.Cookie;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import org.testng.log4testng.Logger;
-import ru.alfabank.platform.buisenessobjects.Resources;
-import ru.alfabank.platform.tests.BaseTest;
+import org.openqa.selenium.*;
+import org.testng.annotations.*;
+import org.testng.log4testng.*;
+import ru.alfabank.platform.buisenessobjects.*;
+import ru.alfabank.platform.tests.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import static ru.alfabank.platform.helpers.DriverSingleton.getDriver;
-import static ru.alfabank.platform.helpers.DriverSingleton.killDriver;
+import static ru.alfabank.platform.helpers.DriverSingleton.*;
 
 public class meDaCollTest extends BaseTest {
 
