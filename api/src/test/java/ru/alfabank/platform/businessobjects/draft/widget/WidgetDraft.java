@@ -18,6 +18,14 @@ public class WidgetDraft {
 		this.operations = operations;
 	}
 
+	public List<Operations> getOperations() {
+		return operations;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
 	@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
 	@JsonInclude (JsonInclude.Include.NON_NULL)
 	@JsonPropertyOrder({ "uid", "entity", "method", "data"})
@@ -33,6 +41,22 @@ public class WidgetDraft {
 			this.entity = entity;
 			this.method = method;
 			this.data = data;
+		}
+
+		public Data getData() {
+			return data;
+		}
+
+		public Entity getEntity() {
+			return entity;
+		}
+
+		public Method getMethod() {
+			return method;
+		}
+
+		public String getUid() {
+			return uid;
 		}
 
 		@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
@@ -59,6 +83,38 @@ public class WidgetDraft {
 				this.state = state;
 				this.name = name;
 				this.cityGroups = cityGroups;
+			}
+
+			public String getDateFrom() {
+				return dateFrom;
+			}
+
+			public String getDateTo() {
+				return dateTo;
+			}
+
+			public Device getDevice() {
+				return device;
+			}
+
+			public boolean isEnable() {
+				return enable;
+			}
+
+			public String getLocalization() {
+				return localization;
+			}
+
+			public String getState() {
+				return state;
+			}
+
+			public String getName() {
+				return name;
+			}
+
+			public String[] getCityGroups() {
+				return cityGroups;
 			}
 		}
 	}

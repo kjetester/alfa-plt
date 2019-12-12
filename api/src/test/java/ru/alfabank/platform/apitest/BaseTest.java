@@ -2,8 +2,10 @@ package ru.alfabank.platform.apitest;
 
 import com.fasterxml.jackson.databind.*;
 import io.restassured.builder.*;
+import io.restassured.filter.log.*;
 import io.restassured.http.*;
 import io.restassured.specification.*;
+import org.testng.*;
 import org.testng.annotations.*;
 import ru.alfabank.platform.businessobjects.*;
 
@@ -26,15 +28,16 @@ public class BaseTest {
 
 	@BeforeSuite
 	public static void setUp() {
+		// make the requests specification
 		spec = new RequestSpecBuilder()
-				.setBaseUri ("http://develop.ci.k8s.alfa.link")
-				.setBasePath ("api/v1")
-				.addHeader("Authorization", "Basic YXNzcjpiWEdtUmllZVhNdXZhR2Jo")
-				.setContentType(ContentType.JSON)
-				.setAccept(ContentType.JSON)
-//				.log(LogDetail.URI)
-				.build ();
-
+			.setBaseUri ("http://develop.ci.k8s.alfa.link")
+			.setBasePath ("api/v1")
+			.addHeader("Authorization", "Basic YXNzcjpiWEdtUmllZVhNdXZhR2Jo")
+			.setContentType(ContentType.JSON)
+			.setAccept(ContentType.JSON)
+			.log(LogDetail.ALL)
+			.build ();
+		// getting the test data (city groups)
 		cityGroupList = given()
 				.spec(spec)
 				.when()
@@ -42,7 +45,7 @@ public class BaseTest {
 				.then()
 				.statusCode(200)
 				.extract().as(CityGroup.class);
-
+		// getting the test data (pages)
 		pageList = Arrays.asList(given()
 				.spec(spec)
 				.when()
@@ -50,7 +53,7 @@ public class BaseTest {
 				.then()
 				.statusCode(200)
 				.extract().as(Page[].class));
-
+		// getting the test data (widgets + properties + values on every page)
 		widgetMap = new HashMap<>();
 		pageList.forEach(p -> {
 			widgetMap.put(
@@ -66,6 +69,7 @@ public class BaseTest {
 									.statusCode(200)
 									.extract().as(Widget[].class)));
 		});
+		// defining the test objects
 		testPage = pageList.get(0);
 		testWidget = widgetMap.get(testPage.getId()).get(0);
 		testProperty = testWidget.getProperties().get(0);
@@ -73,9 +77,13 @@ public class BaseTest {
 	}
 
 	@AfterSuite
-	public void tearDown() {
-		given().spec(spec)
+	public void tearDown(final ITestContext testContext) {
+		// deleting the created draft anyway if exist
+		if (testContext.getFailedTests().size() != 0) {
+			given()
+				.spec(spec)
 				.pathParam("pageId", testPage.getId())
 				.get("content-store/admin-panel/pages/drafts/{pageId}");
+		}
 	}
 }

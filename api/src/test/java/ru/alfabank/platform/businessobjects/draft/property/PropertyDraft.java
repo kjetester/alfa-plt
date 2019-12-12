@@ -26,11 +26,11 @@ public class PropertyDraft {
 		private Method method;
 		private String uid;
 
-		public Operations(Data data, Entity entity, Method method, String widgetUid) {
+		public Operations(Data data, Entity entity, Method method, String propertyUid) {
 			this.data = data;
 			this.entity = entity;
 			this.method = method;
-			this.uid = widgetUid;
+			this.uid = propertyUid;
 		}
 
 		@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)

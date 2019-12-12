@@ -21,7 +21,7 @@ public class ModifyTest extends BaseTest {
 
 	@Test
 	public void modifyPropertyValueTest() throws JsonProcessingException, JSONException {
-		// Make a Draft
+		// Make a Draft (all (geo and value) change)
 		List<ValueDraft.Operations> operations = new ArrayList<>();
 		operations.add(
 			new ValueDraft.Operations(
@@ -69,18 +69,18 @@ public class ModifyTest extends BaseTest {
 
 	@Test
 	public void modifyPropertyTest() throws JsonProcessingException, JSONException {
-		// Make a Draft
+		// Make a Draft (device change)
 		List<PropertyDraft.Operations> operations = new ArrayList<>();
 		operations.add(
 			new PropertyDraft.Operations(
 				new PropertyDraft.Operations.Data(
 					testWidget.getUid(),
-					"New name",
-					Device.desktop
+					testProperty.getName(),
+					Device.mobile
 					),
 				Entity.property,
 				Method.change,
-				testWidget.getUid()
+				testProperty.getUid()
 			));
 		PropertyDraft draft = new PropertyDraft(operations, "01");
 		String body = objMapper.writeValueAsString(draft);
@@ -119,7 +119,7 @@ public class ModifyTest extends BaseTest {
 
 	@Test
 	public void modifyWidgetTest() throws JsonProcessingException, JSONException {
-			// Make a Draft
+			// Make a Draft (dates change)
 			List<WidgetDraft.Operations> operations = new ArrayList<>();
 			operations.add(
 				new WidgetDraft.Operations(
@@ -127,17 +127,17 @@ public class ModifyTest extends BaseTest {
 					Entity.widget,
 					Method.change,
 					new WidgetDraft.Operations.Data(
-						"2019-01-01T00:00:00:000Z",
+						"2019-01-01T00:00:00.000Z",
 						"2020-01-01T00:00:00",
 						Device.desktop,
-						true,
-						"RU",
+						testWidget.isEnabled(),
+						testWidget.getLocalization(),
 						"changed",
-						"newName",
+						testWidget.getName(),
 						getCityGroup("123"))
 				));
-			WidgetDraft draft = new WidgetDraft("01", operations);
-			String body = objMapper.writeValueAsString(draft);
+			String body = objMapper.writeValueAsString(
+				new WidgetDraft("01", operations));
 			// putting draft
 			Response putDraftResponse = given()
 				.spec(spec).body(body)
