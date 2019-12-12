@@ -182,7 +182,7 @@ public class ModifyTest extends BaseTest {
 					swappedWidgetsUidArrayOnTestPage
 				),
 				Entity.page,
-				Method.change,
+				Method.changeLinks,
 				testPage.getId()
 			));
 		String body = objMapper.writeValueAsString(

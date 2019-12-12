@@ -2,6 +2,7 @@ package ru.alfabank.platform.apitest;
 
 import com.fasterxml.jackson.databind.*;
 import io.restassured.builder.*;
+import io.restassured.filter.log.*;
 import io.restassured.http.*;
 import io.restassured.specification.*;
 import org.testng.*;
@@ -37,7 +38,7 @@ public class BaseTest {
 			.addHeader("Authorization", "Basic YXNzcjpiWEdtUmllZVhNdXZhR2Jo")
 			.setContentType(ContentType.JSON)
 			.setAccept(ContentType.JSON)
-//			.log(LogDetail.ALL)
+			.log(LogDetail.ALL)
 			.build ();
 		// getting the test data (city groups)
 		cityGroupList = given()
@@ -82,9 +83,9 @@ public class BaseTest {
 	}
 
 	@AfterSuite
-	public void tearDown(final ITestResult testResult) {
+	public void tearDown(final ITestContext iTestContext) {
 		// deleting the created draft anyway if exist
-		if (testResult.getStatus() == ITestResult.FAILURE) {
+		if (iTestContext.getFailedTests().size() > 0) {
 			given()
 				.spec(spec)
 				.pathParam("pageId", testPage.getId())
