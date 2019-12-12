@@ -2,7 +2,6 @@ package ru.alfabank.platform.apitest;
 
 import com.fasterxml.jackson.databind.*;
 import io.restassured.builder.*;
-import io.restassured.filter.log.*;
 import io.restassured.http.*;
 import io.restassured.specification.*;
 import org.testng.*;
@@ -12,16 +11,19 @@ import ru.alfabank.platform.businessobjects.*;
 import java.util.*;
 
 import static io.restassured.RestAssured.*;
+import static ru.alfabank.platform.helpers.BusinessObjectBuilder.*;
 
 public class BaseTest {
 
 	protected static RequestSpecification spec;
-	protected static CityGroup cityGroupList;
-	protected static List<Page> pageList;
-	protected static Map<String, List<Widget>> widgetMap;
+
+	private static CityGroup cityGroupList;
+	private static List<Page> pageList;
+	private static Map<String, List<Widget>> widgetMap;
 	protected ObjectMapper objMapper = new ObjectMapper();
 
 	protected static Page testPage;
+	protected static Object[] swappedWidgetsUidArrayOnTestPage;
 	protected static Widget testWidget;
 	protected static Property testProperty;
 	protected static Value testPropertyValue;
@@ -35,7 +37,7 @@ public class BaseTest {
 			.addHeader("Authorization", "Basic YXNzcjpiWEdtUmllZVhNdXZhR2Jo")
 			.setContentType(ContentType.JSON)
 			.setAccept(ContentType.JSON)
-			.log(LogDetail.ALL)
+//			.log(LogDetail.ALL)
 			.build ();
 		// getting the test data (city groups)
 		cityGroupList = given()
@@ -74,12 +76,15 @@ public class BaseTest {
 		testWidget = widgetMap.get(testPage.getId()).get(0);
 		testProperty = testWidget.getProperties().get(0);
 		testPropertyValue = testProperty.getValues().get(0);
+		List<String> widgetsUidListOnTestPage = new ArrayList<>();
+		widgetMap.get(testPage.getId()).forEach(widget -> widgetsUidListOnTestPage.add(widget.getUid()));
+		swappedWidgetsUidArrayOnTestPage = swapOutersInArray(widgetsUidListOnTestPage).toArray();
 	}
 
 	@AfterSuite
-	public void tearDown(final ITestContext testContext) {
+	public void tearDown(final ITestResult testResult) {
 		// deleting the created draft anyway if exist
-		if (testContext.getFailedTests().size() != 0) {
+		if (testResult.getStatus() == ITestResult.FAILURE) {
 			given()
 				.spec(spec)
 				.pathParam("pageId", testPage.getId())

@@ -8,6 +8,7 @@ import org.skyscreamer.jsonassert.*;
 import org.testng.annotations.*;
 import ru.alfabank.platform.apitest.*;
 import ru.alfabank.platform.businessobjects.*;
+import ru.alfabank.platform.businessobjects.draft.page.*;
 import ru.alfabank.platform.businessobjects.draft.property.*;
 import ru.alfabank.platform.businessobjects.draft.value.*;
 import ru.alfabank.platform.businessobjects.draft.widget.*;
@@ -172,7 +173,49 @@ public class ModifyTest extends BaseTest {
 	}
 
 	@Test
-	public void modifyPageTest() {
-
+	public void modifyPageTest() throws JsonProcessingException, JSONException {
+		// Make a Draft (widgets order change)
+		List<PageDraft.Operations> operations = new ArrayList<>();
+		operations.add(
+			new PageDraft.Operations(
+				new PageDraft.Operations.Data(
+					swappedWidgetsUidArrayOnTestPage
+				),
+				Entity.page,
+				Method.change,
+				testPage.getId()
+			));
+		String body = objMapper.writeValueAsString(
+			new PageDraft(operations, "01"));
+		Response putDraftResponse = given()
+			.spec(spec).body(body)
+			.pathParam("pageId", testPage.getId())
+			.put("content-store/admin-panel/pages/drafts/{pageId}");
+		Assertions.assertThat(putDraftResponse.getStatusCode())
+			.as(putDraftResponse.getBody().asString() + "\n" + body)
+			.isEqualTo(200);
+		// getting draft
+		Response getDraftResponse = given().spec(spec)
+			.pathParam("pageId", testPage.getId())
+			.get("content-store/admin-panel/pages/drafts/{pageId}");
+		Assertions.assertThat(getDraftResponse.getStatusCode())
+			.as(getDraftResponse.getBody().asString() + "\n" + body)
+			.isEqualTo(200);
+		JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
+		// publishing draft
+		Response postDraftResponse = given().spec(spec)
+			.pathParam("pageId", testPage.getId())
+			.post("content-store/admin-panel/pages/drafts/{pageId}/execute");
+		Assertions.assertThat(
+			postDraftResponse.getStatusCode())
+			.as(postDraftResponse.getBody().asString() + "\n" + body)
+			.isEqualTo(200);
+		// checking if draft is absent
+		Response getAbsentDraftResponse = given().spec(spec)
+			.pathParam("pageId", testPage.getId())
+			.get("content-store/admin-panel/pages/drafts/{pageId}");
+		Assertions.assertThat(getAbsentDraftResponse.getStatusCode())
+			.as(getAbsentDraftResponse.getBody().asString())
+			.isEqualTo(404);
 	}
 }
