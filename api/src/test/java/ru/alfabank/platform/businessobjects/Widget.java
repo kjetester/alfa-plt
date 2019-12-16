@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 
 import java.util.*;
 
-@JsonIgnoreProperties({"children"})
 public class Widget {
 
 	private String uid;
@@ -16,6 +15,7 @@ public class Widget {
 	private boolean isEnabled;
 	private String localization;
 	private List<String> widgetGeo;
+	private Children[] children;
 	private List<Property> properties;
 	private boolean reused;
 
@@ -29,6 +29,7 @@ public class Widget {
 	              @JsonProperty("enable") boolean isEnabled,
 	              @JsonProperty("localization") String localization,
 	              @JsonProperty("widgetGeo") List<String> widgetGeo,
+	              @JsonProperty("children") Children[] children,
 	              @JsonProperty("properties") List<Property> properties,
 	              @JsonProperty("reused") boolean reused) {
 		this.uid = uid;
@@ -40,6 +41,7 @@ public class Widget {
 		this.isEnabled = isEnabled;
 		this.localization = localization;
 		this.widgetGeo = widgetGeo;
+		this.children = children;
 		this.properties = properties;
 		this.reused = reused;
 	}
@@ -130,5 +132,44 @@ public class Widget {
 
 	public void setReused(boolean reused) {
 		this.reused = reused;
+	}
+
+	public Children[] getChildren() {
+		return children;
+	}
+
+	public void setChildren(Children[] children) {
+		this.children = children;
+	}
+
+	@JsonIgnoreProperties({"name", "dateFrom", "dateTo", "device", "enable", "localization", "widgetGeo",
+		"children", "properties", "reused"})
+	public static class Children {
+
+		private String uid;
+		private int orderNumber;
+
+		@JsonCreator
+		public Children(@JsonProperty("uid") String uid,
+		                @JsonProperty("orderNumber") int orderNumber) {
+			this.uid = uid;
+			this.orderNumber = orderNumber;
+		}
+
+		public String getUid() {
+			return uid;
+		}
+
+		public void setUid(String uid) {
+			this.uid = uid;
+		}
+
+		public int getOrderNumber() {
+			return orderNumber;
+		}
+
+		public void setOrderNumber(int orderNumber) {
+			this.orderNumber = orderNumber;
+		}
 	}
 }

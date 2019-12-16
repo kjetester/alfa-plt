@@ -9,10 +9,10 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PropertyDraft {
 
-	private List<Operations> operations;
+	private List<Object> operations;
 	private String version;
 
-	public PropertyDraft(List<Operations> operations, String version) {
+	public PropertyDraft(List<Object> operations, String version) {
 		this.operations = operations;
 		this.version = version;
 	}

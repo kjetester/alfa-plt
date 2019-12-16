@@ -1,221 +1,135 @@
 package ru.alfabank.platform.apitest.drafts;
 
 import com.fasterxml.jackson.core.*;
-import io.restassured.response.*;
-import org.assertj.core.api.*;
-import org.json.*;
-import org.skyscreamer.jsonassert.*;
 import org.testng.annotations.*;
 import ru.alfabank.platform.apitest.*;
 import ru.alfabank.platform.businessobjects.*;
-import ru.alfabank.platform.businessobjects.draft.page.*;
-import ru.alfabank.platform.businessobjects.draft.property.*;
-import ru.alfabank.platform.businessobjects.draft.value.*;
-import ru.alfabank.platform.businessobjects.draft.widget.*;
-
-import java.util.*;
+import ru.alfabank.platform.businessobjects.draft.*;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
 import static ru.alfabank.platform.businessobjects.CityGroup.*;
+import static ru.alfabank.platform.helpers.TestDataHelper.*;
 
 public class ModifyTest extends BaseTest {
 
-	@Test
-	public void modifyPropertyValueTest() throws JsonProcessingException, JSONException {
+	@Test(groups = "drafts")
+	public void modifyValueTest() {
 		// Make a Draft (all (geo and value) change)
-		List<ValueDraft.Operations> operations = new ArrayList<>();
+		DataDraft valueData = new DataDraft.DataDraftBuilder().cityGroups(getCityGroup("geo-5"))
+			.forProperty(getTestProperty().getUid()).value("value").build();
 		operations.add(
-			new ValueDraft.Operations(
-				new ValueDraft.Operations.Data(
-					getCityGroup("geo-5"),
-					testProperty.getUid(),
-					"q"),
-				Entity.propertyValue,
-				Method.change,
-				testPropertyValue.getUid()));
-		ValueDraft draft = new ValueDraft(operations, "01");
-		String body = objMapper.writeValueAsString(draft);
+			new WrapperDraft.OperationDraft(
+				valueData, Entity.propertyValue, Method.change, getTestPropertyValue().getUid()));
+		body = new WrapperDraft(operations);
 		// putting draft
-		Response putDraftResponse = given()
-			.spec(spec).body(body)
-			.pathParam("pageId", testPage.getId())
-			.put("content-store/admin-panel/pages/drafts/{pageId}");
-		Assertions.assertThat(putDraftResponse.getStatusCode())
-			.as(putDraftResponse.getBody().asString() + "\n" + body)
-		.isEqualTo(200);
+		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
+			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
 		// getting draft
-		Response getDraftResponse = given().spec(spec)
-			.pathParam("pageId", testPage.getId())
-			.get("content-store/admin-panel/pages/drafts/{pageId}");
-		Assertions.assertThat(getDraftResponse.getStatusCode())
-			.as(getDraftResponse.getBody().asString() + "\n" + body)
-			.isEqualTo(200);
-		JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+		//TODO: need to replace with rest-assured methods
+		// JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
+
 		// publishing draft
-		Response postDraftResponse = given().spec(spec)
-			.pathParam("pageId", testPage.getId())
-			.post("content-store/admin-panel/pages/drafts/{pageId}/execute");
-		Assertions.assertThat(
-			postDraftResponse.getStatusCode())
-			.as(postDraftResponse.getBody().asString() + "\n" + body)
-			.isEqualTo(200);
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().post("content-store/admin-panel/pages/drafts/{pageId}/execute")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
 		// checking if draft is absent
-		Response getAbsentDraftResponse = given().spec(spec)
-			.pathParam("pageId", testPage.getId())
-			.get("content-store/admin-panel/pages/drafts/{pageId}");
-		Assertions.assertThat(getAbsentDraftResponse.getStatusCode())
-			.as(getAbsentDraftResponse.getBody().asString())
-			.isEqualTo(404);
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(404).log().ifStatusCodeMatches(not(404));
 	}
 
-	@Test
-	public void modifyPropertyTest() throws JsonProcessingException, JSONException {
+	@Test(groups = "drafts")
+	public void modifyPropertyTest() {
 		// Make a Draft (device change)
-		List<PropertyDraft.Operations> operations = new ArrayList<>();
+		DataDraft propertyData = new DataDraft.DataDraftBuilder().forWidget(getTestWidget().getUid())
+			.name(getTestProperty().getName()).device(Device.mobile).build();
 		operations.add(
-			new PropertyDraft.Operations(
-				new PropertyDraft.Operations.Data(
-					testWidget.getUid(),
-					testProperty.getName(),
-					Device.mobile
-					),
-				Entity.property,
-				Method.change,
-				testProperty.getUid()
-			));
-		PropertyDraft draft = new PropertyDraft(operations, "01");
-		String body = objMapper.writeValueAsString(draft);
+			new WrapperDraft.OperationDraft(propertyData, Entity.property, Method.change, getTestProperty().getUid()));
+		body = new WrapperDraft(operations);
 		// putting draft
-		Response putDraftResponse = given()
-			.spec(spec).body(body)
-			.pathParam("pageId", testPage.getId())
-			.put("content-store/admin-panel/pages/drafts/{pageId}");
-		Assertions.assertThat(putDraftResponse.getStatusCode())
-			.as(putDraftResponse.getBody().asString() + "\n" + body)
-			.isEqualTo(200);
+		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
+			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
 		// getting draft
-		Response getDraftResponse = given().spec(spec)
-			.pathParam("pageId", testPage.getId())
-			.get("content-store/admin-panel/pages/drafts/{pageId}");
-		Assertions.assertThat(getDraftResponse.getStatusCode())
-			.as(getDraftResponse.getBody().asString() + "\n" + body)
-			.isEqualTo(200);
-		JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+		//TODO: need to replace with rest-assured methods
+		// JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
+
 		// publishing draft
-		Response postDraftResponse = given().spec(spec)
-			.pathParam("pageId", testPage.getId())
-			.post("content-store/admin-panel/pages/drafts/{pageId}/execute");
-		Assertions.assertThat(
-			postDraftResponse.getStatusCode())
-			.as(postDraftResponse.getBody().asString() + "\n" + body)
-			.isEqualTo(200);
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().post("content-store/admin-panel/pages/drafts/{pageId}/execute")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
 		// checking if draft is absent
-		Response getAbsentDraftResponse = given().spec(spec)
-			.pathParam("pageId", testPage.getId())
-			.get("content-store/admin-panel/pages/drafts/{pageId}");
-		Assertions.assertThat(getAbsentDraftResponse.getStatusCode())
-			.as(getAbsentDraftResponse.getBody().asString())
-			.isEqualTo(404);
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(404).log().ifStatusCodeMatches(not(404));
 	}
 
-	@Test
-	public void modifyWidgetTest() throws JsonProcessingException, JSONException {
-			// Make a Draft (dates change)
-			List<WidgetDraft.Operations> operations = new ArrayList<>();
-			operations.add(
-				new WidgetDraft.Operations(
-					testWidget.getUid(),
-					Entity.widget,
-					Method.change,
-					new WidgetDraft.Operations.Data(
-						"2019-01-01T00:00:00.000Z",
-						"2020-01-01T00:00:00",
-						Device.desktop,
-						testWidget.isEnabled(),
-						testWidget.getLocalization(),
-						"changed",
-						testWidget.getName(),
-						getCityGroup("123"))
-				));
-			String body = objMapper.writeValueAsString(
-				new WidgetDraft("01", operations));
-			// putting draft
-			Response putDraftResponse = given()
-				.spec(spec).body(body)
-				.pathParam("pageId", testPage.getId())
-				.put("content-store/admin-panel/pages/drafts/{pageId}");
-			Assertions.assertThat(putDraftResponse.getStatusCode())
-				.as(putDraftResponse.getBody().asString() + "\n" + body)
-				.isEqualTo(200);
-			// getting draft
-			Response getDraftResponse = given().spec(spec)
-				.pathParam("pageId", testPage.getId())
-				.get("content-store/admin-panel/pages/drafts/{pageId}");
-			Assertions.assertThat(getDraftResponse.getStatusCode())
-				.as(getDraftResponse.getBody().asString() + "\n" + body)
-				.isEqualTo(200);
-			JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
-			// publishing draft
-			Response postDraftResponse = given().spec(spec)
-				.pathParam("pageId", testPage.getId())
-				.post("content-store/admin-panel/pages/drafts/{pageId}/execute");
-			Assertions.assertThat(
-				postDraftResponse.getStatusCode())
-				.as(postDraftResponse.getBody().asString() + "\n" + body)
-				.isEqualTo(200);
-			// checking if draft is absent
-			Response getAbsentDraftResponse = given().spec(spec)
-				.pathParam("pageId", testPage.getId())
-				.get("content-store/admin-panel/pages/drafts/{pageId}");
-			Assertions.assertThat(getAbsentDraftResponse.getStatusCode())
-				.as(getAbsentDraftResponse.getBody().asString())
-				.isEqualTo(404);
-	}
-
-	@Test
-	public void modifyPageTest() throws JsonProcessingException, JSONException {
-		// Make a Draft (widgets order change)
-		List<PageDraft.Operations> operations = new ArrayList<>();
+	@Test(groups = "drafts")
+	public void modifyWidgetTest() {
+		// Make a Draft (dates change)
+		DataDraft widgetData = new DataDraft.DataDraftBuilder()
+			.dateFrom("2019-01-01T00:00:00.000Z").dateTo("2020-01-01T00:00:00").device(getTestWidget().getDevice())
+			.enable(getTestWidget().isEnabled()).localization(getTestWidget().getLocalization()).state("")
+			.name(getTestWidget().getName()).cityGroups(getCityGroup("123")).build();
 		operations.add(
-			new PageDraft.Operations(
-				new PageDraft.Operations.Data(
-					swappedWidgetsUidArrayOnTestPage
-				),
-				Entity.page,
-				Method.changeLinks,
-				testPage.getId()
-			));
-		String body = objMapper.writeValueAsString(
-			new PageDraft(operations, "01"));
-		Response putDraftResponse = given()
-			.spec(spec).body(body)
-			.pathParam("pageId", testPage.getId())
-			.put("content-store/admin-panel/pages/drafts/{pageId}");
-		Assertions.assertThat(putDraftResponse.getStatusCode())
-			.as(putDraftResponse.getBody().asString() + "\n" + body)
-			.isEqualTo(200);
+			new WrapperDraft.OperationDraft(widgetData, Entity.widget, Method.change, getTestWidget().getUid()));
+		body = new WrapperDraft(operations);
+		// putting draft
+		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
+			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
 		// getting draft
-		Response getDraftResponse = given().spec(spec)
-			.pathParam("pageId", testPage.getId())
-			.get("content-store/admin-panel/pages/drafts/{pageId}");
-		Assertions.assertThat(getDraftResponse.getStatusCode())
-			.as(getDraftResponse.getBody().asString() + "\n" + body)
-			.isEqualTo(200);
-		JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+		//TODO: need to replace with rest-assured methods
+		// JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
+
 		// publishing draft
-		Response postDraftResponse = given().spec(spec)
-			.pathParam("pageId", testPage.getId())
-			.post("content-store/admin-panel/pages/drafts/{pageId}/execute");
-		Assertions.assertThat(
-			postDraftResponse.getStatusCode())
-			.as(postDraftResponse.getBody().asString() + "\n" + body)
-			.isEqualTo(200);
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().post("content-store/admin-panel/pages/drafts/{pageId}/execute")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
 		// checking if draft is absent
-		Response getAbsentDraftResponse = given().spec(spec)
-			.pathParam("pageId", testPage.getId())
-			.get("content-store/admin-panel/pages/drafts/{pageId}");
-		Assertions.assertThat(getAbsentDraftResponse.getStatusCode())
-			.as(getAbsentDraftResponse.getBody().asString())
-			.isEqualTo(404);
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(404).log().ifStatusCodeMatches(not(404));
+	}
+
+	@Test(groups = "drafts")
+	public void modifyPageTest() throws JsonProcessingException {
+		// Make a Draft (widgets order change)
+		DataDraft pageData = new DataDraft.DataDraftBuilder()
+			.childUids(getSwappedOutersWidgetsUidArray())
+			.build();
+		operations.add(
+			new WrapperDraft.OperationDraft(pageData, Entity.page, Method.changeLinks, getTestPage().getId()));
+		body = new WrapperDraft(operations);
+		// putting draft
+		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
+			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+		// getting draft
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+		//TODO: need to replace with rest-assured methods
+		// JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
+
+		// publishing draft
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().post("content-store/admin-panel/pages/drafts/{pageId}/execute")
+			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+		// checking if draft is absent
+		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.then().statusCode(404).log().ifStatusCodeMatches(not(404));
 	}
 }

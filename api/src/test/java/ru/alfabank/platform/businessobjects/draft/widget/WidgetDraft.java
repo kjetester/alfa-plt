@@ -10,10 +10,10 @@ import java.util.*;
 @JsonPropertyOrder({ "version", "operations"})
 public class WidgetDraft {
 
-	private List<Operations> operations;
+	private List<Object> operations;
 	private String version;
 
-	public WidgetDraft(String version, List<Operations> operations) {
+	public WidgetDraft(String version, List<Object> operations) {
 		this.version = version;
 		this.operations = operations;
 	}

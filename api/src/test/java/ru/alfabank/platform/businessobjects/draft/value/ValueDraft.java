@@ -9,10 +9,10 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ValueDraft {
 
-	private List<Operations> operations;
+	private List<Object> operations;
 	private String version;
 
-	public ValueDraft(List<Operations> operations, String version) {
+	public ValueDraft(List<Object> operations, String version) {
 		this.operations = operations;
 		this.version = version;
 	}
@@ -21,12 +21,12 @@ public class ValueDraft {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public static class Operations {
 
-		private Data data;
+		private Object data;
 		private Entity entity;
 		private Method method;
 		private String uid;
 
-		public Operations(Data data, Entity entity, Method method, String propertyValueUid) {
+		public Operations(Object data, Entity entity, Method method, String propertyValueUid) {
 			this.data = data;
 			this.entity = entity;
 			this.method = method;

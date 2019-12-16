@@ -9,11 +9,11 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PageDraft {
 
-	private List<Operations> operations;
+	private List<Object> operations;
 	private String version;
 
 	public PageDraft(
-			List<Operations> operations,
+			List<Object> operations,
 			String version) {
 		this.operations = operations;
 		this.version = version;
