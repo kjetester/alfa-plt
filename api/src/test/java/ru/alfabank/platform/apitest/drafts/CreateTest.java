@@ -1,7 +1,5 @@
 package ru.alfabank.platform.apitest.drafts;
 
-import com.fasterxml.jackson.core.*;
-import org.json.*;
 import org.testng.annotations.*;
 import ru.alfabank.platform.apitest.*;
 import ru.alfabank.platform.businessobjects.*;
@@ -17,21 +15,21 @@ import static ru.alfabank.platform.helpers.TestDataHelper.*;
 
 public class CreateTest extends BaseTest {
 
-	@Test(groups = "drafts")
+	@Test(groups = {"drafts", "create"})
 	public void createValueTest() {
 		// Make a Draft
 		newEntityUid = getNewUuid();
 		DataDraft newValueData = new DataDraft.DataDraftBuilder().cityGroups(getCityGroup("RU"))
 			.forProperty(getTestProperty().getUid()).value("").enable(true).build();
-		operations.add(new WrapperDraft.OperationDraft(newValueData, Entity.propertyValue, Method.create, getNewUuid()));
+		operations.add(new WrapperDraft.OperationDraft(newValueData, Entity.propertyValue, Method.create, newEntityUid));
 		body = new WrapperDraft(operations);
 		// putting draft
 		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
-			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().put(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// getting draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().get(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// TODO JSONAssert.assertEquals(response.getBody().asString(), objMapper.writeValueAsString(body), true);
 		// publishing draft
@@ -40,17 +38,18 @@ public class CreateTest extends BaseTest {
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// checking if draft is absent
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().get(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(404)).statusCode(404);
+		createdEntities.put(Entity.propertyValue, newEntityUid);
 	}
 
-	@Test(groups = "drafts")
+	@Test(groups = {"drafts", "create"}, dependsOnMethods = "createValueTest")
 	public void createPropertyTest() {
 		// Make a Draft
 		newEntityUid = getNewUuid();
 		DataDraft newPropertyData = new DataDraft.DataDraftBuilder().forWidget(getTestWidget().getUid())
-			.name("newPropertyName").device(desktop).build();
-		DataDraft newValueData = new DataDraft.DataDraftBuilder().cityGroups(getCityGroup("geo-5", "RU"))
+			.name("Property_" + newEntityUid).device(desktop).build();
+		DataDraft newValueData = new DataDraft.DataDraftBuilder().cityGroups(getCityGroup("RU"))
 			.forProperty(newEntityUid).value("").build();
 		operations.addAll(Arrays.asList(
 			new WrapperDraft.OperationDraft(newPropertyData, Entity.property, Method.create, newEntityUid),
@@ -59,11 +58,11 @@ public class CreateTest extends BaseTest {
 		body = new WrapperDraft(operations);
 		// putting draft
 		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
-			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().put(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// getting draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().get(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// TODO JSONAssert.assertEquals(response.getBody().asString(), objMapper.writeValueAsString(body), true);
 		// publishing draft
@@ -72,12 +71,13 @@ public class CreateTest extends BaseTest {
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// checking if draft is absent
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().get(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(404)).statusCode(404);
+		createdEntities.put(Entity.property, newEntityUid);
 	}
 
-	@Test(groups = "drafts")
-	public void createRootWidgetTest() throws JsonProcessingException, JSONException {
+	@Test(groups = {"drafts", "create"})
+		public void createRootWidgetTest() {
 		// Make a Draft
 		newEntityUid = getNewUuid();
 		DataDraft newWidgetData = new DataDraft.DataDraftBuilder().name("newWidget")
@@ -93,11 +93,11 @@ public class CreateTest extends BaseTest {
 		body = new WrapperDraft(operations);
 		// putting draft
 		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
-			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().put(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// getting draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().get(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// TODO JSONAssert.assertEquals(response.getBody().asString(), objMapper.writeValueAsString(body), true);
 		// publishing draft
@@ -106,8 +106,9 @@ public class CreateTest extends BaseTest {
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// checking if draft is absent
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().get(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(404)).statusCode(404);
+		createdEntities.put(Entity.widget, newEntityUid);
 	}
 
 	@Test(groups = "drafts")
@@ -126,11 +127,11 @@ public class CreateTest extends BaseTest {
 		body = new WrapperDraft(operations);
 		// putting draft
 		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
-			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().put(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// getting draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().get(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// TODO JSONAssert.assertEquals(response.getBody().asString(), objMapper.writeValueAsString(body), true);
 		// publishing draft
@@ -139,7 +140,7 @@ public class CreateTest extends BaseTest {
 			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// checking if draft is absent
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
+			.when().get(RESOURCE)
 			.then().log().ifStatusCodeMatches(not(404)).statusCode(404);
 	}
 }

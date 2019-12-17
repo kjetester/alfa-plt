@@ -3,6 +3,7 @@ package ru.alfabank.platform.apitest;
 import com.fasterxml.jackson.databind.*;
 import org.testng.*;
 import org.testng.annotations.*;
+import ru.alfabank.platform.businessobjects.*;
 import ru.alfabank.platform.businessobjects.draft.*;
 import ru.alfabank.platform.helpers.*;
 
@@ -20,13 +21,16 @@ public class BaseTest {
 	protected String newEntityUid;
 
 	@BeforeGroups(groups = "drafts")
-	public static void setUp() throws NoTestDataException {
+	public static void setUp() {
 		setRequestSpec();
 		setCityGroups();
 		setPageList();
-		setWidgetMap();
+		setWidgetMap(Device.desktop);
+		setWidgetMap(Device.mobile);
 		setTestObjects();
 //		addParamToRequestSpec("pageId", getTestPage().getId());
+		addQueryParamsToRequestSpec("device", Device.desktop);
+		removeAllDraftsForUser();
 	}
 
 	@AfterMethod(groups = "drafts", alwaysRun = true)

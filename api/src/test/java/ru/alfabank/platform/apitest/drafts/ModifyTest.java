@@ -24,23 +24,23 @@ public class ModifyTest extends BaseTest {
 		body = new WrapperDraft(operations);
 		// putting draft
 		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
-			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.when().put(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// getting draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.when().get(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		//TODO: need to replace with rest-assured methods
 		// JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
 
 		// publishing draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
 			.when().post("content-store/admin-panel/pages/drafts/{pageId}/execute")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// checking if draft is absent
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(404).log().ifStatusCodeMatches(not(404));
+			.when().get(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(404)).statusCode(404);
 	}
 
 	@Test(groups = "drafts")
@@ -53,23 +53,23 @@ public class ModifyTest extends BaseTest {
 		body = new WrapperDraft(operations);
 		// putting draft
 		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
-			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.when().put(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// getting draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.when().get(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		//TODO: need to replace with rest-assured methods
 		// JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
 
 		// publishing draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
 			.when().post("content-store/admin-panel/pages/drafts/{pageId}/execute")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// checking if draft is absent
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(404).log().ifStatusCodeMatches(not(404));
+			.when().get(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(404)).statusCode(404);
 	}
 
 	@Test(groups = "drafts")
@@ -84,23 +84,23 @@ public class ModifyTest extends BaseTest {
 		body = new WrapperDraft(operations);
 		// putting draft
 		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
-			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.when().put(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// getting draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.when().get(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		//TODO: need to replace with rest-assured methods
 		// JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
 
 		// publishing draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
 			.when().post("content-store/admin-panel/pages/drafts/{pageId}/execute")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// checking if draft is absent
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(404).log().ifStatusCodeMatches(not(404));
+			.when().get(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(404)).statusCode(404);
 	}
 
 	@Test(groups = "drafts")
@@ -114,22 +114,22 @@ public class ModifyTest extends BaseTest {
 		body = new WrapperDraft(operations);
 		// putting draft
 		given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
-			.when().put("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.when().put(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// getting draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.when().get(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		//TODO: need to replace with rest-assured methods
 		// JSONAssert.assertEquals(getDraftResponse.getBody().asString(), body, true);
 
 		// publishing draft
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
 			.when().post("content-store/admin-panel/pages/drafts/{pageId}/execute")
-			.then().statusCode(200).log().ifStatusCodeMatches(not(200));
+			.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
 		// checking if draft is absent
 		given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-			.when().get("content-store/admin-panel/pages/drafts/{pageId}")
-			.then().statusCode(404).log().ifStatusCodeMatches(not(404));
+			.when().get(RESOURCE)
+			.then().log().ifStatusCodeMatches(not(404)).statusCode(404);
 	}
 }

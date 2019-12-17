@@ -10,11 +10,13 @@ import java.util.*;
 public class WrapperDraft {
 	private final List<Object> operations;
 	private final String version;
+	private final Device device;
 
 	@JsonCreator
 	public WrapperDraft(List<Object> operations) {
 		this.operations = operations;
 		this.version = "01";
+		this.device = Device.desktop;
 	}
 
 	@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)

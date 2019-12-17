@@ -3,30 +3,36 @@ package ru.alfabank.platform.helpers;
 import io.restassured.builder.*;
 import io.restassured.filter.log.*;
 import io.restassured.http.*;
+import io.restassured.response.*;
 import io.restassured.specification.*;
 import ru.alfabank.platform.businessobjects.*;
 
 import java.util.*;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 public class TestDataHelper {
 
 	private static final String BASE_URL = "http://develop.ci.k8s.alfa.link";
 	private static final String BASE_PATH = "api/v1";
+	public static final String RESOURCE = "/content-store/admin-panel/pages/{pageId}/drafts";
 	private static final String USERNAME = "assr";
 	private static final String PASSWORD = "bXGmRieeXMuvaGbh";
 
-	private static RequestSpecification requestSpecification;
 	protected static Map<String, List<Widget>> widgetMap;
 	protected static Page testPage;
 	protected static Widget testWidget;
 	protected static Property testProperty;
 	protected static Value testPropertyValue;
+	private static RequestSpecification requestSpecification;
 	private static CityGroup cityGroup;
 	private static List<Page> pageList;
 	private static List<String> widgetsUidListOnTestPage = new ArrayList<>();
 	private static Widget.Children[] testWidgetChildren;
+
+	public static Map<Entity, String> createdEntities = new HashMap<>();
 
 	// sets the requests specification
 	public static void setRequestSpec() {
@@ -73,28 +79,30 @@ public class TestDataHelper {
 			.spec(requestSpecification)
 			.when()
 			.get("content-store/admin-panel/pages")
-			.then()
+			.then().log().ifStatusCodeMatches(not(200))
 			.statusCode(200)
 			.extract().as(Page[].class));
 	}
 
 	// gets the test data (widgets + properties + values on every page)
-	public static void setWidgetMap() {
+	public static void setWidgetMap(Device device) {
 		widgetMap = new HashMap<>();
 		pageList.forEach(p -> {
-			widgetMap.put(
-				p.getId(),
-				Arrays.asList(
-					given()
-						.spec(requestSpecification)
-						.queryParams(
-							"device", Device.desktop,
-							"uri", p.getUri())
-						.when()
-						.get("/content-store/admin-panel/meta-info-page-contents")
-						.then()
-						.statusCode(200)
-						.extract().as(Widget[].class)));
+			Response response = given().spec(requestSpecification)
+				.queryParams("device", device, "uri", p.getUri())
+			.when().get("/content-store/admin-panel/meta-info-page-contents");
+			if (!response.getStatusLine().contains("200")) {
+				try {
+					throw new ErrorGettingWidgetsException(String.format("Couldn't get Widgets on the Page with id: " +
+						"'%s' and uri: '%s' for device '%s'", p.getId(), p.getUri(), device));
+				} catch (ErrorGettingWidgetsException e) {
+					e.printStackTrace();
+				}
+			} else {
+				response.then().log().ifStatusCodeMatches(not(200));
+				response.then().statusCode(200).extract().as(Widget[].class);
+				widgetMap.put(p.getId(), Arrays.asList(response.then().extract().as(Widget[].class)));
+			}
 		});
 	}
 
@@ -161,6 +169,18 @@ public class TestDataHelper {
 			uidList.add(0, newUid);
 			return uidList.toArray();
 		} else return new String[]{newUid};
+	}
+
+	// deletes all drafts for the user on the test page
+	public static void removeAllDraftsForUser() {
+		Response response =
+			given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+				.when().get(RESOURCE);
+		if (response.statusCode() == 200) {
+			given().spec(requestSpecification).pathParam("pageId", testPage.getId())
+				.when().delete(RESOURCE)
+				.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
+		}
 	}
 
 	// generates a new UUID
