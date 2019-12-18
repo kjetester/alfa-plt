@@ -17,9 +17,11 @@ public class TestDataHelper {
 
 	private static final String BASE_URL = "http://develop.ci.k8s.alfa.link";
 	private static final String BASE_PATH = "api/v1";
+	private static final String AUTH_TOKEN = "Basic YXNzcjpiWEdtUmllZVhNdXZhR2Jo";
+	//TODO: private static final String USERNAME = "assr";
+	// private static final String PASSWORD = "bXGmRieeXMuvaGbh";
+
 	public static final String RESOURCE = "/content-store/admin-panel/pages/{pageId}/drafts";
-	private static final String USERNAME = "assr";
-	private static final String PASSWORD = "bXGmRieeXMuvaGbh";
 
 	protected static Map<String, List<Widget>> widgetMap;
 	protected static Page testPage;
@@ -39,7 +41,8 @@ public class TestDataHelper {
 		requestSpecification = new RequestSpecBuilder()
 			.setBaseUri (BASE_URL)
 			.setBasePath (BASE_PATH)
-			.setAuth(basic(USERNAME, PASSWORD))
+			.addHeader("Authorization", AUTH_TOKEN)
+//			.setAuth(basic(USERNAME, PASSWORD))
 			.setContentType(ContentType.JSON)
 			.setAccept(ContentType.JSON)
 			.log(LogDetail.ALL)
@@ -75,28 +78,30 @@ public class TestDataHelper {
 
 	// gets the test data (pages)
 	public static void setPageList() {
-		pageList = Arrays.asList(given()
+		pageList = new ArrayList<>(Arrays.asList(given()
 			.spec(requestSpecification)
 			.when()
 			.get("content-store/admin-panel/pages")
 			.then().log().ifStatusCodeMatches(not(200))
 			.statusCode(200)
-			.extract().as(Page[].class));
+			.extract().as(Page[].class)));
 	}
 
 	// gets the test data (widgets + properties + values on every page)
 	public static void setWidgetMap(Device device) {
 		widgetMap = new HashMap<>();
+		List<Page> pageWithNoOneWidgetlList = new ArrayList<>();
 		pageList.forEach(p -> {
 			Response response = given().spec(requestSpecification)
 				.queryParams("device", device, "uri", p.getUri())
 			.when().get("/content-store/admin-panel/meta-info-page-contents");
 			if (!response.getStatusLine().contains("200")) {
 				try {
+					//TODO: http://jira.moscow.alfaintra.net/browse/ALFABANKRU-17657
 					throw new ErrorGettingWidgetsException(String.format("Couldn't get Widgets on the Page with id: " +
 						"'%s' and uri: '%s' for device '%s'", p.getId(), p.getUri(), device));
 				} catch (ErrorGettingWidgetsException e) {
-					e.printStackTrace();
+					pageWithNoOneWidgetlList.add(p);
 				}
 			} else {
 				response.then().log().ifStatusCodeMatches(not(200));
@@ -104,6 +109,7 @@ public class TestDataHelper {
 				widgetMap.put(p.getId(), Arrays.asList(response.then().extract().as(Widget[].class)));
 			}
 		});
+		pageList.removeAll(pageWithNoOneWidgetlList);
 	}
 
 	// defines and sets test objects
@@ -165,7 +171,7 @@ public class TestDataHelper {
 	// puts a new UID on the top of the test widget children list
 	public static Object[] putNewChildWidgetToParentWidget(String newUid) {
 		if (testWidgetChildren.length > 0) {
-			List<String> uidList = Arrays.asList(testWidgetChildren[0].getUid());
+			List<String> uidList = new ArrayList<>(Arrays.asList(testWidgetChildren[0].getUid()));
 			uidList.add(0, newUid);
 			return uidList.toArray();
 		} else return new String[]{newUid};

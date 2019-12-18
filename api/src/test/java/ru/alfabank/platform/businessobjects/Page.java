@@ -11,8 +11,8 @@ public class Page {
 	private String title;
 	private String description;
 	private boolean isEnabled;
-	private Date dataFrom;
-	private Date dataTo;
+	private Date dateFrom;
+	private Date dateTo;
 
 	@JsonCreator
 	public Page(@JsonProperty("id") String id,
@@ -20,15 +20,15 @@ public class Page {
 	            @JsonProperty("title") String title,
 	            @JsonProperty("description") String description,
 	            @JsonProperty("enable") boolean isEnabled,
-	            @JsonProperty("dataFrom") Date dataFrom,
-	            @JsonProperty("dataTo") Date dataTo) {
+	            @JsonProperty("dataFrom") Date dateFrom,
+	            @JsonProperty("dataTo") Date dateTo) {
 		this.id = id;
 		this.uri = uuid;
 		this.title = title;
 		this.description = description;
 		this.isEnabled = isEnabled;
-		this.dataFrom = dataFrom;
-		this.dataTo = dataTo;
+		this.dateFrom = dateFrom;
+		this.dateTo = dateTo;
 	}
 
 	public String getId() {
@@ -76,21 +76,21 @@ public class Page {
 		return this;
 	}
 
-	public Date getDataFrom() {
-		return dataFrom;
+	public Date getDateFrom() {
+		return dateFrom;
 	}
 
-	public Page setDataFrom(Date dataFrom) {
-		this.dataFrom = dataFrom;
+	public Page setDateFrom(Date dateFrom) {
+		this.dateFrom = dateFrom;
 		return this;
 	}
 
-	public Date getDataTo() {
-		return dataTo;
+	public Date getDateTo() {
+		return dateTo;
 	}
 
-	public Page setDataTo(Date dataTo) {
-		this.dataTo = dataTo;
+	public Page setDateTo(Date dateTo) {
+		this.dateTo = dateTo;
 		return this;
 	}
 }

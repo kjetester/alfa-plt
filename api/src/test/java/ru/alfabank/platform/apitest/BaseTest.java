@@ -20,26 +20,25 @@ public class BaseTest {
 	protected ObjectMapper objMapper = new ObjectMapper();
 	protected String newEntityUid;
 
-	@BeforeGroups(groups = "drafts")
+	@BeforeSuite
 	public static void setUp() {
 		setRequestSpec();
 		setCityGroups();
 		setPageList();
 		setWidgetMap(Device.desktop);
-		setWidgetMap(Device.mobile);
+//		setWidgetMap(Device.mobile);
 		setTestObjects();
 //		addParamToRequestSpec("pageId", getTestPage().getId());
 		addQueryParamsToRequestSpec("device", Device.desktop);
 		removeAllDraftsForUser();
 	}
 
-	@AfterMethod(groups = "drafts", alwaysRun = true)
+	@AfterClass(alwaysRun = true)
 	public void afterTest() {
 		operations.clear();
-
 	}
 
-	@AfterGroups(groups = "drafts")
+	@AfterSuite
 	public void tearDown(final ITestContext iTestContext) {
 		// deleting the created draft anyway if exist
 		if (iTestContext.getFailedTests().size() > 0) {

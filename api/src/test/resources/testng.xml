@@ -1,0 +1,23 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Drafts" verbose="1">
+
+    <test name="Create">
+        <packages>
+            <package name="ru.alfabank.platform.apitest.drafts.create"/>
+        </packages>
+    </test>
+
+    <test name="Modify">
+        <packages>
+            <package name="ru.alfabank.platform.apitest.drafts.modify"/>
+        </packages>
+    </test>
+
+    <test name="Delete">
+        <packages>
+            <package name="ru.alfabank.platform.apitest.drafts.delete"/>
+        </packages>
+    </test>
+
+</suite>
