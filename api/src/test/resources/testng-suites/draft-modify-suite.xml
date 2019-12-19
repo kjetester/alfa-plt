@@ -1,0 +1,29 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Modify entities" verbose="1">
+
+    <test name="Modify page">
+        <classes>
+            <class name="ru.alfabank.platform.apitest.drafts.modify.ModifyPageTest"/>
+        </classes>
+    </test>
+
+    <test name="Modify widget">
+        <classes>
+            <class name="ru.alfabank.platform.apitest.drafts.modify.ModifyWidgetTest"/>
+        </classes>
+    </test>
+
+    <test name="Modify property">
+        <classes>
+            <class name="ru.alfabank.platform.apitest.drafts.modify.ModifyPropertyTest"/>
+        </classes>
+    </test>
+
+    <test name="Modify property value">
+        <classes>
+            <class name="ru.alfabank.platform.apitest.drafts.modify.ModifyPropertyValueTest"/>
+        </classes>
+    </test>
+
+</suite>

@@ -27,3 +27,6 @@ target/
 *.classpath
 *.settings/
 
+# Allure Files
+allure-results/
+

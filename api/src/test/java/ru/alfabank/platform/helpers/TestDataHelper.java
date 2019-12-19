@@ -1,216 +1,277 @@
 package ru.alfabank.platform.helpers;
 
-import io.restassured.builder.*;
-import io.restassured.filter.log.*;
-import io.restassured.http.*;
-import io.restassured.response.*;
-import io.restassured.specification.*;
-import ru.alfabank.platform.businessobjects.*;
-
-import java.util.*;
-
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.is;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.not;
+
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import ru.alfabank.platform.businessobjects.CityGroup;
+import ru.alfabank.platform.businessobjects.Device;
+import ru.alfabank.platform.businessobjects.Entity;
+import ru.alfabank.platform.businessobjects.Page;
+import ru.alfabank.platform.businessobjects.Property;
+import ru.alfabank.platform.businessobjects.Value;
+import ru.alfabank.platform.businessobjects.Widget;
 
 public class TestDataHelper {
 
-	private static final String BASE_URL = "http://develop.ci.k8s.alfa.link";
-	private static final String BASE_PATH = "api/v1";
-	private static final String AUTH_TOKEN = "Basic YXNzcjpiWEdtUmllZVhNdXZhR2Jo";
-	//TODO: private static final String USERNAME = "assr";
-	// private static final String PASSWORD = "bXGmRieeXMuvaGbh";
+  private static final String BASE_URL = "http://develop.ci.k8s.alfa.link";
+  private static final String BASE_PATH = "api/v1";
+  private static final String AUTH_TOKEN = "Basic YXNzcjpiWEdtUmllZVhNdXZhR2Jo";
+  //TODO: private static final String USERNAME = "assr";
+  // private static final String PASSWORD = "bXGmRieeXMuvaGbh";
 
-	public static final String RESOURCE = "/content-store/admin-panel/pages/{pageId}/drafts";
+  public static final String RESOURCE_URL = "/content-store";
+  public static final String CONTENT_STORE_ADMIN_URL = RESOURCE_URL + "/admin-panel/pages";
+  public static final String DRAFT_CONTROLLER_URL = RESOURCE_URL
+      + "/admin-panel/pages/{pageId}/drafts";
+  public static final String META_INFO_PAGE_CONTROLLER_URL = RESOURCE_URL
+      + "/admin-panel/meta-info-page-contents";
 
-	protected static Map<String, List<Widget>> widgetMap;
-	protected static Page testPage;
-	protected static Widget testWidget;
-	protected static Property testProperty;
-	protected static Value testPropertyValue;
-	private static RequestSpecification requestSpecification;
-	private static CityGroup cityGroup;
-	private static List<Page> pageList;
-	private static List<String> widgetsUidListOnTestPage = new ArrayList<>();
-	private static Widget.Children[] testWidgetChildren;
+  private static RequestSpecification requestSpecification;
+  private static List<Page> pageList;
+  private static List<String> widgetsUidListOnTestPage = new ArrayList<>();
+  private static Widget.Children[] testWidgetChildren;
+  protected static Map<String, List<Widget>> pagesWidgetMap;
+  protected static Map<String, JsonPath> pagesJsonMap;
+  protected static Page testPage;
+  protected static Widget testWidget;
+  protected static Property testProperty;
+  protected static Value testPropertyValue;
 
-	public static Map<Entity, String> createdEntities = new HashMap<>();
+  public static Map<Entity, String> createdEntities = new HashMap<>();
 
-	// sets the requests specification
-	public static void setRequestSpec() {
-		requestSpecification = new RequestSpecBuilder()
-			.setBaseUri (BASE_URL)
-			.setBasePath (BASE_PATH)
-			.addHeader("Authorization", AUTH_TOKEN)
-//			.setAuth(basic(USERNAME, PASSWORD))
-			.setContentType(ContentType.JSON)
-			.setAccept(ContentType.JSON)
-			.log(LogDetail.ALL)
-			.build();
-	}
+  /**
+   *  Sets the requests specification.
+   */
+  public static void setRequestSpec() {
+    requestSpecification = new RequestSpecBuilder()
+      .setBaseUri(BASE_URL)
+      .setBasePath(BASE_PATH)
+      .addHeader("Authorization", AUTH_TOKEN)
+      //.setAuth(basic(USERNAME, PASSWORD))
+      .setContentType(ContentType.JSON)
+      .setAccept(ContentType.JSON)
+      .log(LogDetail.URI)
+      .log(LogDetail.BODY)
+      .build();
+  }
 
-	// adds new params to the request specification and rebuilds it
-	public static void addParamToRequestSpec(String paramName, String... paramValue) {
-		requestSpecification = new RequestSpecBuilder()
-			.addRequestSpecification(requestSpecification)
-			.addPathParam(paramName, paramValue)
-			.build();
-	}
+  /**
+   * Adds new params to the request specification and rebuilds it.
+   * @param paramName param name
+   * @param paramValue param value
+   */
+  public static void addParamToRequestSpec(String paramName, String... paramValue) {
+    requestSpecification = new RequestSpecBuilder()
+      .addRequestSpecification(requestSpecification)
+      .addPathParam(paramName, paramValue)
+      .build();
+  }
 
-	// adds new query params to the request specification and rebuilds it
-	public static void addQueryParamsToRequestSpec(String paramName, Object... paramValue) {
-		requestSpecification = new RequestSpecBuilder()
-			.addRequestSpecification(requestSpecification)
-			.addQueryParam(paramName, paramValue)
-			.build();
-	}
+  /**
+   * Adds new query params to the request specification and rebuilds it.
+   * @param paramName param name
+   * @param paramValue param value
+   */
+  public static void addQueryParamsToRequestSpec(String paramName, Object... paramValue) {
+    requestSpecification = new RequestSpecBuilder()
+      .addRequestSpecification(requestSpecification)
+      .addQueryParam(paramName, paramValue)
+      .build();
+  }
 
-	// gets the test data (city groups)
-	public static void setCityGroups() {
-		cityGroup = given()
-			.spec(requestSpecification)
-			.when()
-			.get("geo-group/city-groups")
-			.then()
-			.statusCode(200)
-			.extract().as(CityGroup.class);
-	}
+  /**
+   * Gets the city groups.
+   */
+  public static void setCityGroups() {
+    CityGroup cityGroup =
+        given().spec(requestSpecification)
+            .when().get("geo-group/city-groups")
+            .then().statusCode(200).extract().as(CityGroup.class);
+  }
 
-	// gets the test data (pages)
-	public static void setPageList() {
-		pageList = new ArrayList<>(Arrays.asList(given()
-			.spec(requestSpecification)
-			.when()
-			.get("content-store/admin-panel/pages")
-			.then().log().ifStatusCodeMatches(not(200))
-			.statusCode(200)
-			.extract().as(Page[].class)));
-	}
+  /**
+   * Gets the pages.
+   */
+  public static void setPageList() {
+    pageList = new ArrayList<>(Arrays.asList(given()
+      .spec(requestSpecification)
+      .when()
+      .get(CONTENT_STORE_ADMIN_URL)
+      .then().log().ifStatusCodeMatches(not(200))
+      .statusCode(200)
+      .extract().as(Page[].class)));
+  }
 
-	// gets the test data (widgets + properties + values on every page)
-	public static void setWidgetMap(Device device) {
-		widgetMap = new HashMap<>();
-		List<Page> pageWithNoOneWidgetlList = new ArrayList<>();
-		pageList.forEach(p -> {
-			Response response = given().spec(requestSpecification)
-				.queryParams("device", device, "uri", p.getUri())
-			.when().get("/content-store/admin-panel/meta-info-page-contents");
-			if (!response.getStatusLine().contains("200")) {
-				try {
-					//TODO: http://jira.moscow.alfaintra.net/browse/ALFABANKRU-17657
-					throw new ErrorGettingWidgetsException(String.format("Couldn't get Widgets on the Page with id: " +
-						"'%s' and uri: '%s' for device '%s'", p.getId(), p.getUri(), device));
-				} catch (ErrorGettingWidgetsException e) {
-					pageWithNoOneWidgetlList.add(p);
-				}
-			} else {
-				response.then().log().ifStatusCodeMatches(not(200));
-				response.then().statusCode(200).extract().as(Widget[].class);
-				widgetMap.put(p.getId(), Arrays.asList(response.then().extract().as(Widget[].class)));
-			}
-		});
-		pageList.removeAll(pageWithNoOneWidgetlList);
-	}
+  /**
+   * Gets the widgets its properties and its values on every page.
+   * @param device devide
+   */
+  public static void setPagesWidgetMap(Device device) {
+    pagesWidgetMap = new HashMap<>();
+    pagesJsonMap = new HashMap<>();
+    List<Page> pageWithNoOneWidgetlList = new ArrayList<>();
+    pageList.forEach(p -> {
+      Response response = given().spec(requestSpecification)
+          .queryParams("device", device, "pageId", p.getId())
+          .get(META_INFO_PAGE_CONTROLLER_URL);
+      if (!response.getStatusLine().contains("200")) {
+        try {
+          //TODO: http://jira.moscow.alfaintra.net/browse/ALFABANKRU-17657
+          throw new ErrorWhileGettingWidgetsException(
+            String.format("Couldn't get Widgets on the Page with id: '%s' "
+                    + "and uri: '%s' for device '%s'", p.getId(), p.getUri(), device));
+        } catch (ErrorWhileGettingWidgetsException e) {
+          pageWithNoOneWidgetlList.add(p);
+        }
+      } else {
+        response.then().log().ifStatusCodeMatches(not(200));
+        response.then().extract().as(Widget[].class);
+        pagesWidgetMap.put(p.getId(), Arrays.asList(response.then().extract().as(Widget[].class)));
+        pagesJsonMap.put(p.getId(), response.jsonPath());
+      }
+    });
+    pageList.removeAll(pageWithNoOneWidgetlList);
+  }
 
-	// defines and sets test objects
-	public static void setTestObjects() {
-		try {
-			if (pageList.size() > 0 && widgetMap.size() > 0) {
-			  loop:
-				for (Map.Entry<String, List<Widget>> page : widgetMap.entrySet()) {
-					List<Widget> widgetList = page.getValue();
-					for (int i = 0; i < widgetList.size(); i++) {
-						if (widgetList.get(i).getProperties().size() > i) {
-							if (widgetList.get(i).getProperties().get(i).getValues().size() > 0) {
-								testPage = pageList.get(i);
-								System.out.printf("Test Page has been set to: '%s'\n", testPage.getId());
-								testWidget = widgetList.get(i);
-								System.out.printf("Test Widget has been set to: '%s'\n", testWidget.getUid());
-								testProperty = testWidget.getProperties().get(i);
-								System.out.printf("Test Property has been set to: '%s'\n", testProperty.getUid());
-								testPropertyValue = testProperty.getValues().get(i);
-								System.out.printf("Test Value has been set to: '%s'\n", testPropertyValue.getUid());
-								break loop;
-							}
-						}
-					}
-				}
-			} else throw new NoTestDataException();
-		} catch (NoTestDataException e) {
-			System.out.println(e.getMessage());
-		}
-		widgetMap.get(testPage.getId()).forEach(widget -> widgetsUidListOnTestPage.add(widget.getUid()));
-		System.out.println("The Widgets UIDs on the Test Page are: ");
-		widgetsUidListOnTestPage.forEach(System.out::println);
-		testWidgetChildren = testWidget.getChildren();
-		System.out.println(
-			testWidgetChildren.length > 0 ? "The Widget children are: " : "The Widget hasn't any child.");
-		Arrays.asList(testWidgetChildren).forEach(System.out::println);
-	}
+  /**
+   * Defines and sets test objects.
+   */
+  public static void setTestObjects() {
+    try {
+      if (pageList.size() > 0 && pagesWidgetMap.size() > 0) {
+        loop:
+        for (Map.Entry<String, List<Widget>> page : pagesWidgetMap.entrySet()) {
+          List<Widget> widgetList = page.getValue();
+          for (int i = 0; i < widgetList.size(); i++) {
+            if (widgetList.get(i).getProperties().size() > i) {
+              if (widgetList.get(i).getProperties().get(i).getValues().size() > 0) {
+                testPage = pageList.get(i);
+                System.out.printf("Test Page has been set to: '%s'\n", testPage.getId());
+                testWidget = widgetList.get(i);
+                System.out.printf("Test Widget has been set to: '%s'\n", testWidget.getUid());
+                testProperty = testWidget.getProperties().get(i);
+                System.out.printf("Test Property has been set to: '%s'\n", testProperty.getUid());
+                testPropertyValue = testProperty.getValues().get(i);
+                System.out.printf("Test Value has been set to: '%s'\n", testPropertyValue.getUid());
+                break loop;
+              }
+            }
+          }
+        }
+      } else {
+        throw new NoTestDataException();
+      }
+    } catch (NoTestDataException e) {
+      System.out.println(e.getMessage());
+    }
+    pagesWidgetMap.get(testPage.getId()).forEach(
+        widget -> widgetsUidListOnTestPage.add(widget.getUid()));
+    System.out.println("The Widgets UIDs on the Test Page are: ");
+    widgetsUidListOnTestPage.forEach(System.out::println);
+    testWidgetChildren = testWidget.getChildren();
+    System.out.println(
+        testWidgetChildren.length > 0 ? "The Widget children are: " :
+            "The Widget hasn't any child.");
+    Arrays.asList(testWidgetChildren).forEach(System.out::println);
+  }
 
-	// swaps outers in an array
-	public static Object[] getSwappedOutersWidgetsUidArray() {
-		List<String> initList = widgetsUidListOnTestPage;
-		if (initList.size() > 1) {
-			Collections.swap(initList, 0, initList.size() - 1);
-			return initList.toArray();
-		} else {
-			return initList.toArray();
-		}
-	}
+  /**
+   * Swaps outers in an array.
+   * @return array of entities
+   */
+  public static Object[] getSwappedOutersWidgetsUidArray() {
+    List<String> initList = widgetsUidListOnTestPage;
+    if (initList.size() > 1) {
+      Collections.swap(initList, 0, initList.size() - 1);
+      return initList.toArray();
+    } else {
+      return initList.toArray();
+    }
+  }
 
-	// puts a new UID on the top of a root widgets on a page
-	public static Object[] putNewRootWidgetOnTheTop(String newUid) {
-		if (widgetsUidListOnTestPage.size() > 0) {
-			List<String> uidList = widgetsUidListOnTestPage;
-			uidList.add(0, newUid);
-			return uidList.toArray();
-		} else return new String[]{newUid};
-	}
+  /**
+   * Puts a new UID on the top of a root widgets on a page.
+   * @param newUid new UID
+   * @return array of entities
+   */
+  public static Object[] putNewRootWidgetOnTheTop(String newUid) {
+    if (widgetsUidListOnTestPage.size() > 0) {
+      List<String> uidList = widgetsUidListOnTestPage;
+      uidList.add(0, newUid);
+      return uidList.toArray();
+    } else {
+      return new String[]{newUid};
+    }
+  }
 
-	// puts a new UID on the top of the test widget children list
-	public static Object[] putNewChildWidgetToParentWidget(String newUid) {
-		if (testWidgetChildren.length > 0) {
-			List<String> uidList = new ArrayList<>(Arrays.asList(testWidgetChildren[0].getUid()));
-			uidList.add(0, newUid);
-			return uidList.toArray();
-		} else return new String[]{newUid};
-	}
+  /**
+   * Puts a new UID on the top of the test widget children list.
+   * @param newUid new UID
+   * @return array of child
+   */
+  public static Object[] putNewChildWidgetToParentWidget(String newUid) {
+    if (testWidgetChildren.length > 0) {
+      List<String> uidList = new ArrayList<>(Arrays.asList(testWidgetChildren[0].getUid()));
+      uidList.add(0, newUid);
+      return uidList.toArray();
+    } else {
+      return new String[]{newUid};
+    }
+  }
 
-	// deletes all drafts for the user on the test page
-	public static void removeAllDraftsForUser() {
-		Response response =
-			given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-				.when().get(RESOURCE);
-		if (response.statusCode() == 200) {
-			given().spec(requestSpecification).pathParam("pageId", testPage.getId())
-				.when().delete(RESOURCE)
-				.then().log().ifStatusCodeMatches(not(200)).statusCode(200);
-		}
-	}
+  /**
+   * Deletes all drafts for the user on the test page.
+   */
+  public static void removeAllDraftsForUser() {
+    Response response =
+        given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
+            .when().get(DRAFT_CONTROLLER_URL);
+    if (response.statusCode() == 200) {
+      given().spec(requestSpecification).pathParam("pageId", testPage.getId())
+          .when().delete(DRAFT_CONTROLLER_URL)
+          .then().log().ifStatusCodeMatches(not(200)).statusCode(200);
+    }
+  }
 
-	// generates a new UUID
-	public static String getNewUuid() {
-		return UUID.randomUUID().toString().replace("-", "");
-	}
+  /**
+   * Generates a new UID.
+   * @return new UID
+   */
+  public static String getNewUuid() {
+    return UUID.randomUUID().toString().replace("-", "");
+  }
 
-	public static RequestSpecification getRequestSpecification() {
-		return requestSpecification;
-	}
+  public static RequestSpecification getRequestSpecification() {
+    return requestSpecification;
+  }
 
-	public static Page getTestPage() {
-		return testPage;
-	}
+  public static Page getTestPage() {
+    return testPage;
+  }
 
-	public static Widget getTestWidget() {
-		return testWidget;
-	}
+  public static Widget getTestWidget() {
+    return testWidget;
+  }
 
-	public static Property getTestProperty() {
-		return testProperty;
-	}
+  public static Property getTestProperty() {
+    return testProperty;
+  }
 
-	public static Value getTestPropertyValue() {
-		return testPropertyValue;
-	}
+  public static Value getTestPropertyValue() {
+    return testPropertyValue;
+  }
+
 }

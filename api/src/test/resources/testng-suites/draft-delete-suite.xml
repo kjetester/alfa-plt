@@ -1,0 +1,23 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="Delete entities" verbose="1">
+
+    <test name="Delete property value">
+        <classes>
+            <class name="ru.alfabank.platform.apitest.drafts.delete.DeletePropertyValueTest"/>
+        </classes>
+    </test>
+
+    <test name="Delete property">
+        <classes>
+            <class name="ru.alfabank.platform.apitest.drafts.delete.DeletePropertyTest"/>
+        </classes>
+    </test>
+
+    <test name="Delete widget">
+        <classes>
+            <class name="ru.alfabank.platform.apitest.drafts.delete.DeleteWidgetTest"/>
+        </classes>
+    </test>
+
+</suite>
