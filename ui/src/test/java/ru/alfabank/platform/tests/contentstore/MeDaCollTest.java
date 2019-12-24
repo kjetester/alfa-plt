@@ -1,4 +1,6 @@
-package ru.alfabank.platform.tests.alfasite;
+package ru.alfabank.platform.tests.contentstore;
+
+import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +15,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 import ru.alfabank.platform.buisenessobjects.Resources;
-import ru.alfabank.platform.helpers.DriverSingleton;
+import ru.alfabank.platform.helpers.DriverHelper;
 import ru.alfabank.platform.tests.BaseTest;
 
 public class MeDaCollTest extends BaseTest {
@@ -28,13 +30,13 @@ public class MeDaCollTest extends BaseTest {
     logger.info("Checking '" + resource.getName() + "'");
     String expected;
     // expected page
-    DriverSingleton.getDriver().get("http://develop.ci.k8s.alfa.link" + resource.getName());
-    expected = DriverSingleton.getDriver().getPageSource();
-    DriverSingleton.killDriver();
+    getDriver().get("http://develop.ci.k8s.alfa.link" + resource.getName());
+    expected = getDriver().getPageSource();
+    DriverHelper.killDriver();
     // actual page
-    DriverSingleton.getDriver().get("http://develop.ci.k8s.alfa.link/api/v1/collector" + resource.getName());
-    String actual = DriverSingleton.getDriver().getPageSource();
-    DriverSingleton.killDriver();
+    getDriver().get("http://develop.ci.k8s.alfa.link/api/v1/collector" + resource.getName());
+    String actual = getDriver().getPageSource();
+    DriverHelper.killDriver();
     //test
     Assertions.assertThat(actual).isEqualTo(expected);
   }
@@ -73,11 +75,11 @@ public class MeDaCollTest extends BaseTest {
       testName = "Pages comparison test",
       groups = "collector")
   public void smeWithCookiePageTest() {
-    DriverSingleton.getDriver().get("http://develop.ci.k8s.alfa.link/api/v1/collector/sme/");
-    DriverSingleton.getDriver().manage().deleteAllCookies();
-    DriverSingleton.getDriver().manage().addCookie(new Cookie("fallback-bypass","true"));
-    DriverSingleton.getDriver().navigate().refresh();
-    String actual = DriverSingleton.getDriver().getPageSource();
+    getDriver().get("http://develop.ci.k8s.alfa.link/api/v1/collector/sme/");
+    getDriver().manage().deleteAllCookies();
+    getDriver().manage().addCookie(new Cookie("fallback-bypass","true"));
+    getDriver().navigate().refresh();
+    String actual = getDriver().getPageSource();
     // test
     Assertions.assertThat(actual).contains("status=500");
   }
