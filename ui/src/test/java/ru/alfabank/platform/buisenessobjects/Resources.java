@@ -1,6 +1,9 @@
 package ru.alfabank.platform.buisenessobjects;
 
 public class Resources {
+
+  private String url;
+
   public String getName() {
     return url;
   }
@@ -9,5 +12,4 @@ public class Resources {
     this.url = url;
   }
 
-  private String url;
 }

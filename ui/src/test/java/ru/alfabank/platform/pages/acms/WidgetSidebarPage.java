@@ -1,4 +1,4 @@
-package ru.alfabank.platform.pages;
+package ru.alfabank.platform.pages.acms;
 
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesClickable;
@@ -26,7 +26,7 @@ public class WidgetSidebarPage extends BasePage {
   private WebElement newPropDropdownList;
   @FindBy(xpath = "//span[text() = 'Добавить']/..")
   private WebElement addNewPropButton;
-  @FindBy(xpath = "//span[contains(text(), 'Применить изменения')]/..")
+  @FindBy(css = "button[class='ant-btn ant-btn-primary']")
   private WebElement submitButton;
 
   /**
@@ -62,6 +62,7 @@ public class WidgetSidebarPage extends BasePage {
    */
   @Step
   public MainPage submitChanges() {
+    System.out.println("Submitting changes");
     waitForElementBecomesClickable(submitButton).click();
     return PageFactory.initElements(getDriver(), MainPage.class);
   }
@@ -101,6 +102,7 @@ public class WidgetSidebarPage extends BasePage {
    */
   @Step
   public WidgetMetaInfoPage expandWidgetMetaInfo() {
+    System.out.println("Expanding Widget's MetaInfo pane");
     waitForElementBecomesClickable(widgetSettings);
     widgetSettings.click();
     return PageFactory.initElements(getDriver(), WidgetMetaInfoPage.class);

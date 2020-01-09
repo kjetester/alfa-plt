@@ -10,7 +10,7 @@ import static ru.alfabank.platform.helpers.TestDataHelper.getTestWidget;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.apitest.BaseTest;
+import ru.alfabank.platform.apitest.drafts.BaseTest;
 import ru.alfabank.platform.businessobjects.Entity;
 import ru.alfabank.platform.businessobjects.Method;
 import ru.alfabank.platform.businessobjects.draft.DataDraft;
@@ -25,15 +25,9 @@ public class ModifyWidgetTest extends BaseTest {
       description = "Генерация черновика изменения Widget'а")
   public void makeDraft() {
     DataDraft widgetData = new DataDraft.DataDraftBuilder()
-        .dateFrom("2019-01-01T00:00:00.000Z")
-        .dateTo("2020-01-01T00:00:00")
-        .device(getTestWidget().getDevice())
-        .enable(getTestWidget().isEnabled())
-        .localization(getTestWidget().getLocalization())
-        .state("")
-        .name(getTestWidget().getName())
-        .cityGroups(getCityGroup("123"))
-        .build();
+        .dateFrom(dateFrom.toString()).dateTo(dateTo.toString()).device(getTestWidget().getDevice())
+        .enable(getTestWidget().isEnabled()).localization(getTestWidget().getLocalization())
+        .state("").name(getTestWidget().getName()).cityGroups(getCityGroup("123")).build();
     operations.add(
         new WrapperDraft.OperationDraft(
             widgetData, Entity.widget, Method.change, getTestWidget().getUid()));

@@ -9,7 +9,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
-import ru.alfabank.platform.pages.MainPage;
+import ru.alfabank.platform.pages.acms.MainPage;
 
 public class BaseTest {
 
@@ -22,10 +22,6 @@ public class BaseTest {
     getDriver().manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
     getDriver().manage().window().setSize(new Dimension(1500, 800));
     getDriver().manage().window().setPosition(new Point(0, 0));
-    PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize()
-        .openPagesTree()
-        .openPage("sme-new");
   }
 
   /**

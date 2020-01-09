@@ -68,4 +68,10 @@
         </classes>
     </test>
 
+    <test name="Data Validation Test" parallel="methods">
+        <classes>
+            <class name="ru.alfabank.platform.apitest.drafts.DataValidationTest"/>
+        </classes>
+    </test>
+
 </suite>

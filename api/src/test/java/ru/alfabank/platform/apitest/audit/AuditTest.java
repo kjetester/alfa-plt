@@ -1,6 +1,6 @@
 package ru.alfabank.platform.apitest.audit;
 
-import ru.alfabank.platform.apitest.BaseTest;
+import ru.alfabank.platform.apitest.drafts.BaseTest;
 
 public class AuditTest extends BaseTest {
 

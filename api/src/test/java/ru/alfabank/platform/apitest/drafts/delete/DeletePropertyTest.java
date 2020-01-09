@@ -11,7 +11,7 @@ import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.apitest.BaseTest;
+import ru.alfabank.platform.apitest.drafts.BaseTest;
 import ru.alfabank.platform.businessobjects.Entity;
 import ru.alfabank.platform.businessobjects.Method;
 import ru.alfabank.platform.businessobjects.draft.WrapperDraft;

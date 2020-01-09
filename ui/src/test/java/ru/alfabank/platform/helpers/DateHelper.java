@@ -1,4 +1,4 @@
-package ru.alfabank.platform.buisenessobjects;
+package ru.alfabank.platform.helpers;
 
 import java.util.Calendar;
 

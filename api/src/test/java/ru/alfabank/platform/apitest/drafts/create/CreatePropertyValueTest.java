@@ -9,19 +9,22 @@ import static ru.alfabank.platform.helpers.TestDataHelper.getNewUuid;
 import static ru.alfabank.platform.helpers.TestDataHelper.getRequestSpecification;
 import static ru.alfabank.platform.helpers.TestDataHelper.getTestPage;
 import static ru.alfabank.platform.helpers.TestDataHelper.getTestProperty;
+import static ru.alfabank.platform.helpers.TestDataHelper.setTestPropertyValue;
 
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.apitest.BaseTest;
+import ru.alfabank.platform.apitest.drafts.BaseTest;
 import ru.alfabank.platform.businessobjects.Entity;
 import ru.alfabank.platform.businessobjects.Method;
+import ru.alfabank.platform.businessobjects.Value;
 import ru.alfabank.platform.businessobjects.draft.DataDraft;
 import ru.alfabank.platform.businessobjects.draft.WrapperDraft;
 
-
 public class CreatePropertyValueTest extends BaseTest {
+
+  private Value newValue;
 
   /**
    * Draft generation.
@@ -30,15 +33,18 @@ public class CreatePropertyValueTest extends BaseTest {
       description = "Генерация черновика создания нового Value")
   public void makeDraft() {
     newEntityUid = getNewUuid();
+    newValue = new Value(
+        newEntityUid,
+        "Value" + newEntityUid,
+        getCityGroup("ru"));
     DataDraft newValueData = new DataDraft.DataDraftBuilder()
         .forProperty(getTestProperty().getUid())
-        .value("")
-        .cityGroups(getCityGroup("RU"))
-        .enable(true)
+        .value(newValue.getValue())
+        .cityGroups(newValue.getGeo())
         .build();
     operations.add(
         new WrapperDraft.OperationDraft(
-            newValueData, Entity.propertyValue, Method.create, newEntityUid));
+            newValueData, Entity.propertyValue, Method.create, newValue.getUid()));
     body = new WrapperDraft(operations);
   }
 
@@ -68,7 +74,7 @@ public class CreatePropertyValueTest extends BaseTest {
     given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
         .when().post(DRAFT_CONTROLLER_URL + "/execute")
         .then().log().ifStatusCodeMatches(not(200)).statusCode(200);
-    createdEntities.put(Entity.propertyValue, newEntityUid);
+    createdEntities.put(Entity.propertyValue, newValue.getUid());
   }
 
   @Test(
@@ -88,7 +94,8 @@ public class CreatePropertyValueTest extends BaseTest {
       description = "Добваление созданного Value в список созданных сущностей")
   public void setCreatedValue(final ITestContext context) {
     if (context.getFailedTests().size() == 0) {
-      createdEntities.put(Entity.propertyValue, newEntityUid);
+      createdEntities.put(Entity.propertyValue, newValue.getUid());
+      setTestPropertyValue(newValue);
     }
   }
 }

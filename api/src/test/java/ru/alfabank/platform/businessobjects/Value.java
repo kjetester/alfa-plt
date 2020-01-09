@@ -50,7 +50,7 @@ public class Value {
   }
 
   public void setValue(JSONObject value) {
-    value = value;
+    this.value = value;
   }
 
   public String[] getGeo() {

@@ -4,25 +4,26 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.not;
 import static ru.alfabank.platform.businessobjects.CityGroup.getCityGroup;
 import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.helpers.TestDataHelper.DRAFT_CONTROLLER_URL;
-import static ru.alfabank.platform.helpers.TestDataHelper.createdEntities;
 import static ru.alfabank.platform.helpers.TestDataHelper.getNewUuid;
-import static ru.alfabank.platform.helpers.TestDataHelper.getRequestSpecification;
-import static ru.alfabank.platform.helpers.TestDataHelper.getTestPage;
-import static ru.alfabank.platform.helpers.TestDataHelper.getTestWidget;
 
 import java.util.Arrays;
+import java.util.Collections;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.apitest.BaseTest;
+import ru.alfabank.platform.apitest.drafts.BaseTest;
 import ru.alfabank.platform.businessobjects.Entity;
 import ru.alfabank.platform.businessobjects.Method;
+import ru.alfabank.platform.businessobjects.Property;
+import ru.alfabank.platform.businessobjects.Value;
 import ru.alfabank.platform.businessobjects.draft.DataDraft;
 import ru.alfabank.platform.businessobjects.draft.WrapperDraft;
+import ru.alfabank.platform.helpers.TestDataHelper;
 
 public class CreatePropertyTest extends BaseTest {
+
+  private Property newProperty;
 
   /**
    * Draft generation.
@@ -31,29 +32,40 @@ public class CreatePropertyTest extends BaseTest {
       description = "Генерация черновика создания нового Property")
   public void makeDraft() {
     newEntityUid = getNewUuid();
+    Value newValue = new Value(
+        newEntityUid,
+        "Value" + newEntityUid,
+        getCityGroup("RU"));
+    newEntityUid = getNewUuid();
+    newProperty = new Property(
+        newEntityUid,
+        "Property_" + newEntityUid,
+        desktop,
+        Collections.singletonList(newValue));
     DataDraft newPropertyData = new DataDraft.DataDraftBuilder()
-        .forWidget(getTestWidget().getUid())
-        .name("Property_" + newEntityUid)
-        .device(desktop)
+        .forWidget(TestDataHelper.getTestWidget().getUid())
+        .name(newProperty.getName())
+        .device(newProperty.getDevice())
         .build();
     DataDraft newValueData = new DataDraft.DataDraftBuilder()
-        .forProperty(newEntityUid)
-        .value("newValue" + newEntityUid)
-        .cityGroups(getCityGroup("RU"))
+        .forProperty(newProperty.getUid())
+        .value(newValue.getValue())
+        .cityGroups(newValue.getGeo())
         .build();
     operations.addAll(Arrays.asList(
         new WrapperDraft.OperationDraft(
-            newPropertyData, Entity.property, Method.create, newEntityUid),
+            newPropertyData, Entity.property, Method.create, newProperty.getUid()),
         new WrapperDraft.OperationDraft(
-            newValueData, Entity.propertyValue, Method.create, getNewUuid())));
+            newValueData, Entity.propertyValue, Method.create, newValue.getUid())));
     body = new WrapperDraft(operations);
   }
 
   @Test(
       description = "Проверка сохранения черновика создания нового Property")
   public void saveTest() {
-    given().spec(getRequestSpecification()).body(body).pathParam("pageId", getTestPage().getId())
-        .when().put(DRAFT_CONTROLLER_URL)
+    given().spec(TestDataHelper.getRequestSpecification())
+        .body(body).pathParam("pageId", TestDataHelper.getTestPage().getId())
+        .when().put(TestDataHelper.DRAFT_CONTROLLER_URL)
         .then().log().ifStatusCodeMatches(not(200)).statusCode(200);
   }
 
@@ -61,8 +73,9 @@ public class CreatePropertyTest extends BaseTest {
       description = "Проверка получения сохраненного черновика создания нового Property",
       dependsOnMethods = "saveTest")
   public void getTest() {
-    given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-        .when().get(DRAFT_CONTROLLER_URL)
+    given().spec(TestDataHelper.getRequestSpecification())
+        .pathParam("pageId", TestDataHelper.getTestPage().getId())
+        .when().get(TestDataHelper.DRAFT_CONTROLLER_URL)
         .then().log().ifStatusCodeMatches(not(200)).statusCode(200);
     // TODO JSONAssert.assertEquals(
     //  response.getBody().asString(), objMapper.writeValueAsString(body), true);
@@ -71,8 +84,9 @@ public class CreatePropertyTest extends BaseTest {
   @Test(description = "Проверка публикации черновика создания нового Property",
       dependsOnMethods = {"saveTest", "getTest"})
   public void publishTest() {
-    given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-        .when().post(DRAFT_CONTROLLER_URL + "/execute")
+    given().spec(TestDataHelper.getRequestSpecification())
+        .pathParam("pageId", TestDataHelper.getTestPage().getId())
+        .when().post(TestDataHelper.DRAFT_CONTROLLER_URL + "/execute")
         .then().log().ifStatusCodeMatches(not(200)).statusCode(200);
   }
 
@@ -80,8 +94,9 @@ public class CreatePropertyTest extends BaseTest {
       description = "Проверка отсутствия черновика создания нового Property после его публикации",
       dependsOnMethods = "publishTest")
   public void absentPublishedDraftTest() {
-    given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
-        .when().get(DRAFT_CONTROLLER_URL)
+    given().spec(TestDataHelper.getRequestSpecification())
+        .pathParam("pageId", TestDataHelper.getTestPage().getId())
+        .when().get(TestDataHelper.DRAFT_CONTROLLER_URL)
         .then().log().ifStatusCodeMatches(not(404)).statusCode(404);
   }
 
@@ -93,7 +108,8 @@ public class CreatePropertyTest extends BaseTest {
       description = "Добваление созданного Property в список созданных сущностей")
   public void setCreatedValue(final ITestContext context) {
     if (context.getFailedTests().size() == 0) {
-      createdEntities.put(Entity.property, newEntityUid);
+      TestDataHelper.createdEntities.put(Entity.property, newProperty.getUid());
+      TestDataHelper.setTestProperty(newProperty);
     }
   }
 }

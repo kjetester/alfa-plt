@@ -11,14 +11,13 @@ import static ru.alfabank.platform.helpers.TestDataHelper.getTestPage;
 import static ru.alfabank.platform.helpers.TestDataHelper.getTestWidget;
 import static ru.alfabank.platform.helpers.TestDataHelper.putNewChildWidgetToParentWidget;
 
-import io.qameta.allure.Allure;
 import java.util.Arrays;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.apitest.BaseTest;
+import ru.alfabank.platform.apitest.drafts.BaseTest;
 import ru.alfabank.platform.businessobjects.Entity;
 import ru.alfabank.platform.businessobjects.Method;
+import ru.alfabank.platform.businessobjects.Widget;
 import ru.alfabank.platform.businessobjects.draft.DataDraft;
 import ru.alfabank.platform.businessobjects.draft.WrapperDraft;
 
@@ -31,22 +30,33 @@ public class CreateChildWidgetTest extends BaseTest {
   @BeforeClass(
       description = "Генерация черновика создания нового дочернего Widget'а")
   public void makeDraft() {
-    newEntityUid = getNewUuid();
-    DataDraft newWidgetData = new DataDraft.DataDraftBuilder()
-        .name("ChildWidget_" + newEntityUid)
-        .dateFrom("2019-01-01T00:00:00.000Z")
-        .dateTo("2020-01-01T00:00:00")
-        .device(desktop)
-        .enable(true)
-        .localization("RU")
-        .cityGroups(getCityGroup("123"))
+    Widget newWidget = new Widget(
+        getNewUuid(),
+        "ChildWidget_" + newEntityUid,
+        1,
+        dateFrom,
+        dateTo,
+        desktop,
+        true,
+        "ru",
+        Arrays.asList(getCityGroup("ru")),
+        null,
+        null,
+        false);
+    DataDraft widgetData = new DataDraft.DataDraftBuilder()
+        .name(newWidget.getName())
+        .dateFrom(newWidget.getDateFrom().toString())
+        .dateTo(newWidget.getDateTo().toString())
+        .device(newWidget.getDevice())
+        .enable(newWidget.isEnabled())
+        .localization(newWidget.getLocalization())
+        .cityGroups(newWidget.getWidgetGeo().toArray())
         .build();
     DataDraft placementData = new DataDraft.DataDraftBuilder()
-        .childUids(putNewChildWidgetToParentWidget(newEntityUid))
-        .build();
+        .childUids(putNewChildWidgetToParentWidget(newWidget.getUid())).build();
     operations.addAll(Arrays.asList(
         new WrapperDraft.OperationDraft(
-            newWidgetData, Entity.widget, Method.create, newEntityUid),
+            widgetData, Entity.widget, Method.create, newWidget.getUid()),
         new WrapperDraft.OperationDraft(
             placementData, Entity.widget, Method.changeLinks, getTestWidget().getUid())));
     body = new WrapperDraft(operations);
@@ -88,22 +98,5 @@ public class CreateChildWidgetTest extends BaseTest {
     given().spec(getRequestSpecification()).pathParam("pageId", getTestPage().getId())
         .when().get(DRAFT_CONTROLLER_URL)
         .then().log().ifStatusCodeMatches(not(404)).statusCode(404);
-  }
-
-  /**
-   * Attach log to Allure report.
-   */
-  @AfterClass(
-      description = "Прикрепление лога к отчету"
-  )
-  public void writeToReport() {
-    Allure.getLifecycle().updateTestCase((t) -> {
-      t.setStatusDetails(t.getStatusDetails().setMessage(String.format(
-          "Created the widget with UID %s --->>> placed to the widget with UID %s adn name %s",
-          newEntityUid,
-          getTestWidget().getUid(),
-          getTestWidget().getName())
-      ));
-    });
   }
 }

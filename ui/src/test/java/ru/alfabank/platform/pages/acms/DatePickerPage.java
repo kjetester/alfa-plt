@@ -1,7 +1,6 @@
-package ru.alfabank.platform.pages;
+package ru.alfabank.platform.pages.acms;
 
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
-import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesClickable;
 
 import io.qameta.allure.Step;
 
@@ -52,8 +51,8 @@ public class DatePickerPage extends BasePage {
    */
   @Step
   public WidgetMetaInfoPage setDateTo(Calendar calendar) throws InterruptedException {
-    waitForElementBecomesClickable(yearPicker);
-    // Thread.sleep(1000);
+    System.out.println(String.format("Setting the date to: '%s'", calendar.toString()));
+    Thread.sleep(1000);
     while (calendar.get(Calendar.YEAR) != Integer.parseInt(yearPicker.getText())) {
       if (calendar.get(Calendar.YEAR) < Integer.parseInt(yearPicker.getText())) {
         minusYearButton.click();
@@ -95,15 +94,13 @@ public class DatePickerPage extends BasePage {
     }
     List<WebElement> dateList = getDriver().findElements(By.cssSelector(DATES_CSS_SELECTOR));
     dateList.get(calendar.get(Calendar.DATE) - 1).click();
-    System.out.println("Date has been set to: "
-        + dateList.get(calendar.get(Calendar.DATE) - 1).getAttribute("title"));
     dataPickerChooseTimeButton.click();
     scrollToElement(hourList.get(calendar.get(Calendar.HOUR_OF_DAY))).click();
     scrollToElement(minuteList.get(calendar.get(Calendar.MINUTE))).click();
     scrollToElement(secondList.get(calendar.get(Calendar.SECOND))).click();
     dataPickerOkButton.click();
-    System.out.println("Date and time have been set to: "
-        + new Timestamp(calendar.getTimeInMillis()));
+    System.out.println(String.format("Date and time have been set to: %s",
+        new Timestamp(calendar.getTimeInMillis())));
     return PageFactory.initElements(getDriver(), WidgetMetaInfoPage.class);
   }
 }

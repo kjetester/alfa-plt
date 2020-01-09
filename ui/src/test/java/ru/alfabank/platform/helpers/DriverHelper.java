@@ -1,15 +1,19 @@
 package ru.alfabank.platform.helpers;
 
 import static java.time.Duration.ofSeconds;
+import static ru.alfabank.platform.helpers.DateHelper.getNowPlus;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
+import java.util.stream.IntStream;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -25,7 +29,9 @@ public class DriverHelper {
   public static WebDriver getDriver() {
     if (driver == null) {
       WebDriverManager.chromedriver().setup();
-      driver = new ChromeDriver();
+      ChromeOptions opts = new ChromeOptions();
+      opts.setAcceptInsecureCerts(true);
+      driver = new ChromeDriver(opts);
     }
     return driver;
   }
@@ -93,5 +99,22 @@ public class DriverHelper {
     driver.close();
     driver.quit();
     driver = null;
+  }
+
+  /**
+   * Setting Cookie.
+   * @param cities cities
+   */
+  public static void setCityCookieAndRefreshPage(String... cities) {
+    driver.manage().deleteAllCookies();
+    IntStream.range(0, cities.length).forEach(i -> {
+      driver.manage().addCookie(new Cookie(
+          "site_city", cities[i],"develop.ci.k8s.alfa.link", "/",
+          getNowPlus(3, Calendar.HOUR).getTime(), false, false));
+      driver.manage().addCookie(new Cookie(
+          "site_city", cities[i], ".develop.ci.k8s.alfa.link", "/",
+          getNowPlus(3, Calendar.HOUR).getTime(), false, false));
+    });
+    driver.navigate().refresh();
   }
 }

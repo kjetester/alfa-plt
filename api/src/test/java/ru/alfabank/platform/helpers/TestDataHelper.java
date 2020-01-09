@@ -1,6 +1,7 @@
 package ru.alfabank.platform.helpers;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.oauth2;
 import static org.hamcrest.Matchers.not;
 
 import io.restassured.builder.RequestSpecBuilder;
@@ -26,11 +27,13 @@ import ru.alfabank.platform.businessobjects.Widget;
 
 public class TestDataHelper {
 
-  private static final String BASE_URL = "http://develop.ci.k8s.alfa.link";
+  private static final String KEYCLOAK_BASE_URL = "https://keycloak.k8s.alfa.link";
+  private static final String KEYCLOAK_BASE_PATH =
+      "auth/realms/local_users/protocol/openid-connect/token";
+  private static final String BASE_URI = "http://develop.ci.k8s.alfa.link";
   private static final String BASE_PATH = "api/v1";
-  private static final String AUTH_TOKEN = "Basic YXNzcjpiWEdtUmllZVhNdXZhR2Jo";
-  //TODO: private static final String USERNAME = "assr";
-  // private static final String PASSWORD = "bXGmRieeXMuvaGbh";
+  private static final String USERNAME = "user1";
+  private static final String PASSWORD = "123";
 
   public static final String RESOURCE_URL = "/content-store";
   public static final String CONTENT_STORE_ADMIN_URL = RESOURCE_URL + "/admin-panel/pages";
@@ -39,6 +42,7 @@ public class TestDataHelper {
   public static final String META_INFO_PAGE_CONTROLLER_URL = RESOURCE_URL
       + "/admin-panel/meta-info-page-contents";
 
+  private static String oauth2Token;
   private static RequestSpecification requestSpecification;
   private static List<Page> pageList;
   private static List<String> widgetsUidListOnTestPage = new ArrayList<>();
@@ -53,19 +57,39 @@ public class TestDataHelper {
   public static Map<Entity, String> createdEntities = new HashMap<>();
 
   /**
+   *  getting authorization token.
+   */
+  private static void setAuthToken() {
+    RequestSpecification keycloakReqSpec = new RequestSpecBuilder()
+        .setRelaxedHTTPSValidation()
+        .setBaseUri(KEYCLOAK_BASE_URL)
+        .setBasePath(KEYCLOAK_BASE_PATH)
+        .setContentType(ContentType.URLENC)
+        .addFormParam("client_id","acms")
+        .addFormParam("username", USERNAME)
+        .addFormParam("password", PASSWORD)
+        .addFormParam("grant_type", "password")
+        .build();
+    oauth2Token = given().spec(keycloakReqSpec).when().post().then().log()
+        .ifStatusCodeMatches(not(200)).statusCode(200).extract().body()
+        .jsonPath().getString("access_token");
+  }
+
+  /**
    *  Sets the requests specification.
    */
   public static void setRequestSpec() {
+    setAuthToken();
     requestSpecification = new RequestSpecBuilder()
-      .setBaseUri(BASE_URL)
-      .setBasePath(BASE_PATH)
-      .addHeader("Authorization", AUTH_TOKEN)
-      //.setAuth(basic(USERNAME, PASSWORD))
-      .setContentType(ContentType.JSON)
-      .setAccept(ContentType.JSON)
-      .log(LogDetail.URI)
-      .log(LogDetail.BODY)
-      .build();
+        .setRelaxedHTTPSValidation()
+        .setBaseUri(BASE_URI)
+        .setBasePath(BASE_PATH)
+        .setAuth(oauth2(oauth2Token))
+        .setContentType(ContentType.JSON)
+        .setAccept(ContentType.JSON)
+        .log(LogDetail.URI)
+        .log(LogDetail.BODY)
+        .build();
   }
 
   /**
@@ -117,7 +141,7 @@ public class TestDataHelper {
 
   /**
    * Gets the widgets its properties and its values on every page.
-   * @param device devide
+   * @param device device
    */
   public static void setPagesWidgetMap(Device device) {
     pagesWidgetMap = new HashMap<>();
@@ -129,7 +153,6 @@ public class TestDataHelper {
           .get(META_INFO_PAGE_CONTROLLER_URL);
       if (!response.getStatusLine().contains("200")) {
         try {
-          //TODO: http://jira.moscow.alfaintra.net/browse/ALFABANKRU-17657
           throw new ErrorWhileGettingWidgetsException(
             String.format("Couldn't get Widgets on the Page with id: '%s' "
                     + "and uri: '%s' for device '%s'", p.getId(), p.getUri(), device));
@@ -193,13 +216,14 @@ public class TestDataHelper {
    * @return array of entities
    */
   public static Object[] getSwappedOutersWidgetsUidArray() {
+    if (createdEntities.containsKey(Entity.widget)) {
+      widgetsUidListOnTestPage.add(0, createdEntities.get(Entity.widget));
+    }
     List<String> initList = widgetsUidListOnTestPage;
     if (initList.size() > 1) {
       Collections.swap(initList, 0, initList.size() - 1);
-      return initList.toArray();
-    } else {
-      return initList.toArray();
     }
+    return initList.toArray();
   }
 
   /**
@@ -224,7 +248,8 @@ public class TestDataHelper {
    */
   public static Object[] putNewChildWidgetToParentWidget(String newUid) {
     if (testWidgetChildren.length > 0) {
-      List<String> uidList = new ArrayList<>(Arrays.asList(testWidgetChildren[0].getUid()));
+      List<String> uidList = new ArrayList<>(Collections.singletonList(
+          testWidgetChildren[0].getUid()));
       uidList.add(0, newUid);
       return uidList.toArray();
     } else {
@@ -274,4 +299,15 @@ public class TestDataHelper {
     return testPropertyValue;
   }
 
+  public static void setTestWidget(Widget testWidget) {
+    TestDataHelper.testWidget = testWidget;
+  }
+
+  public static void setTestProperty(Property testProperty) {
+    TestDataHelper.testProperty = testProperty;
+  }
+
+  public static void setTestPropertyValue(Value testPropertyValue) {
+    TestDataHelper.testPropertyValue = testPropertyValue;
+  }
 }

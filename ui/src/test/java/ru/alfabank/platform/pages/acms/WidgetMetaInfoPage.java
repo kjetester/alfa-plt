@@ -1,4 +1,4 @@
-package ru.alfabank.platform.pages;
+package ru.alfabank.platform.pages.acms;
 
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesClickable;
@@ -35,6 +35,7 @@ public class WidgetMetaInfoPage extends BasePage {
   public WidgetMetaInfoPage setVisibilityTo(boolean isToBeSelected) {
     waitForElementBecomesClickable(widgetGeoGroupsInput);
     boolean isAlreadySelected = visibilityCheckbox.isSelected();
+    System.out.println(String.format("Setting the Visibility checkbox into '%b'", isToBeSelected));
     if (!isAlreadySelected && isToBeSelected) {
       visibilityCheckbox.click();
     } else if (isAlreadySelected && !isToBeSelected) {
@@ -49,6 +50,7 @@ public class WidgetMetaInfoPage extends BasePage {
    */
   @Step
   public DatePickerPage openStartDatePicker() {
+    System.out.println("Opening the Start date picker");
     waitForElementBecomesClickable(startDatePicker).click();
     return PageFactory.initElements(getDriver(), DatePickerPage.class);
   }
@@ -59,6 +61,7 @@ public class WidgetMetaInfoPage extends BasePage {
    */
   @Step
   public DatePickerPage openEndDatePicker() {
+    System.out.println("Opening the End date picker");
     waitForElementBecomesClickable(endDatePicker).click();
     return PageFactory.initElements(getDriver(), DatePickerPage.class);
   }
@@ -70,6 +73,7 @@ public class WidgetMetaInfoPage extends BasePage {
    */
   @Step
   public WidgetMetaInfoPage setGeoGroupsToWidget(String... geoGroups) {
+    System.out.println(String.format("Setting geo to '%s'", geoGroups));
     waitForElementBecomesClickable(widgetGeoGroupsInput);
     setGeoGroupsTo(widgetGeoGroupList, widgetGeoGroupsInput, geoGroups);
     return this;
@@ -90,8 +94,9 @@ public class WidgetMetaInfoPage extends BasePage {
    * @return WidgetSidebarPage
    */
   @Step
-  public PropertyValuePage collapseWidgetMetaInfoAnd() {
+  public PropertyAndPropertyValuePage collapseWidgetMetaInfoAnd() {
+    System.out.println("Collapsing Widget's MetaInfo pane");
     waitForElementBecomesClickable(widgetSettings).click();
-    return PageFactory.initElements(getDriver(), PropertyValuePage.class);
+    return PageFactory.initElements(getDriver(), PropertyAndPropertyValuePage.class);
   }
 }

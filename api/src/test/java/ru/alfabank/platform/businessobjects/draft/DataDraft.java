@@ -21,7 +21,7 @@ public final class DataDraft {
   private String name;
   private String propertyUid;
   private String widgetUid;
-  private String[] cityGroups;
+  private Object[] cityGroups;
   private Object value;
   private Object[] childUids;
   private Entity entity;
@@ -57,7 +57,7 @@ public final class DataDraft {
     private String name;
     private String propertyUid;
     private String widgetUid;
-    private String[] cityGroups;
+    private Object[] cityGroups;
     private Object value;
     private Object[] childUids;
     private Entity entity;
@@ -108,7 +108,7 @@ public final class DataDraft {
       return this;
     }
 
-    public DataDraftBuilder cityGroups(String[] cityGroups) {
+    public DataDraftBuilder cityGroups(Object[] cityGroups) {
       this.cityGroups = cityGroups;
       return this;
     }

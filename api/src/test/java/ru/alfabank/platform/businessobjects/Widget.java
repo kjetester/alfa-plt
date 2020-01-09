@@ -3,7 +3,7 @@ package ru.alfabank.platform.businessobjects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Date;
+
 import java.util.List;
 
 public class Widget {
@@ -11,8 +11,8 @@ public class Widget {
   private String uid;
   private String name;
   private int orderNum;
-  private Date dateFrom;
-  private Date dateTo;
+  private Object dateFrom;
+  private Object dateTo;
   private Device device;
   private boolean isEnabled;
   private String localization;
@@ -40,8 +40,8 @@ public class Widget {
   public Widget(@JsonProperty("uid") String uid,
                 @JsonProperty("name") String name,
                 @JsonProperty("orderNumber") int orderNumber,
-                @JsonProperty("dateFrom") Date dateFrom,
-                @JsonProperty("dateTo") Date dateTo,
+                @JsonProperty("dateFrom") Object dateFrom,
+                @JsonProperty("dateTo") Object dateTo,
                 @JsonProperty("device") Device device,
                 @JsonProperty("enable") boolean isEnabled,
                 @JsonProperty("localization") String localization,
@@ -87,19 +87,19 @@ public class Widget {
     this.orderNum = orderNum;
   }
 
-  public Date getDateFrom() {
+  public Object getDateFrom() {
     return dateFrom;
   }
 
-  public void setDateFrom(Date dateFrom) {
+  public void setDateFrom(Object dateFrom) {
     this.dateFrom = dateFrom;
   }
 
-  public Date getDateTo() {
+  public Object getDateTo() {
     return dateTo;
   }
 
-  public void setDateTo(Date dateTo) {
+  public void setDateTo(Object dateTo) {
     this.dateTo = dateTo;
   }
 

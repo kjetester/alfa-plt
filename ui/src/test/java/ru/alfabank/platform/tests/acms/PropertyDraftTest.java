@@ -5,12 +5,14 @@ import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 import io.qameta.allure.testng.TestInstanceParameter;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.pages.MainPage;
+import ru.alfabank.platform.buisenessobjects.User;
+import ru.alfabank.platform.pages.acms.MainPage;
 import ru.alfabank.platform.tests.BaseTest;
 
 public class PropertyDraftTest extends BaseTest {
+
+  User user = new User();
 
   @TestInstanceParameter
   private String widgetName = "MetaTitle";
@@ -20,7 +22,7 @@ public class PropertyDraftTest extends BaseTest {
   @Test(description = "Addition a new property to the Widget")
   public void addNewPropertyTest() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebar(widgetName)
+        .openWidgetSidebarToWorkWithWidgetMeta(widgetName)
         .createNewProperty(propName)
         .checkIfPropertyWasAdded(propName)
         .submitChanges()
@@ -29,14 +31,14 @@ public class PropertyDraftTest extends BaseTest {
         .checkIfNoticeAboutDraftExistenceIsPresent()
         .publishDraft()
         .checkIfNoticeAboutDraftExistenceIsNotPresent()
-        .openWidgetSidebar(widgetName)
+        .openWidgetSidebarToWorkWithWidgetMeta(widgetName)
         .checkIfPropertyWasAdded(propName);
   }
 
   @Test(description = "Deletion a property from the Widget")
   public void deleteProperty() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebar(widgetName)
+        .openWidgetSidebarToWorkWithWidgetMeta(widgetName)
         .deleteProperty(propName)
         .checkIfPropertyIsAbsent(propName)
         .submitChanges()
@@ -45,7 +47,7 @@ public class PropertyDraftTest extends BaseTest {
         .checkIfNoticeAboutDraftExistenceIsPresent()
         .publishDraft()
         .checkIfNoticeAboutDraftExistenceIsNotPresent()
-        .openWidgetSidebar(widgetName)
+        .openWidgetSidebarToWorkWithWidgetMeta(widgetName)
         .checkIfPropertyIsAbsent(propName);
   }
 
@@ -55,8 +57,8 @@ public class PropertyDraftTest extends BaseTest {
   @AfterMethod(description = "Navigate to The Main Page")
   public void returnToMainPage() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize()
+        .openAndAuthorize(user.getLogin(), user.getPassword())
         .openPagesTree()
-        .openPage("sme-new");
+        .selectPage("sme-new");
   }
 }

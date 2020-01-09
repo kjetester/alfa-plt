@@ -10,19 +10,23 @@ import static ru.alfabank.platform.helpers.TestDataHelper.getNewUuid;
 import static ru.alfabank.platform.helpers.TestDataHelper.getRequestSpecification;
 import static ru.alfabank.platform.helpers.TestDataHelper.getTestPage;
 import static ru.alfabank.platform.helpers.TestDataHelper.putNewRootWidgetOnTheTop;
+import static ru.alfabank.platform.helpers.TestDataHelper.setTestWidget;
 
 import java.util.Arrays;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.apitest.BaseTest;
+import ru.alfabank.platform.apitest.drafts.BaseTest;
 import ru.alfabank.platform.businessobjects.Entity;
 import ru.alfabank.platform.businessobjects.Method;
+import ru.alfabank.platform.businessobjects.Widget;
 import ru.alfabank.platform.businessobjects.draft.DataDraft;
 import ru.alfabank.platform.businessobjects.draft.WrapperDraft;
 
 public class CreateRootWidgetTest extends BaseTest {
+
+  private Widget newWidget;
 
   /**
    * Draft generation.
@@ -31,20 +35,33 @@ public class CreateRootWidgetTest extends BaseTest {
       description = "Генерация черновика создания нового корневого Widget'а")
   public void makeDraft() {
     newEntityUid = getNewUuid();
-    DataDraft newWidgetData = new DataDraft.DataDraftBuilder().name("newWidget_" + newEntityUid)
-        .dateFrom("2019-01-01T00:00:00.000Z")
-        .dateTo("2020-01-01T00:00:00")
-        .device(desktop)
-        .enable(true)
-        .localization("RU")
-        .cityGroups(getCityGroup())
+    newWidget = new Widget(
+        newEntityUid,
+        "Widget_" + newEntityUid,
+        1,
+        dateFrom,
+        dateTo,
+        desktop,
+        true,
+        "RU",
+        Arrays.asList(getCityGroup()),
+        null,
+        null,
+        false);
+    DataDraft newWidgetData = new DataDraft.DataDraftBuilder()
+        .name(newWidget.getName())
+        .dateFrom(newWidget.getDateFrom().toString())
+        .dateTo(newWidget.getDateTo().toString())
+        .device(newWidget.getDevice())
+        .enable(newWidget.isEnabled())
+        .localization(newWidget.getLocalization())
+        .cityGroups(newWidget.getWidgetGeo().toArray())
         .build();
     DataDraft placementData = new DataDraft.DataDraftBuilder()
-        .childUids(putNewRootWidgetOnTheTop(newEntityUid))
-        .build();
+        .childUids(putNewRootWidgetOnTheTop(newWidget.getUid())).build();
     operations.addAll(Arrays.asList(
         new WrapperDraft.OperationDraft(
-            newWidgetData, Entity.widget, Method.create, newEntityUid),
+            newWidgetData, Entity.widget, Method.create, newWidget.getUid()),
         new WrapperDraft.OperationDraft(
             placementData, Entity.page, Method.changeLinks, getTestPage().getId())));
     body = new WrapperDraft(operations);
@@ -96,7 +113,8 @@ public class CreateRootWidgetTest extends BaseTest {
       description = "Добваление созданного Widget'а в список созданных сущностей")
   public void setCreatedValue(final ITestContext context) {
     if (context.getFailedTests().size() == 0) {
-      createdEntities.put(Entity.widget, newEntityUid);
+      createdEntities.put(Entity.widget, newWidget.getUid());
+      setTestWidget(newWidget);
     }
   }
 }
