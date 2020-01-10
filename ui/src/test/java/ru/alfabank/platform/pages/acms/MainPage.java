@@ -19,7 +19,7 @@ import ru.alfabank.platform.pages.AuthPage;
 
 public class MainPage extends BasePage {
 
-  @FindBy(css = "ul > li[class='ant-menu-item']")
+  @FindBy(css = "a[href = '/acms/pages']")
   private WebElement pagesLink;
   @FindBy(css = "li[class = 'ant-tree-treenode-switcher-open'] a")
   private List<WebElement> rootPageList;
@@ -130,7 +130,7 @@ public class MainPage extends BasePage {
   public MainPage saveDraft() {
     System.out.println("Saving draft");
     waitForElementBecomesClickable(saveButton).click();
-    waitForElementBecomesVisible(draftSavedNotificationBanner);
+    waitForElementBecomesClickable(bannerCloseBttn).click();
     return this;
   }
 
@@ -169,7 +169,7 @@ public class MainPage extends BasePage {
     System.out.println("Publishing draft");
     waitForElementBecomesClickable(publishButton).click();
     submit();
-    waitForElementBecomesVisible(draftPublishedNotificationBanner);
+    waitForElementBecomesClickable(bannerCloseBttn).click();
     return this;
   }
 

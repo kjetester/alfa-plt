@@ -28,6 +28,8 @@ public class WidgetSidebarPage extends BasePage {
   private WebElement addNewPropButton;
   @FindBy(css = "button[class='ant-btn ant-btn-primary']")
   private WebElement submitButton;
+  @FindBy(css = "button[aria-label='Close']")
+  private WebElement widgetSidebarCloseButton;
 
   /**
    * New Property addition to widget.
@@ -103,8 +105,18 @@ public class WidgetSidebarPage extends BasePage {
   @Step
   public WidgetMetaInfoPage expandWidgetMetaInfo() {
     System.out.println("Expanding Widget's MetaInfo pane");
-    waitForElementBecomesClickable(widgetSettings);
-    widgetSettings.click();
+    waitForElementBecomesClickable(widgetSettings).click();
     return PageFactory.initElements(getDriver(), WidgetMetaInfoPage.class);
+  }
+
+  /**
+   * Closing Widget's sidebar.
+   * @return new instance of MainPage
+   */
+  @Step
+  public MainPage closeWidgetSidebar() {
+    System.out.println("Closing Widget's sidebar");
+    waitForElementBecomesClickable(widgetSidebarCloseButton).click();
+    return PageFactory.initElements(getDriver(), MainPage.class);
   }
 }

@@ -13,6 +13,8 @@ import ru.alfabank.platform.pages.acms.MainPage;
 
 public class BaseTest {
 
+  protected static final String   TEST_PAGE_URI = "sme-new";
+
   /**
    * Setting up driver.
    */
@@ -27,7 +29,7 @@ public class BaseTest {
   /**
    * Killing driver.
    */
-  @AfterTest
+  @AfterTest(alwaysRun = true)
   public void tearDown() {
     if (getDriver() != null) {
       killDriver();

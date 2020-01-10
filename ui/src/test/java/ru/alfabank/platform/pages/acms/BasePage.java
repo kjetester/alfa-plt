@@ -13,12 +13,8 @@ import org.openqa.selenium.support.FindBy;
 
 public class BasePage {
 
-  @FindBy (xpath = "//div[text() = 'Изменения успешно сохранены']")
-  protected WebElement draftSavedNotificationBanner;
-  @FindBy(xpath = "//div[text() = 'Изменения успешно опубликованы']")
-  protected WebElement draftPublishedNotificationBanner;
-  @FindBy(xpath = "//div[text() = 'Черновик успешно удалён']")
-  protected WebElement draftDeletedNotificationBanner;
+  @FindBy (css = ".ant-notification-notice > a")
+  protected WebElement bannerCloseBttn;
   @FindBy(className = "ant-modal-body")
   protected WebElement modalWindow;
   @FindBy(css = ".ant-modal-body .ant-btn-primary")

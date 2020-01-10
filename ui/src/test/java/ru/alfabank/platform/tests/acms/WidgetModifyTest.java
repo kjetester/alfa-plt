@@ -16,13 +16,13 @@ import ru.alfabank.platform.tests.BaseTest;
 
 public class WidgetModifyTest extends BaseTest {
 
-  private static final String   TEST_PAGE_URI = "sme-new";
-  private static final String   TEST_WIDGET = "MetaTitle";
+
+  private static final String TEST_WIDGET = "MetaTitle";
   private static final String WIDGET_GEO_GROUPS = "ru";
-  private static final String   TEST_PROPERTY = "title";
+  private static final String TEST_PROPERTY = "title";
   private static final String VAL_1 = "mskmo";
   private static final String VAL_2 = "bez_msk_mo";
-  private static final User user = new User();
+  private static final User   user = new User();
 
   /**
    * Opening acms.
