@@ -14,7 +14,7 @@
     </test>
     <test name="e2e" verbose="1">
         <classes>
-            <class name="ru.alfabank.platform.tests.acms.WidgetModifyTest"></class>
+            <class name="ru.alfabank.platform.tests.acms.EndToEndTest"></class>
         </classes>
     </test>
 </suite>

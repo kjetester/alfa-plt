@@ -83,4 +83,13 @@ public class BasePage {
     }
     return true;
   }
+
+  protected static boolean isPresent(By sharedMarkerSelector) {
+    try {
+      getDriver().findElement(sharedMarkerSelector);
+    } catch (org.openqa.selenium.NoSuchElementException e) {
+      return false;
+    }
+    return true;
+  }
 }

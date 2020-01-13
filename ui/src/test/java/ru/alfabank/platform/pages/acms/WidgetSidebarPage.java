@@ -46,6 +46,20 @@ public class WidgetSidebarPage extends BasePage {
   }
 
   /**
+   * New Property addition to widget.
+   * @param newPropertyName name
+   * @return PropertyAndPropertyValuePage
+   */
+  @Step
+  public PropertyAndPropertyValuePage createNewPropertyToWorkWith(String newPropertyName) {
+    newPropNameInput.click();
+    waitForElementBecomesVisible(newPropDropdownList);
+    getDriver().switchTo().activeElement().sendKeys(Keys.chord(newPropertyName), Keys.ENTER);
+    waitForElementBecomesClickable(addNewPropButton).click();
+    return PageFactory.initElements(getDriver(), PropertyAndPropertyValuePage.class);
+  }
+
+  /**
    * Checking the result of addition a new Widget.
    * @param newName name
    */
@@ -76,9 +90,10 @@ public class WidgetSidebarPage extends BasePage {
    */
   @Step
   public WidgetSidebarPage deleteProperty(String propName) {
-    waitForElementBecomesClickable(getDriver().findElement(By.xpath(String.format(
-                "//div[@class = 'ant-collapse-header']/span[text() = '%s']/..//button", propName))))
-        .click();
+    WebElement deleteBttn = getDriver().findElement(By.xpath(String.format("//div[@class = "
+        + "'ant-collapse-header']/span[text() = '%s']/..//button", propName)));
+    waitForElementBecomesClickable(deleteBttn);
+    deleteBttn.click();
     waitForElementBecomesVisible(modalWindow);
     modalWindowSubmitButton.click();
     return this;

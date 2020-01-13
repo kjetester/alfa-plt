@@ -1,11 +1,11 @@
 package ru.alfabank.platform.helpers;
 
 import static java.time.Duration.ofSeconds;
-import static ru.alfabank.platform.helpers.DateHelper.getNowPlus;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-import java.util.Calendar;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -106,14 +106,14 @@ public class DriverHelper {
    * @param cities cities
    */
   public static void setCityCookieAndRefreshPage(String... cities) {
+    Date expireDate = java.sql.Date.from(
+        java.time.ZonedDateTime.now().plus(3, ChronoUnit.HOURS).toInstant());
     driver.manage().deleteAllCookies();
     IntStream.range(0, cities.length).forEach(i -> {
       driver.manage().addCookie(new Cookie(
-          "site_city", cities[i],"develop.ci.k8s.alfa.link", "/",
-          getNowPlus(3, Calendar.HOUR).getTime(), false, false));
+          "site_city", cities[i],"develop.ci.k8s.alfa.link", "/", expireDate, false, false));
       driver.manage().addCookie(new Cookie(
-          "site_city", cities[i], ".develop.ci.k8s.alfa.link", "/",
-          getNowPlus(3, Calendar.HOUR).getTime(), false, false));
+          "site_city", cities[i], ".develop.ci.k8s.alfa.link", "/", expireDate, false, false));
     });
     driver.navigate().refresh();
   }

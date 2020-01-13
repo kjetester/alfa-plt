@@ -6,7 +6,7 @@ import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesVis
 
 import io.qameta.allure.Step;
 import java.time.Instant;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -55,6 +55,7 @@ public class AlfaSitePage {
     return this;
   }
 
+
   /**
    * Assertion page titles according to time and geo-group.
    * @param deadline deadline when to start assertion
@@ -64,21 +65,26 @@ public class AlfaSitePage {
    * @throws InterruptedException InterruptedException
    */
   @Step
-  public AlfaSitePage checkPageTitleAfter(Calendar deadline,
+  public AlfaSitePage checkPageTitleAfter(LocalDateTime deadline,
                                           String expectedTitle,
                                           String... city) throws InterruptedException {
     System.out.println(String.format("Start checking title is '%s'", expectedTitle));
     wait(deadline);
-    long start = Instant.now().getEpochSecond();
-    int count = 3;
     boolean b = expectedTitle.equals(getDriver().getTitle());
-    System.out.println(b ? "SUCCESS" : "Hmm... title doesn't match... retrying...");
+    int count = 10;
+    System.out.println(b ? "SUCCESS" : "Title doesn't match. Will try " + count + "times more");
+    long start = Instant.now().getEpochSecond();
     while (!b && count > 0) {
       Thread.sleep(5_000);
       setCityCookieAndRefreshPage(city);
       b = expectedTitle.equals(getDriver().getTitle());
       count--;
+      System.out.println(b ? "SUCCESS" : "Title doesn't match. Will try " + count + "times more");
     }
+    Assertions
+        .assertThat(getDriver().getTitle())
+        .as("Title is incorrect")
+        .isEqualTo(expectedTitle);
     System.out.println(String.format(
         "It takes %d seconds since the deadline to get it success",
         (Instant.now().getEpochSecond() - start)));
@@ -90,10 +96,10 @@ public class AlfaSitePage {
    * @param deadline deadline
    */
   @Step
-  public void wait(final Calendar deadline) {
-    while (Calendar.getInstance().getTime().before(deadline.getTime())) {
-      System.out.println(String.format("Waiting for %d secs", deadline.toInstant().getEpochSecond()
-          - Instant.now().getEpochSecond()));
+  public void wait(final LocalDateTime deadline) {
+    while (LocalDateTime.now().isBefore(deadline)) {
+      System.out.println(String.format("Waiting for %d secs",
+          deadline.compareTo(LocalDateTime.now())));
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {

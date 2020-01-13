@@ -6,6 +6,8 @@ import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesVis
 
 import io.qameta.allure.Step;
 import java.util.List;
+import java.util.stream.IntStream;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -50,6 +52,29 @@ public class PropertyAndPropertyValuePage extends BasePage {
   }
 
   /**
+   * Modifying property value.
+   * @param propertyName property name
+   * @param value property value
+   * @param geoGroup geoGroup set
+   * @return WidgetSidebarPage
+   */
+  @Step
+  public WidgetSidebarPage modifyValue(String propertyName,
+                                                          String value,
+                                                          String... geoGroup) {
+    System.out.println(
+        String.format("Setting to the '%s' property '%s' value", propertyName, value));
+    By propertySelector = By.xpath(String.format(propertySelectorXpath, propertyName));
+    WebElement property = getDriver().findElement(propertySelector);
+    List<WebElement> propertyValueList = property.findElements(propertyValuesSelector);
+    WebElement existingPropertyValue = propertyValueList.get(propertyValueList.size() - 1);
+    WebElement textArea = existingPropertyValue.findElement(propertyValueTextAreaSelector);
+    setValueToMonacoTextArea(value, textArea);
+    setGeoGroupsToWidget(existingPropertyValue, geoGroup);
+    return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
+  }
+
+  /**
    * Adding a new property value.
    * @param propertyName property name
    * @param value property value
@@ -88,18 +113,37 @@ public class PropertyAndPropertyValuePage extends BasePage {
   }
 
   /**
-   * Deleting bottom property value.
+   * Restoring the property and its value.
    * @param propertyName property name
+   * @param value value
+   * @param geo geo
    * @return WidgetSidebarPage
    */
-  public WidgetSidebarPage deletePropertyValue(String propertyName) {
+  public WidgetSidebarPage restorePropertyAndValues(String propertyName,
+                                                    String value,
+                                                    String... geo) {
     By propertySelector = By.xpath(String.format(propertySelectorXpath, propertyName));
-    WebElement property = getDriver().findElement(propertySelector);
-    List<WebElement> propertyValueList = property.findElements(propertyValuesSelector);
-    WebElement bottomPropertyValue = propertyValueList.get(propertyValueList.size() - 1);
-    bottomPropertyValue.findElement(propertyValueDeleteButtonSelector).click();
-    waitForElementBecomesVisible(modalWindow);
-    waitForElementBecomesClickable(modalWindowSubmitButton).click();
+    if (isPresent(propertySelector)) {
+      WebElement property = getDriver().findElement(propertySelector);
+      List<WebElement> propertyValueList = property.findElements(propertyValuesSelector);
+      if (propertyValueList.size() > 1) {
+        IntStream.range(1, propertyValueList.size()).forEach(i -> {
+          propertyValueList.get(i).findElement(propertyValueDeleteButtonSelector).click();
+          waitForElementBecomesVisible(modalWindow);
+          waitForElementBecomesClickable(modalWindowSubmitButton).click();
+        });
+      }
+      if (propertyValueList.size() > 0) {
+        modifyPropertyValue(
+            propertyName,
+            value,
+            geo);
+      } else {
+        PageFactory.initElements(getDriver(), WidgetSidebarPage.class)
+            .createNewPropertyToWorkWith(propertyName)
+            .createValue(propertyName, value, geo);
+      }
+    }
     return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
   }
 }

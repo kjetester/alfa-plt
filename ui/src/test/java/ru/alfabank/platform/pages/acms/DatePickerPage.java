@@ -3,15 +3,14 @@ package ru.alfabank.platform.pages.acms;
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 
 import io.qameta.allure.Step;
-
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.TestException;
 
 public class DatePickerPage extends BasePage {
 
@@ -43,18 +42,21 @@ public class DatePickerPage extends BasePage {
   private List<WebElement> secondList;
   @FindBy(css = ".ant-calendar-ok-btn")
   private WebElement dataPickerOkButton;
+  @FindBy(css = ".ant-calendar-input")
+  private WebElement dateInput;
 
   /**
    * Setting the date and time.
-   * @param calendar date and time to be set
+   * @param dateTime date and time to be set
    * @return new WidgetMetaInfoPage instance
    */
   @Step
-  public WidgetMetaInfoPage setDateTo(Calendar calendar) throws InterruptedException {
-    System.out.println(String.format("Setting the date to: '%s'", calendar.toString()));
+  public WidgetMetaInfoPage setDateTo(LocalDateTime dateTime) throws InterruptedException {
+    System.out.println(String.format("Setting the date to: '%s'",
+        dateTime.toString()));
     Thread.sleep(1000);
-    while (calendar.get(Calendar.YEAR) != Integer.parseInt(yearPicker.getText())) {
-      if (calendar.get(Calendar.YEAR) < Integer.parseInt(yearPicker.getText())) {
+    while (dateTime.getYear() != Integer.parseInt(yearPicker.getText())) {
+      if (dateTime.getYear() < Integer.parseInt(yearPicker.getText())) {
         minusYearButton.click();
       } else {
         plusYearButton.click();
@@ -62,45 +64,47 @@ public class DatePickerPage extends BasePage {
     }
     int month;
     switch (monthPicker.getText()) {
-      case "янв." : month = 0;
-      break;
-      case "февр.": month = 1;
-      break;
-      case "март" : month = 2;
-      break;
-      case "апр." : month = 3;
-      break;
-      case "май"  : month = 4;
-      break;
-      case "июнь" : month = 5;
-      break;
-      case "июль" : month = 6;
-      break;
-      case "авг." : month = 7;
-      break;
-      case "сент.": month = 8;
-      break;
-      case "окт." : month = 9;
-      break;
-      case "нояб.": month = 10;
-      break;
-      default     : month = 11;
+      case "янв." : month = 1;
+        break;
+      case "февр.": month = 2;
+        break;
+      case "март" : month = 3;
+        break;
+      case "апр." : month = 4;
+        break;
+      case "май"  : month = 5;
+        break;
+      case "июнь" : month = 6;
+        break;
+      case "июль" : month = 7;
+        break;
+      case "авг." : month = 8;
+        break;
+      case "сент.": month = 9;
+        break;
+      case "окт." : month = 10;
+        break;
+      case "нояб.": month = 11;
+        break;
+      case "дек." : month = 12;
+        break;
+      default: throw new TestException("Unknown month");
     }
-    int diff = calendar.get(Calendar.MONTH) - month;
+    int diff = dateTime.getMonthValue() - month;
     if (diff > 0) {
       IntStream.range(0,diff).forEach(i -> plusMonthButton.click());
     } else if (diff < 0) {
-      IntStream.range(0,diff).forEach(i -> minusMonthButton.click());
+      IntStream.range(0,-diff).forEach(i -> minusMonthButton.click());
     }
     List<WebElement> dateList = getDriver().findElements(By.cssSelector(DATES_CSS_SELECTOR));
-    dateList.get(calendar.get(Calendar.DATE) - 1).click();
+    dateList.get(dateTime.getDayOfMonth() - 1).click();
     dataPickerChooseTimeButton.click();
-    scrollToElement(hourList.get(calendar.get(Calendar.HOUR_OF_DAY))).click();
-    scrollToElement(minuteList.get(calendar.get(Calendar.MINUTE))).click();
-    scrollToElement(secondList.get(calendar.get(Calendar.SECOND))).click();
-    dataPickerOkButton.click();
+    scrollToElement(hourList.get(dateTime.getHour())).click();
+    scrollToElement(minuteList.get(dateTime.getMinute())).click();
+    scrollToElement(secondList.get(dateTime.getSecond())).click();
     System.out.println(String.format("Date and time have been set to: %s",
-        new Timestamp(calendar.getTimeInMillis())));
+        dateInput.getAttribute("value")));
+    dataPickerOkButton.click();
     return PageFactory.initElements(getDriver(), WidgetMetaInfoPage.class);
   }
 }
