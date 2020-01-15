@@ -1,6 +1,8 @@
 package ru.alfabank.platform.transitions.buisnessobjects;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
 @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class Body {
@@ -13,6 +15,10 @@ public final class Body {
   private Object clientData;
   private Object data;
 
+  /**
+   * Class constructor.
+   * @param builder builder
+   */
   @JsonCreator
   public Body(final BodyBuilder builder) {
     this.businessUid = builder.businessUid;
@@ -34,6 +40,11 @@ public final class Body {
     private Object clientData;
     private Object data;
 
+    /**
+     * Modifying existing Body.
+     * @param body body
+     * @return this
+     */
     public BodyBuilder using(Body body) {
       this.businessUid = body.businessUid;
       this.clientDate = body.clientDate;
@@ -88,6 +99,35 @@ public final class Body {
   @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class FeedBackData {
 
+    private String statusCode;
+    private String message;
+
+    @JsonCreator
+    public FeedBackData(final FeedBackDataBuilder builder) {
+      this.statusCode = builder.statusCode;
+      this.message = builder.message;
+    }
+
+    @JsonIgnoreType
+    public static class FeedBackDataBuilder {
+
+      private String statusCode;
+      private String message;
+
+      public FeedBackDataBuilder setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
+        return this;
+      }
+
+      public FeedBackDataBuilder setMessage(String message) {
+        this.message = message;
+        return this;
+      }
+
+      public FeedBackData build() {
+        return new FeedBackData(this);
+      }
+    }
   }
 
   @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
@@ -139,6 +179,10 @@ public final class Body {
     private String packetID;
     private String prefilContractId;
 
+    /**
+     * Class constructor.
+     * @param builder builder
+     */
     @JsonCreator
     public Data(final DataBuilder builder) {
       this.product = builder.product;

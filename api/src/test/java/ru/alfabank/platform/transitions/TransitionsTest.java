@@ -1,5 +1,7 @@
 package ru.alfabank.platform.transitions;
 
+import static io.restassured.RestAssured.given;
+
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -10,9 +12,9 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.transitions.buisnessobjects.Body;
 
-import static io.restassured.RestAssured.given;
-
 public class TransitionsTest {
+
+  public static final String EXPECTED_ERROR_MESSAGE = "Должно быть не пустое значение";
 
   private RequestSpecification minReqSpec;
   private RequestSpecification spec;
@@ -47,7 +49,16 @@ public class TransitionsTest {
 
   @Test(dataProvider = "status")
   public void smokeTest(String status) {
-    Body modifiedBody = new Body.BodyBuilder().using(body).setStatus(status).build();
+    Body modifiedBody;
+    if (status.equalsIgnoreCase("error")) {
+      modifiedBody = new Body.BodyBuilder().using(body)
+          .setStatus(status)
+          .setFeedBackData(new Body.FeedBackData.FeedBackDataBuilder()
+              .setStatusCode("500").setMessage("Internal Server Error").build())
+          .build();
+    } else {
+      modifiedBody = new Body.BodyBuilder().using(body).setStatus(status).build();
+    }
     Response response = given().spec(spec).body(modifiedBody).when().post();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(200);
   }
@@ -64,7 +75,7 @@ public class TransitionsTest {
     Response response = given().spec(spec).body(modifiedBody).post();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
     Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
-        .isEqualTo("Должно быть не пустое значение");
+        .isEqualTo(EXPECTED_ERROR_MESSAGE);
   }
 
   @Test(dataProvider = "invalid values")
@@ -73,7 +84,7 @@ public class TransitionsTest {
     Response response = given().spec(spec).body(modifiedBody).post();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
     Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
-        .isEqualTo("Должно быть не пустое значение");
+        .isEqualTo(EXPECTED_ERROR_MESSAGE);
   }
 
   @Test(dataProvider = "invalid values")
@@ -82,7 +93,7 @@ public class TransitionsTest {
     Response response = given().spec(spec).body(modifiedBody).post();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
     Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
-        .isEqualTo("Должно быть не пустое значение");
+        .isEqualTo(EXPECTED_ERROR_MESSAGE);
   }
 
   @Test(dataProvider = "invalid values")
@@ -91,7 +102,7 @@ public class TransitionsTest {
     Response response = given().spec(spec).body(modifiedBody).post();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
     Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
-        .isEqualTo("Должно быть не пустое значение");
+        .isEqualTo(EXPECTED_ERROR_MESSAGE);
   }
 
   @Test(dataProvider = "invalid values")
@@ -100,7 +111,7 @@ public class TransitionsTest {
     Response response = given().spec(spec).body(modifiedBody).post();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
     Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
-        .isEqualTo("Должно быть не пустое значение");
+        .isEqualTo(EXPECTED_ERROR_MESSAGE);
   }
 
   @DataProvider(name = "invalid values")
