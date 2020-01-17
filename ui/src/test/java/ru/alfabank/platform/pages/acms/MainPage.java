@@ -8,14 +8,13 @@ import static ru.alfabank.platform.helpers.DriverHelper.waitForElementsBecomeVis
 import io.qameta.allure.Step;
 import java.util.List;
 import java.util.NoSuchElementException;
+
 import org.assertj.core.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.testng.TestException;
-import org.testng.TestNGException;
-import ru.alfabank.platform.pages.AuthPage;
+import org.testng.*;
 
 public class MainPage extends BasePage {
 
@@ -35,6 +34,7 @@ public class MainPage extends BasePage {
   private By treeCollapseButtonSelector = By.cssSelector("[aria-label = 'Collapse']");
   private By sharedMarkerSelector = By.cssSelector("i[class ^= 'anticon anticon-share-alt']");
   private By deleteButtonSelector = By.cssSelector("button[type='button']:not([aria-label])");
+  private By widgetWrapper = By.cssSelector(".rst__rowTitle  > div");
   private static String widgetTitle = null;
 
   /**
@@ -68,7 +68,7 @@ public class MainPage extends BasePage {
   @Step
   public MainPage selectPage(String pageUri) {
     System.out.println(String.format("Searching the page '%s'", pageUri));
-    rootPageList.stream().filter(p -> p.getText().contains(pageUri)).findFirst()
+    rootPageList.stream().filter(p -> p.getText().equals(pageUri)).findFirst()
         .orElseThrow(NoSuchElementException::new)
         .click();
     waitForElementsBecomeVisible(widgetsList);
@@ -178,7 +178,7 @@ public class MainPage extends BasePage {
    * @return this
    */
   @Step
-  public MainPage deleteNonSharedWidgetHasChilds() {
+  public MainPage deleteNonSharedWidgetHasChildren() {
     WebElement widget = widgetsList.stream().filter(w ->
         (isPresent(w, treeExpandButtonSelector)
             || isPresent(w, treeCollapseButtonSelector))
@@ -199,7 +199,7 @@ public class MainPage extends BasePage {
    * @return this
    */
   @Step
-  public MainPage deleteNonSharedWidgetHasNoChilds() {
+  public MainPage deleteNonSharedWidgetHasNoChildren() {
     WebElement widget = widgetsList.stream().filter(w ->
         !(isPresent(w, treeExpandButtonSelector)
             || isPresent(w, treeCollapseButtonSelector))
@@ -222,5 +222,19 @@ public class MainPage extends BasePage {
   public void submit() {
     waitForElementBecomesVisible(modalWindow);
     modalWindowSubmitButton.click();
+  }
+
+  /**
+   * Checking for a found entity marking.
+   * @param widgetTitle entity name
+   */
+  public MainPage checkWidgetMarking(String widgetTitle) {
+    WebElement widget = widgetsList.stream().filter(w ->
+        widgetTitle.equals(w.findElement(widgetsTitleLSelector).getText())).findFirst()
+        .orElseThrow(NoSuchElementException::new);
+    Assertions.assertThat(widget.findElement(widgetWrapper).getCssValue("background-color"))
+        .as("Checking for a found entity marking")
+        .contains("24, 144, 255, 0.");
+    return this;
   }
 }

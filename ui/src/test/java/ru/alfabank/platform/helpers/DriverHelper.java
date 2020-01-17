@@ -1,9 +1,12 @@
 package ru.alfabank.platform.helpers;
 
 import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
+import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOf;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -14,13 +17,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class DriverHelper {
 
-  private static WebDriver driver;
   private static final int TIMEOUT = 25;
+
+  private static WebDriver driver;
 
   /**
    * Getting driver.
@@ -42,7 +45,7 @@ public class DriverHelper {
    */
   public static void waitForElementBecomesVisible(WebElement element) {
     implicitlyWait(false);
-    new WebDriverWait(driver, ofSeconds(TIMEOUT)).until(ExpectedConditions.visibilityOf(element));
+    new WebDriverWait(driver, ofSeconds(TIMEOUT)).until(visibilityOf(element));
     implicitlyWait(true);
   }
 
@@ -53,7 +56,7 @@ public class DriverHelper {
   public static void waitForElementsBecomeVisible(List<WebElement> elements) {
     implicitlyWait(false);
     new WebDriverWait(driver, ofSeconds(TIMEOUT))
-        .until(ExpectedConditions.visibilityOfAllElements(elements));
+        .until(visibilityOfAllElements(elements));
     implicitlyWait(true);
   }
 
@@ -64,7 +67,7 @@ public class DriverHelper {
   public static WebElement waitForElementBecomesClickable(WebElement element) {
     implicitlyWait(false);
     new WebDriverWait(driver, ofSeconds(TIMEOUT))
-        .until(ExpectedConditions.elementToBeClickable(element));
+        .until(elementToBeClickable(element));
     implicitlyWait(true);
     return element;
   }
@@ -76,7 +79,7 @@ public class DriverHelper {
    */
   public static void waitForElementBecomesInvisible(WebElement element) {
     implicitlyWait(false);
-    new WebDriverWait(driver, ofSeconds(TIMEOUT)).until(ExpectedConditions.invisibilityOf(element));
+    new WebDriverWait(driver, ofSeconds(TIMEOUT)).until(invisibilityOf(element));
     implicitlyWait(true);
   }
 
@@ -96,9 +99,11 @@ public class DriverHelper {
    * Killing driver.
    */
   public static void killDriver() {
-    driver.close();
-    driver.quit();
-    driver = null;
+    if (driver != null) {
+      driver.close();
+      driver.quit();
+      driver = null;
+    }
   }
 
   /**

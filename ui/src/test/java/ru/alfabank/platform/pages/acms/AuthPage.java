@@ -1,4 +1,4 @@
-package ru.alfabank.platform.pages;
+package ru.alfabank.platform.pages.acms;
 
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 

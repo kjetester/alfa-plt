@@ -8,16 +8,17 @@ import io.qameta.allure.Step;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import org.assertj.core.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import ru.alfabank.platform.buisenessobjects.Widget;
 
 public class PropertyAndPropertyValuePage extends BasePage {
 
   @FindBy(xpath = "//*[@class = 'ant-btn ant-btn-default']")
   private WebElement addPropertyValueButton;
-
   private By propertyValuesSelector = By.cssSelector("[class ^= value-property-container]");
   private By propertyValueDeleteButtonSelector = By.cssSelector("button[mode = 'button']");
   private By propertyValueGeoInputSelector =
@@ -145,5 +146,18 @@ public class PropertyAndPropertyValuePage extends BasePage {
       }
     }
     return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
+  }
+
+  /**
+   * Checking for a found entity marking.
+   * @param name name
+   * @param property property
+   */
+  public void checkPropertyMarking(String name, Widget.Property property) {
+    By propertySelector = By.xpath(String.format(propertySelectorXpath, property.getName()));
+    String actualColor = waitForElementBecomesClickable(
+        getDriver().findElement(propertySelector).findElement(By.cssSelector("span")))
+        .getCssValue("color");
+    Assertions.assertThat(actualColor).as("").contains("24, 144, 255");
   }
 }

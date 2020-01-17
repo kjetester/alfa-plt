@@ -28,7 +28,7 @@ public class WidgetDeleteTest extends BaseTest {
   @Test(description = "Deletion a not shared widget hasn't a child")
   public void deletionNotSharedWidgetHasNoChildTest() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .deleteNonSharedWidgetHasNoChilds()
+        .deleteNonSharedWidgetHasNoChildren()
         .saveDraft();
     //TODO: no creation method .publishDraft()
   }
@@ -36,7 +36,7 @@ public class WidgetDeleteTest extends BaseTest {
   @Test(description = "Deletion a not shared widget has some childs")
   public void deletionNotSharedWidgetHasChildTest() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .deleteNonSharedWidgetHasChilds()
+        .deleteNonSharedWidgetHasChildren()
         .saveDraft();
     //TODO: no creation method .publishDraft()
   }

@@ -86,9 +86,6 @@ public class TestDataHelper {
         .setBasePath(BASE_PATH)
         .setAuth(oauth2(oauth2Token))
         .setContentType(ContentType.JSON)
-        .setAccept(ContentType.JSON)
-        .log(LogDetail.URI)
-        .log(LogDetail.BODY)
         .build();
   }
 

@@ -15,6 +15,7 @@
     <test name="e2e" verbose="1">
         <classes>
             <class name="ru.alfabank.platform.tests.acms.EndToEndTest"></class>
+            <class name="ru.alfabank.platform.tests.acms.SearchTest"></class>
         </classes>
     </test>
 </suite>

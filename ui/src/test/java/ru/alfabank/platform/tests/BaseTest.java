@@ -6,19 +6,17 @@ import static ru.alfabank.platform.helpers.DriverHelper.killDriver;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
-import ru.alfabank.platform.pages.acms.MainPage;
 
 public class BaseTest {
 
-  protected static final String   TEST_PAGE_URI = "sme-new";
+  protected static final String TEST_PAGE_URI = "sme-new/";
 
   /**
    * Setting up driver.
    */
-  @BeforeTest(description = "Setting up the Driver and navigate to The Main Page")
+  @BeforeTest(description = "Setting up the Driver")
   public void setUp() {
     getDriver().manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
     getDriver().manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
@@ -31,8 +29,6 @@ public class BaseTest {
    */
   @AfterTest(alwaysRun = true)
   public void tearDown() {
-    if (getDriver() != null) {
-      killDriver();
-    }
+    killDriver();
   }
 }
