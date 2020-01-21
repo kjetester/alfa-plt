@@ -1,15 +1,11 @@
 package ru.alfabank.platform.pages.acms;
 
-import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.*;
 
-import java.util.Arrays;
-import java.util.List;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
+import java.util.*;
+
+import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 public class BasePage {
 

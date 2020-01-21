@@ -1,20 +1,15 @@
 package ru.alfabank.platform.pages.acms;
 
-import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
-import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesClickable;
-import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesVisible;
-import static ru.alfabank.platform.helpers.DriverHelper.waitForElementsBecomeVisible;
-
-import io.qameta.allure.Step;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import org.assertj.core.api.Assertions;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import io.qameta.allure.*;
+import org.assertj.core.api.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.*;
 import org.testng.*;
+
+import java.util.NoSuchElementException;
+import java.util.*;
+
+import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 public class MainPage extends BasePage {
 
@@ -34,7 +29,7 @@ public class MainPage extends BasePage {
   private By treeCollapseButtonSelector = By.cssSelector("[aria-label = 'Collapse']");
   private By sharedMarkerSelector = By.cssSelector("i[class ^= 'anticon anticon-share-alt']");
   private By deleteButtonSelector = By.cssSelector("button[type='button']:not([aria-label])");
-  private By widgetWrapper = By.cssSelector(".rst__rowTitle  > div");
+  private By widget = By.cssSelector(".rst__rowTitle  > div");
   private static String widgetTitle = null;
 
   /**
@@ -82,28 +77,32 @@ public class MainPage extends BasePage {
    */
   @Step
   public WidgetSidebarPage openWidgetSidebarToWorkWithWidgetMeta(String widgetName) {
-    System.out.println(String.format("Opening The '%s' widget", widgetName));
-    WebElement widget = widgetsList.stream().filter(w ->
-        widgetName.contains(w.findElement(widgetsTitleLSelector).getText())).findFirst()
-        .orElse(null);
-    if (widget != null) {
-      widget.findElement(widgetsTitleLSelector).click();
-    } else {
-      throw new TestNGException(String.format("No Widget named '%s' was found", widgetName));
-    }
+    openWidget(widgetName);
     return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
   }
 
   /**
-   * Opening widget sidebar.
+   * Opening an accordingly named widget's sidebar.
    * @param widgetName widget name
    * @return PropertyAndPropertyValuePage
    */
   @Step
   public PropertyAndPropertyValuePage openWidgetSidebar(String widgetName) {
-    getDriver().findElement(By.xpath(String.format("//span[text() = '%s']/../..", widgetName)))
-        .click();
+    openWidget(widgetName);
     return PageFactory.initElements(getDriver(), PropertyAndPropertyValuePage.class);
+  }
+
+  /**
+   * Opening widget sidebar.
+   * @param widgetName widget name
+   */
+  private void openWidget(String widgetName) {
+    System.out.println(String.format("Opening the '%s' widget's sidebar", widgetName));
+    WebElement widget = widgetsList.stream().filter(w ->
+        widgetName.equals(w.findElement(widgetsTitleLSelector).getText()))
+        .findFirst().orElseThrow(() ->
+            new TestNGException(String.format("No Widget named '%s' was found", widgetName)));
+    widget.findElement(widgetsTitleLSelector).click();
   }
 
   /**
@@ -226,14 +225,16 @@ public class MainPage extends BasePage {
 
   /**
    * Checking for a found entity marking.
-   * @param widgetTitle entity name
+   * @param widgetName entity name
    */
-  public MainPage checkWidgetMarking(String widgetTitle) {
+  public MainPage checkWidgetMarking(String widgetName) {
+    System.out.println("Checking if the widget has been marked");
     WebElement widget = widgetsList.stream().filter(w ->
-        widgetTitle.equals(w.findElement(widgetsTitleLSelector).getText())).findFirst()
+        widgetName.equals(w.findElement(widgetsTitleLSelector).getText())).findFirst()
         .orElseThrow(NoSuchElementException::new);
-    Assertions.assertThat(widget.findElement(widgetWrapper).getCssValue("background-color"))
-        .as("Checking for a found entity marking")
+    String actualColor = widget.findElement(this.widget).getCssValue("background-color");
+    Assertions.assertThat(actualColor)
+        .as("The widget hasn't been marked")
         .contains("24, 144, 255, 0.");
     return this;
   }

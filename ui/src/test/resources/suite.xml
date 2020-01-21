@@ -1,21 +1,22 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 
-<suite name="Drafts" verbose="1" configfailurepolicy="continue" parallel="none">
-
-    <test name="Property" verbose="1">
+<suite
+        name = "Critical Path Suite"
+        thread-count = "1"
+        configfailurepolicy = "continue"
+        verbose = "5">
+    <test name = "End-To-End Test">
         <classes>
-            <class name="ru.alfabank.platform.tests.acms.PropertyDraftTest"></class>
+            <class name = "ru.alfabank.platform.tests.acms.EndToEndTest"/>
+            <parameter name = "testPageUri"  value = "about/"/>
+            <parameter name = "testWidget"   value = "MetaTitle"/>
+            <parameter name = "testProperty" value = "title"/>
         </classes>
     </test>
-    <test name="Widget" verbose="1">
+    <test name = "Search Test">
         <classes>
-            <class name="ru.alfabank.platform.tests.acms.WidgetDeleteTest"></class>
-        </classes>
-    </test>
-    <test name="e2e" verbose="1">
-        <classes>
-            <class name="ru.alfabank.platform.tests.acms.EndToEndTest"></class>
-            <class name="ru.alfabank.platform.tests.acms.SearchTest"></class>
+            <class name = "ru.alfabank.platform.tests.acms.SearchTest"/>
+            <parameter name = "testPageUri"  value = "sme-new/"/>
         </classes>
     </test>
 </suite>

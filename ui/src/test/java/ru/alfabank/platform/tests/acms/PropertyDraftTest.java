@@ -1,16 +1,13 @@
 package ru.alfabank.platform.tests.acms;
 
-import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+import io.qameta.allure.testng.*;
+import org.openqa.selenium.support.*;
+import org.testng.annotations.*;
+import ru.alfabank.platform.buisenessobjects.*;
+import ru.alfabank.platform.pages.acms.*;
+import ru.alfabank.platform.tests.*;
 
-import io.qameta.allure.testng.TestInstanceParameter;
-import org.openqa.selenium.support.PageFactory;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import ru.alfabank.platform.buisenessobjects.User;
-import ru.alfabank.platform.pages.acms.MainPage;
-import ru.alfabank.platform.pages.acms.WidgetSidebarPage;
-import ru.alfabank.platform.tests.BaseTest;
+import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 public class PropertyDraftTest extends BaseTest {
 
@@ -75,6 +72,6 @@ public class PropertyDraftTest extends BaseTest {
     PageFactory.initElements(getDriver(), WidgetSidebarPage.class)
         .closeWidgetSidebar()
         .openPagesTree()
-        .selectPage("sme-new");
+        .selectPage("sme-new/");
   }
 }

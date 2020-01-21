@@ -1,140 +1,150 @@
 package ru.alfabank.platform.tests.acms;
 
-import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
-import static ru.alfabank.platform.helpers.DriverHelper.killDriver;
+import org.openqa.selenium.support.*;
+import org.testng.annotations.*;
+import ru.alfabank.platform.buisenessobjects.*;
+import ru.alfabank.platform.pages.acms.*;
+import ru.alfabank.platform.pages.alfasite.*;
+import ru.alfabank.platform.tests.*;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import org.openqa.selenium.support.PageFactory;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-import ru.alfabank.platform.buisenessobjects.User;
-import ru.alfabank.platform.pages.acms.MainPage;
-import ru.alfabank.platform.pages.alfasite.AlfaSitePage;
-import ru.alfabank.platform.tests.BaseTest;
+import java.time.*;
+import java.time.temporal.*;
+
+import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 public class EndToEndTest extends BaseTest {
 
   private static final User   user = new User();
-  private static final String TEST_WIDGET = "MetaTitle";
-  private static final String TEST_PROPERTY = "title";
+  private String testPageUri;
+  private String testWidget;
+  private String testProperty;
   private static final String RU = "ru";
   private static final String MSKMO = "mskmo";
   private static final String BEZ_MSK_MO = "bez_msk_mo";
 
-  private final LocalDateTime startActiveTime = LocalDateTime.now().minus(1, ChronoUnit.HOURS);
+  //TODO: http://jira.moscow.alfaintra.net/browse/ALFABANKRU-18153
+  private final LocalDateTime startActiveTime = LocalDateTime.now().minus(3, ChronoUnit.HOURS);
   private final LocalDateTime endActiveTime = LocalDateTime.now().plus(1, ChronoUnit.HOURS);
 
   /**
    * Opening acms.
    */
   @BeforeMethod(alwaysRun = true)
-  public void openBrowser() {
+  @Parameters({"testPageUri", "testWidget", "testProperty"})
+  public void openBrowser(String testPageUri, String testWidget, String testProperty) {
+    this.testPageUri = testPageUri;
+    this.testWidget = testWidget;
+    this.testProperty = testProperty;
     PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(user.getLogin(), user.getPassword())
         .openPagesTree()
-        .selectPage(TEST_PAGE_URI);
+        .selectPage(testPageUri);
   }
 
-  @Test(description = "Тест значений проперти виджета для двух разных гео-зон",
+  @Test(description = "Тест значений проперти виджета для двух разных гео-зон: '"
+      + MSKMO + "' и '" + BEZ_MSK_MO + "'",
       groups = "need restore")
   public void valuesGeoModifyTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
+        .openWidgetSidebarToWorkWithWidgetMeta(testWidget)
         .expandWidgetMetaInfo()
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(startActiveTime)
         .openEndDatePicker().setDateTo(endActiveTime)
         .setGeoGroupsToWidget(RU)
         .collapseWidgetMetaInfoAnd()
-        .modifyPropertyValue(TEST_PROPERTY, "\"" + MSKMO + "\"", MSKMO)
-        .createValue(TEST_PROPERTY, "\"" + BEZ_MSK_MO + "\"", BEZ_MSK_MO)
+        .modifyPropertyValue(testProperty, "\"" + MSKMO + "\"", MSKMO)
+        .createValue(testProperty, "\"" + BEZ_MSK_MO + "\"", BEZ_MSK_MO)
         .submitChanges()
         .saveDraft()
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open("/" + TEST_PAGE_URI + "/")
+        .open("/" + testPageUri)
         .checkPageTitleAfter(startActiveTime, MSKMO)
         .checkPageTitleAfter(startActiveTime, BEZ_MSK_MO, "vladimir");
     killDriver();
   }
 
-  @Test(description = "Тест изменения и отображение виджета для " + MSKMO, priority = 1,
+  @Test(description = "Тест изменения и отображение виджета для " + MSKMO,
+      priority = 1,
       groups = "need restore")
   public void widgetsGeoModifyTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
+        .openWidgetSidebarToWorkWithWidgetMeta(testWidget)
         .expandWidgetMetaInfo()
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(startActiveTime)
         .openEndDatePicker().setDateTo(endActiveTime)
         .setGeoGroupsToWidget(MSKMO)
         .collapseWidgetMetaInfoAnd()
-        .modifyValue(TEST_PROPERTY, "\"" + MSKMO + "\"", MSKMO)
+        .modifyValue(testProperty, "\"" + MSKMO + "\"", MSKMO)
         .submitChanges()
         .saveDraft()
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open("/" + TEST_PAGE_URI + "/")
+        .open("/" + testPageUri)
         .checkPageTitleAfter(startActiveTime, MSKMO)
         .checkPageTitleAfter(startActiveTime, "", "vladimir");
     killDriver();
   }
 
-  @Test(description = "Тест скрытия виджета", priority = 2, groups = "need restore")
+  @Test(description = "Тест скрытия виджета",
+      priority = 2,
+      groups = "need restore")
   public void widgetInvisibilityTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
+        .openWidgetSidebarToWorkWithWidgetMeta(testWidget)
         .expandWidgetMetaInfo()
         .setVisibilityTo(false)
         .openStartDatePicker().setDateTo(startActiveTime)
         .openEndDatePicker().setDateTo(endActiveTime)
         .setGeoGroupsToWidget(RU)
         .collapseWidgetMetaInfoAnd()
-        .modifyPropertyValue(TEST_PROPERTY, "\"" + MSKMO + "\"", MSKMO)
-        .createValue(TEST_PROPERTY, "\"" + BEZ_MSK_MO + "\"", BEZ_MSK_MO)
+        .modifyPropertyValue(testProperty, "\"" + MSKMO + "\"", MSKMO)
+        .createValue(testProperty, "\"" + BEZ_MSK_MO + "\"", BEZ_MSK_MO)
         .submitChanges()
         .saveDraft()
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open("/" + TEST_PAGE_URI + "/")
+        .open("/" + testPageUri)
         .checkPageTitleAfter(startActiveTime, "")
         .checkPageTitleAfter(startActiveTime, "", "vladimir");
     killDriver();
   }
 
-  @Test(description = "Тест удаления проперти", priority = 3)
+  @Test(description = "Тест удаления проперти",
+      priority = 3)
   public void propertyDeletionTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
-        .deleteProperty(TEST_PROPERTY)
+        .openWidgetSidebarToWorkWithWidgetMeta(testWidget)
+        .deleteProperty(testProperty)
         .submitChanges()
         .saveDraft()
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open("/" + TEST_PAGE_URI + "/")
+        .open("/" + testPageUri)
         .checkPageTitleAfter(startActiveTime, "")
         .checkPageTitleAfter(startActiveTime, "", "vladimir");
     killDriver();
   }
 
-  @Test(description = "Тест добавления проперти", dependsOnMethods = "propertyDeletionTest")
+  @Test(description = "Тест добавления проперти",
+      dependsOnMethods = "propertyDeletionTest")
   public void propertyAdditionTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
-        .createNewPropertyToWorkWith(TEST_PROPERTY)
-        .modifyValue(TEST_PROPERTY, "\"" + RU + "\"", RU)
+        .openWidgetSidebarToWorkWithWidgetMeta(testWidget)
+        .createNewPropertyToWorkWith(testProperty)
+        .modifyValue(testProperty, "\"" + RU + "\"", RU)
         .submitChanges()
         .saveDraft()
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open("/" + TEST_PAGE_URI + "/")
+        .open("/" + testPageUri)
         .checkPageTitleAfter(startActiveTime, RU)
         .checkPageTitleAfter(startActiveTime, RU, "vladimir");
     killDriver();
@@ -149,21 +159,21 @@ public class EndToEndTest extends BaseTest {
     final LocalDateTime startActiveTime = LocalDateTime.now().plus(30, ChronoUnit.SECONDS);
     final LocalDateTime endActiveTime = LocalDateTime.now().plus(60, ChronoUnit.SECONDS);
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
+        .openWidgetSidebarToWorkWithWidgetMeta(testWidget)
         .expandWidgetMetaInfo()
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(startActiveTime)
         .openEndDatePicker().setDateTo(endActiveTime)
         .setGeoGroupsToWidget(RU)
         .collapseWidgetMetaInfoAnd()
-        .modifyPropertyValue(TEST_PROPERTY, "\"" + MSKMO + "\"", MSKMO)
-        .createValue(TEST_PROPERTY, "\"" + BEZ_MSK_MO + "\"", BEZ_MSK_MO)
+        .modifyPropertyValue(testProperty, "\"" + MSKMO + "\"", MSKMO)
+        .createValue(testProperty, "\"" + BEZ_MSK_MO + "\"", BEZ_MSK_MO)
         .submitChanges()
         .saveDraft()
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open("/" + TEST_PAGE_URI + "/")
+        .open("/" + testPageUri)
         .checkPageTitleBefore()
         .checkPageTitleAfter(startActiveTime, MSKMO)
         .checkPageTitleAfter(startActiveTime, BEZ_MSK_MO, "vladimir")
@@ -175,21 +185,21 @@ public class EndToEndTest extends BaseTest {
   /**
    * Deleting created property value.
    */
-  @AfterMethod(alwaysRun = true, onlyForGroups = {"need restore"})
+  @AfterMethod(alwaysRun = true,
+      onlyForGroups = "need restore")
   public void restore() throws InterruptedException {
     PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(user.getLogin(), user.getPassword())
         .openPagesTree()
-        .selectPage(TEST_PAGE_URI)
-        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
+        .selectPage(testPageUri)
+        .openWidgetSidebarToWorkWithWidgetMeta(testWidget)
         .expandWidgetMetaInfo()
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(startActiveTime)
         .openEndDatePicker().setDateTo(endActiveTime)
         .setGeoGroupsToWidget(RU)
         .collapseWidgetMetaInfoAnd()
-        .restorePropertyAndValues(
-            TEST_PROPERTY,
+        .restorePropertyAndValues(testProperty,
             "\"Удобный банк для малого бизнеса — «Альфа-Банк» - Москва\"",
             RU)
         .submitChanges()

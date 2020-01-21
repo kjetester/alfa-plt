@@ -1,23 +1,17 @@
 package ru.alfabank.platform.helpers;
 
-import static java.time.Duration.ofSeconds;
-import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
-import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOf;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
+import io.github.bonigarcia.wdm.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.*;
+import org.openqa.selenium.support.ui.*;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.IntStream;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.temporal.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.*;
+
+import static java.time.Duration.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class DriverHelper {
 
@@ -35,6 +29,10 @@ public class DriverHelper {
       ChromeOptions opts = new ChromeOptions();
       opts.setAcceptInsecureCerts(true);
       driver = new ChromeDriver(opts);
+      driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+      driver.manage().window().setSize(new Dimension(1500, 800));
+      driver.manage().window().setPosition(new Point(0, 0));
     }
     return driver;
   }

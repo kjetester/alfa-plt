@@ -19,8 +19,8 @@ public class WidgetSidebarPage extends BasePage {
   @FindBy(xpath = "//div[@class = 'ant-collapse-header']/..")
   private List<WebElement> propList;
   @FindBy(xpath = "//div[@class = 'ant-collapse-header']/span")
-  private List<WebElement> propNameList;
-  @FindBy(xpath = "//div[contains(text(), 'Выберите свойство')]")
+  private List<WebElement> propDropdownList;
+  @FindBy(css = "[class $= 'ant-select-allow-clear'] .ant-select-selection__rendered")
   private WebElement newPropNameInput;
   @FindBy(css = "[role='listbox']")
   private WebElement newPropDropdownList;
@@ -65,8 +65,8 @@ public class WidgetSidebarPage extends BasePage {
    */
   @Step
   public WidgetSidebarPage checkIfPropertyWasAdded(String newName) {
-    waitForElementsBecomeVisible(propNameList);
-    Assertions.assertThat(propNameList.stream().anyMatch(e -> newName.equals(e.getText())))
+    waitForElementsBecomeVisible(propDropdownList);
+    Assertions.assertThat(propDropdownList.stream().anyMatch(e -> newName.equals(e.getText())))
         .as("Checking if widget with name '%s' is present", newName)
         .isTrue();
     return this;
@@ -106,8 +106,8 @@ public class WidgetSidebarPage extends BasePage {
    */
   @Step
   public WidgetSidebarPage checkIfPropertyIsAbsent(String propName) {
-    waitForElementsBecomeVisible(propNameList);
-    Assertions.assertThat(propNameList.stream().anyMatch(e -> propName.equals(e.getText())))
+    waitForElementsBecomeVisible(propDropdownList);
+    Assertions.assertThat(propDropdownList.stream().anyMatch(e -> propName.equals(e.getText())))
         .as("Checking if widget with name '%s' is absent", propName)
         .isFalse();
     return this;

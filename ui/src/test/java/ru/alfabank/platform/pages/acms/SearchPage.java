@@ -1,10 +1,9 @@
 package ru.alfabank.platform.pages.acms;
 
-import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.*;
 
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 public class SearchPage extends BasePage {
 
@@ -19,7 +18,8 @@ public class SearchPage extends BasePage {
    * @return MainPage
    * @throws InterruptedException InterruptedException
    */
-  public MainPage search(String text) throws InterruptedException {
+  public MainPage searchFor(String text) throws InterruptedException {
+    System.out.println(String.format("Setting search for a '%s'", text));
     setValueToMonacoTextArea(text, searchInput);
     Thread.sleep(2_000);
     return PageFactory.initElements(getDriver(), MainPage.class);

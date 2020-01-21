@@ -11,8 +11,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
-
-import org.testng.*;
+import org.testng.TestNGException;
 import ru.alfabank.platform.buisenessobjects.Page;
 import ru.alfabank.platform.buisenessobjects.User;
 import ru.alfabank.platform.buisenessobjects.Widget;

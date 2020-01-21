@@ -1,19 +1,14 @@
 package ru.alfabank.platform.pages.acms;
 
-import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
-import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesClickable;
-import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesVisible;
-
-import io.qameta.allure.Step;
-import java.util.List;
-import java.util.stream.IntStream;
-
+import io.qameta.allure.*;
 import org.assertj.core.api.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import ru.alfabank.platform.buisenessobjects.Widget;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.*;
+
+import java.util.*;
+import java.util.stream.*;
+
+import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 public class PropertyAndPropertyValuePage extends BasePage {
 
@@ -150,14 +145,17 @@ public class PropertyAndPropertyValuePage extends BasePage {
 
   /**
    * Checking for a found entity marking.
-   * @param name name
-   * @param property property
+   * @param propertyName property name
    */
-  public void checkPropertyMarking(String name, Widget.Property property) {
-    By propertySelector = By.xpath(String.format(propertySelectorXpath, property.getName()));
+  public void checkPropertyMarking(String propertyName) {
+    System.out.println(
+        String.format("Checking if the propertyName '%s' has been marked", propertyName));
+    By propertySelector = By.xpath(String.format(propertySelectorXpath, propertyName));
     String actualColor = waitForElementBecomesClickable(
         getDriver().findElement(propertySelector).findElement(By.cssSelector("span")))
         .getCssValue("color");
-    Assertions.assertThat(actualColor).as("").contains("24, 144, 255");
+    Assertions.assertThat(actualColor)
+        .as("The propertyName hasn't been marked")
+        .contains("24, 144, 255");
   }
 }
