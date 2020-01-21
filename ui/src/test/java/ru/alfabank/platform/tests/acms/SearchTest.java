@@ -37,23 +37,31 @@ public class SearchTest extends BaseTest {
   public void searchByWidgetNameTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), SearchPage.class)
         .searchFor(testWidget.getName())
-        .checkWidgetMarking(testWidget.getName());
+        .checkWidgetIsMarked(testWidget.getName());
   }
 
   @Test(description = "Тест функцирнала поиска виджета по UID")
   public void searchByWidgetUidTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), SearchPage.class)
         .searchFor(testWidget.getUid())
-        .checkWidgetMarking(testWidget.getName());
+        .checkWidgetIsMarked(testWidget.getName());
   }
 
   @Test(description = "Тест функцирнала поиска значения по значению")
   public void searchByPropertyNameTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), SearchPage.class)
         .searchFor(testValue.getValue().asText())
-        .checkWidgetMarking(testWidget.getName())
+        .checkWidgetIsMarked(testWidget.getName())
         .openWidgetSidebar(testWidget.getName())
         .checkPropertyMarking(testProperty.getName());
+  }
+
+  @Test(description = "Тест игнорования подстроки при поиске виджета по UID",
+      priority = 1)
+  public void ignoreSubstringWhileSearchingByWidgetUidTest() throws InterruptedException {
+    PageFactory.initElements(getDriver(), SearchPage.class)
+        .searchFor(testWidget.getUid().substring(3, (testWidget.getUid().length() - 3)))
+        .checkNoWidgetIsMarked();
   }
 
   /**

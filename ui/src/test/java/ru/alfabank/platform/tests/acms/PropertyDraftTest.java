@@ -22,11 +22,12 @@ public class PropertyDraftTest extends BaseTest {
    * Opening acms.
    */
   @BeforeClass (alwaysRun = true)
-  public void settingUp() {
+  @Parameters({"testPageUri"})
+  public void settingUp(String testPageUri) {
     PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(user.getLogin(), user.getPassword())
         .openPagesTree()
-        .selectPage(TEST_PAGE_URI);
+        .selectPage(testPageUri);
   }
 
   @Test(

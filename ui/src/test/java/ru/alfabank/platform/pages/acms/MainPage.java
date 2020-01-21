@@ -8,6 +8,7 @@ import org.testng.*;
 
 import java.util.NoSuchElementException;
 import java.util.*;
+import java.util.stream.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
@@ -15,6 +16,8 @@ public class MainPage extends BasePage {
 
   @FindBy(css = "a[href = '/acms/pages']")
   private WebElement pagesLink;
+  @FindBy(css = "[style *= 'align-self']")
+  private WebElement addPageButton;
   @FindBy(css = "li[class = 'ant-tree-treenode-switcher-open'] a")
   private List<WebElement> rootPageList;
   @FindBy(css = ".rst__node")
@@ -29,7 +32,8 @@ public class MainPage extends BasePage {
   private By treeCollapseButtonSelector = By.cssSelector("[aria-label = 'Collapse']");
   private By sharedMarkerSelector = By.cssSelector("i[class ^= 'anticon anticon-share-alt']");
   private By deleteButtonSelector = By.cssSelector("button[type='button']:not([aria-label])");
-  private By widget = By.cssSelector(".rst__rowTitle  > div");
+  private By widgetSelector = By.cssSelector(".rst__rowTitle  > div");
+
   private static String widgetTitle = null;
 
   /**
@@ -214,10 +218,6 @@ public class MainPage extends BasePage {
     return this;
   }
 
-  public static String getWidgetTitle() {
-    return widgetTitle;
-  }
-
   public void submit() {
     waitForElementBecomesVisible(modalWindow);
     modalWindowSubmitButton.click();
@@ -227,15 +227,34 @@ public class MainPage extends BasePage {
    * Checking for a found entity marking.
    * @param widgetName entity name
    */
-  public MainPage checkWidgetMarking(String widgetName) {
+  public MainPage checkWidgetIsMarked(String widgetName) {
     System.out.println("Checking if the widget has been marked");
-    WebElement widget = widgetsList.stream().filter(w ->
-        widgetName.equals(w.findElement(widgetsTitleLSelector).getText())).findFirst()
-        .orElseThrow(NoSuchElementException::new);
-    String actualColor = widget.findElement(this.widget).getCssValue("background-color");
-    Assertions.assertThat(actualColor)
-        .as("The widget hasn't been marked")
-        .contains("24, 144, 255, 0.");
+    List<WebElement> targetWidgets = widgetsList.stream().filter(w ->
+        widgetName.equals(w.findElement(widgetsTitleLSelector).getText()))
+        .collect(Collectors.toList());
+    boolean b = Object.class instanceof Object;
+    List<WebElement> otherWidgets = widgetsList.stream().filter(w ->
+        !widgetName.equals(w.findElement(widgetsTitleLSelector).getText()))
+        .collect(Collectors.toList());
+    targetWidgets.forEach(w -> Assertions
+        .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
+        .as("The target widget hasn't been marked")
+        .contains("24, 144, 255"));
+    otherWidgets.forEach(w -> Assertions
+        .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
+        .as("The other widget has been marked")
+        .contains(("255, 255, 255")));
     return this;
+  }
+
+  /**
+   * Check that no one widget is marked.
+   */
+  public void checkNoWidgetIsMarked() {
+    System.out.println("Checking if no widget has been marked");
+    widgetsList.forEach(w -> Assertions
+        .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
+        .as("The other widget has been marked")
+        .contains(("255, 255, 255")));
   }
 }
