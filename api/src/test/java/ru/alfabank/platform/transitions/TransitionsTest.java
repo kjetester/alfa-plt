@@ -1,16 +1,15 @@
 package ru.alfabank.platform.transitions;
 
-import static io.restassured.RestAssured.given;
+import io.restassured.builder.*;
+import io.restassured.filter.log.*;
+import io.restassured.http.*;
+import io.restassured.response.*;
+import io.restassured.specification.*;
+import org.assertj.core.api.*;
+import org.testng.annotations.*;
+import ru.alfabank.platform.transitions.buisnessobjects.*;
 
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-import org.assertj.core.api.Assertions;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import ru.alfabank.platform.transitions.buisnessobjects.Body;
+import static io.restassured.RestAssured.*;
 
 public class TransitionsTest {
 
@@ -27,10 +26,10 @@ public class TransitionsTest {
   public void setUp() {
     minReqSpec = new RequestSpecBuilder()
         .setBaseUri("http://feature-swagger-webflux.tranbilog.reviews.ci.k8s.alfa.link").setBasePath("log")
-        .setContentType(ContentType.JSON).build();
+        .addHeader("Referer", "https://alfabank.ru/get-money/credit/credit-cash/")
+        .setContentType(ContentType.JSON).log(LogDetail.ALL).build();
     spec = new RequestSpecBuilder()
         .addRequestSpecification(minReqSpec)
-        .addHeader("Referer", "https://alfabank.ru/get-money/credit/credit-cash/")
         .addHeader("User-Agent", "Mozilla / 5.0(Windows NT 10.0; Win64; x64) AppleWebKit"
             + " / 537.36(KHTML, like Gecko) Chrome / 72.0 .3626 .109 Safari / 537.36")
         .build();
@@ -42,7 +41,7 @@ public class TransitionsTest {
         .setRegion("Москва").setLendingAmount("100000").setCreditTerm("24")
         .setCardID("SU").setPacketID("T04").setPrefilContractId("PDTT04").build();
     body = new Body.BodyBuilder().setBusinessUid("00005677e4cb4ba687ad774ac82a4e30")
-        .setClientDate("2018-01-15T22:39:40.57Z")
+        .setClientDate("2018-01-15T22:39:40+00:00")
         .setRecipient("https://anketa.alfabank.ru/alfaform-common-land/").setStatus("ok")
         .setFeedBackData(null).setClientData(clientData).setData(data).build();
   }
@@ -60,62 +59,79 @@ public class TransitionsTest {
       modifiedBody = new Body.BodyBuilder().using(body).setStatus(status).build();
     }
     Response response = given().spec(spec).body(modifiedBody).when().post();
+    response.then().log().all();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(200);
   }
 
   @Test
   public void noMandatoryHeadersTest() {
     Response response = given().spec(minReqSpec).body(body).when().post();
+    response.then().log().all();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(200);
   }
 
-  @Test(dataProvider = "invalid values")
+  @Test(dataProvider = "empty fields")
   public void businessUidValidationTest(String value) {
     Body modifiedBody = new Body.BodyBuilder().using(body).setBusinessUid(value).build();
     Response response = given().spec(spec).body(modifiedBody).post();
+    response.then().log().all();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
     Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
-        .isEqualTo(EXPECTED_ERROR_MESSAGE);
+        .contains(EXPECTED_ERROR_MESSAGE);
   }
 
-  @Test(dataProvider = "invalid values")
+  @Test(dataProvider = "empty fields")
   public void clientDateValidationTest(String value) {
     Body modifiedBody = new Body.BodyBuilder().using(body).setClientDate(value).build();
     Response response = given().spec(spec).body(modifiedBody).post();
+    response.then().log().all();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
     Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
-        .isEqualTo(EXPECTED_ERROR_MESSAGE);
+        .contains(EXPECTED_ERROR_MESSAGE);
   }
 
-  @Test(dataProvider = "invalid values")
+  @Test(dataProvider = "empty fields")
   public void recipientValidationTest(String value) {
     Body modifiedBody = new Body.BodyBuilder().using(body).setRecipient(value).build();
     Response response = given().spec(spec).body(modifiedBody).post();
+    response.then().log().all();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
     Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
-        .isEqualTo(EXPECTED_ERROR_MESSAGE);
+        .contains(EXPECTED_ERROR_MESSAGE);
   }
 
-  @Test(dataProvider = "invalid values")
+  @Test(dataProvider = "empty client data")
   public void clientDataValidationTest(Object value) {
     Body modifiedBody = new Body.BodyBuilder().using(body).setClientData(value).build();
     Response response = given().spec(spec).body(modifiedBody).post();
+    response.then().log().ifError();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
     Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
-        .isEqualTo(EXPECTED_ERROR_MESSAGE);
+        .contains(EXPECTED_ERROR_MESSAGE);
   }
 
-  @Test(dataProvider = "invalid values")
+  @Test(dataProvider = "empty data")
   public void dataValidationTest(Object value) {
     Body modifiedBody = new Body.BodyBuilder().using(body).setData(value).build();
     Response response = given().spec(spec).body(modifiedBody).post();
+    response.then().log().all();
     Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
     Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
-        .isEqualTo(EXPECTED_ERROR_MESSAGE);
+        .contains(EXPECTED_ERROR_MESSAGE);
   }
 
-  @DataProvider(name = "invalid values")
-  public Object[][] empties() {
+  @DataProvider(name = "empty client data")
+  public Object[][] emptyClientData() {
+    return new Object[][]{{null}, {new Body.EmptyClientData()}};
+  }
+
+  @DataProvider(name = "empty data")
+  public Object[][] emptyData() {
+    return new Object[][]{{null}, {new Body.EmptyData()}};
+  }
+
+  @DataProvider(name = "empty fields")
+  public Object[][] fields() {
     return new Object[][]{{null}, {""}};
   }
 

@@ -12,7 +12,7 @@ import ru.alfabank.platform.businessobjects.Method;
 @JsonInclude (JsonInclude.Include.NON_NULL)
 public final class DataDraft {
 
-  private boolean enable;
+  private Boolean enable;
   private String dateFrom;
   private String dateTo;
   private Device device;
@@ -26,6 +26,7 @@ public final class DataDraft {
   private Object[] childUids;
   private Entity entity;
   private Method method;
+  private String extraField;
 
   @JsonCreator
   private DataDraft(final DataDraftBuilder builder) {
@@ -43,12 +44,13 @@ public final class DataDraft {
     this.childUids = builder.childUids;
     this.entity = builder.entity;
     this.method = builder.method;
+    this.extraField = builder.extraField;
   }
 
   @JsonIgnoreType
   public static class DataDraftBuilder {
 
-    private boolean enable;
+    private Boolean enable;
     private String dateFrom;
     private String dateTo;
     private Device device;
@@ -62,8 +64,9 @@ public final class DataDraft {
     private Object[] childUids;
     private Entity entity;
     private Method method;
+    private String extraField;
 
-    public DataDraftBuilder enable(boolean enable) {
+    public DataDraftBuilder enable(Boolean enable) {
       this.enable = enable;
       return this;
     }
@@ -130,6 +133,11 @@ public final class DataDraft {
 
     public DataDraftBuilder method(Method method) {
       this.method = method;
+      return this;
+    }
+
+    public DataDraftBuilder extraField(String extraField) {
+      this.extraField = extraField;
       return this;
     }
 

@@ -1,25 +1,19 @@
 package ru.alfabank.platform.apitest.drafts.create;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.not;
-import static ru.alfabank.platform.businessobjects.CityGroup.getCityGroup;
-import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.helpers.TestDataHelper.getNewUuid;
+import org.testng.*;
+import org.testng.annotations.*;
+import ru.alfabank.platform.apitest.drafts.*;
+import ru.alfabank.platform.businessobjects.*;
+import ru.alfabank.platform.businessobjects.draft.*;
+import ru.alfabank.platform.helpers.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import org.testng.ITestContext;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import ru.alfabank.platform.apitest.drafts.BaseTest;
-import ru.alfabank.platform.businessobjects.Entity;
-import ru.alfabank.platform.businessobjects.Method;
-import ru.alfabank.platform.businessobjects.Property;
-import ru.alfabank.platform.businessobjects.Value;
-import ru.alfabank.platform.businessobjects.draft.DataDraft;
-import ru.alfabank.platform.businessobjects.draft.WrapperDraft;
-import ru.alfabank.platform.helpers.TestDataHelper;
+import java.util.*;
+
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.CoreMatchers.*;
+import static ru.alfabank.platform.businessobjects.CityGroup.*;
+import static ru.alfabank.platform.businessobjects.Device.*;
+import static ru.alfabank.platform.helpers.TestDataHelper.*;
 
 public class CreatePropertyTest extends BaseTest {
 
@@ -43,7 +37,7 @@ public class CreatePropertyTest extends BaseTest {
         desktop,
         Collections.singletonList(newValue));
     DataDraft newPropertyData = new DataDraft.DataDraftBuilder()
-        .forWidget(TestDataHelper.getTestWidget().getUid())
+        .forWidget(getTestWidget().getUid())
         .name(newProperty.getName())
         .device(newProperty.getDevice())
         .build();

@@ -1,36 +1,24 @@
 package ru.alfabank.platform.helpers;
 
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.oauth2;
-import static org.hamcrest.Matchers.not;
+import io.restassured.builder.*;
+import io.restassured.filter.log.*;
+import io.restassured.http.*;
+import io.restassured.path.json.*;
+import io.restassured.response.*;
+import io.restassured.specification.*;
+import ru.alfabank.platform.businessobjects.*;
 
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.filter.log.LogDetail;
-import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import ru.alfabank.platform.businessobjects.CityGroup;
-import ru.alfabank.platform.businessobjects.Device;
-import ru.alfabank.platform.businessobjects.Entity;
-import ru.alfabank.platform.businessobjects.Page;
-import ru.alfabank.platform.businessobjects.Property;
-import ru.alfabank.platform.businessobjects.Value;
-import ru.alfabank.platform.businessobjects.Widget;
+import java.util.*;
+
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
 
 public class TestDataHelper {
 
   private static final String KEYCLOAK_BASE_URL = "https://keycloak.k8s.alfa.link";
   private static final String KEYCLOAK_BASE_PATH =
       "auth/realms/local_users/protocol/openid-connect/token";
-  private static final String BASE_URI = "http://develop.ci.k8s.alfa.link";
+  private static final String BASE_URI = "http://preprod.ci.k8s.alfa.link";
   private static final String BASE_PATH = "api/v1";
   private static final String USERNAME = "user1";
   private static final String PASSWORD = "123";
@@ -84,6 +72,7 @@ public class TestDataHelper {
         .setRelaxedHTTPSValidation()
         .setBaseUri(BASE_URI)
         .setBasePath(BASE_PATH)
+        .log(LogDetail.ALL)
         .setAuth(oauth2(oauth2Token))
         .setContentType(ContentType.JSON)
         .build();
@@ -120,7 +109,8 @@ public class TestDataHelper {
     CityGroup cityGroup =
         given().spec(requestSpecification)
             .when().get("geo-group/city-groups")
-            .then().statusCode(200).extract().as(CityGroup.class);
+            .then().log().ifStatusCodeMatches(not(200)).statusCode(200)
+            .extract().as(CityGroup.class);
   }
 
   /**

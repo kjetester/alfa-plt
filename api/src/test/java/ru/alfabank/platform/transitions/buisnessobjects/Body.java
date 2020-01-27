@@ -163,6 +163,14 @@ public final class Body {
   }
 
   @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
+  public static class EmptyClientData {
+
+    @JsonCreator
+    public EmptyClientData() {
+    }
+  }
+
+  @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class Data {
     private String product;
     private String productType;
@@ -291,6 +299,14 @@ public final class Body {
       public Data build() {
         return new Data(this);
       }
+    }
+  }
+
+  @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
+  public static class EmptyData {
+
+    @JsonCreator
+    public EmptyData() {
     }
   }
 }

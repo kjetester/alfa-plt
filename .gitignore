@@ -29,5 +29,6 @@ target/
 *.factorypath
 
 # Allure Files
+.allure/
 allure-results/
 

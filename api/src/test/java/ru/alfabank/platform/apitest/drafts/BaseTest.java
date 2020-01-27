@@ -1,18 +1,16 @@
 package ru.alfabank.platform.apitest.drafts;
 
-import static io.restassured.RestAssured.given;
+import org.testng.*;
+import org.testng.annotations.*;
+import ru.alfabank.platform.businessobjects.*;
+import ru.alfabank.platform.businessobjects.draft.*;
+import ru.alfabank.platform.helpers.*;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import org.testng.ITestContext;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
-import ru.alfabank.platform.businessobjects.Device;
-import ru.alfabank.platform.businessobjects.draft.WrapperDraft;
-import ru.alfabank.platform.helpers.TestDataHelper;
+import java.time.*;
+import java.time.temporal.*;
+import java.util.*;
+
+import static io.restassured.RestAssured.*;
 
 public class BaseTest {
 
