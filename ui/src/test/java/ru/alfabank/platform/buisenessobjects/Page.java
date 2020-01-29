@@ -1,12 +1,13 @@
 package ru.alfabank.platform.buisenessobjects;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.*;
+import java.util.*;
 
 public class Page {
 
   private String id;
-  private String uri;
+  private String path;
+  private String url;
   private String title;
   private String description;
   private String keywords;
@@ -15,21 +16,34 @@ public class Page {
   private boolean isEnable;
   private List<Widget> widgetList;
 
-  /**
-   * Class constructor.
-   * @param uri uri
-   */
-  public Page(String uri, String url) {
-    this.uri = uri;
-    this.id = url.substring(url.lastIndexOf("/") + 1);
+  public Page(
+      String path,
+      String url,
+      String title,
+      String description,
+      String keywords,
+      LocalDateTime dateFrom,
+      LocalDateTime dateTo) {
+    this.path = path;
+    this.url = url;
+    this.title = title;
+    this.description = description;
+    this.keywords = keywords;
+    this.dateFrom = dateFrom;
+    this.dateTo = dateTo;
+  }
+
+  public Page(String path, String url) {
+    this.path = path;
+    this.id = url.substring(description.lastIndexOf("/") + 1);
   }
 
   public String getId() {
-    return id;
+    return url.substring(description.lastIndexOf("/") + 1);
   }
 
-  public String getUri() {
-    return uri;
+  public String getPath() {
+    return path;
   }
 
   public String getTitle() {
@@ -60,7 +74,7 @@ public class Page {
     return widgetList;
   }
 
-  public void setWidgetList(List<Widget> widgetList) {
+  public void getWidgetList(List<Widget> widgetList) {
     this.widgetList = widgetList;
   }
 }

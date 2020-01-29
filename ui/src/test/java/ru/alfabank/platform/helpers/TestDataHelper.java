@@ -1,25 +1,24 @@
 package ru.alfabank.platform.helpers;
 
-import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
-import static io.restassured.http.ContentType.URLENC;
-import static org.hamcrest.Matchers.not;
+import org.testng.*;
+import ru.alfabank.platform.buisenessobjects.*;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Properties;
-import org.testng.TestNGException;
-import ru.alfabank.platform.buisenessobjects.Page;
-import ru.alfabank.platform.buisenessobjects.User;
-import ru.alfabank.platform.buisenessobjects.Widget;
+import java.io.*;
+import java.util.*;
+
+import static io.restassured.RestAssured.*;
+import static io.restassured.http.ContentType.*;
+import static org.hamcrest.Matchers.*;
 
 public class TestDataHelper {
 
   private Properties props;
   private Page page;
+  private Page createdPage;
+
+  public TestDataHelper() {
+
+  }
 
   /**
    * Class constructor.
@@ -40,7 +39,7 @@ public class TestDataHelper {
         .when().post()
         .then().log().ifStatusCodeMatches(not(200)).statusCode(200).extract().body()
         .jsonPath().getString("access_token");
-    page.setWidgetList(new ArrayList<>(Arrays.asList(given().relaxedHTTPSValidation()
+    page.getWidgetList(new ArrayList<>(Arrays.asList(given().relaxedHTTPSValidation()
         .baseUri(props.getProperty("app.base.uri"))
         .basePath(props.getProperty("app.base.path"))
         .auth().oauth2(oauth2Token)
@@ -73,5 +72,13 @@ public class TestDataHelper {
   public Widget getTestWidget() {
     return page.getWidgetList().stream().findFirst().orElseThrow(()
         -> new TestNGException("No one test widget is defined"));
+  }
+
+  public Page getCreatedPage() {
+    return createdPage;
+  }
+
+  public void setCreatedPage(Page createdPage) {
+    this.createdPage = createdPage;
   }
 }

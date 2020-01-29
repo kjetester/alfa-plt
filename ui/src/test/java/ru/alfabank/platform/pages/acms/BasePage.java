@@ -13,7 +13,7 @@ public class BasePage {
   protected WebElement bannerCloseBttn;
   @FindBy(className = "ant-modal-body")
   protected WebElement modalWindow;
-  @FindBy(css = ".ant-modal-body .ant-btn-primary")
+  @FindBy(css = "[class ^= 'ant-modal'] .ant-btn-primary")
   protected WebElement modalWindowSubmitButton;
   @FindBy(xpath = "//i[@aria-label=\"icon: setting\"]/..")
   protected WebElement widgetSettings;
@@ -61,7 +61,7 @@ public class BasePage {
   protected void setValueToMonacoTextArea(String textValue, WebElement textArea) {
     try {
       textArea.click();
-      textArea.sendKeys(Keys.chord(Keys.SHIFT, Keys.END), Keys.DELETE);
+      textArea.sendKeys(Keys.chord(Keys.SHIFT, Keys.END), Keys.PAGE_DOWN, Keys.DELETE);
       textArea.sendKeys(textValue);
     } catch (ElementNotInteractableException e) {
       textArea.click();
@@ -71,9 +71,9 @@ public class BasePage {
     }
   }
 
-  protected static boolean isPresent(WebElement w, By sharedMarkerSelector) {
+  protected static boolean isPresent(WebElement w, By selector) {
     try {
-      w.findElement(sharedMarkerSelector);
+      w.findElement(selector);
     } catch (org.openqa.selenium.NoSuchElementException e) {
       return false;
     }

@@ -1,20 +1,18 @@
 package ru.alfabank.platform.pages.acms;
 
-import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
-import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesClickable;
-import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesVisible;
-import static ru.alfabank.platform.helpers.DriverHelper.waitForElementsBecomeVisible;
+import org.assertj.core.api.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.*;
+import org.testng.log4testng.*;
 
-import io.qameta.allure.Step;
-import java.util.List;
-import org.assertj.core.api.Assertions;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import java.util.*;
+
+import static ru.alfabank.platform.helpers.DriverHelper.*;
+import static ru.alfabank.platform.reporting.BasicLogger.info;
 
 public class WidgetSidebarPage extends BasePage {
+
+  private static final Logger LOGGER = Logger.getLogger(WidgetSidebarPage.class);
 
   @FindBy(xpath = "//div[@class = 'ant-collapse-header']/..")
   private List<WebElement> propList;
@@ -26,7 +24,7 @@ public class WidgetSidebarPage extends BasePage {
   private WebElement newPropDropdownList;
   @FindBy(xpath = "//span[text() = 'Добавить']/..")
   private WebElement addNewPropButton;
-  @FindBy(css = "button[class='ant-btn ant-btn-primary']")
+  @FindBy(css = ".ant-drawer-body button[class='ant-btn ant-btn-primary']")
   private WebElement submitButton;
   @FindBy(css = "button[aria-label='Close']")
   private WebElement widgetSidebarCloseButton;
@@ -36,7 +34,6 @@ public class WidgetSidebarPage extends BasePage {
    * @param newPropertyName name
    * @return this
    */
-  @Step
   public WidgetSidebarPage createNewProperty(String newPropertyName) {
     newPropNameInput.click();
     waitForElementBecomesVisible(newPropDropdownList);
@@ -50,7 +47,6 @@ public class WidgetSidebarPage extends BasePage {
    * @param newPropertyName name
    * @return PropertyAndPropertyValuePage
    */
-  @Step
   public PropertyAndPropertyValuePage createNewPropertyToWorkWith(String newPropertyName) {
     newPropNameInput.click();
     waitForElementBecomesVisible(newPropDropdownList);
@@ -60,14 +56,14 @@ public class WidgetSidebarPage extends BasePage {
   }
 
   /**
-   * Checking the result of addition a new Widget.
+   * Checking the result of the new Property addition.
    * @param newName name
    */
-  @Step
   public WidgetSidebarPage checkIfPropertyWasAdded(String newName) {
+    info(String.format("Checking if the new Property named '%s' has been added", newName));
     waitForElementsBecomeVisible(propDropdownList);
     Assertions.assertThat(propDropdownList.stream().anyMatch(e -> newName.equals(e.getText())))
-        .as("Checking if widget with name '%s' is present", newName)
+        .as("The Property named '{}' not found", newName)
         .isTrue();
     return this;
   }
@@ -76,9 +72,8 @@ public class WidgetSidebarPage extends BasePage {
    * Submitting changes.
    * @return Main Page reinitiated instance.
    */
-  @Step
   public MainPage submitChanges() {
-    System.out.println("Submitting changes");
+    LOGGER.info("Submitting changes");
     waitForElementBecomesClickable(submitButton).click();
     return PageFactory.initElements(getDriver(), MainPage.class);
   }
@@ -88,7 +83,6 @@ public class WidgetSidebarPage extends BasePage {
    * @param propName property name
    * @return this
    */
-  @Step
   public WidgetSidebarPage deleteProperty(String propName) {
     WebElement deleteBttn = getDriver().findElement(By.xpath(String.format("//div[@class = "
         + "'ant-collapse-header']/span[text() = '%s']/..//button", propName)));
@@ -104,7 +98,6 @@ public class WidgetSidebarPage extends BasePage {
    * @param propName property name
    * @return this
    */
-  @Step
   public WidgetSidebarPage checkIfPropertyIsAbsent(String propName) {
     waitForElementsBecomeVisible(propDropdownList);
     Assertions.assertThat(propDropdownList.stream().anyMatch(e -> propName.equals(e.getText())))
@@ -117,9 +110,8 @@ public class WidgetSidebarPage extends BasePage {
    * Expanding a Widget Meta Info panel.
    * @return new instance of WidgetMetaInfoPage
    */
-  @Step
   public WidgetMetaInfoPage expandWidgetMetaInfo() {
-    System.out.println("Expanding Widget's MetaInfo pane");
+    LOGGER.info("Expanding Widget's MetaInfo pane");
     waitForElementBecomesClickable(widgetSettings).click();
     return PageFactory.initElements(getDriver(), WidgetMetaInfoPage.class);
   }
@@ -128,9 +120,8 @@ public class WidgetSidebarPage extends BasePage {
    * Closing Widget's sidebar.
    * @return new instance of MainPage
    */
-  @Step
   public MainPage closeWidgetSidebar() {
-    System.out.println("Closing Widget's sidebar");
+    LOGGER.info("Closing Widget's sidebar");
     waitForElementBecomesClickable(widgetSidebarCloseButton).click();
     return PageFactory.initElements(getDriver(), MainPage.class);
   }

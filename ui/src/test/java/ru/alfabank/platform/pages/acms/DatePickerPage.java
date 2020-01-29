@@ -1,16 +1,15 @@
 package ru.alfabank.platform.pages.acms;
 
-import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.*;
+import org.testng.*;
 
-import io.qameta.allure.Step;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.IntStream;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import org.testng.TestException;
+import java.time.*;
+import java.util.*;
+import java.util.stream.*;
+
+import static ru.alfabank.platform.helpers.DriverHelper.*;
+import static ru.alfabank.platform.reporting.BasicLogger.*;
 
 public class DatePickerPage extends BasePage {
 
@@ -50,10 +49,8 @@ public class DatePickerPage extends BasePage {
    * @param dateTime date and time to be set
    * @return new WidgetMetaInfoPage instance
    */
-  @Step
   public WidgetMetaInfoPage setDateTo(LocalDateTime dateTime) throws InterruptedException {
-    System.out.println(String.format("Setting the date to: '%s'",
-        dateTime.toString()));
+    info(String.format("Setting the date to: '%s'", dateTime.toString()));
     Thread.sleep(1000);
     while (dateTime.getYear() != Integer.parseInt(yearPicker.getText())) {
       if (dateTime.getYear() < Integer.parseInt(yearPicker.getText())) {
@@ -102,8 +99,7 @@ public class DatePickerPage extends BasePage {
     scrollToElement(hourList.get(dateTime.getHour())).click();
     scrollToElement(minuteList.get(dateTime.getMinute())).click();
     scrollToElement(secondList.get(dateTime.getSecond())).click();
-    System.out.println(String.format("Date and time have been set to: %s",
-        dateInput.getAttribute("value")));
+    info(String.format("Date and time have been set to: '%s'", dateInput.getAttribute("value")));
     dataPickerOkButton.click();
     return PageFactory.initElements(getDriver(), WidgetMetaInfoPage.class);
   }

@@ -1,31 +1,30 @@
 package ru.alfabank.platform.tests.acms;
 
-import io.qameta.allure.testng.*;
 import org.openqa.selenium.support.*;
 import org.testng.annotations.*;
 import ru.alfabank.platform.buisenessobjects.*;
 import ru.alfabank.platform.pages.acms.*;
+import ru.alfabank.platform.reporting.*;
 import ru.alfabank.platform.tests.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
+@Listeners({CustomListener.class})
 public class PropertyDraftTest extends BaseTest {
 
   User user = new User();
 
-  @TestInstanceParameter
   private String widgetName = "MetaTitle";
-  @TestInstanceParameter
   private String propName = "newPropName";
 
   /**
    * Opening acms.
    */
   @BeforeClass (alwaysRun = true)
-  @Parameters({"testPageUri"})
-  public void settingUp(String testPageUri) {
+  @Parameters({"baseUrl", "testPageUri"})
+  public void settingUp(String baseUrl, String testPageUri) {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize(user.getLogin(), user.getPassword())
+        .openAndAuthorize(baseUrl, user.getLogin(), user.getPassword())
         .openPagesTree()
         .selectPage(testPageUri);
   }
@@ -38,7 +37,7 @@ public class PropertyDraftTest extends BaseTest {
         .createNewProperty(propName)
         .checkIfPropertyWasAdded(propName)
         .submitChanges()
-        .checkIfWidgetIsMarked(widgetName)
+        .checkIfWidgetIsMarkedAsChanged(widgetName)
         .saveDraft()
         .checkIfNoticeAboutDraftExistenceIsPresent()
         .publishDraft()
@@ -56,7 +55,7 @@ public class PropertyDraftTest extends BaseTest {
         .deleteProperty(propName)
         .checkIfPropertyIsAbsent(propName)
         .submitChanges()
-        .checkIfWidgetIsMarked(widgetName)
+        .checkIfWidgetIsMarkedAsChanged(widgetName)
         .saveDraft()
         .checkIfNoticeAboutDraftExistenceIsPresent()
         .publishDraft()

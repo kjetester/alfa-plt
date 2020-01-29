@@ -1,59 +1,63 @@
 package ru.alfabank.platform.pages.acms;
 
-import io.qameta.allure.*;
 import org.assertj.core.api.*;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.*;
 import org.openqa.selenium.support.*;
 import org.testng.*;
+import org.testng.log4testng.*;
 
 import java.util.NoSuchElementException;
 import java.util.*;
 import java.util.stream.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
+import static ru.alfabank.platform.reporting.BasicLogger.*;
 
 public class MainPage extends BasePage {
+
+  private static final Logger LOGGER = Logger.getLogger(BasePage.class);
 
   @FindBy(css = "a[href = '/acms/pages']")
   private WebElement pagesLink;
   @FindBy(css = "[style *= 'align-self']")
-  private WebElement addPageButton;
+  private WebElement createNewPageButton;
   @FindBy(css = "li[class = 'ant-tree-treenode-switcher-open'] a")
   private List<WebElement> rootPageList;
+  @FindBy(css = "[class ^= screen-title]")
+  private WebElement pageTitle;
   @FindBy(css = ".rst__node")
   private List<WebElement> widgetsList;
   @FindBy(xpath = "//span[text() = 'Сохранить']/..")
   private WebElement saveButton;
   @FindBy(xpath = "//span[text() = 'Опубликовать']/..")
   private WebElement publishButton;
-
+  @FindBy(css = "[aria-haspopup = 'listbox']")
+  private WebElement pagesDropdownList;
   private By widgetsTitleLSelector = By.cssSelector("span > span");
   private By treeExpandButtonSelector = By.cssSelector("[aria-label = 'Expand']");
   private By treeCollapseButtonSelector = By.cssSelector("[aria-label = 'Collapse']");
   private By sharedMarkerSelector = By.cssSelector("i[class ^= 'anticon anticon-share-alt']");
   private By deleteButtonSelector = By.cssSelector("button[type='button']:not([aria-label])");
+  private By copyButtonSelector = By.cssSelector("button [class $= 'copy']");
   private By widgetSelector = By.cssSelector(".rst__rowTitle  > div");
 
-  private static String widgetTitle = null;
-
   /**
-   * Opening acms page.
+   * Open acms page.
    * @return this
    */
-  @Step
-  public MainPage openAndAuthorize(String login, String password) {
-    String baseUrl = "http://develop.ci.k8s.alfa.link/acms/";
+  public MainPage openAndAuthorize(String baseUrl, String login, String password) {
+    info(String.format("Starting the browser and navigating to %s", baseUrl));
     getDriver().get(baseUrl);
     return PageFactory.initElements(getDriver(), AuthPage.class).login(login, password);
   }
 
   /**
-   * Opening pages list.
+   * Open pages list.
    * @return this
    */
-  @Step
   public MainPage openPagesTree() {
-    System.out.println("Opening pages link");
+    info("Opening pages link");
     waitForElementBecomesClickable(pagesLink);
     pagesLink.click();
     waitForElementsBecomeVisible(rootPageList);
@@ -61,61 +65,83 @@ public class MainPage extends BasePage {
   }
 
   /**
-   * Opening requested root page.
-   * @param pageUri requested page
+   * Open requested root page.
+   * @param pagePath requested page
    */
-  @Step
-  public MainPage selectPage(String pageUri) {
-    System.out.println(String.format("Searching the page '%s'", pageUri));
-    rootPageList.stream().filter(p -> p.getText().equals(pageUri)).findFirst()
+  public MainPage selectPage(String pagePath) {
+    info(String.format("Opening the '%s' page", pagePath));
+    rootPageList.stream().filter(p ->
+        p.getText().replace("/", "").equals(pagePath)).findFirst()
         .orElseThrow(NoSuchElementException::new)
         .click();
+    waitForElementBecomesVisible(pageTitle);
     waitForElementsBecomeVisible(widgetsList);
     return this;
   }
 
   /**
-   * Opening an accordingly named widget's sidebar.
+   * Open an accordingly named widget's sidebar.
    * @param widgetName widget name
    * @return WidgetSidebarPage
    */
-  @Step
   public WidgetSidebarPage openWidgetSidebarToWorkWithWidgetMeta(String widgetName) {
-    openWidget(widgetName);
+    info(String.format("Opening the %s widget's sidebar", widgetName));
+    findWidget(widgetName).findElement(widgetsTitleLSelector).click();
     return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
   }
 
   /**
-   * Opening an accordingly named widget's sidebar.
+   * Open an accordingly named widget's sidebar.
    * @param widgetName widget name
    * @return PropertyAndPropertyValuePage
    */
-  @Step
   public PropertyAndPropertyValuePage openWidgetSidebar(String widgetName) {
-    openWidget(widgetName);
+    info(String.format("Opening the %s widget's sidebar", widgetName));
+    findWidget(widgetName).findElement(widgetsTitleLSelector).click();
     return PageFactory.initElements(getDriver(), PropertyAndPropertyValuePage.class);
   }
 
   /**
-   * Opening widget sidebar.
+   * Copy an accordingly named widget to a specified page.
    * @param widgetName widget name
+   * @param pageName target page name
+   * @return target page instance
    */
-  private void openWidget(String widgetName) {
-    System.out.println(String.format("Opening the '%s' widget's sidebar", widgetName));
-    WebElement widget = widgetsList.stream().filter(w ->
-        widgetName.equals(w.findElement(widgetsTitleLSelector).getText()))
-        .findFirst().orElseThrow(() ->
-            new TestNGException(String.format("No Widget named '%s' was found", widgetName)));
-    widget.findElement(widgetsTitleLSelector).click();
+  public MainPage copyWidgetOnPage(String widgetName, String pageName) throws InterruptedException {
+    info(String.format("Copying the '%s' widget to the '%s' page", widgetName, pageName));
+    new Actions(getDriver())
+        .moveToElement(findWidget(widgetName).findElement(copyButtonSelector))
+        .click()
+        .build()
+        .perform();
+    waitForElementBecomesClickable(pagesDropdownList).click();
+    setValueToMonacoTextArea(pageName, getDriver().switchTo().activeElement());
+    waitForElementBecomesClickable(
+        getDriver().findElement(By.cssSelector(String.format("[title='%s']", pageName))))
+        .click();
+    submit();
+    Thread.sleep(2_000L);
+    return PageFactory.initElements(getDriver(), MainPage.class);
   }
 
   /**
-   * Checking if 'changed' marker is present.
+   * Open widget sidebar.
+   * @param widgetName widget name
+   */
+  private WebElement findWidget(String widgetName) {
+    return widgetsList.stream().filter(w ->
+        widgetName.equals(w.findElement(widgetsTitleLSelector).getText()))
+        .findFirst().orElseThrow(() ->
+            new TestNGException(String.format("No Widget named '%s' was found", widgetName)));
+  }
+
+  /**
+   * Check if 'changed' marker is present.
    * @param widgetName widget name
    * @return this
    */
-  @Step
-  public MainPage checkIfWidgetIsMarked(String widgetName) {
+  public MainPage checkIfWidgetIsMarkedAsChanged(String widgetName) {
+    info(String.format("Checking the %s widget has been marked", widgetName));
     Assertions
         .assertThat(getDriver()
             .findElement(By.xpath(String.format("//span[text() = '%s']/../../div", widgetName)))
@@ -126,50 +152,48 @@ public class MainPage extends BasePage {
   }
 
   /**
-   * Saving draft.
+   * Save draft.
    * @return this
    */
-  @Step
   public MainPage saveDraft() {
-    System.out.println("Saving draft");
+    LOGGER.info("Saving the draft");
     waitForElementBecomesClickable(saveButton).click();
     waitForElementBecomesClickable(bannerCloseBttn).click();
     return this;
   }
 
   /**
-   * Checking if notice about draft existence is present.
+   * Check if notice about draft existence is present.
    * @return this
    */
-  @Step
   public MainPage checkIfNoticeAboutDraftExistenceIsPresent() {
+    LOGGER.info("Checking if a notice about the draft existence is present");
     Assertions
         .assertThat(getDriver().getPageSource().contains("Имеются неопубликованные изменения"))
-        .as("Checking if notice about draft existence is present")
+        .as("A notice about the draft existence isn't present")
         .isTrue();
     return this;
   }
 
   /**
-   * Checking if notice about draft existence is not present.
+   * Check if notice about draft existence is not present.
    * @return this
    */
-  @Step
   public MainPage checkIfNoticeAboutDraftExistenceIsNotPresent() {
+    LOGGER.info("Checking if a notice about the draft existence is not present");
     Assertions
         .assertThat(getDriver().getPageSource().contains("Имеются неопубликованные изменения"))
-        .as("Checking if notice about draft existence is not present")
+        .as("A notice about the draft existence is still shown")
         .isFalse();
     return this;
   }
 
   /**
-   * Publishing draft.
+   * Publish draft.
    * @return this
    */
-  @Step
   public MainPage publishDraft() {
-    System.out.println("Publishing draft");
+    LOGGER.info("Publishing draft");
     waitForElementBecomesClickable(publishButton).click();
     submit();
     waitForElementBecomesClickable(bannerCloseBttn).click();
@@ -180,15 +204,16 @@ public class MainPage extends BasePage {
    * Delete a root and non shared Widget.
    * @return this
    */
-  @Step
   public MainPage deleteNonSharedWidgetHasChildren() {
+    LOGGER.info("Searching for a non-shared widget with a children");
     WebElement widget = widgetsList.stream().filter(w ->
         (isPresent(w, treeExpandButtonSelector)
             || isPresent(w, treeCollapseButtonSelector))
             && !isPresent(w, sharedMarkerSelector))
         .findFirst().orElse(null);
     if (widget != null) {
-      widgetTitle = widget.findElement(widgetsTitleLSelector).getText();
+      info(String.format("Deleting the '%s' widget",
+          widget.findElement(widgetsTitleLSelector).getText()));
       widget.findElement(deleteButtonSelector).click();
       submit();
     } else {
@@ -201,15 +226,17 @@ public class MainPage extends BasePage {
    * Delete a child and non shared Widget.
    * @return this
    */
-  @Step
+  
   public MainPage deleteNonSharedWidgetHasNoChildren() {
+    LOGGER.info("Searching for a non-shared widget without a children");
     WebElement widget = widgetsList.stream().filter(w ->
         !(isPresent(w, treeExpandButtonSelector)
             || isPresent(w, treeCollapseButtonSelector))
             && !isPresent(w, sharedMarkerSelector))
         .findFirst().orElse(null);
     if (widget != null) {
-      widgetTitle = widget.findElement(widgetsTitleLSelector).getText();
+      info(String.format("Deleting the '%s' widget",
+          widget.findElement(widgetsTitleLSelector).getText()));
       widget.findElement(deleteButtonSelector).click();
       submit();
     } else {
@@ -218,7 +245,11 @@ public class MainPage extends BasePage {
     return this;
   }
 
+  /**
+   * Submit in a modal window.
+   */
   public void submit() {
+    LOGGER.debug("Clicking the modal window's submit button");
     waitForElementBecomesVisible(modalWindow);
     modalWindowSubmitButton.click();
   }
@@ -227,8 +258,8 @@ public class MainPage extends BasePage {
    * Checking for a found entity marking.
    * @param widgetName entity name
    */
-  public MainPage checkWidgetIsMarked(String widgetName) {
-    System.out.println("Checking if the widget has been marked");
+  public MainPage checkIfWidgetIsMarkedAsFound(String widgetName) {
+    info(String.format("Checking if the '%s' widget has been marked", widgetName));
     List<WebElement> targetWidgets = widgetsList.stream().filter(w ->
         widgetName.equals(w.findElement(widgetsTitleLSelector).getText()))
         .collect(Collectors.toList());
@@ -240,9 +271,10 @@ public class MainPage extends BasePage {
         .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
         .as("The target widget hasn't been marked")
         .contains("24, 144, 255"));
+    //TODO: fix it!
     otherWidgets.forEach(w -> Assertions
         .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
-        .as("The other widget has been marked")
+        .as("Some other widget has been marked")
         .contains(("255, 255, 255")));
     return this;
   }
@@ -251,10 +283,34 @@ public class MainPage extends BasePage {
    * Check that no one widget is marked.
    */
   public void checkNoWidgetIsMarked() {
-    System.out.println("Checking if no widget has been marked");
+    LOGGER.info("Checking if no one other widget has been marked");
     widgetsList.forEach(w -> Assertions
         .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
         .as("The other widget has been marked")
         .contains(("255, 255, 255")));
+  }
+
+  /**
+   * Create a new page.
+   * @return new Main Page instance
+   */
+  public NewPageCreationPage createNewPageFromRoot() {
+    createNewPageButton.click();
+    return PageFactory.initElements(getDriver(), NewPageCreationPage.class);
+  }
+
+  /**
+   * Check if page with pagePath is opened.
+   * @param pagePath pagePath
+   * @return MainPage instance
+   */
+  public MainPage checkPageOpened(String pagePath) {
+    Assertions.assertThat(pageTitle.getText()).contains(pagePath);
+    return PageFactory.initElements(getDriver(), MainPage.class);
+  }
+
+  public MainPage checkIfWidgetIsPresent(String widgetName) {
+    findWidget(widgetName);
+    return this;
   }
 }

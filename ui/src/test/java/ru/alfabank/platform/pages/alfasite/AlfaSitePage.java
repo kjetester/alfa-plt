@@ -1,19 +1,18 @@
 package ru.alfabank.platform.pages.alfasite;
 
-import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
-import static ru.alfabank.platform.helpers.DriverHelper.setCityCookieAndRefreshPage;
-import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesVisible;
+import org.assertj.core.api.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.*;
+import org.slf4j.*;
 
-import io.qameta.allure.Step;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import org.assertj.core.api.Assertions;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
+import java.time.*;
+
+import static ru.alfabank.platform.helpers.DriverHelper.*;
+
 
 public class AlfaSitePage {
 
-  private static final String BASE_PATH = "http://develop.ci.k8s.alfa.link/";
+  private static final Logger LOGGER = LoggerFactory.getLogger(AlfaSitePage.class);
 
   @FindBy(css = "li > p > span")
   private WebElement citySelectLink;
@@ -27,14 +26,12 @@ public class AlfaSitePage {
 
   /**
    * Opening AlfaSite page.
-   * @param resource resource
+   * @param testPage test page URI
    * @return this
    */
-  @Step
-  public AlfaSitePage open(String resource) {
-    String url = BASE_PATH + resource;
-    System.out.println(String.format("Navigating to '%s'", url));
-    getDriver().get(url);
+  public AlfaSitePage open(String testPage) {
+    LOGGER.info(String.format("Navigating to '%s'", testPage));
+    getDriver().get(testPage);
     waitForElementBecomesVisible(mainBlock);
     return this;
   }
@@ -44,9 +41,8 @@ public class AlfaSitePage {
    * @param city city
    * @return this
    */
-  @Step
   public AlfaSitePage checkPageTitleBefore(String... city) {
-    System.out.println("Start checking title is empty");
+    LOGGER.info("Start checking the page title is empty");
     setCityCookieAndRefreshPage(city);
     Assertions
         .assertThat(getDriver().getTitle())
@@ -64,30 +60,26 @@ public class AlfaSitePage {
    * @return this
    * @throws InterruptedException InterruptedException
    */
-  @Step
   public AlfaSitePage checkPageTitleAfter(LocalDateTime deadline,
                                           String expectedTitle,
                                           String... city) throws InterruptedException {
-    System.out.println(String.format("Start checking title is '%s'", expectedTitle));
+    LOGGER.info("Start checking title is '{}'", expectedTitle);
     wait(deadline);
     boolean b = expectedTitle.equals(getDriver().getTitle());
     int count = 10;
-    System.out.println(b ? "SUCCESS" : "Title doesn't match. Will try " + count + "times more");
     long start = Instant.now().getEpochSecond();
     while (!b && count > 0) {
       Thread.sleep(5_000);
       setCityCookieAndRefreshPage(city);
       b = expectedTitle.equals(getDriver().getTitle());
       count--;
-      System.out.println(b ? "SUCCESS" : "Title doesn't match. Will try " + count + "times more");
+      LOGGER.debug(b ? "SUCCESS" : "Title doesn't match. Will try {} times more", count);
     }
     Assertions
         .assertThat(getDriver().getTitle())
         .as("Title is incorrect")
         .isEqualTo(expectedTitle);
-    System.out.println(String.format(
-        "It takes %d seconds since the deadline to get it success",
-        (Instant.now().getEpochSecond() - start)));
+    LOGGER.info("It takes {} seconds since the deadline to get it success", (Instant.now().getEpochSecond() - start));
     return this;
   }
 
@@ -95,11 +87,9 @@ public class AlfaSitePage {
    * Waiting until deadline.
    * @param deadline deadline
    */
-  @Step
   public void wait(final LocalDateTime deadline) {
     while (LocalDateTime.now().isBefore(deadline)) {
-      System.out.println(String.format("Waiting for %d secs",
-          deadline.compareTo(LocalDateTime.now())));
+      LOGGER.info("Waiting for {} secs", deadline.compareTo(LocalDateTime.now()));
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {

@@ -1,9 +1,7 @@
 package ru.alfabank.platform.buisenessobjects;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRawValue;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.*;
 
 public class Widget {
 

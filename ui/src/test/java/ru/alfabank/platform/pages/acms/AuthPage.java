@@ -1,12 +1,10 @@
 package ru.alfabank.platform.pages.acms;
 
-import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.*;
 
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
-import ru.alfabank.platform.pages.acms.BasePage;
-import ru.alfabank.platform.pages.acms.MainPage;
+import static ru.alfabank.platform.helpers.DriverHelper.*;
+import static ru.alfabank.platform.reporting.BasicLogger.*;
 
 public class AuthPage extends BasePage {
 
@@ -24,6 +22,7 @@ public class AuthPage extends BasePage {
    * @return new instance of the MainPage class
    */
   public MainPage login(String username, String password) {
+    info(String.format("Logging in as %s with password %s", username, password));
     loginInput.sendKeys(username);
     passwordInput.sendKeys(password);
     submitBttn.click();

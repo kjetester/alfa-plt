@@ -5,10 +5,12 @@ import org.testng.annotations.*;
 import ru.alfabank.platform.buisenessobjects.*;
 import ru.alfabank.platform.helpers.*;
 import ru.alfabank.platform.pages.acms.*;
+import ru.alfabank.platform.reporting.*;
 import ru.alfabank.platform.tests.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
+@Listeners({CustomListener.class})
 public class SearchTest extends BaseTest {
 
   private Widget testWidget;
@@ -19,11 +21,10 @@ public class SearchTest extends BaseTest {
    * Before each method actions.
    */
   @BeforeMethod(description = "Авторизация и переход на страницу")
-  @Parameters({"testPageUri"})
-  public void beforeMethod(String testPageUri) {
-    User user = new User();
+  @Parameters({"baseUrl", "testPageUri"})
+  public void beforeMethod(String baseUrl, String testPageUri) {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize(user.getLogin(), user.getPassword())
+        .openAndAuthorize(baseUrl + "acms/", user.getLogin(), user.getPassword())
         .openPagesTree()
         .selectPage(testPageUri);
     Page testPage = new Page(testPageUri, getDriver().getCurrentUrl());
@@ -37,21 +38,21 @@ public class SearchTest extends BaseTest {
   public void searchByWidgetNameTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), SearchPage.class)
         .searchFor(testWidget.getName())
-        .checkWidgetIsMarked(testWidget.getName());
+        .checkIfWidgetIsMarkedAsFound(testWidget.getName());
   }
 
   @Test(description = "Тест функцирнала поиска виджета по UID")
   public void searchByWidgetUidTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), SearchPage.class)
         .searchFor(testWidget.getUid())
-        .checkWidgetIsMarked(testWidget.getName());
+        .checkIfWidgetIsMarkedAsFound(testWidget.getName());
   }
 
-  @Test(description = "Тест функцирнала поиска значения по значению")
+  @Test(description = "Тест функцирнала поиска по значению")
   public void searchByPropertyNameTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), SearchPage.class)
         .searchFor(testValue.getValue().asText())
-        .checkWidgetIsMarked(testWidget.getName())
+        .checkIfWidgetIsMarkedAsFound(testWidget.getName())
         .openWidgetSidebar(testWidget.getName())
         .checkPropertyMarking(testProperty.getName());
   }
