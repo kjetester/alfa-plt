@@ -1,7 +1,6 @@
 package ru.alfabank.platform.reporting;
 
-import org.testng.ITestResult;
-import org.testng.TestListenerAdapter;
+import org.testng.*;
 
 /**
  * Listeners.

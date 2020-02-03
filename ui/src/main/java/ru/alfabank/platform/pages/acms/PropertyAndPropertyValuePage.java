@@ -1,5 +1,6 @@
 package ru.alfabank.platform.pages.acms;
 
+import org.apache.log4j.*;
 import org.assertj.core.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.*;
@@ -8,9 +9,10 @@ import java.util.*;
 import java.util.stream.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
-import static ru.alfabank.platform.reporting.BasicLogger.*;
 
 public class PropertyAndPropertyValuePage extends BasePage {
+
+  private static final Logger LOGGER = LogManager.getLogger(PropertyAndPropertyValuePage.class);
 
   @FindBy(xpath = "//*[@class = 'ant-btn ant-btn-default']")
   private WebElement addPropertyValueButton;
@@ -32,14 +34,7 @@ public class PropertyAndPropertyValuePage extends BasePage {
   public PropertyAndPropertyValuePage modifyPropertyValue(String propertyName,
                                                           String value,
                                                           String... geoGroup) {
-    info(String.format("Setting to the '%s' property '%s' value", propertyName, value));
-    By propertySelector = By.xpath(String.format(propertySelectorXpath, propertyName));
-    WebElement property = getDriver().findElement(propertySelector);
-    List<WebElement> propertyValueList = property.findElements(propertyValuesSelector);
-    WebElement existingPropertyValue = propertyValueList.get(propertyValueList.size() - 1);
-    WebElement textArea = existingPropertyValue.findElement(propertyValueTextAreaSelector);
-    setValueToMonacoTextArea(value, textArea);
-    setGeoGroupsToWidget(existingPropertyValue, geoGroup);
+    modifyVal(propertyName, value, geoGroup);
     return this;
   }
 
@@ -53,7 +48,21 @@ public class PropertyAndPropertyValuePage extends BasePage {
   public WidgetSidebarPage modifyValue(String propertyName,
                                                           String value,
                                                           String... geoGroup) {
-    info(String.format("Setting to the '%s' property '%s' value", propertyName, value));
+    modifyVal(propertyName, value, geoGroup);
+    return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
+  }
+
+  /**
+   * Modifying property value.
+   * @param propertyName property name
+   * @param value property value
+   * @param geoGroup geoGroup set
+   */
+  private void modifyVal(String propertyName,
+                         String value,
+                         String... geoGroup) {
+    LOGGER.info(
+        String.format("Изменяю в проперти '%s' вэлью с названием '%s'", propertyName, value));
     By propertySelector = By.xpath(String.format(propertySelectorXpath, propertyName));
     WebElement property = getDriver().findElement(propertySelector);
     List<WebElement> propertyValueList = property.findElements(propertyValuesSelector);
@@ -61,7 +70,6 @@ public class PropertyAndPropertyValuePage extends BasePage {
     WebElement textArea = existingPropertyValue.findElement(propertyValueTextAreaSelector);
     setValueToMonacoTextArea(value, textArea);
     setGeoGroupsToWidget(existingPropertyValue, geoGroup);
-    return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
   }
 
   /**
@@ -74,18 +82,18 @@ public class PropertyAndPropertyValuePage extends BasePage {
   public WidgetSidebarPage createValue(String propertyName,
                                        String value,
                                        String... geoGroups) {
-    info(String.format("Creating a new value '%s' for property '%s'", value, propertyName));
+    LOGGER.info(String.format("Creating a new value '%s' for property '%s'", value, propertyName));
     addPropertyValueButton.click();
     String newPropertyValueSelectorXpath =
         "//span[text() = '%s']/../..//span[contains(text(), '\"\"')]/../../../../../../../../../..";
     By newPropertyValueSelector = By.xpath(
         String.format(newPropertyValueSelectorXpath, propertyName));
-    info(String.format("Setting to the '%s' property '%s' value", propertyName, value));
+    LOGGER.info(String.format("Setting to the '%s' property '%s' value", propertyName, value));
     WebElement newPropertyValue = getDriver().findElement(newPropertyValueSelector);
     WebElement textArea =
         newPropertyValue.findElement(propertyValueTextAreaSelector);
     setValueToMonacoTextArea(value, textArea);
-    info(String.format("Setting '%s' geo", geoGroups));
+    LOGGER.info(String.format("Устанавливаю гео-групп(ы) '%s'", geoGroups));
     setGeoGroupsToWidget(newPropertyValue, geoGroups);
     return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
   }
@@ -142,13 +150,13 @@ public class PropertyAndPropertyValuePage extends BasePage {
    * @param propertyName property name
    */
   public void checkPropertyMarking(String propertyName) {
-    info(String.format("Checking if the propertyName '%s' has been marked", propertyName));
+    LOGGER.info(String.format("Проверяю, что проперти '%s' отмечена, как найденное", propertyName));
     By propertySelector = By.xpath(String.format(propertySelectorXpath, propertyName));
     String actualColor = waitForElementBecomesClickable(
         getDriver().findElement(propertySelector).findElement(By.cssSelector("span")))
         .getCssValue("color");
     Assertions.assertThat(actualColor)
-        .as("The propertyName hasn't been marked")
+        .as("Проперти '{}' не отмечено, как найденное", propertyName)
         .contains("24, 144, 255");
   }
 }

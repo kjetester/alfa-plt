@@ -1,13 +1,18 @@
 package ru.alfabank.platform.pages.acms;
 
+import org.apache.log4j.*;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.*;
 import org.openqa.selenium.support.*;
 
+import java.time.*;
 import java.util.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 public class BasePage {
+
+  private static final Logger LOGGER = LogManager.getLogger(BasePage.class);
 
   @FindBy (css = ".ant-notification-notice > a")
   protected WebElement bannerCloseBttn;
@@ -71,15 +76,26 @@ public class BasePage {
     }
   }
 
-  protected static boolean isPresent(WebElement w, By selector) {
+  /**
+   * Check if element is present within an element.
+   * @param element element
+   * @param selector selector
+   * @return boolean
+   */
+  protected static boolean isPresent(WebElement element, By selector) {
     try {
-      w.findElement(selector);
+      element.findElement(selector);
     } catch (org.openqa.selenium.NoSuchElementException e) {
       return false;
     }
     return true;
   }
 
+  /**
+   * Check if element is present on a page.
+   * @param sharedMarkerSelector selector
+   * @return boolean
+   */
   protected static boolean isPresent(By sharedMarkerSelector) {
     try {
       getDriver().findElement(sharedMarkerSelector);
@@ -87,5 +103,23 @@ public class BasePage {
       return false;
     }
     return true;
+  }
+
+  /**
+   * Click by a button that showing by mouse hovering only.
+   * @param element element
+   */
+  protected void clickOnHiddenButton(WebElement element) {
+    new Actions(getDriver()).moveToElement(element)
+        .pause(Duration.ofSeconds(2)).click().build().perform();
+  }
+
+  /**
+   * JS click.
+   * @param element element
+   */
+  protected void clickWithJavaScriptExecutor(WebElement element) {
+    LOGGER.debug("Кликаю по труднодоступной кнопке JSом");
+    ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", element);
   }
 }

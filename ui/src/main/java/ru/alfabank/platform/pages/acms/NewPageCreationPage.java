@@ -1,5 +1,6 @@
 package ru.alfabank.platform.pages.acms;
 
+import org.apache.log4j.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.*;
 import ru.alfabank.platform.buisenessobjects.*;
@@ -12,6 +13,8 @@ import java.util.*;
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 public class NewPageCreationPage extends BasePage {
+
+  private static final Logger LOGGER = LogManager.getLogger(NewPageCreationPage.class);
 
   @FindBy(css = "#uri")
   private WebElement pathInput;
@@ -37,13 +40,19 @@ public class NewPageCreationPage extends BasePage {
     LocalDateTime dateFrom = LocalDateTime.now().minus(0, ChronoUnit.HOURS);
     LocalDateTime dateTo = LocalDateTime.now().plus(5, ChronoUnit.HOURS);
     waitForElementBecomesClickable(pathInput).sendKeys(path);
+    LOGGER.info(
+        String.format("Заполняю поля:\n\tПуть = %s\n\tИмя = %s\n"
+                + "\tОписание = %s\n\tДата начала = %s\n\tДата окончания = %s\n",
+            path, title, description, dateFrom.toString(), dateTo.toString()));
     titleInput.sendKeys(title);
     descriptionInput.sendKeys(description);
     startDate.click();
     PageFactory.initElements(getDriver(), DatePickerPage.class).setDateTo(dateFrom);
     endDate.click();
     PageFactory.initElements(getDriver(), DatePickerPage.class).setDateTo(dateTo);
+    LOGGER.info("Сохраняю");
     waitForElementBecomesClickable(submitButton).click();
+    LOGGER.info("Закрываю баннер успешного создания");
     waitForElementBecomesClickable(bannerCloseBttn).click();
     testDataHelper.setCreatedPage(new Page(path, getDriver().getCurrentUrl(), title,
         description, "keyword_" + path, dateFrom, dateTo));

@@ -1,15 +1,16 @@
 package ru.alfabank.platform.pages.acms;
 
+import org.apache.log4j.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.*;
 
 import java.util.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
-import static ru.alfabank.platform.reporting.BasicLogger.*;
 
 public class WidgetMetaInfoPage extends BasePage {
 
+  private static final Logger LOGGER = LogManager.getLogger(WidgetMetaInfoPage.class);
   private static final String WIDGET_GEO_XPATH =
       "//*[text() = 'Тип устройства:']/../..//*[text() = 'Выберите нужные гео-группы']/..";
   //TODO: [class ^= city-groups-select-container]:first-of-type
@@ -33,7 +34,7 @@ public class WidgetMetaInfoPage extends BasePage {
   public WidgetMetaInfoPage setVisibilityTo(boolean isToBeSelected) {
     waitForElementBecomesClickable(widgetGeoGroupsInput);
     boolean isAlreadySelected = visibilityCheckbox.isSelected();
-    info(String.format("Setting the Visibility checkbox into '%b'", isToBeSelected));
+    LOGGER.info(String.format("Устанавливаю чекбокс 'Видимость' в '%b'", isToBeSelected));
     if (!isAlreadySelected && isToBeSelected) {
       visibilityCheckbox.click();
     } else if (isAlreadySelected && !isToBeSelected) {
@@ -47,7 +48,7 @@ public class WidgetMetaInfoPage extends BasePage {
    * @return new instance of DatePickerPage
    */
   public DatePickerPage openStartDatePicker() {
-    info("Opening the Start date picker");
+    LOGGER.info("Открываю датапикер 'Дата начала'");
     waitForElementBecomesClickable(startDatePicker).click();
     return PageFactory.initElements(getDriver(), DatePickerPage.class);
   }
@@ -57,7 +58,7 @@ public class WidgetMetaInfoPage extends BasePage {
    * @return new instance of DatePickerPage
    */
   public DatePickerPage openEndDatePicker() {
-    info("Opening the End date picker");
+    LOGGER.info("Открываю датапикер 'Дата окончания'");
     waitForElementBecomesClickable(endDatePicker).click();
     return PageFactory.initElements(getDriver(), DatePickerPage.class);
   }
@@ -68,7 +69,7 @@ public class WidgetMetaInfoPage extends BasePage {
    * @return this
    */
   public WidgetMetaInfoPage setGeoGroupsToWidget(String... geoGroups) {
-    info(String.format("Setting geo to '%s'", geoGroups));
+    LOGGER.info(String.format("Устанавливаю гео-группы: '%s'", geoGroups));
     waitForElementBecomesClickable(widgetGeoGroupsInput);
     setGeoGroupsTo(widgetGeoGroupList, widgetGeoGroupsInput, geoGroups);
     return this;
@@ -88,7 +89,7 @@ public class WidgetMetaInfoPage extends BasePage {
    * @return WidgetSidebarPage
    */
   public PropertyAndPropertyValuePage collapseWidgetMetaInfoAnd() {
-    info("Collapsing Widget's MetaInfo pane");
+    LOGGER.info("Сворачиваю панель метаинфо виджета");
     waitForElementBecomesClickable(widgetSettings).click();
     return PageFactory.initElements(getDriver(), PropertyAndPropertyValuePage.class);
   }

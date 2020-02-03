@@ -1,9 +1,13 @@
 package ru.alfabank.platform.buisenessobjects;
 
+import org.apache.log4j.*;
+
 import java.time.*;
 import java.util.*;
 
 public class Page {
+
+  private static final Logger LOGGER = LogManager.getLogger(Page.class);
 
   private String id;
   private String path;
@@ -31,6 +35,7 @@ public class Page {
     this.keywords = keywords;
     this.dateFrom = dateFrom;
     this.dateTo = dateTo;
+    LOGGER.debug("Создан новый бизнес-объект 'Страница'");
   }
 
   public Page(String path, String url) {

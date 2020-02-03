@@ -4,7 +4,7 @@
 
     <test name="Create new root widget">
         <classes>
-            <class name="ru.alfabank.platform.apitest.drafts.create.CreateRootWidgetTest"/>
+            <class name="ru.alfabank.platform.apitest.drafts.create.CreatewRootWidgetTest"/>
         </classes>
     </test>
 

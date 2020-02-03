@@ -1,10 +1,10 @@
 package ru.alfabank.platform.helpers;
 
 import io.github.bonigarcia.wdm.*;
+import org.apache.log4j.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.*;
 import org.openqa.selenium.support.ui.*;
-import org.testng.log4testng.*;
 
 import java.time.temporal.*;
 import java.util.*;
@@ -16,8 +16,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class DriverHelper {
 
-  private static final Logger LOGGER = Logger.getLogger(DriverHelper.class);
-
+  private static final Logger LOGGER = LogManager.getLogger(DriverHelper.class);
   private static final int TIMEOUT = 25;
 
   private static WebDriver driver;
@@ -28,15 +27,13 @@ public class DriverHelper {
    */
   public static WebDriver getDriver() {
     if (driver == null) {
-      LOGGER.debug("Launching a new instance of the browser");
+      LOGGER.debug("Запускаю Chrome");
       WebDriverManager.chromedriver().setup();
       ChromeOptions opts = new ChromeOptions();
       opts.setAcceptInsecureCerts(true);
-//      opts.addArguments("--headless");
       driver = new ChromeDriver(opts);
       driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
       driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
-      LOGGER.debug("Setting up the browser's dimensions and position");
       driver.manage().window().setSize(new Dimension(1500, 800));
       driver.manage().window().setPosition(new Point(0, 0));
     }
@@ -48,7 +45,7 @@ public class DriverHelper {
    * @param element element
    */
   public static void waitForElementBecomesVisible(WebElement element) {
-    LOGGER.debug("Waiting for the element to be visible");
+    LOGGER.debug("Ожидаю отображения элемента");
     implicitlyWait(false);
     new WebDriverWait(driver, ofSeconds(TIMEOUT)).until(visibilityOf(element));
     implicitlyWait(true);
@@ -59,7 +56,7 @@ public class DriverHelper {
    * @param elements elements
    */
   public static void waitForElementsBecomeVisible(List<WebElement> elements) {
-    LOGGER.debug("Waiting for the list of elements to be visible");
+    LOGGER.debug("Ожидаю отображения всего списка элементов");
     implicitlyWait(false);
     new WebDriverWait(driver, ofSeconds(TIMEOUT))
         .until(visibilityOfAllElements(elements));
@@ -71,7 +68,7 @@ public class DriverHelper {
    * @param element element
    */
   public static WebElement waitForElementBecomesClickable(WebElement element) {
-    LOGGER.debug("Waiting for the element to be clickable");
+    LOGGER.debug("Ожидаю кликабельности элемента");
     implicitlyWait(false);
     new WebDriverWait(driver, ofSeconds(TIMEOUT))
         .until(elementToBeClickable(element));
@@ -85,10 +82,10 @@ public class DriverHelper {
    */
   public static void implicitlyWait(Boolean active) {
     if (active) {
-      LOGGER.debug("Turn implicitly wait on");
+      LOGGER.trace("Таймаут неявного ожидания = 5");
       driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
     } else {
-      LOGGER.debug("Turn implicitly wait off");
+      LOGGER.trace("Таймаут неявного ожидания = 0");
       driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
     }
   }
@@ -98,7 +95,7 @@ public class DriverHelper {
    */
   public static void killDriver() {
     if (driver != null) {
-      LOGGER.debug("Killing the WebDriver instance");
+      LOGGER.debug("Закрываю браузер");
       driver.close();
       driver.quit();
       driver = null;
@@ -110,7 +107,7 @@ public class DriverHelper {
    * @param cities cities
    */
   public static void setCityCookieAndRefreshPage(String... cities) {
-    LOGGER.debug("Setting up the cookies");
+    LOGGER.debug("Сетаю кукисы");
     Date expireDate = java.sql.Date.from(
         java.time.ZonedDateTime.now().plus(3, ChronoUnit.HOURS).toInstant());
     driver.manage().deleteAllCookies();
@@ -120,7 +117,7 @@ public class DriverHelper {
       driver.manage().addCookie(new Cookie(
           "site_city", cities[i], ".develop.ci.k8s.alfa.link", "/", expireDate, false, false));
     });
-    LOGGER.debug("Refreshing the page");
+    LOGGER.debug("Обновляю страницу");
     driver.navigate().refresh();
   }
 }

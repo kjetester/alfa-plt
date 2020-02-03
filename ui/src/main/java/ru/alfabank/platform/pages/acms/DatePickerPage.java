@@ -1,5 +1,6 @@
 package ru.alfabank.platform.pages.acms;
 
+import org.apache.log4j.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.*;
 import org.testng.*;
@@ -9,10 +10,10 @@ import java.util.*;
 import java.util.stream.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
-import static ru.alfabank.platform.reporting.BasicLogger.*;
 
 public class DatePickerPage extends BasePage {
 
+  private static final Logger LOGGER = LogManager.getLogger(DatePickerPage.class);
   private static final String DATES_CSS_SELECTOR =
       ".ant-calendar-tbody td:not([class *= last-month]):not([class *= next-month]) div";
 
@@ -50,7 +51,7 @@ public class DatePickerPage extends BasePage {
    * @return new WidgetMetaInfoPage instance
    */
   public WidgetMetaInfoPage setDateTo(LocalDateTime dateTime) throws InterruptedException {
-    info(String.format("Setting the date to: '%s'", dateTime.toString()));
+    LOGGER.debug(String.format("Устанавливаю дату: '%s'", dateTime.toString()));
     Thread.sleep(1000);
     while (dateTime.getYear() != Integer.parseInt(yearPicker.getText())) {
       if (dateTime.getYear() < Integer.parseInt(yearPicker.getText())) {
@@ -85,7 +86,7 @@ public class DatePickerPage extends BasePage {
         break;
       case "дек." : month = 12;
         break;
-      default: throw new TestException("Unknown month");
+      default: throw new TestException("Был передеан неизвестный месяц");
     }
     int diff = dateTime.getMonthValue() - month;
     if (diff > 0) {
@@ -99,7 +100,7 @@ public class DatePickerPage extends BasePage {
     scrollToElement(hourList.get(dateTime.getHour())).click();
     scrollToElement(minuteList.get(dateTime.getMinute())).click();
     scrollToElement(secondList.get(dateTime.getSecond())).click();
-    info(String.format("Date and time have been set to: '%s'", dateInput.getAttribute("value")));
+    LOGGER.debug(String.format("Дата и время установлено как: '%s'", dateInput.getAttribute("value")));
     dataPickerOkButton.click();
     return PageFactory.initElements(getDriver(), WidgetMetaInfoPage.class);
   }

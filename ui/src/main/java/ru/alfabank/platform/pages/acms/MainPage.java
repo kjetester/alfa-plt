@@ -1,30 +1,28 @@
 package ru.alfabank.platform.pages.acms;
 
+import org.apache.log4j.*;
 import org.assertj.core.api.*;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.*;
 import org.openqa.selenium.support.*;
 import org.testng.*;
-import org.testng.log4testng.*;
 
 import java.util.NoSuchElementException;
 import java.util.*;
 import java.util.stream.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
-import static ru.alfabank.platform.reporting.BasicLogger.*;
 
 public class MainPage extends BasePage {
 
-  private static final Logger LOGGER = Logger.getLogger(BasePage.class);
+  private static final Logger LOGGER = LogManager.getLogger(MainPage.class);
 
   @FindBy(css = "a[href = '/acms/pages']")
   private WebElement pagesLink;
-  @FindBy(css = "[style *= 'align-self']")
-  private WebElement createNewPageButton;
+  @FindBy(css = "[class $= 'ant-tree-node-content-wrapper-open'] i")
+  private WebElement createNewPageFromRootButton;
   @FindBy(css = "li[class = 'ant-tree-treenode-switcher-open'] a")
   private List<WebElement> rootPageList;
-  @FindBy(css = "[class ^= screen-title]")
+  @FindBy(css = "[rel='noopener noreferrer']")
   private WebElement pageTitle;
   @FindBy(css = ".rst__node")
   private List<WebElement> widgetsList;
@@ -44,11 +42,14 @@ public class MainPage extends BasePage {
 
   /**
    * Open acms page.
+   * @param targetUrl targetUrl
+   * @param login login
+   * @param password password
    * @return this
    */
-  public MainPage openAndAuthorize(String baseUrl, String login, String password) {
-    info(String.format("Starting the browser and navigating to %s", baseUrl));
-    getDriver().get(baseUrl);
+  public MainPage openAndAuthorize(String targetUrl, String login, String password) {
+    LOGGER.info(String.format("Перехожу по адресу '%s'", targetUrl));
+    getDriver().get(targetUrl);
     return PageFactory.initElements(getDriver(), AuthPage.class).login(login, password);
   }
 
@@ -57,7 +58,7 @@ public class MainPage extends BasePage {
    * @return this
    */
   public MainPage openPagesTree() {
-    info("Opening pages link");
+    LOGGER.info("Открываю список страниц");
     waitForElementBecomesClickable(pagesLink);
     pagesLink.click();
     waitForElementsBecomeVisible(rootPageList);
@@ -69,7 +70,7 @@ public class MainPage extends BasePage {
    * @param pagePath requested page
    */
   public MainPage selectPage(String pagePath) {
-    info(String.format("Opening the '%s' page", pagePath));
+    LOGGER.info(String.format("Открываю страницу '%s'", pagePath));
     rootPageList.stream().filter(p ->
         p.getText().replace("/", "").equals(pagePath)).findFirst()
         .orElseThrow(NoSuchElementException::new)
@@ -85,8 +86,7 @@ public class MainPage extends BasePage {
    * @return WidgetSidebarPage
    */
   public WidgetSidebarPage openWidgetSidebarToWorkWithWidgetMeta(String widgetName) {
-    info(String.format("Opening the %s widget's sidebar", widgetName));
-    findWidget(widgetName).findElement(widgetsTitleLSelector).click();
+    opnWidgetSidebar(widgetName);
     return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
   }
 
@@ -96,9 +96,17 @@ public class MainPage extends BasePage {
    * @return PropertyAndPropertyValuePage
    */
   public PropertyAndPropertyValuePage openWidgetSidebar(String widgetName) {
-    info(String.format("Opening the %s widget's sidebar", widgetName));
-    findWidget(widgetName).findElement(widgetsTitleLSelector).click();
+    opnWidgetSidebar(widgetName);
     return PageFactory.initElements(getDriver(), PropertyAndPropertyValuePage.class);
+  }
+
+  /**
+   * Open an accordingly named widget's sidebar.
+   * @param widgetName widget name
+   */
+  private void opnWidgetSidebar(String widgetName) {
+    LOGGER.info(String.format("Открываю сайдбар виджета '%s'", widgetName));
+    findWidget(widgetName).findElement(widgetsTitleLSelector).click();
   }
 
   /**
@@ -108,12 +116,8 @@ public class MainPage extends BasePage {
    * @return target page instance
    */
   public MainPage copyWidgetOnPage(String widgetName, String pageName) throws InterruptedException {
-    info(String.format("Copying the '%s' widget to the '%s' page", widgetName, pageName));
-    new Actions(getDriver())
-        .moveToElement(findWidget(widgetName).findElement(copyButtonSelector))
-        .click()
-        .build()
-        .perform();
+    LOGGER.info(String.format("Копирую виджет '%s' на страницу '%s'", widgetName, pageName));
+    clickOnHiddenButton(findWidget(widgetName).findElement(copyButtonSelector));
     waitForElementBecomesClickable(pagesDropdownList).click();
     setValueToMonacoTextArea(pageName, getDriver().switchTo().activeElement());
     waitForElementBecomesClickable(
@@ -129,10 +133,12 @@ public class MainPage extends BasePage {
    * @param widgetName widget name
    */
   private WebElement findWidget(String widgetName) {
+    LOGGER.debug(String.format("Ищу виджет '%s'", widgetName));
     return widgetsList.stream().filter(w ->
         widgetName.equals(w.findElement(widgetsTitleLSelector).getText()))
         .findFirst().orElseThrow(() ->
-            new TestNGException(String.format("No Widget named '%s' was found", widgetName)));
+            new TestNGException(
+                String.format("Ни одного виджета с названием '%s' не было найдено", widgetName)));
   }
 
   /**
@@ -141,12 +147,11 @@ public class MainPage extends BasePage {
    * @return this
    */
   public MainPage checkIfWidgetIsMarkedAsChanged(String widgetName) {
-    info(String.format("Checking the %s widget has been marked", widgetName));
+    LOGGER.info(String.format("Проверяю, что втждет '%s' отмечен, как измененный", widgetName));
     Assertions
         .assertThat(getDriver()
             .findElement(By.xpath(String.format("//span[text() = '%s']/../../div", widgetName)))
             .getCssValue("background"))
-        .as("Checking if 'changed' marker is present")
         .contains("rgb(239, 49, 36)");
     return this;
   }
@@ -156,7 +161,7 @@ public class MainPage extends BasePage {
    * @return this
    */
   public MainPage saveDraft() {
-    LOGGER.info("Saving the draft");
+    LOGGER.info("Сохраняю черновик");
     waitForElementBecomesClickable(saveButton).click();
     waitForElementBecomesClickable(bannerCloseBttn).click();
     return this;
@@ -167,10 +172,9 @@ public class MainPage extends BasePage {
    * @return this
    */
   public MainPage checkIfNoticeAboutDraftExistenceIsPresent() {
-    LOGGER.info("Checking if a notice about the draft existence is present");
+    LOGGER.info("Проверяю, что сообщение о существовании черновика отображается");
     Assertions
         .assertThat(getDriver().getPageSource().contains("Имеются неопубликованные изменения"))
-        .as("A notice about the draft existence isn't present")
         .isTrue();
     return this;
   }
@@ -180,10 +184,9 @@ public class MainPage extends BasePage {
    * @return this
    */
   public MainPage checkIfNoticeAboutDraftExistenceIsNotPresent() {
-    LOGGER.info("Checking if a notice about the draft existence is not present");
+    LOGGER.info("Проверяю, что сообщение о существовании черновика больше не отображается");
     Assertions
         .assertThat(getDriver().getPageSource().contains("Имеются неопубликованные изменения"))
-        .as("A notice about the draft existence is still shown")
         .isFalse();
     return this;
   }
@@ -193,7 +196,7 @@ public class MainPage extends BasePage {
    * @return this
    */
   public MainPage publishDraft() {
-    LOGGER.info("Publishing draft");
+    LOGGER.info("Публикую черновик страницы");
     waitForElementBecomesClickable(publishButton).click();
     submit();
     waitForElementBecomesClickable(bannerCloseBttn).click();
@@ -205,19 +208,19 @@ public class MainPage extends BasePage {
    * @return this
    */
   public MainPage deleteNonSharedWidgetHasChildren() {
-    LOGGER.info("Searching for a non-shared widget with a children");
+    LOGGER.info("Ищу нешаренный вижджет, имеющий дечение виджеты");
     WebElement widget = widgetsList.stream().filter(w ->
         (isPresent(w, treeExpandButtonSelector)
             || isPresent(w, treeCollapseButtonSelector))
             && !isPresent(w, sharedMarkerSelector))
         .findFirst().orElse(null);
     if (widget != null) {
-      info(String.format("Deleting the '%s' widget",
+      LOGGER.info(String.format("Deleting the '%s' widget",
           widget.findElement(widgetsTitleLSelector).getText()));
       widget.findElement(deleteButtonSelector).click();
       submit();
     } else {
-      throw new TestException("Could not find suitable widget.");
+      throw new TestException("Не смог найти подходящий виджет");
     }
     return this;
   }
@@ -228,19 +231,19 @@ public class MainPage extends BasePage {
    */
   
   public MainPage deleteNonSharedWidgetHasNoChildren() {
-    LOGGER.info("Searching for a non-shared widget without a children");
+    LOGGER.info("Ищу нешаренный вижджет, не имеющий дечених виджеты");
     WebElement widget = widgetsList.stream().filter(w ->
         !(isPresent(w, treeExpandButtonSelector)
             || isPresent(w, treeCollapseButtonSelector))
             && !isPresent(w, sharedMarkerSelector))
         .findFirst().orElse(null);
     if (widget != null) {
-      info(String.format("Deleting the '%s' widget",
+      LOGGER.info(String.format("Deleting the '%s' widget",
           widget.findElement(widgetsTitleLSelector).getText()));
       widget.findElement(deleteButtonSelector).click();
       submit();
     } else {
-      throw new TestException("Could not find suitable widget.");
+      throw new TestException("Не смог найти подходящий виджет");
     }
     return this;
   }
@@ -249,7 +252,7 @@ public class MainPage extends BasePage {
    * Submit in a modal window.
    */
   public void submit() {
-    LOGGER.debug("Clicking the modal window's submit button");
+    LOGGER.debug("Подтверждаю действие");
     waitForElementBecomesVisible(modalWindow);
     modalWindowSubmitButton.click();
   }
@@ -259,7 +262,10 @@ public class MainPage extends BasePage {
    * @param widgetName entity name
    */
   public MainPage checkIfWidgetIsMarkedAsFound(String widgetName) {
-    info(String.format("Checking if the '%s' widget has been marked", widgetName));
+    LOGGER.info(
+        String.format(
+            "Проверяю, что виджет '%s' отмечен, как соответствующий условю поиска",
+            widgetName));
     List<WebElement> targetWidgets = widgetsList.stream().filter(w ->
         widgetName.equals(w.findElement(widgetsTitleLSelector).getText()))
         .collect(Collectors.toList());
@@ -269,12 +275,11 @@ public class MainPage extends BasePage {
         .collect(Collectors.toList());
     targetWidgets.forEach(w -> Assertions
         .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
-        .as("The target widget hasn't been marked")
         .contains("24, 144, 255"));
     //TODO: fix it!
+    LOGGER.info("Проверяю, что лишние виджеты не были отмечены, как соответствующий условю поиска");
     otherWidgets.forEach(w -> Assertions
         .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
-        .as("Some other widget has been marked")
         .contains(("255, 255, 255")));
     return this;
   }
@@ -283,7 +288,7 @@ public class MainPage extends BasePage {
    * Check that no one widget is marked.
    */
   public void checkNoWidgetIsMarked() {
-    LOGGER.info("Checking if no one other widget has been marked");
+    LOGGER.info("Проверяю, что виджет не отмечен, как соответствующий условю поиска");
     widgetsList.forEach(w -> Assertions
         .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
         .as("The other widget has been marked")
@@ -295,7 +300,8 @@ public class MainPage extends BasePage {
    * @return new Main Page instance
    */
   public NewPageCreationPage createNewPageFromRoot() {
-    createNewPageButton.click();
+    LOGGER.info("Создаю новую страницу в корне");
+    clickWithJavaScriptExecutor(createNewPageFromRootButton);
     return PageFactory.initElements(getDriver(), NewPageCreationPage.class);
   }
 
@@ -305,11 +311,18 @@ public class MainPage extends BasePage {
    * @return MainPage instance
    */
   public MainPage checkPageOpened(String pagePath) {
+    LOGGER.info("Проверяю, отображается ли странца пользователю после создания");
     Assertions.assertThat(pageTitle.getText()).contains(pagePath);
     return PageFactory.initElements(getDriver(), MainPage.class);
   }
 
+  /**
+   * Check if widget is present.
+   * @param widgetName widgetName
+   * @return this
+   */
   public MainPage checkIfWidgetIsPresent(String widgetName) {
+    LOGGER.info(String.format("Проверяю, присутствует ли виджет '%s' на странице", widgetName));
     findWidget(widgetName);
     return this;
   }

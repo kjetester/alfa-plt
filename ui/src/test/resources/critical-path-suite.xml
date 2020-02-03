@@ -4,13 +4,9 @@
        thread-count = "1"
        configfailurepolicy = "continue"
        verbose = "5">
-    <parameter name = "baseUrl" value = "http://develop.ci.k8s.alfa.link/"/>
     <test name = "End-To-End Test" enabled="true">
         <classes>
             <class name = "ru.alfabank.platform.tests.acms.EndToEndTest"/>
-            <parameter name = "testPage" value = "sme-new/"/>
-            <parameter name = "testWidget" value = "MetaTitle"/>
-            <parameter name = "testProperty" value = "title"/>
         </classes>
     </test>
 <!--    <test name = "Search Test" enabled="true">-->

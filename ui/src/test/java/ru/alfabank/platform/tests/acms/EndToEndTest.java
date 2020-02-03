@@ -1,5 +1,6 @@
 package ru.alfabank.platform.tests.acms;
 
+import org.apache.logging.log4j.*;
 import org.openqa.selenium.support.*;
 import org.testng.annotations.*;
 import ru.alfabank.platform.buisenessobjects.*;
@@ -11,38 +12,39 @@ import ru.alfabank.platform.tests.*;
 import java.time.*;
 import java.time.temporal.*;
 
+import static org.apache.logging.log4j.LogManager.*;
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 @Listeners({CustomListener.class})
 public class EndToEndTest extends BaseTest {
+
+  private static final Logger LOGGER = getLogger(EndToEndTest.class);
 
   private static final User   USER = new User();
   private static final String RU = "ru";
   private static final String MSK_MO = "mskmo";
   private static final String BEZ_MSK_MO = "bez_msk_mo";
   //TODO: http://jira.moscow.alfaintra.net/browse/ALFABANKRU-18153
-  private static final LocalDateTime START_TIME = LocalDateTime.now().minus(0, ChronoUnit.HOURS);
+  private static final LocalDateTime START_TIME = LocalDateTime.now().minus(3, ChronoUnit.HOURS);
   private static final LocalDateTime END_TIME = LocalDateTime.now().plus(1, ChronoUnit.HOURS);
+  private static final String COPIED_WIDGET = "MetaTitle";
 
-  private String baseUrl;
-  private static final  String COPIED_WIDGET = "MetaTitle";
+
   private String testProperty;
 
   /**
    * Opening acms.
    */
   @BeforeMethod(alwaysRun = true)
-  @Parameters({"baseUrl"})
-  public void openBrowser(String baseUrl) {
-    this.baseUrl = baseUrl;
+  public void openBrowser() {
     PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(baseUrl + "acms/", USER.getLogin(), USER.getPassword())
         .openPagesTree();
-    // .selectPage(testPage);
   }
 
   @Test(description = "Тест создания страницы")
   public void pageCreationTest() throws InterruptedException {
+    LOGGER.info("ТЕСТ СОЗДАНИЯ СТРАНИЦЫ");
     PageFactory.initElements(getDriver(), MainPage.class)
         .createNewPageFromRoot()
         .fillAndSubmitCreationForm(testData);
@@ -51,26 +53,25 @@ public class EndToEndTest extends BaseTest {
     killDriver();
   }
 
-  @Test(description = "Проверка копирования виджета",
+  @Test(description = "Тест копирования виджета",
       dependsOnMethods = "pageCreationTest")
   public void widgetCopyTest() throws InterruptedException {
-
+    Page page = testData.getCreatedPage();
     String sourcePagePath = "about";
     LocalDateTime startTime = LocalDateTime.now().minus(3, ChronoUnit.HOURS);
 
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openPagesTree().selectPage(sourcePagePath)
-        .copyWidgetOnPage(COPIED_WIDGET, testData.getCreatedPage().getPath())
-        .checkPageOpened(testData.getCreatedPage().getPath())
+        .selectPage(sourcePagePath)
+        .copyWidgetOnPage(COPIED_WIDGET, page.getPath())
+        .checkPageOpened(page.getPath())
         .checkIfWidgetIsPresent(COPIED_WIDGET)
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open(baseUrl + testData.getCreatedPage().getPath())
+        .open(baseUrl + page.getPath() + "/")
         .checkPageTitleAfter(startTime, "Информация о банке «Альфа-Банк»");
     killDriver();
   }
-
 
   @Test(description = "Тест значений проперти виджета для двух разных гео-зон: '"
       + MSK_MO + "' и '" + BEZ_MSK_MO + "'",

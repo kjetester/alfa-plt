@@ -1,9 +1,9 @@
 package ru.alfabank.platform.pages.alfasite;
 
+import org.apache.log4j.*;
 import org.assertj.core.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.*;
-import org.slf4j.*;
 
 import java.time.*;
 
@@ -12,7 +12,7 @@ import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 public class AlfaSitePage {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AlfaSitePage.class);
+  private static final Logger LOGGER = LogManager.getLogger(AlfaSitePage.class);
 
   @FindBy(css = "li > p > span")
   private WebElement citySelectLink;
@@ -30,7 +30,7 @@ public class AlfaSitePage {
    * @return this
    */
   public AlfaSitePage open(String testPage) {
-    LOGGER.info(String.format("Navigating to '%s'", testPage));
+    LOGGER.info(String.format("Перехожу по адресу '%s'", testPage));
     getDriver().get(testPage);
     waitForElementBecomesVisible(mainBlock);
     return this;
@@ -42,11 +42,10 @@ public class AlfaSitePage {
    * @return this
    */
   public AlfaSitePage checkPageTitleBefore(String... city) {
-    LOGGER.info("Start checking the page title is empty");
+    LOGGER.info("Проверяю, что заголовок страницы пуст");
     setCityCookieAndRefreshPage(city);
     Assertions
         .assertThat(getDriver().getTitle())
-        .as("Checking title before")
         .isEqualTo("");
     return this;
   }
@@ -63,7 +62,8 @@ public class AlfaSitePage {
   public AlfaSitePage checkPageTitleAfter(LocalDateTime deadline,
                                           String expectedTitle,
                                           String... city) throws InterruptedException {
-    LOGGER.info("Start checking title is '{}'", expectedTitle);
+    LOGGER.info(
+        String.format("Проверяю, что заголовок соответствует значению '%s'", expectedTitle));
     wait(deadline);
     boolean b = expectedTitle.equals(getDriver().getTitle());
     int count = 10;
@@ -73,13 +73,17 @@ public class AlfaSitePage {
       setCityCookieAndRefreshPage(city);
       b = expectedTitle.equals(getDriver().getTitle());
       count--;
-      LOGGER.debug(b ? "SUCCESS" : "Title doesn't match. Will try {} times more", count);
+      LOGGER.debug(
+          String.format(b ? "Успех"
+                  : "Текущий заголовок не соответствует ожидаемому. Пробую еще %d раз(а)", count));
     }
     Assertions
         .assertThat(getDriver().getTitle())
-        .as("Title is incorrect")
         .isEqualTo(expectedTitle);
-    LOGGER.info("It takes {} seconds since the deadline to get it success", (Instant.now().getEpochSecond() - start));
+    LOGGER.info(
+        String.format(
+            "Ожидание корректного заголовка страницы заняло %d секунд(ы) с момета дедлайна",
+        (Instant.now().getEpochSecond() - start)));
     return this;
   }
 
@@ -89,7 +93,8 @@ public class AlfaSitePage {
    */
   public void wait(final LocalDateTime deadline) {
     while (LocalDateTime.now().isBefore(deadline)) {
-      LOGGER.info("Waiting for {} secs", deadline.compareTo(LocalDateTime.now()));
+      LOGGER.info(
+          String.format("Жду '%d' секунд", deadline.compareTo(LocalDateTime.now())));
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {

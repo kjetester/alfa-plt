@@ -1,18 +1,17 @@
 package ru.alfabank.platform.pages.acms;
 
+import org.apache.log4j.*;
 import org.assertj.core.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.*;
-import org.testng.log4testng.*;
 
 import java.util.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
-import static ru.alfabank.platform.reporting.BasicLogger.info;
 
 public class WidgetSidebarPage extends BasePage {
 
-  private static final Logger LOGGER = Logger.getLogger(WidgetSidebarPage.class);
+  private static final Logger LOGGER = LogManager.getLogger(WidgetSidebarPage.class);
 
   @FindBy(xpath = "//div[@class = 'ant-collapse-header']/..")
   private List<WebElement> propList;
@@ -60,10 +59,11 @@ public class WidgetSidebarPage extends BasePage {
    * @param newName name
    */
   public WidgetSidebarPage checkIfPropertyWasAdded(String newName) {
-    info(String.format("Checking if the new Property named '%s' has been added", newName));
+    LOGGER.info(
+        String.format("Проверяю, добавлено ли новое проперти с названием '%s'", newName));
     waitForElementsBecomeVisible(propDropdownList);
     Assertions.assertThat(propDropdownList.stream().anyMatch(e -> newName.equals(e.getText())))
-        .as("The Property named '{}' not found", newName)
+        .as("Проперти с названием '{}' не найдено", newName)
         .isTrue();
     return this;
   }
@@ -73,7 +73,7 @@ public class WidgetSidebarPage extends BasePage {
    * @return Main Page reinitiated instance.
    */
   public MainPage submitChanges() {
-    LOGGER.info("Submitting changes");
+    LOGGER.info("Подтверждаю изменения");
     waitForElementBecomesClickable(submitButton).click();
     return PageFactory.initElements(getDriver(), MainPage.class);
   }
@@ -101,7 +101,7 @@ public class WidgetSidebarPage extends BasePage {
   public WidgetSidebarPage checkIfPropertyIsAbsent(String propName) {
     waitForElementsBecomeVisible(propDropdownList);
     Assertions.assertThat(propDropdownList.stream().anyMatch(e -> propName.equals(e.getText())))
-        .as("Checking if widget with name '%s' is absent", propName)
+        .as("Виджет с названием '{}' все еще присутствует", propName)
         .isFalse();
     return this;
   }
@@ -111,7 +111,7 @@ public class WidgetSidebarPage extends BasePage {
    * @return new instance of WidgetMetaInfoPage
    */
   public WidgetMetaInfoPage expandWidgetMetaInfo() {
-    LOGGER.info("Expanding Widget's MetaInfo pane");
+    LOGGER.info("Раскрываю панель метаинфо виджета");
     waitForElementBecomesClickable(widgetSettings).click();
     return PageFactory.initElements(getDriver(), WidgetMetaInfoPage.class);
   }
@@ -121,7 +121,7 @@ public class WidgetSidebarPage extends BasePage {
    * @return new instance of MainPage
    */
   public MainPage closeWidgetSidebar() {
-    LOGGER.info("Closing Widget's sidebar");
+    LOGGER.info("Закрываю сайдбар виджета");
     waitForElementBecomesClickable(widgetSidebarCloseButton).click();
     return PageFactory.initElements(getDriver(), MainPage.class);
   }
