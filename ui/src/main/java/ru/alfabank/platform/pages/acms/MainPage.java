@@ -6,7 +6,6 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.*;
 import org.testng.*;
 
-import java.util.NoSuchElementException;
 import java.util.*;
 import java.util.stream.*;
 
@@ -16,12 +15,8 @@ public class MainPage extends BasePage {
 
   private static final Logger LOGGER = LogManager.getLogger(MainPage.class);
 
-  @FindBy(css = "a[href = '/acms/pages']")
-  private WebElement pagesLink;
   @FindBy(css = "[class $= 'ant-tree-node-content-wrapper-open'] i")
   private WebElement createNewPageFromRootButton;
-  @FindBy(css = "li[class = 'ant-tree-treenode-switcher-open'] a")
-  private List<WebElement> rootPageList;
   @FindBy(css = "[rel='noopener noreferrer']")
   private WebElement pageTitle;
   @FindBy(css = ".rst__node")
@@ -39,46 +34,6 @@ public class MainPage extends BasePage {
   private By deleteButtonSelector = By.cssSelector("button[type='button']:not([aria-label])");
   private By copyButtonSelector = By.cssSelector("button [class $= 'copy']");
   private By widgetSelector = By.cssSelector(".rst__rowTitle  > div");
-
-  /**
-   * Open acms page.
-   * @param targetUrl targetUrl
-   * @param login login
-   * @param password password
-   * @return this
-   */
-  public MainPage openAndAuthorize(String targetUrl, String login, String password) {
-    LOGGER.info(String.format("Перехожу по адресу '%s'", targetUrl));
-    getDriver().get(targetUrl);
-    return PageFactory.initElements(getDriver(), AuthPage.class).login(login, password);
-  }
-
-  /**
-   * Open pages list.
-   * @return this
-   */
-  public MainPage openPagesTree() {
-    LOGGER.info("Открываю список страниц");
-    waitForElementBecomesClickable(pagesLink);
-    pagesLink.click();
-    waitForElementsBecomeVisible(rootPageList);
-    return this;
-  }
-
-  /**
-   * Open requested root page.
-   * @param pagePath requested page
-   */
-  public MainPage selectPage(String pagePath) {
-    LOGGER.info(String.format("Открываю страницу '%s'", pagePath));
-    rootPageList.stream().filter(p ->
-        p.getText().replace("/", "").equals(pagePath)).findFirst()
-        .orElseThrow(NoSuchElementException::new)
-        .click();
-    waitForElementBecomesVisible(pageTitle);
-    waitForElementsBecomeVisible(widgetsList);
-    return this;
-  }
 
   /**
    * Open an accordingly named widget's sidebar.

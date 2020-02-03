@@ -25,6 +25,19 @@ public class BasePage {
   private By deleteGeoButtonSelector = By.cssSelector(".ant-select-selection__choice__remove");
 
   /**
+   * Open acms page.
+   * @param targetUrl targetUrl
+   * @param login login
+   * @param password password
+   * @return this
+   */
+  public MainSliderPage openAndAuthorize(String targetUrl, String login, String password) {
+    LOGGER.info(String.format("Перехожу по адресу '%s'", targetUrl));
+    getDriver().get(targetUrl);
+    return PageFactory.initElements(getDriver(), AuthPage.class).login(login, password);
+  }
+
+  /**
    * Setting geo-groups without using dropdown list.
    * @param geoGroupList geo-groups that are already chosen
    * @param geoGroupsInput input for geo-groups

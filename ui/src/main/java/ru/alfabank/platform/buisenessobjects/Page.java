@@ -20,6 +20,16 @@ public class Page {
   private boolean isEnable;
   private List<Widget> widgetList;
 
+  /**
+   * Class constructor.
+   * @param path path
+   * @param url url
+   * @param title title
+   * @param description description
+   * @param keywords keywords
+   * @param dateFrom date from
+   * @param dateTo date to
+   */
   public Page(
       String path,
       String url,
@@ -28,6 +38,7 @@ public class Page {
       String keywords,
       LocalDateTime dateFrom,
       LocalDateTime dateTo) {
+    this.id = url.substring(url.lastIndexOf("/") + 1);
     this.path = path;
     this.url = url;
     this.title = title;
@@ -38,17 +49,26 @@ public class Page {
     LOGGER.debug("Создан новый бизнес-объект 'Страница'");
   }
 
+  /**
+   * Class constructor.
+   * @param path path
+   * @param url url
+   */
   public Page(String path, String url) {
     this.path = path;
-    this.id = url.substring(description.lastIndexOf("/") + 1);
+    this.id = url.substring(url.lastIndexOf("/") + 1);
   }
 
   public String getId() {
-    return url.substring(description.lastIndexOf("/") + 1);
+    return id;
   }
 
   public String getPath() {
     return path;
+  }
+
+  public String getUrl() {
+    return url;
   }
 
   public String getTitle() {
@@ -81,5 +101,22 @@ public class Page {
 
   public void getWidgetList(List<Widget> widgetList) {
     this.widgetList = widgetList;
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "\n\tid: '%s'\n\tpath: '%s'\n\turl: '%s'\n\ttitle: '%s'\n\tdescription: '%s'\n\tkeywords:"
+            + " '%s'\n\tdateFrom: '%s'\n\tdateTo: '%s'\n\tisEnable: '%b'\n\tWidgetList: '%s'",
+        id,
+        path,
+        url,
+        title,
+        description,
+        keywords,
+        dateFrom,
+        dateTo,
+        isEnable,
+        widgetList);
   }
 }

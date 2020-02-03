@@ -9,7 +9,7 @@ import ru.alfabank.platform.tests.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
-@Listeners({CustomListener.class})
+@Listeners({ScreenShotListener.class})
 public class WidgetDeleteTest extends BaseTest {
 
   private static final User USER = new User();
@@ -18,12 +18,11 @@ public class WidgetDeleteTest extends BaseTest {
    * Opening page.
    */
   @BeforeClass
-  @Parameters ({"baseUrl", "testPageUri"})
-  public void settingUp(String baseUrl, String testPageUri) {
+  public void settingUp() {
     PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(baseUrl, USER.getLogin(), USER.getPassword())
         .openPagesTree()
-        .selectPage(testPageUri);
+        .selectPage("sme-new/");
   }
 
   @Test(description = "Deletion a not shared widget hasn't a child")

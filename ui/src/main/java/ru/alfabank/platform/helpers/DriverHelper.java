@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.*;
 import org.apache.log4j.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.*;
+import org.openqa.selenium.remote.*;
 import org.openqa.selenium.support.ui.*;
 
 import java.time.temporal.*;
@@ -19,7 +20,7 @@ public class DriverHelper {
   private static final Logger LOGGER = LogManager.getLogger(DriverHelper.class);
   private static final int TIMEOUT = 25;
 
-  private static WebDriver driver;
+  private static RemoteWebDriver driver;
 
   /**
    * Getting driver.
@@ -30,7 +31,11 @@ public class DriverHelper {
       LOGGER.debug("Запускаю Chrome");
       WebDriverManager.chromedriver().setup();
       ChromeOptions opts = new ChromeOptions();
-      opts.setAcceptInsecureCerts(true);
+      opts
+          .setAcceptInsecureCerts(true)
+          .addArguments(
+              "--headless",
+              "--disable-gpu");
       driver = new ChromeDriver(opts);
       driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
       driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
@@ -68,8 +73,8 @@ public class DriverHelper {
    * @param element element
    */
   public static WebElement waitForElementBecomesClickable(WebElement element) {
-    LOGGER.debug("Ожидаю кликабельности элемента");
     implicitlyWait(false);
+    LOGGER.debug("Ожидаю кликабельности элемента");
     new WebDriverWait(driver, ofSeconds(TIMEOUT))
         .until(elementToBeClickable(element));
     implicitlyWait(true);

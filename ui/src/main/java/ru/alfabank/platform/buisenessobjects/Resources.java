@@ -1,10 +1,6 @@
 package ru.alfabank.platform.buisenessobjects;
 
-import org.apache.log4j.*;
-
 public class Resources {
-
-  private static final Logger LOGGER = LogManager.getLogger(Resources.class);
 
   private String url;
 

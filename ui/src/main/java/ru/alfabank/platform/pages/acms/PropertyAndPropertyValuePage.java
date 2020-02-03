@@ -22,6 +22,8 @@ public class PropertyAndPropertyValuePage extends BasePage {
       By.cssSelector("div[class = 'ant-select-selection__rendered']");
   private By propertyValueSelectedGeoGroups = By.cssSelector("li[title]");
   private By propertyValueTextAreaSelector = By.cssSelector("div[class = 'view-line']");
+  private By propertyValueDivsSelector = By.cssSelector(".view-lines .view-line");
+  private By propertyValueSpansSelector = By.cssSelector("span > span");
   private String propertySelectorXpath = "//span[text() = '%s']/../..";
 
   /**
@@ -158,5 +160,33 @@ public class PropertyAndPropertyValuePage extends BasePage {
     Assertions.assertThat(actualColor)
         .as("Проперти '{}' не отмечено, как найденное", propertyName)
         .contains("24, 144, 255");
+  }
+
+  /**
+   * Read property value at {@code propertyName} property.
+   * @param propertyName propertyName
+   * @return property value
+   */
+  public String readSingleValueFromProperty(String propertyName) {
+    LOGGER.debug(String.format("Ищу проперти '%s'", propertyName));
+    By propertySelector = By.xpath(String.format(propertySelectorXpath, propertyName));
+    StringBuilder stringBuilder = new StringBuilder();
+    LOGGER.debug("Собираю строку из вэлью");
+    waitForElementBecomesClickable(getDriver().findElement(propertySelector))
+        .findElements(propertyValueSpansSelector).forEach(e -> {
+          String className = e.getAttribute("class");
+          if (className.contains("whitespace")) {
+            LOGGER.debug("Добавляю к строке: 'пробел'");
+            stringBuilder.append(" ");
+          } else if (className.contains("·")) {
+            LOGGER.debug("Игнорирую разметку");
+          } else {
+            LOGGER.debug(String.format("Добавляю к строке: '%s'", e.getText()));
+            stringBuilder.append(e.getText());
+          }
+        });
+    String res = stringBuilder.toString().replaceAll("[\"]", "");
+    LOGGER.debug(String.format("Собрана строка: '%s'", res));
+    return res;
   }
 }

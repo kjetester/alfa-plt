@@ -15,11 +15,10 @@ import java.time.temporal.*;
 import static org.apache.logging.log4j.LogManager.*;
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
-@Listeners({CustomListener.class})
+@Listeners({ScreenShotListener.class})
 public class EndToEndTest extends BaseTest {
 
   private static final Logger LOGGER = getLogger(EndToEndTest.class);
-
   private static final User   USER = new User();
   private static final String RU = "ru";
   private static final String MSK_MO = "mskmo";
@@ -27,9 +26,9 @@ public class EndToEndTest extends BaseTest {
   //TODO: http://jira.moscow.alfaintra.net/browse/ALFABANKRU-18153
   private static final LocalDateTime START_TIME = LocalDateTime.now().minus(3, ChronoUnit.HOURS);
   private static final LocalDateTime END_TIME = LocalDateTime.now().plus(1, ChronoUnit.HOURS);
-  private static final String COPIED_WIDGET = "MetaTitle";
-
-
+  private static final String TEST_WIDGET = "MetaTitle";
+  private static final String TEST_PROPERTY = "title";
+  private static String testPropertyValue;
   private String testProperty;
 
   /**
@@ -44,7 +43,6 @@ public class EndToEndTest extends BaseTest {
 
   @Test(description = "Тест создания страницы")
   public void pageCreationTest() throws InterruptedException {
-    LOGGER.info("ТЕСТ СОЗДАНИЯ СТРАНИЦЫ");
     PageFactory.initElements(getDriver(), MainPage.class)
         .createNewPageFromRoot()
         .fillAndSubmitCreationForm(testData);
@@ -58,18 +56,19 @@ public class EndToEndTest extends BaseTest {
   public void widgetCopyTest() throws InterruptedException {
     Page page = testData.getCreatedPage();
     String sourcePagePath = "about";
-    LocalDateTime startTime = LocalDateTime.now().minus(3, ChronoUnit.HOURS);
-
-    PageFactory.initElements(getDriver(), MainPage.class)
+    PageFactory.initElements(getDriver(), PagesSliderPage.class)
         .selectPage(sourcePagePath)
-        .copyWidgetOnPage(COPIED_WIDGET, page.getPath())
+        .copyWidgetOnPage(TEST_WIDGET, page.getPath())
         .checkPageOpened(page.getPath())
-        .checkIfWidgetIsPresent(COPIED_WIDGET)
+        .checkIfWidgetIsPresent(TEST_WIDGET)
         .publishDraft();
+    testPropertyValue = PageFactory.initElements(getDriver(), MainPage.class)
+        .openWidgetSidebar(TEST_WIDGET)
+        .readSingleValueFromProperty(TEST_PROPERTY);
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
         .open(baseUrl + page.getPath() + "/")
-        .checkPageTitleAfter(startTime, "Информация о банке «Альфа-Банк»");
+        .checkPageTitleAfter(START_TIME, testPropertyValue);
     killDriver();
   }
 
@@ -79,7 +78,7 @@ public class EndToEndTest extends BaseTest {
       enabled = false)
   public void valuesGeoModifyTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(COPIED_WIDGET)
+        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
         .expandWidgetMetaInfo()
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(START_TIME)
@@ -105,7 +104,7 @@ public class EndToEndTest extends BaseTest {
       enabled = false)
   public void widgetsGeoModifyTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(COPIED_WIDGET)
+        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
         .expandWidgetMetaInfo()
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(START_TIME)
@@ -130,7 +129,7 @@ public class EndToEndTest extends BaseTest {
       enabled = false)
   public void widgetInvisibilityTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(COPIED_WIDGET)
+        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
         .expandWidgetMetaInfo()
         .setVisibilityTo(false)
         .openStartDatePicker().setDateTo(START_TIME)
@@ -155,7 +154,7 @@ public class EndToEndTest extends BaseTest {
       enabled = false)
   public void propertyDeletionTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(COPIED_WIDGET)
+        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
         .deleteProperty(testProperty)
         .submitChanges()
         .saveDraft()
@@ -173,7 +172,7 @@ public class EndToEndTest extends BaseTest {
       enabled = false)
   public void propertyAdditionTest() throws InterruptedException {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(COPIED_WIDGET)
+        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
         .createNewPropertyToWorkWith(testProperty)
         .modifyValue(testProperty, "\"" + RU + "\"", RU)
         .submitChanges()
@@ -196,7 +195,7 @@ public class EndToEndTest extends BaseTest {
     final LocalDateTime startActiveTime = LocalDateTime.now().plus(30, ChronoUnit.SECONDS);
     final LocalDateTime endActiveTime = LocalDateTime.now().plus(60, ChronoUnit.SECONDS);
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openWidgetSidebarToWorkWithWidgetMeta(COPIED_WIDGET)
+        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
         .expandWidgetMetaInfo()
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(startActiveTime)
@@ -230,7 +229,7 @@ public class EndToEndTest extends BaseTest {
         .openAndAuthorize(baseUrl + "acms/", USER.getLogin(), USER.getPassword())
         .openPagesTree()
         .selectPage(testData.getCreatedPage().getPath())
-        .openWidgetSidebarToWorkWithWidgetMeta(COPIED_WIDGET)
+        .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
         .expandWidgetMetaInfo()
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(START_TIME)

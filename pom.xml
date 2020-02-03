@@ -22,11 +22,15 @@
         <selenium.version>4.0.0-alpha-3</selenium.version>
         <webdrivermanager.version>3.7.1</webdrivermanager.version>
         <assertj.version>3.14.0</assertj.version>
-        <apache-common.version>1.7</apache-common.version>
+        <apache-common-csv.version>1.7</apache-common-csv.version>
+        <apache-common-lang3.version>3.9</apache-common-lang3.version>
+        <apache-commons-io.version>2.6</apache-commons-io.version>
+        <apache-commons-text.version>1.8</apache-commons-text.version>
         <lombok.version>1.18.10</lombok.version>
         <slf4j.version>2.0.0-alpha1</slf4j.version>
         <log4j.version>2.13.0</log4j.version>
         <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+        <galenframework.version>2.4.4</galenframework.version>
     </properties>
 
     <repositories>
@@ -73,8 +77,23 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-csv</artifactId>
-                <version>${apache-common.version}</version>
+                <version>${apache-common-csv.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache-common-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${apache-commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${apache-commons-text.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -114,5 +133,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>manual</distribution>
+        </license>
+    </licenses>
 
 </project>

@@ -9,7 +9,6 @@ import java.time.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
-
 public class AlfaSitePage {
 
   private static final Logger LOGGER = LogManager.getLogger(AlfaSitePage.class);
@@ -22,7 +21,6 @@ public class AlfaSitePage {
   private WebElement cityLink;
   @FindBy(id = "alfa")
   private WebElement mainBlock;
-
 
   /**
    * Opening AlfaSite page.
@@ -50,7 +48,6 @@ public class AlfaSitePage {
     return this;
   }
 
-
   /**
    * Assertion page titles according to time and geo-group.
    * @param deadline deadline when to start assertion
@@ -62,26 +59,24 @@ public class AlfaSitePage {
   public AlfaSitePage checkPageTitleAfter(LocalDateTime deadline,
                                           String expectedTitle,
                                           String... city) throws InterruptedException {
-    LOGGER.info(
-        String.format("Проверяю, что заголовок соответствует значению '%s'", expectedTitle));
+    LOGGER.info(String.format(
+        "Проверяю, что заголовок соответствует значению '%s'", expectedTitle));
     wait(deadline);
     boolean b = expectedTitle.equals(getDriver().getTitle());
-    int count = 10;
+    int count = 3;
     long start = Instant.now().getEpochSecond();
     while (!b && count > 0) {
-      Thread.sleep(5_000);
+      Thread.sleep(10_000);
       setCityCookieAndRefreshPage(city);
-      b = expectedTitle.equals(getDriver().getTitle());
+      String actualTitle = getDriver().getTitle();
+      b = expectedTitle.equals(actualTitle);
       count--;
-      LOGGER.debug(
-          String.format(b ? "Успех"
-                  : "Текущий заголовок не соответствует ожидаемому. Пробую еще %d раз(а)", count));
+      LOGGER.debug(String.format(
+          b ? "Успех" : "Текущий заголовок '%s' не соответствует ожидаемому '%s'."
+              + "Попробую еще %d раз(а)", actualTitle, expectedTitle, count));
     }
-    Assertions
-        .assertThat(getDriver().getTitle())
-        .isEqualTo(expectedTitle);
-    LOGGER.info(
-        String.format(
+    Assertions.assertThat(getDriver().getTitle()).isEqualTo(expectedTitle);
+    LOGGER.info(String.format(
             "Ожидание корректного заголовка страницы заняло %d секунд(ы) с момета дедлайна",
         (Instant.now().getEpochSecond() - start)));
     return this;

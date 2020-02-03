@@ -4,18 +4,14 @@
        thread-count = "1"
        configfailurepolicy = "continue"
        verbose = "5">
-    <test name="Non shared widget deletion Test">
+    <test name="Non shared widget deletion Test" enabled="true">
         <classes>
             <class name="ru.alfabank.platform.tests.acms.WidgetDeleteTest"/>
-            <parameter name = "testPageUri"
-                       value = "alfacard-test/"/>
         </classes>
     </test>
-    <test name="Property Test">
+    <test name="Property Test" enabled="true">
         <classes>
-            <class name="ru.alfabank.platform.tests.acms.WidgetDeleteTest"/>
-            <parameter name = "testPageUri"
-                       value = "alfacard-test/"/>
+            <class name="ru.alfabank.platform.tests.acms.PropertyDraftTest"/>
         </classes>
     </test>
 </suite>

@@ -4,11 +4,9 @@ import org.testng.*;
 import org.testng.annotations.*;
 import ru.alfabank.platform.buisenessobjects.*;
 import ru.alfabank.platform.helpers.*;
-import ru.alfabank.platform.reporting.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
-@Listeners({CustomListener.class})
 public class BaseTest {
 
   private static final org.apache.log4j.Logger LOGGER = org.apache.log4j.LogManager.getLogger(BaseTest.class);

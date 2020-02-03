@@ -12,7 +12,6 @@
 <!--    <test name = "Search Test" enabled="true">-->
 <!--        <classes>-->
 <!--            <class name = "ru.alfabank.platform.tests.acms.SearchTest"/>-->
-<!--            <parameter name = "testPageUri" value = "sme/"/>-->
 <!--        </classes>-->
 <!--    </test>-->
 </suite>

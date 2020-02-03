@@ -9,7 +9,7 @@ import ru.alfabank.platform.tests.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
-@Listeners({CustomListener.class})
+@Listeners({ScreenShotListener.class})
 public class PropertyDraftTest extends BaseTest {
 
   User user = new User();
@@ -21,12 +21,11 @@ public class PropertyDraftTest extends BaseTest {
    * Opening acms.
    */
   @BeforeClass (alwaysRun = true)
-  @Parameters({"baseUrl", "testPageUri"})
-  public void settingUp(String baseUrl, String testPageUri) {
+  public void settingUp() {
     PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(baseUrl, user.getLogin(), user.getPassword())
         .openPagesTree()
-        .selectPage(testPageUri);
+        .selectPage("sme-new/");
   }
 
   @Test(
