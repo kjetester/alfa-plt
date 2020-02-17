@@ -13,9 +13,9 @@ import static ru.alfabank.platform.helpers.DriverHelper.*;
 /**
  * Listeners.
  */
-public class ScreenShotListener extends TestListenerAdapter {
+public class TestFailureListener extends TestListenerAdapter {
 
-  private static final Logger LOGGER = LogManager.getLogger(ScreenShotListener.class);
+  private static final Logger LOGGER = LogManager.getLogger(TestFailureListener.class);
 
   @Override
   public void onTestFailure(ITestResult result) {

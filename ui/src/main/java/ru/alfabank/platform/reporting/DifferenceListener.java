@@ -7,7 +7,7 @@ import org.testng.*;
 
 import java.io.*;
 
-import static ru.alfabank.platform.helpers.FileComparator.*;
+import static ru.alfabank.platform.helpers.FileComparator.compare;
 
 /**
  * Listeners.
@@ -18,12 +18,13 @@ public class DifferenceListener extends TestListenerAdapter {
 
   @Override
   public void onTestFailure(ITestResult result) {
-    if (result.getStatus() == ITestResult.FAILURE) {
+    if (result.getStatus() == ITestResult.FAILURE
+        && result.getThrowable().getMessage().contains("to be equal to")) {
       ITestContext context = result.getTestContext();
       String url = (String) context.getAttribute("case");
-      String expectedPath = "target/results" + url + "expected.txt";
-      String actualPath = "target/results" + url + "actual.txt";
-      String diffPath = "target/results" + url + "diff.html";
+      String expectedPath = "target/results/" + url + "expected.html";
+      String actualPath = "target/results/" + url + "actual.html";
+      String diffPath = "target/results/" + url + "diff.html";
       File expected = new File(expectedPath);
       File actual = new File(actualPath);
       File diff = new File(diffPath);
