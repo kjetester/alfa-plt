@@ -13,18 +13,19 @@ import java.util.*;
 
 import static io.restassured.RestAssured.*;
 import static ru.alfabank.platform.helpers.DriverHelper.*;
+import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
 import static ru.alfabank.platform.helpers.UUIDHelper.*;
 
 public class BasePageTest extends BaseTest {
 
   private static final Logger LOGGER = LogManager.getLogger(BasePageTest.class);
+  protected static final String PAGE_CONTROLLER_BASE_PATH =
+      "api/v1/content-store/admin-panel/pages/";
 
-  protected String pageControllerBasePath = "api/v1/content-store/admin-panel/pages/";
   protected Page basicPage;
   protected RequestSpecification pageControllerSpec;
   protected RequestSpecification contentPageControllerSpec;
   protected Map<String, Page> createdPages = new HashMap<>();
-  protected String accessToken;
 
   /**
    * Define test env.
@@ -32,9 +33,13 @@ public class BasePageTest extends BaseTest {
   @BeforeClass
   public void beforeClass() {
     LOGGER.debug("Устанавливаю конфгурацию запросов к page-controller");
-    pageControllerSpec = new RequestSpecBuilder().log(LogDetail.ALL)
-        .setBaseUri(baseUri).setBasePath(pageControllerBasePath)
-        .setContentType(ContentType.JSON).setRelaxedHTTPSValidation().build();
+    pageControllerSpec = new RequestSpecBuilder()
+        .setRelaxedHTTPSValidation()
+        .setBaseUri(baseUri)
+        .setBasePath(PAGE_CONTROLLER_BASE_PATH)
+        .setContentType(ContentType.JSON)
+        .log(LogDetail.ALL)
+        .build();
     LOGGER.debug("Устанавливаю конфгурацию запросов к content-page-controller");
     contentPageControllerSpec = new RequestSpecBuilder().log(LogDetail.ALL)
         .setBaseUri(baseUri).setBasePath("/api/v1/content-store/page-contents")
@@ -78,18 +83,18 @@ public class BasePageTest extends BaseTest {
         int statusCode =
             given()
                 .spec(pageControllerSpec)
-                .basePath(pageControllerBasePath + "/{id}")
-                .auth().oauth2(accessToken)
+                .basePath(PAGE_CONTROLLER_BASE_PATH + "/{id}")
+                .auth().oauth2(getToken(USER).getAccessToken())
                 .pathParam("id", createdPages.get(key).getId())
             .when().delete()
                 .getStatusCode();
         if (statusCode == 200) {
           LOGGER.info(
               String.format(
-                  "Страница '/%s' удалена", createdPages.get(key).getPath()));
+                  "Страница '/%s' удалена", createdPages.get(key).getUri()));
         } else {
           LOGGER.warn(String.format(
-              "Не удалось удалить страницу '/%s'", createdPages.get(key).getPath()));
+              "Не удалось удалить страницу '/%s'", createdPages.get(key).getUri()));
         }
       });
     }

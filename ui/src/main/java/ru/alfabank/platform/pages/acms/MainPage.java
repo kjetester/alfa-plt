@@ -1,7 +1,6 @@
 package ru.alfabank.platform.pages.acms;
 
 import org.apache.log4j.*;
-import org.assertj.core.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.*;
 import org.testng.*;
@@ -17,11 +16,12 @@ public class MainPage extends BasePage {
 
   private static final Logger LOGGER = LogManager.getLogger(MainPage.class);
 
-
   @FindBy(css = "[rel='noopener noreferrer']")
   private WebElement pageTitle;
   @FindBy(css = ".rst__node")
   private List<WebElement> widgetsList;
+  @FindBy(xpath = "//*[@class = 'anticon anticon-delete']/..")
+  private WebElement deleteButton;
   @FindBy(xpath = "//span[text() = 'Сохранить']/..")
   private WebElement saveButton;
   @FindBy(xpath = "//span[text() = 'Опубликовать']/..")
@@ -79,7 +79,7 @@ public class MainPage extends BasePage {
     waitForElementBecomesClickable(
         getDriver().findElement(By.cssSelector(String.format("[title='%s']", pageName))))
         .click();
-    submit();
+    submitDialog();
     Thread.sleep(2_000L);
     return PageFactory.initElements(getDriver(), MainPage.class);
   }
@@ -151,7 +151,7 @@ public class MainPage extends BasePage {
   public MainPage publishDraft() {
     LOGGER.info("Публикую черновик страницы");
     waitForElementBecomesClickable(publishButton).click();
-    submit();
+    submitDialog();
     waitForElementBecomesClickable(bannerCloseBttn).click();
     return this;
   }
@@ -171,7 +171,7 @@ public class MainPage extends BasePage {
       LOGGER.info(String.format("Deleting the '%s' widget",
           widget.findElement(widgetsTitleLSelector).getText()));
       widget.findElement(deleteButtonSelector).click();
-      submit();
+      submitDialog();
     } else {
       throw new TestException("Не смог найти подходящий виджет");
     }
@@ -194,7 +194,7 @@ public class MainPage extends BasePage {
       LOGGER.info(String.format("Deleting the '%s' widget",
           widget.findElement(widgetsTitleLSelector).getText()));
       widget.findElement(deleteButtonSelector).click();
-      submit();
+      submitDialog();
     } else {
       throw new TestException("Не смог найти подходящий виджет");
     }
@@ -204,7 +204,7 @@ public class MainPage extends BasePage {
   /**
    * Submit in a modal window.
    */
-  public void submit() {
+  public void submitDialog() {
     LOGGER.debug("Подтверждаю действие");
     waitForElementBecomesVisible(modalWindow);
     modalWindowSubmitButton.click();
@@ -280,7 +280,13 @@ public class MainPage extends BasePage {
     return PageFactory.initElements(getDriver(), AlfaSitePage.class);
   }
 
+  /**
+   * Delete page.
+   */
   public void deletePage() {
     LOGGER.info("УДАЛЯЮ СТРАНИЦУ");
+    waitForElementBecomesClickable(deleteButton).click();
+    submitDialog();
+    waitForElementBecomesClickable(bannerCloseBttn).click();
   }
 }

@@ -36,8 +36,8 @@ public class NewPageCreationPage extends BasePage {
   public Page fillAndSubmitCreationForm(Page page) throws InterruptedException {
     LOGGER.info("Заполняю поля формы");
     //TODO: http://jira.moscow.alfaintra.net/browse/ALFABANKRU-18912)
-    LOGGER.info(String.format("Путь: '%s'", page.getPath()));
-    waitForElementBecomesClickable(pathInput).sendKeys(page.getPath());
+    LOGGER.info(String.format("Путь: '%s'", page.getUri()));
+    waitForElementBecomesClickable(pathInput).sendKeys(page.getUri());
     LOGGER.info(String.format("Название: '%s'", page.getTitle()));
     titleInput.sendKeys(page.getTitle());
     LOGGER.info(String.format("Описание: '%s'", page.getDescription()));
@@ -45,7 +45,8 @@ public class NewPageCreationPage extends BasePage {
     if (page.getDateFrom() != null) {
       LOGGER.info("Дата начала отображения:");
       startDate.click();
-      PageFactory.initElements(getDriver(), DatePickerPage.class).setDateTo(page.getDateFrom());
+      PageFactory.initElements(getDriver(), DatePickerPage.class)
+          .setDateTo(page.getLocalDateTimeFrom());
     } else {
       LOGGER.info("Очищаю поле даты начала отображения");
       new Actions(getDriver())
@@ -58,7 +59,8 @@ public class NewPageCreationPage extends BasePage {
     if (page.getDateTo() != null) {
       LOGGER.info("Дата окончания отображения:");
       endDate.click();
-      PageFactory.initElements(getDriver(), DatePickerPage.class).setDateTo(page.getDateTo());
+      PageFactory.initElements(getDriver(), DatePickerPage.class)
+          .setDateTo(page.getLocalDateTimeTo());
     }
     setCheckboxTo(visabilityCheckbox, page.isEnable());
     LOGGER.info("Сохраняю");

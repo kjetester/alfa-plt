@@ -1,23 +1,23 @@
 package ru.alfabank.platform.buisenessobjects;
 
-import org.apache.log4j.*;
+import com.fasterxml.jackson.annotation.*;
 
 import java.time.*;
 import java.util.*;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Page {
 
-  private static final Logger LOGGER = LogManager.getLogger(Page.class);
-
-  private int id;
-  private String path;
-  private String url;
+  private Integer id;
+  private String uri;
   private String title;
   private String description;
   private String keywords;
-  private LocalDateTime dateFrom;
-  private LocalDateTime dateTo;
-  private boolean isEnable;
+  private String dateFrom;
+  private String dateTo;
+  private Boolean enable;
+  @JsonIgnore
   private List<Widget> widgetList;
 
   /**
@@ -26,30 +26,33 @@ public class Page {
    */
   public Page(final PageBuilder builder) {
     this.id = builder.id;
-    this.path = builder.path;
-    this.url = builder.url;
+    this.uri = builder.path;
     this.title = builder.title;
     this.description = builder.description;
     this.keywords = builder.keywords;
-    this.dateFrom = builder.dateFrom;
-    this.dateTo = builder.dateTo;
-    this.isEnable = builder.isEnable;
+    if (builder.dateFrom == null) {
+      this.dateFrom = null;
+    } else {
+      this.dateFrom = builder.dateFrom.toString();
+    }
+    if (builder.dateTo == null) {
+      this.dateTo = null;
+    } else {
+      this.dateTo = builder.dateTo.toString();
+    }
+    this.enable = builder.enable;
   }
 
-  public Page(String path) {
-    this.path = path;
+  public Page(String uri) {
+    this.uri = uri;
   }
 
-  public int getId() {
+  public Integer getId() {
     return id;
   }
 
-  public String getPath() {
-    return path;
-  }
-
-  public String getUrl() {
-    return url;
+  public String getUri() {
+    return uri;
   }
 
   public String getTitle() {
@@ -64,16 +67,24 @@ public class Page {
     return keywords;
   }
 
-  public LocalDateTime getDateFrom() {
+  public LocalDateTime getLocalDateTimeFrom() {
+    return LocalDateTime.parse(dateFrom);
+  }
+
+  public String getDateFrom() {
     return dateFrom;
   }
 
-  public LocalDateTime getDateTo() {
+  public LocalDateTime getLocalDateTimeTo() {
+    return LocalDateTime.parse(dateTo);
+  }
+
+  public String getDateTo() {
     return dateTo;
   }
 
-  public boolean isEnable() {
-    return isEnable;
+  public Boolean isEnable() {
+    return enable;
   }
 
   public List<Widget> getWidgetList() {
@@ -84,46 +95,24 @@ public class Page {
     this.widgetList = widgets;
   }
 
-  @Override
-  public String toString() {
-    return String.format(
-        "\n\tid: '%s'\n\tpath: '%s'\n\turl: '%s'\n\ttitle: '%s'\n\tdescription: '%s'\n\tkeywords:"
-            + " '%s'\n\tdateFrom: '%s'\n\tdateTo: '%s'\n\tisEnable: '%b'\n\tWidgetList: '%s'",
-        id,
-        path,
-        url,
-        title,
-        description,
-        keywords,
-        dateFrom,
-        dateTo,
-        isEnable,
-        widgetList);
-  }
-
+  @JsonIgnoreType
   public static class PageBuilder {
-    private int id;
+    private Integer id;
     private String path;
-    private String url;
     private String title;
     private String description;
     private String keywords;
     private LocalDateTime dateFrom;
     private LocalDateTime dateTo;
-    private boolean isEnable;
+    private Boolean enable;
 
-    public PageBuilder setId(int id) {
+    public PageBuilder setId(Integer id) {
       this.id = id;
       return this;
     }
 
     public PageBuilder setPath(String path) {
       this.path = path;
-      return this;
-    }
-
-    public PageBuilder setUrl(String url) {
-      this.url = url;
       return this;
     }
 
@@ -152,8 +141,8 @@ public class Page {
       return this;
     }
 
-    public PageBuilder setEnable(boolean enable) {
-      isEnable = enable;
+    public PageBuilder setEnable(Boolean enable) {
+      this.enable = enable;
       return this;
     }
 
@@ -164,14 +153,21 @@ public class Page {
      */
     public PageBuilder using(Page page) {
       this.id = page.id;
-      this.path = page.path;
-      this.url = page.url;
+      this.path = page.uri;
       this.title = page.title;
       this.description = page.description;
       this.keywords = page.keywords;
-      this.dateFrom = page.dateFrom;
-      this.dateTo = page.dateTo;
-      this.isEnable = page.isEnable;
+      if (page.dateFrom == null) {
+        this.dateFrom = null;
+      } else {
+        this.dateFrom = LocalDateTime.parse(page.dateFrom);
+      }
+      if (page.dateTo == null) {
+        this.dateTo = null;
+      } else {
+        this.dateTo = LocalDateTime.parse(page.dateTo);
+      }
+      this.enable = page.enable;
       return this;
     }
 

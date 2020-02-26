@@ -46,20 +46,20 @@ public class WidgetCreationTest extends BaseTest {
   @Test(description = "Тест создания виджета в корне. Все поля заполнены. Активен. Проперти нет.")
   public void activeWidgetWithNoPropsCreationTest() throws InterruptedException {
     Page localPage = PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize(baseUri, USER.getLogin(), USER.getPassword())
+        .openAndAuthorize(baseUri, USER)
         .openPagesTree()
         .createNewPage(null)
         .fillAndSubmitCreationForm(basePage);
     PageFactory.initElements(getDriver(), MainPage.class)
-        .checkPageOpened(localPage.getPath());
+        .checkPageOpened(localPage.getUri());
 
     JsonPath savedPage =
         given().spec(pageControllerSpec).auth().oauth2(getSessionStorage().getItem("access-token")
-            .replaceAll("\"","")).queryParam("uri","/" + localPage.getPath())
+            .replaceAll("\"","")).queryParam("uri","/" + localPage.getUri())
             .when().get().then().log().ifStatusCodeMatches(not(200)).statusCode(200)
             .extract().response().getBody().jsonPath();
     assertThat(savedPage.getInt("id")).isEqualTo(localPage.getId());
-    assertThat(savedPage.getString("uri")).isEqualTo("/" + localPage.getPath());
+    assertThat(savedPage.getString("uri")).isEqualTo("/" + localPage.getUri());
     assertThat(savedPage.getString("title")).isEqualTo(localPage.getTitle());
     assertThat(savedPage.getString("description")).isEqualTo(localPage.getDescription());
     assertThat(savedPage.getBoolean("enable")).isEqualTo(localPage.isEnable());
@@ -69,7 +69,7 @@ public class WidgetCreationTest extends BaseTest {
         .contains(localPage.getDateTo().toString().substring(0, 16));
 
     JsonPath view =
-        given().spec(contentPageControllerSpec).queryParam("uri", "/" + localPage.getPath()).when()
+        given().spec(contentPageControllerSpec).queryParam("uri", "/" + localPage.getUri()).when()
             .get().then().log().ifStatusCodeMatches(not(404)).statusCode(404).extract().response()
             .getBody().jsonPath();
     assertThat(view.getString("code")).isEqualTo("404");

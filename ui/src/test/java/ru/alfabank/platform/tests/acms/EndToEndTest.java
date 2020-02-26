@@ -25,7 +25,7 @@ public class EndToEndTest extends BaseTest {
   @BeforeMethod(alwaysRun = true)
   public void openBrowser() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize(baseUri + "acms/", USER.getLogin(), USER.getPassword())
+        .openAndAuthorize(baseUri + "acms/", USER)
         .openPagesTree();
   }
 
@@ -35,7 +35,7 @@ public class EndToEndTest extends BaseTest {
         .createNewPage(null)
         .fillAndSubmitCreationForm(basePage);
     PageFactory.initElements(getDriver(), MainPage.class)
-        .checkPageOpened(basePage.getPath());
+        .checkPageOpened(basePage.getUri());
     killDriver();
   }
 
@@ -44,9 +44,9 @@ public class EndToEndTest extends BaseTest {
   public void widgetCopyTest() throws InterruptedException {
     String sourcePagePath = "about";
     PageFactory.initElements(getDriver(), PagesSliderPage.class)
-        .selectPage(sourcePagePath)
-        .copyWidgetOnPage(TEST_WIDGET, basePage.getPath())
-        .checkPageOpened(basePage.getPath())
+        .openPage(sourcePagePath)
+        .copyWidgetOnPage(TEST_WIDGET, basePage.getUri())
+        .checkPageOpened(basePage.getUri())
         .checkIfWidgetIsPresent(TEST_WIDGET)
         .publishDraft();
     testPropertyValue = PageFactory.initElements(getDriver(), MainPage.class)
@@ -55,8 +55,8 @@ public class EndToEndTest extends BaseTest {
     PageFactory.initElements(getDriver(), WidgetSidebarPage.class)
         .closeWidgetSidebarAndGoToMainPage()
         .navigateToAlfaSite()
-        .compareUrl(basePage.getPath())
-        .checkPageTitleAfter(basePage.getDateFrom(), testPropertyValue);
+        .compareUrl(basePage.getUri())
+        .checkPageTitleAfter(basePage.getLocalDateTimeFrom(), testPropertyValue);
     killDriver();
   }
 
@@ -87,7 +87,7 @@ public class EndToEndTest extends BaseTest {
         .saveDraft()
         .publishDraft()
         .navigateToAlfaSite()
-        .compareUrl(basePage.getPath())
+        .compareUrl(basePage.getUri())
         .checkPageTitleAfter(dateFrom, MSK_MO)
         .checkPageTitleAfter(dateTo, BEZ_MSK_MO, "vladimir");
     killDriver();
@@ -114,7 +114,7 @@ public class EndToEndTest extends BaseTest {
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open(baseUri + basePage.getPath())
+        .open(baseUri + basePage.getUri())
         .checkPageTitleAfter(dateFrom, MSK_MO)
         .checkPageTitleAfter(dateFrom, "", "vladimir");
     killDriver();
@@ -142,7 +142,7 @@ public class EndToEndTest extends BaseTest {
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open(baseUri + basePage.getPath())
+        .open(baseUri + basePage.getUri())
         .checkPageTitleAfter(dateFrom, "")
         .checkPageTitleAfter(dateFrom, "", "vladimir");
     killDriver();
@@ -162,7 +162,7 @@ public class EndToEndTest extends BaseTest {
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open(baseUri + basePage.getPath())
+        .open(baseUri + basePage.getUri())
         .checkPageTitleAfter(dateFrom, "")
         .checkPageTitleAfter(dateFrom, "", "vladimir");
     killDriver();
@@ -183,7 +183,7 @@ public class EndToEndTest extends BaseTest {
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open(baseUri + basePage.getPath())
+        .open(baseUri + basePage.getUri())
         .checkPageTitleAfter(dateFrom, RU)
         .checkPageTitleAfter(dateFrom, RU, "vladimir");
     killDriver();
@@ -212,7 +212,7 @@ public class EndToEndTest extends BaseTest {
         .publishDraft();
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
-        .open(baseUri + basePage.getPath())
+        .open(baseUri + basePage.getUri())
         .checkPageTitleBefore()
         .checkPageTitleAfter(startActiveTime, MSK_MO)
         .checkPageTitleAfter(startActiveTime, BEZ_MSK_MO, "vladimir")
@@ -231,9 +231,9 @@ public class EndToEndTest extends BaseTest {
     LocalDateTime dateFrom = LocalDateTime.now().minus(0, ChronoUnit.HOURS);
     LocalDateTime dateTo = LocalDateTime.now().plus(30, ChronoUnit.MINUTES);
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize(baseUrl + "acms/", USER.getLogin(), USER.getPassword())
+        .openAndAuthorize(baseUrl + "acms/", USER)
         .openPagesTree()
-        .selectPage(basePage.getPath())
+        .openPage(basePage.getUri())
         .openWidgetSidebarToWorkWithWidgetMeta(TEST_WIDGET)
         .expandWidgetMetaInfo()
         .setVisibilityTo(true)

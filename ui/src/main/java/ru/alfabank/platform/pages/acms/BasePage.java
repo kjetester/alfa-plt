@@ -5,6 +5,7 @@ import org.assertj.core.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.*;
 import org.openqa.selenium.support.*;
+import ru.alfabank.platform.buisenessobjects.*;
 
 import java.time.*;
 import java.util.*;
@@ -30,15 +31,15 @@ public class BasePage {
   /**
    * Open acms page.
    * @param url url
-   * @param login login
-   * @param password password
+   * @param user user
    * @return this
    */
-  public MainSliderPage openAndAuthorize(String url, String login, String password) {
+  public MainSliderPage openAndAuthorize(final String url, final User user) {
     String fullUrl =  url + "acms/";
     LOGGER.info(String.format("Перехожу по адресу '%s'", fullUrl));
     getDriver().get(fullUrl);
-    return PageFactory.initElements(getDriver(), AuthPage.class).login(login, password);
+    return PageFactory.initElements(getDriver(), AuthPage.class)
+        .login(user.getLogin(), user.getPassword());
   }
 
   /**

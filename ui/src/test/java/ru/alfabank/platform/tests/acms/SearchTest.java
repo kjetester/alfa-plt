@@ -23,9 +23,9 @@ public class SearchTest extends BaseTest {
   @BeforeMethod(description = "Авторизация и переход на страницу")
   public void beforeMethod() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize(baseUri + "acms/", USER.getLogin(), USER.getPassword())
+        .openAndAuthorize(baseUri + "acms/", USER)
         .openPagesTree()
-        .selectPage("sme-new/");
+        .openPage("sme-new/");
     //TODO: broken here
     Page testPage = new Page.PageBuilder().build();
     TestDataHelper testData = new TestDataHelper(USER, testPage);

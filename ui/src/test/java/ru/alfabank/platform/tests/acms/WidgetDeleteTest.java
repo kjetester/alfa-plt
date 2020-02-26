@@ -17,9 +17,9 @@ public class WidgetDeleteTest extends BaseTest {
   @BeforeClass
   public void settingUp() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize(baseUri, USER.getLogin(), USER.getPassword())
+        .openAndAuthorize(baseUri, USER)
         .openPagesTree()
-        .selectPage("sme-new/");
+        .openPage("sme-new/");
   }
 
   @Test(description = "Deletion a not shared widget hasn't a child")

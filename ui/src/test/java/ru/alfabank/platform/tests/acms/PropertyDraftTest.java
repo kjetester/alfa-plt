@@ -2,7 +2,6 @@ package ru.alfabank.platform.tests.acms;
 
 import org.openqa.selenium.support.*;
 import org.testng.annotations.*;
-import ru.alfabank.platform.buisenessobjects.*;
 import ru.alfabank.platform.pages.acms.*;
 import ru.alfabank.platform.reporting.*;
 import ru.alfabank.platform.tests.*;
@@ -11,8 +10,6 @@ import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 @Listeners({TestFailureListener.class})
 public class PropertyDraftTest extends BaseTest {
-
-  User user = new User();
 
   private String widgetName = "MetaTitle";
   private String propName = "newPropName";
@@ -23,9 +20,9 @@ public class PropertyDraftTest extends BaseTest {
   @BeforeClass (alwaysRun = true)
   public void settingUp() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize(baseUri, user.getLogin(), user.getPassword())
+        .openAndAuthorize(baseUri, USER)
         .openPagesTree()
-        .selectPage("sme-new/");
+        .openPage("sme-new/");
   }
 
   @Test(
@@ -71,6 +68,6 @@ public class PropertyDraftTest extends BaseTest {
     PageFactory.initElements(getDriver(), WidgetSidebarPage.class)
         .closeWidgetSidebarAndGoToMainSlider()
         .openPagesTree()
-        .selectPage("sme-new/");
+        .openPage("sme-new/");
   }
 }

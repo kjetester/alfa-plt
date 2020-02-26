@@ -21,7 +21,7 @@ public class PagesSliderPage extends BasePage {
    * @param pagePath requested page
    * @return new instance of the MainPage class
    */
-  public MainPage selectPage(String pagePath) {
+  public MainPage openPage(String pagePath) {
     LOGGER.info(String.format("Открываю страницу '%s'", pagePath));
     getTargetPage(pagePath).click();
     return PageFactory.initElements(getDriver(), MainPage.class);

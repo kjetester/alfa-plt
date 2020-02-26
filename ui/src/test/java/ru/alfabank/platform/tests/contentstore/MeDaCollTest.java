@@ -25,7 +25,7 @@ public class MeDaCollTest extends BaseTest {
   @Test(description = "Сравнение страниц полученных из \"ASSR\" и из \"Meta Data Collector\"",
       testName = "Pages comparison test", dataProvider = "pages")
   public void pagesComparisonTest(Page page, ITestContext context) {
-    String pageUrl = page.getPath();
+    String pageUrl = page.getUri();
     LOGGER.info(String.format("Checking '%s'", pageUrl));
     context.setAttribute("case", pageUrl);
     PageFactory.initElements(getDriver(), AlfaSitePage.class).open(baseUri.concat(pageUrl));
