@@ -72,11 +72,11 @@ public class PageCreationTest extends BasePageTest {
         .setDateTo(null)
         .setEnable(false)
         .build();
+    String parentPage = "qr";
     page = PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(baseUri, USER.getLogin(), USER.getPassword())
-        //TODO: Реализовать тут создание новой страницы в родителе
         .openPagesTree()
-        .createNewPage(null)
+        .createNewPage(parentPage)
         .fillAndSubmitCreationForm(page);
     createdPages.put(page.getPath(), page);
     // Проверка перехода к созданной странице
@@ -84,21 +84,22 @@ public class PageCreationTest extends BasePageTest {
     // Проверка наличия созданной страницы в Системе и ее свойств
     LOGGER.info(String.format("Запрос страницы '/%s' в '/pageController'", page.getPath()));
     accessToken = getSessionStorage().getItem("access-token").replaceAll("\"","");
+    String pageUri = "/" + parentPage + "/" + page.getPath();
     JsonPath savedPage = given().spec(pageControllerSpec)
         .auth().oauth2(accessToken)
-        .queryParam("uri","/" + page.getPath())
+        .queryParam("uri", pageUri)
         .when().get().then().extract().response().getBody().jsonPath();
     LOGGER.info("Получен ответ:\n" + savedPage.prettyPrint());
     softly.assertThat(savedPage.getInt("id")).isEqualTo(page.getId());
-    softly.assertThat(savedPage.getString("uri")).isEqualTo("/" + page.getPath());
+    softly.assertThat(savedPage.getString("uri")).isEqualTo(pageUri);
     softly.assertThat(savedPage.getString("title")).isEqualTo(page.getTitle());
     softly.assertThat(savedPage.getString("description")).isEqualTo(page.getDescription());
     softly.assertThat(savedPage.getBoolean("enable")).isEqualTo(page.isEnable());
     softly.assertThat(savedPage.getString("dateFrom")).isNullOrEmpty();
     softly.assertThat(savedPage.getString("dateTo")).isNullOrEmpty();
     // Проверка того, что contentPageController не отдаст неактивную страницу
-    LOGGER.info(String.format("Запрос страницы '%s' в '/contentPageController'", page.getPath()));
-    JsonPath view = given().spec(contentPageControllerSpec).queryParam("uri", "/" + page.getPath())
+    LOGGER.info(String.format("Запрос страницы '%s' в '/contentPageController'", pageUri));
+    JsonPath view = given().spec(contentPageControllerSpec).queryParam("uri", pageUri)
         .when().get().then().extract().response().getBody().jsonPath();
     LOGGER.info("Получен ответ:\n" + view.prettyPrint());
     softly.assertThat(view.getString("code")).isEqualTo("404");
