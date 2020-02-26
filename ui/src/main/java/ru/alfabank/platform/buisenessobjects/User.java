@@ -13,7 +13,7 @@ public class User {
    * Class constructor.
    */
   public User() {
-    this.login = "user1";
+    this.login = "user";
     this.password = "123";
     LOGGER.debug(
         String.format("Создан новый пользователь с логином '%s' и паролем '%s'", login, password));

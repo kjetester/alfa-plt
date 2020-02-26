@@ -30,7 +30,10 @@
         <slf4j.version>2.0.0-alpha1</slf4j.version>
         <log4j.version>2.13.0</log4j.version>
         <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <galenframework.version>2.4.4</galenframework.version>
+        <reportportal.version>4.2.0</reportportal.version>
+        <reportportal.logger.version>4.0.1</reportportal.logger.version>
     </properties>
 
     <repositories>
@@ -119,12 +122,12 @@
             <dependency>
                 <groupId>com.epam.reportportal</groupId>
                 <artifactId>agent-java-testng</artifactId>
-                <version>4.2.2</version>
+                <version>${reportportal.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.epam.reportportal</groupId>
                 <artifactId>logger-java-log4j</artifactId>
-                <version>4.0.2</version>
+                <version>${reportportal.logger.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven.plugins</groupId>

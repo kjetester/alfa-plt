@@ -1,16 +1,19 @@
 package ru.alfabank.platform.tests.tranbilog;
 
+import com.epam.reportportal.annotations.*;
 import io.restassured.builder.*;
 import io.restassured.filter.log.*;
 import io.restassured.http.*;
 import io.restassured.response.*;
 import io.restassured.specification.*;
 import org.apache.log4j.*;
-import org.assertj.core.api.*;
 import org.testng.annotations.*;
 import ru.alfabank.platform.buisenessobjects.transitions.*;
 
+import java.time.*;
+
 import static io.restassured.RestAssured.*;
+import static org.assertj.core.api.Assertions.*;
 import static ru.alfabank.platform.helpers.UUIDHelper.*;
 
 public class TranBiLogTest extends BaseTest {
@@ -26,7 +29,7 @@ public class TranBiLogTest extends BaseTest {
    */
   @Parameters({"env"})
   @BeforeClass
-  public void setUp(@Optional("develop") String env) {
+  public void setUp(@Optional("develop") @ParameterKey ("environment") String env) {
     String baseUrl = "http://" + env + ".ci.k8s.alfa.link/api/v1/tranbilog";
     minReqSpec = new RequestSpecBuilder()
         .setBaseUri(baseUrl)
@@ -51,20 +54,36 @@ public class TranBiLogTest extends BaseTest {
   @Test(
       description = "Позитивный тест со статусами OK & ERROR",
       dataProvider = "status")
-  public void positiveSmokeTest(String status) {
+  public void positiveSmokeTest(@ParameterKey("status") final String status) {
     Body modifiedBody;
     if (status.equalsIgnoreCase("error")) {
-      modifiedBody = new Body.BodyBuilder().using(body).setBusinessUid(getNewUuid())
-          .setStatus(status).setFeedBackData(
-              new Body.FeedBackData.FeedBackDataBuilder().setStatusCode("500")
-                  .setMessage("Internal Server Error").build()).build();
+      modifiedBody = new Body.BodyBuilder()
+          .using(body)
+          .setBusinessUid(getNewUuid())
+          .setStatus(status)
+          .setServerTime(LocalDateTime.now())
+          .setFeedBackData(
+              new Body.FeedBackData.FeedBackDataBuilder()
+                  .setStatusCode("500")
+                  .setMessage("Internal Server Error")
+                  .build())
+          .build();
     } else {
-      modifiedBody = new Body.BodyBuilder().using(body).setBusinessUid(getNewUuid())
-          .setStatus(status).build();
+      modifiedBody = new Body.BodyBuilder()
+          .using(body)
+          .setBusinessUid(getNewUuid())
+          .setStatus(status)
+          .build();
     }
-    Response response = given().spec(spec).body(modifiedBody).when().post();
+    Response response =
+        given()
+            .spec(spec)
+            .body(modifiedBody)
+        .when()
+            .post();
     LOGGER.info(response.asString());
-    Assertions.assertThat(response.getStatusCode()).isEqualTo(200);
+    assertThat(response.getStatusCode())
+        .isEqualTo(200);
   }
 
   @Test(
@@ -74,19 +93,19 @@ public class TranBiLogTest extends BaseTest {
     Body modifiedBody = new Body.BodyBuilder().using(body).setBusinessUid(getNewUuid()).build();
     Response response = given().spec(minReqSpec).body(modifiedBody).when().post();
     LOGGER.info(response.asString());
-    Assertions.assertThat(response.getStatusCode()).isEqualTo(200);
+    assertThat(response.getStatusCode()).isEqualTo(200);
   }
 
   @Test(
       description = "Негативный тест - вадидация по businessUid",
       dataProvider = "empty fields",
       priority = 2)
-  public void negativeBusinessUidValidationTest(String value) {
+  public void negativeBusinessUidValidationTest(@ParameterKey("businessUid") final String value) {
     Body modifiedBody = new Body.BodyBuilder().using(body).setBusinessUid(value).build();
     Response response = given().spec(spec).body(modifiedBody).post();
     LOGGER.info(response.asString());
-    Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
-    Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
+    assertThat(response.getStatusCode()).isEqualTo(400);
+    assertThat(response.getBody().jsonPath().get("message").toString())
         .contains(EXPECTED_ERROR_MESSAGE);
   }
 
@@ -94,13 +113,13 @@ public class TranBiLogTest extends BaseTest {
       description = "Негативный тест - вадидация по clientDate",
       dataProvider = "empty fields",
       priority = 2)
-  public void negativeClientDateValidationTest(String value) {
+  public void negativeClientDateValidationTest(@ParameterKey("clientDate") final String value) {
     Body modifiedBody = new Body.BodyBuilder().using(body).setBusinessUid(getNewUuid())
         .setClientDate(value).build();
     Response response = given().spec(spec).body(modifiedBody).post();
     LOGGER.info(response.asString());
-    Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
-    Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
+    assertThat(response.getStatusCode()).isEqualTo(400);
+    assertThat(response.getBody().jsonPath().get("message").toString())
         .contains(EXPECTED_ERROR_MESSAGE);
   }
 
@@ -108,13 +127,13 @@ public class TranBiLogTest extends BaseTest {
       description = "Негативный тест - вадидация по recipient",
       dataProvider = "empty fields",
       priority = 2)
-  public void negativeRecipientValidationTest(String value) {
+  public void negativeRecipientValidationTest(@ParameterKey("recipient") final String value) {
     Body modifiedBody = new Body.BodyBuilder().using(body).setBusinessUid(getNewUuid())
         .setRecipient(value).build();
     Response response = given().spec(spec).body(modifiedBody).post();
     LOGGER.info(response.asString());
-    Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
-    Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
+    assertThat(response.getStatusCode()).isEqualTo(400);
+    assertThat(response.getBody().jsonPath().get("message").toString())
         .contains(EXPECTED_ERROR_MESSAGE);
   }
 
@@ -122,13 +141,13 @@ public class TranBiLogTest extends BaseTest {
       description = "Негативный тест - вадидация по clientData",
       dataProvider = "empty client data",
       priority = 2)
-  public void negativeClientDataValidationTest(Object value) {
+  public void negativeClientDataValidationTest(@ParameterKey("clientData") final Object value) {
     Body modifiedBody = new Body.BodyBuilder().using(body).setBusinessUid(getNewUuid())
         .setClientData(value).build();
     Response response = given().spec(spec).body(modifiedBody).post();
     LOGGER.info(response.asString());
-    Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
-    Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
+    assertThat(response.getStatusCode()).isEqualTo(400);
+    assertThat(response.getBody().jsonPath().get("message").toString())
         .contains(EXPECTED_ERROR_MESSAGE);
   }
 
@@ -136,13 +155,13 @@ public class TranBiLogTest extends BaseTest {
       description = "Негативный тест - вадидация по data",
       dataProvider = "empty data",
       priority = 2)
-  public void negativeDataValidationTest(Object value) {
+  public void negativeDataValidationTest(@ParameterKey("data") final Object value) {
     Body modifiedBody = new Body.BodyBuilder().using(body).setBusinessUid(getNewUuid())
         .setData(value).build();
     Response response = given().spec(spec).body(modifiedBody).post();
     LOGGER.info(response.asString());
-    Assertions.assertThat(response.getStatusCode()).isEqualTo(400);
-    Assertions.assertThat(response.getBody().jsonPath().get("message").toString())
+    assertThat(response.getStatusCode()).isEqualTo(400);
+    assertThat(response.getBody().jsonPath().get("message").toString())
         .contains(EXPECTED_ERROR_MESSAGE);
   }
 

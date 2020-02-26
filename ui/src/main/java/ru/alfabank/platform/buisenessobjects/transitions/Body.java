@@ -3,6 +3,8 @@ package ru.alfabank.platform.buisenessobjects.transitions;
 import com.fasterxml.jackson.annotation.*;
 import org.apache.maven.surefire.shade.common.org.apache.commons.lang3.builder.*;
 
+import java.time.*;
+
 @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class Body {
 
@@ -14,6 +16,7 @@ public final class Body {
   private String pageUri;
   private String userAgent;
   private String ip;
+  private final String serverTime;
   private Object feedBackData;
   private Object clientData;
   private Object data;
@@ -32,6 +35,7 @@ public final class Body {
     this.pageUri = builder.pageUri;
     this.userAgent = builder.userAgent;
     this.ip = builder.ip;
+    this.serverTime = builder.serverTime;
     this.feedBackData = builder.feedBackData;
     this.clientData = builder.clientData;
     this.data = builder.data;
@@ -47,6 +51,7 @@ public final class Body {
     private String pageUri;
     private String userAgent;
     private String ip;
+    private String serverTime;
     private Object feedBackData;
     private Object clientData;
     private Object data;
@@ -67,6 +72,7 @@ public final class Body {
       this.pageUri = body.pageUri;
       this.userAgent = body.userAgent;
       this.ip = body.ip;
+      this.serverTime = body.serverTime;
       this.feedBackData = body.feedBackData;
       this.clientData = body.clientData;
       this.data = body.data;
@@ -90,6 +96,11 @@ public final class Body {
 
     public BodyBuilder setStatus(String status) {
       this.status = status;
+      return this;
+    }
+
+    public BodyBuilder setServerTime(LocalDateTime serverTime) {
+      this.serverTime = serverTime.toString();
       return this;
     }
 

@@ -4,14 +4,15 @@
        thread-count = "1"
        configfailurepolicy = "continue"
        verbose = "5">
-    <test name="Non shared widget deletion Test" enabled="true">
+    <test name="Page Tests" enabled="true">
         <classes>
-            <class name="ru.alfabank.platform.tests.acms.WidgetDeleteTest"/>
+            <class name="ru.alfabank.platform.tests.acms.page.PageCreationTest"/>
+            <class name="ru.alfabank.platform.tests.acms.page.PageDeletionTest"/>
         </classes>
     </test>
-    <test name="Property Test" enabled="true">
+    <test name="Widget Tests" enabled="false">
         <classes>
-            <class name="ru.alfabank.platform.tests.acms.PropertyDraftTest"/>
+            <class name="ru.alfabank.platform.tests.acms.widget.WidgetCreationTest"/>
         </classes>
     </test>
 </suite>

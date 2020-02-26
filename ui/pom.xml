@@ -8,6 +8,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <artifactId>ui</artifactId>
 
     <repositories>
         <repository>
@@ -21,10 +22,8 @@
     </repositories>
 
     <properties>
-        <suites>src/test/resources/test-suites/</suites>
+        <suites>src/test/resources/testng.xml</suites>
     </properties>
-
-    <artifactId>ui</artifactId>
 
     <dependencies>
         <dependency>
@@ -153,17 +152,14 @@
                                 <environment>preprod</environment>
                             </systemPropertyVariables>
                             <suiteXmlFiles>
-                                <suiteXmlFile>${suites}/tranbilog-test.xml</suiteXmlFile>
-                                <!--<suiteXmlFile>${suites}/functional-suite.xml</suiteXmlFile>-->
-                                <!--<suiteXmlFile>${suites}/critical-path-suite.xml</suiteXmlFile>-->
-                                <!--<suiteXmlFile>${suites}/medacoll-suite.xml</suiteXmlFile>-->
+                                <suiteXmlFile>${suites}</suiteXmlFile>
                             </suiteXmlFiles>
                         </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.6.1</version>
+                        <version>${maven-compiler-plugin.version}</version>
                         <configuration>
                             <source>1.8</source>
                             <target>1.8</target>
@@ -172,7 +168,6 @@
                 </plugins>
             </build>
         </profile>
-
         <profile>
             <id>dev</id>
             <build>
@@ -197,17 +192,14 @@
                                 <environment>develop</environment>
                             </systemPropertyVariables>
                             <suiteXmlFiles>
-                                <suiteXmlFile>${suites}/tranbilog-test.xml</suiteXmlFile>
-                                <!--<suiteXmlFile>${suites}/functional-suite.xml</suiteXmlFile>-->
-                                <!--<suiteXmlFile>${suites}/critical-path-suite.xml</suiteXmlFile>-->
-                                <!--<suiteXmlFile>${suites}/medacoll-suite.xml</suiteXmlFile>-->
+                                <suiteXmlFile>${suites}</suiteXmlFile>
                             </suiteXmlFiles>
                         </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.6.1</version>
+                        <version>${maven-compiler-plugin.version}</version>
                         <configuration>
                             <source>1.8</source>
                             <target>1.8</target>

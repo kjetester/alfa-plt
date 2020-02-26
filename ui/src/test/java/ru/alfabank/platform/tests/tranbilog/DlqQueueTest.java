@@ -1,5 +1,6 @@
 package ru.alfabank.platform.tests.tranbilog;
 
+import com.epam.reportportal.annotations.*;
 import io.restassured.authentication.*;
 import io.restassured.builder.*;
 import io.restassured.http.*;
@@ -9,6 +10,8 @@ import org.apache.log4j.*;
 import org.testng.*;
 import org.testng.annotations.*;
 import ru.alfabank.platform.buisenessobjects.transitions.*;
+
+import java.time.*;
 
 import static io.restassured.RestAssured.*;
 import static org.assertj.core.api.Assertions.*;
@@ -25,7 +28,6 @@ public class DlqQueueTest extends BaseTest {
   private static final String READ_BASE_PATH = "api/queues/{vhost}/{queueName}/get";
   private static final String EXCHANGE_NAME = "business-log";
   private static final String QUEUE_NAME = "business-log.business-log-service.dlq";
-
   private static final String READ_JSON_BODY =
       "{\"count\":100,\"ackmode\":\"ack_requeue_false\",\"encoding\":\"auto\"}";
 
@@ -42,7 +44,7 @@ public class DlqQueueTest extends BaseTest {
    */
   @Parameters({"env"})
   @BeforeTest
-  public void setUp(@Optional("preprod") String vhost) {
+  public void setUp(@ParameterKey ("environment") @Optional("preprod") String vhost) {
     LOGGER.debug(String.format(
             "Настраиваю параметры авторизации:\n\t\t username: '%s',\n\t\tpassword: '%s'",
             USERNAME, PASSWORD));
@@ -106,8 +108,11 @@ public class DlqQueueTest extends BaseTest {
     given().spec(readSpec).body(READ_JSON_BODY).post();
   }
 
-  @Test(description = "Позитивный тест со статусами OK & ERROR", dataProvider = "status")
-  public void positiveTest(final String status) throws InterruptedException {
+  @Test(
+      description = "Позитивный тест со статусами OK & ERROR",
+      dataProvider = "status")
+  public void positiveTest(@ParameterKey("status") final String status) throws InterruptedException {
+    LOGGER.info(String.format("Условие: статус '%s'", status));
     Body modifiedBody;
     switch (status.toLowerCase()) {
       case "error": modifiedBody = new Body.BodyBuilder().using(defaultBody).setStatus(status)
@@ -132,11 +137,14 @@ public class DlqQueueTest extends BaseTest {
     soft.assertAll();
   }
 
-  @Test(description = "Позитивный тест с максимумом полей", priority = 1)
+  @Test(
+      description = "Позитивный тест с максимумом полей",
+      priority = 1)
   public void maxFieldsTest() throws InterruptedException {
     Body modifiedBody = new Body.BodyBuilder()
         .using(defaultBody)
         .setStatus("error")
+        .setServerTime(LocalDateTime.now())
         .setFeedBackData(feedBackData)
         .setPageUri(REFERER_URL)
         .setUserAgent(USER_AGENT)
@@ -154,14 +162,20 @@ public class DlqQueueTest extends BaseTest {
     assertThat(readRes).isEqualTo("[]");
   }
 
-  @Test(description = "Негативный тест", dataProvider = "empty fields", priority = 2)
+  @Test(
+      description = "Негативный тест",
+      dataProvider = "empty fields",
+      priority = 2)
   public void negativeTest(
-      final String param,
-      final Object value) throws InterruptedException {
+      @ParameterKey("param") final String param,
+      @ParameterKey("value") final Object value) throws InterruptedException {
+    LOGGER.info(String.format("Условие: '%s' -> '%s'", param, value));
     Body modifiedBody;
     switch (param) {
-      case "businessUid": modifiedBody = new Body.BodyBuilder()
-          .using(defaultBody).setBusinessUid(value).setStatus("ok").build();
+      case "businessUid": {
+        modifiedBody = new Body.BodyBuilder()
+            .using(defaultBody).setBusinessUid(value).setStatus("ok").build();
+      }
         break;
       case "clientDate": modifiedBody = new Body.BodyBuilder()
           .using(defaultBody).setClientDate(value).setStatus("ok").build();
@@ -172,7 +186,8 @@ public class DlqQueueTest extends BaseTest {
       case "recipient": modifiedBody = new Body.BodyBuilder()
           .using(defaultBody).setRecipient(value).setStatus("ok").build();
         break;
-      case "feedBackData": modifiedBody = new Body.BodyBuilder()
+      case "feedBackData":
+        modifiedBody = new Body.BodyBuilder()
           .using(defaultBody).setFeedBackData(value).setStatus("error").build();
         break;
       case "clientData": modifiedBody = new Body.BodyBuilder()
