@@ -48,8 +48,8 @@ public class PropertyAndPropertyValuePage extends BasePage {
    * @return WidgetSidebarPage
    */
   public WidgetSidebarPage modifyValue(String propertyName,
-                                                          String value,
-                                                          String... geoGroup) {
+                                       String value,
+                                       String... geoGroup) {
     modifyVal(propertyName, value, geoGroup);
     return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
   }

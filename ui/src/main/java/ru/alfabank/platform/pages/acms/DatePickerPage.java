@@ -51,7 +51,7 @@ public class DatePickerPage extends BasePage {
    * @return new WidgetMetaInfoPage instance
    */
   public WidgetMetaInfoPage setDateTo(LocalDateTime dateTime) throws InterruptedException {
-    LOGGER.debug(String.format("Устанавливаю дату: '%s'", dateTime.toString()));
+    LOGGER.info(dateTime.toString());
     Thread.sleep(1000);
     while (dateTime.getYear() != Integer.parseInt(yearPicker.getText())) {
       if (dateTime.getYear() < Integer.parseInt(yearPicker.getText())) {

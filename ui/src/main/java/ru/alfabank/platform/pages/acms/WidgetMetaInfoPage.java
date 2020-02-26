@@ -33,13 +33,7 @@ public class WidgetMetaInfoPage extends BasePage {
    */
   public WidgetMetaInfoPage setVisibilityTo(boolean isToBeSelected) {
     waitForElementBecomesClickable(widgetGeoGroupsInput);
-    boolean isAlreadySelected = visibilityCheckbox.isSelected();
-    LOGGER.info(String.format("Устанавливаю чекбокс 'Видимость' в '%b'", isToBeSelected));
-    if (!isAlreadySelected && isToBeSelected) {
-      visibilityCheckbox.click();
-    } else if (isAlreadySelected && !isToBeSelected) {
-      visibilityCheckbox.click();
-    }
+    setCheckboxTo(visibilityCheckbox, isToBeSelected);
     return this;
   }
 

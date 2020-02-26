@@ -9,7 +9,7 @@ import ru.alfabank.platform.tests.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
-@Listeners({ScreenShotListener.class})
+@Listeners({TestFailureListener.class})
 public class PropertyDraftTest extends BaseTest {
 
   User user = new User();
@@ -23,7 +23,7 @@ public class PropertyDraftTest extends BaseTest {
   @BeforeClass (alwaysRun = true)
   public void settingUp() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize(baseUrl, user.getLogin(), user.getPassword())
+        .openAndAuthorize(baseUri, user.getLogin(), user.getPassword())
         .openPagesTree()
         .selectPage("sme-new/");
   }
@@ -69,7 +69,7 @@ public class PropertyDraftTest extends BaseTest {
   @AfterMethod(description = "Навигация на главную страницу")
   public void returnToMainPage() {
     PageFactory.initElements(getDriver(), WidgetSidebarPage.class)
-        .closeWidgetSidebar()
+        .closeWidgetSidebarAndGoToMainSlider()
         .openPagesTree()
         .selectPage("sme-new/");
   }

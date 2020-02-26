@@ -5,18 +5,19 @@ import org.assertj.core.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.*;
 import org.testng.*;
+import ru.alfabank.platform.pages.alfasite.*;
 
 import java.util.*;
 import java.util.stream.*;
 
+import static org.assertj.core.api.Assertions.*;
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
 public class MainPage extends BasePage {
 
   private static final Logger LOGGER = LogManager.getLogger(MainPage.class);
 
-  @FindBy(css = "[class $= 'ant-tree-node-content-wrapper-open'] i")
-  private WebElement createNewPageFromRootButton;
+
   @FindBy(css = "[rel='noopener noreferrer']")
   private WebElement pageTitle;
   @FindBy(css = ".rst__node")
@@ -103,11 +104,32 @@ public class MainPage extends BasePage {
    */
   public MainPage checkIfWidgetIsMarkedAsChanged(String widgetName) {
     LOGGER.info(String.format("Проверяю, что втждет '%s' отмечен, как измененный", widgetName));
-    Assertions
-        .assertThat(getDriver()
+    assertThat(getDriver()
             .findElement(By.xpath(String.format("//span[text() = '%s']/../../div", widgetName)))
             .getCssValue("background"))
         .contains("rgb(239, 49, 36)");
+    return this;
+  }
+
+  /**
+   * Check if notice about draft existence is present.
+   * @return this
+   */
+  public MainPage checkIfNoticeAboutDraftExistenceIsPresent() {
+    LOGGER.info("Проверяю, что сообщение о существовании черновика отображается");
+    assertThat(getDriver().getPageSource().contains("Имеются неопубликованные изменения"))
+        .isTrue();
+    return this;
+  }
+
+  /**
+   * Check if notice about draft existence is not present.
+   * @return this
+   */
+  public MainPage checkIfNoticeAboutDraftExistenceIsNotPresent() {
+    LOGGER.info("Проверяю, что сообщение о существовании черновика больше не отображается");
+    assertThat(getDriver().getPageSource().contains("Имеются неопубликованные изменения"))
+        .isFalse();
     return this;
   }
 
@@ -119,30 +141,6 @@ public class MainPage extends BasePage {
     LOGGER.info("Сохраняю черновик");
     waitForElementBecomesClickable(saveButton).click();
     waitForElementBecomesClickable(bannerCloseBttn).click();
-    return this;
-  }
-
-  /**
-   * Check if notice about draft existence is present.
-   * @return this
-   */
-  public MainPage checkIfNoticeAboutDraftExistenceIsPresent() {
-    LOGGER.info("Проверяю, что сообщение о существовании черновика отображается");
-    Assertions
-        .assertThat(getDriver().getPageSource().contains("Имеются неопубликованные изменения"))
-        .isTrue();
-    return this;
-  }
-
-  /**
-   * Check if notice about draft existence is not present.
-   * @return this
-   */
-  public MainPage checkIfNoticeAboutDraftExistenceIsNotPresent() {
-    LOGGER.info("Проверяю, что сообщение о существовании черновика больше не отображается");
-    Assertions
-        .assertThat(getDriver().getPageSource().contains("Имеются неопубликованные изменения"))
-        .isFalse();
     return this;
   }
 
@@ -184,7 +182,7 @@ public class MainPage extends BasePage {
    * Delete a child and non shared Widget.
    * @return this
    */
-  
+
   public MainPage deleteNonSharedWidgetHasNoChildren() {
     LOGGER.info("Ищу нешаренный вижджет, не имеющий дечених виджеты");
     WebElement widget = widgetsList.stream().filter(w ->
@@ -228,13 +226,11 @@ public class MainPage extends BasePage {
     List<WebElement> otherWidgets = widgetsList.stream().filter(w ->
         !widgetName.equals(w.findElement(widgetsTitleLSelector).getText()))
         .collect(Collectors.toList());
-    targetWidgets.forEach(w -> Assertions
-        .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
+    targetWidgets.forEach(w -> assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
         .contains("24, 144, 255"));
     //TODO: fix it!
     LOGGER.info("Проверяю, что лишние виджеты не были отмечены, как соответствующий условю поиска");
-    otherWidgets.forEach(w -> Assertions
-        .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
+    otherWidgets.forEach(w -> assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
         .contains(("255, 255, 255")));
     return this;
   }
@@ -244,20 +240,9 @@ public class MainPage extends BasePage {
    */
   public void checkNoWidgetIsMarked() {
     LOGGER.info("Проверяю, что виджет не отмечен, как соответствующий условю поиска");
-    widgetsList.forEach(w -> Assertions
-        .assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
+    widgetsList.forEach(w -> assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
         .as("The other widget has been marked")
         .contains(("255, 255, 255")));
-  }
-
-  /**
-   * Create a new page.
-   * @return new Main Page instance
-   */
-  public NewPageCreationPage createNewPageFromRoot() {
-    LOGGER.info("Создаю новую страницу в корне");
-    clickWithJavaScriptExecutor(createNewPageFromRootButton);
-    return PageFactory.initElements(getDriver(), NewPageCreationPage.class);
   }
 
   /**
@@ -267,7 +252,8 @@ public class MainPage extends BasePage {
    */
   public MainPage checkPageOpened(String pagePath) {
     LOGGER.info("Проверяю, отображается ли странца пользователю после создания");
-    Assertions.assertThat(pageTitle.getText()).contains(pagePath);
+    softly.assertThat(pageTitle.getText().contains(pagePath));
+    softly.assertAll();
     return PageFactory.initElements(getDriver(), MainPage.class);
   }
 
@@ -280,5 +266,21 @@ public class MainPage extends BasePage {
     LOGGER.info(String.format("Проверяю, присутствует ли виджет '%s' на странице", widgetName));
     findWidget(widgetName);
     return this;
+  }
+
+  /**
+   * Navigate to AlfaSite.
+   * @return AlfaSitePage instance
+   */
+  public AlfaSitePage navigateToAlfaSite() {
+    LOGGER.info("Перехожу на соответствующую страницу на Альфа-сайте");
+    waitForElementBecomesClickable(pageTitle).click();
+    ArrayList<String> tabs = new ArrayList<String>(getDriver().getWindowHandles());
+    getDriver().switchTo().window(tabs.get(tabs.size() - 1));
+    return PageFactory.initElements(getDriver(), AlfaSitePage.class);
+  }
+
+  public void deletePage() {
+    LOGGER.info("УДАЛЯЮ СТРАНИЦУ");
   }
 }

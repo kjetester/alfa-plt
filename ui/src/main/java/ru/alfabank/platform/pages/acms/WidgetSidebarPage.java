@@ -120,9 +120,25 @@ public class WidgetSidebarPage extends BasePage {
    * Closing Widget's sidebar.
    * @return new instance of the MainSliderPage class
    */
-  public MainSliderPage closeWidgetSidebar() {
+  public MainSliderPage closeWidgetSidebarAndGoToMainSlider() {
+    closeWidgetSidebar();
+    return PageFactory.initElements(getDriver(), MainSliderPage.class);
+  }
+
+  /**
+   * Closing Widget's sidebar.
+   * @return new instance of the MainPage class
+   */
+  public MainPage closeWidgetSidebarAndGoToMainPage() {
+    closeWidgetSidebar();
+    return PageFactory.initElements(getDriver(), MainPage.class);
+  }
+
+  /**
+   * Closing Widget's sidebar.
+   */
+  private void closeWidgetSidebar() {
     LOGGER.info("Закрываю сайдбар виджета");
     waitForElementBecomesClickable(widgetSidebarCloseButton).click();
-    return PageFactory.initElements(getDriver(), MainSliderPage.class);
   }
 }

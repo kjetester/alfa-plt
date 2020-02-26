@@ -1,14 +1,11 @@
 package ru.alfabank.platform.pages.acms;
 
 import org.apache.log4j.*;
+import org.apache.maven.surefire.shade.booter.org.apache.commons.lang3.*;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.*;
 import org.openqa.selenium.support.*;
 import ru.alfabank.platform.buisenessobjects.*;
-import ru.alfabank.platform.helpers.*;
-
-import java.time.*;
-import java.time.temporal.*;
-import java.util.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
@@ -26,35 +23,52 @@ public class NewPageCreationPage extends BasePage {
   private WebElement startDate;
   @FindBy(css = "#dateTo")
   private WebElement endDate;
+  @FindBy(css = "#enable")
+  private WebElement visabilityCheckbox;
   @FindBy(css = "button[type = 'submit']")
   private WebElement submitButton;
+  private By calClearBttn = By.cssSelector("[aria-label $= 'close-circle']");
 
   /**
    * Filling and submitting the creation new page form.
-   * @param testDataHelper testDataHelper instance
+   * @param page page instance with id
    */
-  public void fillAndSubmitCreationForm(TestDataHelper testDataHelper) throws InterruptedException {
-    String path = UUID.randomUUID().toString().substring(24).toLowerCase();
-    String title = "title_" + path;
-    String description = "description_" + path;
-    LocalDateTime dateFrom = LocalDateTime.now().minus(0, ChronoUnit.HOURS);
-    LocalDateTime dateTo = LocalDateTime.now().plus(5, ChronoUnit.HOURS);
-    waitForElementBecomesClickable(pathInput).sendKeys(path);
-    LOGGER.info(
-        String.format("Заполняю поля:\n\tПуть = %s\n\tИмя = %s\n"
-                + "\tОписание = %s\n\tДата начала = %s\n\tДата окончания = %s\n",
-            path, title, description, dateFrom.toString(), dateTo.toString()));
-    titleInput.sendKeys(title);
-    descriptionInput.sendKeys(description);
-    startDate.click();
-    PageFactory.initElements(getDriver(), DatePickerPage.class).setDateTo(dateFrom);
-    endDate.click();
-    PageFactory.initElements(getDriver(), DatePickerPage.class).setDateTo(dateTo);
+  public Page fillAndSubmitCreationForm(Page page) throws InterruptedException {
+    LOGGER.info("Заполняю поля формы");
+    //TODO: http://jira.moscow.alfaintra.net/browse/ALFABANKRU-18912)
+    LOGGER.info(String.format("Путь: '%s'", page.getPath()));
+    waitForElementBecomesClickable(pathInput).sendKeys(page.getPath());
+    LOGGER.info(String.format("Название: '%s'", page.getTitle()));
+    titleInput.sendKeys(page.getTitle());
+    LOGGER.info(String.format("Описание: '%s'", page.getDescription()));
+    descriptionInput.sendKeys(page.getDescription());
+    if (page.getDateFrom() != null) {
+      LOGGER.info("Дата начала отображения:");
+      startDate.click();
+      PageFactory.initElements(getDriver(), DatePickerPage.class).setDateTo(page.getDateFrom());
+    } else {
+      LOGGER.info("Очищаю поле даты начала отображения");
+      new Actions(getDriver())
+          .moveToElement(startDate.findElement(calClearBttn))
+          .pause(500L)
+          .click()
+          .build()
+          .perform();
+    }
+    if (page.getDateTo() != null) {
+      LOGGER.info("Дата окончания отображения:");
+      endDate.click();
+      PageFactory.initElements(getDriver(), DatePickerPage.class).setDateTo(page.getDateTo());
+    }
+    setCheckboxTo(visabilityCheckbox, page.isEnable());
     LOGGER.info("Сохраняю");
     waitForElementBecomesClickable(submitButton).click();
     LOGGER.info("Закрываю баннер успешного создания");
     waitForElementBecomesClickable(bannerCloseBttn).click();
-    testDataHelper.setCreatedPage(new Page(path, getDriver().getCurrentUrl(), title,
-        description, "keyword_" + path, dateFrom, dateTo));
+    new Actions(getDriver()).pause(1_000L).build().perform();
+    return new Page.PageBuilder().using(page)
+        .setId(Integer.parseInt(
+            StringUtils.substringBetween(getDriver().getCurrentUrl(), "pages/", "/")))
+        .build();
   }
 }

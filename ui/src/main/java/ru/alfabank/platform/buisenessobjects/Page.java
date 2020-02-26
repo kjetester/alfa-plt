@@ -9,7 +9,7 @@ public class Page {
 
   private static final Logger LOGGER = LogManager.getLogger(Page.class);
 
-  private String id;
+  private int id;
   private String path;
   private String url;
   private String title;
@@ -22,44 +22,25 @@ public class Page {
 
   /**
    * Class constructor.
-   * @param path path
-   * @param url url
-   * @param title title
-   * @param description description
-   * @param keywords keywords
-   * @param dateFrom date from
-   * @param dateTo date to
+   * @param builder builder
    */
-  public Page(
-      String path,
-      String url,
-      String title,
-      String description,
-      String keywords,
-      LocalDateTime dateFrom,
-      LocalDateTime dateTo) {
-    this.id = url.substring(url.lastIndexOf("/") + 1);
-    this.path = path;
-    this.url = url;
-    this.title = title;
-    this.description = description;
-    this.keywords = keywords;
-    this.dateFrom = dateFrom;
-    this.dateTo = dateTo;
-    LOGGER.debug("Создан новый бизнес-объект 'Страница'");
+  public Page(final PageBuilder builder) {
+    this.id = builder.id;
+    this.path = builder.path;
+    this.url = builder.url;
+    this.title = builder.title;
+    this.description = builder.description;
+    this.keywords = builder.keywords;
+    this.dateFrom = builder.dateFrom;
+    this.dateTo = builder.dateTo;
+    this.isEnable = builder.isEnable;
   }
 
-  /**
-   * Class constructor.
-   * @param path path
-   * @param url url
-   */
-  public Page(String path, String url) {
+  public Page(String path) {
     this.path = path;
-    this.id = url.substring(url.lastIndexOf("/") + 1);
   }
 
-  public String getId() {
+  public int getId() {
     return id;
   }
 
@@ -99,8 +80,8 @@ public class Page {
     return widgetList;
   }
 
-  public void getWidgetList(List<Widget> widgetList) {
-    this.widgetList = widgetList;
+  public void setWidgetList(ArrayList<Widget> widgets) {
+    this.widgetList = widgets;
   }
 
   @Override
@@ -118,5 +99,84 @@ public class Page {
         dateTo,
         isEnable,
         widgetList);
+  }
+
+  public static class PageBuilder {
+    private int id;
+    private String path;
+    private String url;
+    private String title;
+    private String description;
+    private String keywords;
+    private LocalDateTime dateFrom;
+    private LocalDateTime dateTo;
+    private boolean isEnable;
+
+    public PageBuilder setId(int id) {
+      this.id = id;
+      return this;
+    }
+
+    public PageBuilder setPath(String path) {
+      this.path = path;
+      return this;
+    }
+
+    public PageBuilder setUrl(String url) {
+      this.url = url;
+      return this;
+    }
+
+    public PageBuilder setTitle(String title) {
+      this.title = title;
+      return this;
+    }
+
+    public PageBuilder setDescription(String description) {
+      this.description = description;
+      return this;
+    }
+
+    public PageBuilder setKeywords(String keywords) {
+      this.keywords = keywords;
+      return this;
+    }
+
+    public PageBuilder setDateFrom(LocalDateTime dateFrom) {
+      this.dateFrom = dateFrom;
+      return this;
+    }
+
+    public PageBuilder setDateTo(LocalDateTime dateTo) {
+      this.dateTo = dateTo;
+      return this;
+    }
+
+    public PageBuilder setEnable(boolean enable) {
+      isEnable = enable;
+      return this;
+    }
+
+    /**
+     * Reusing spec.
+     * @param page page
+     * @return page builder
+     */
+    public PageBuilder using(Page page) {
+      this.id = page.id;
+      this.path = page.path;
+      this.url = page.url;
+      this.title = page.title;
+      this.description = page.description;
+      this.keywords = page.keywords;
+      this.dateFrom = page.dateFrom;
+      this.dateTo = page.dateTo;
+      this.isEnable = page.isEnable;
+      return this;
+    }
+
+    public Page build() {
+      return new Page(this);
+    }
   }
 }

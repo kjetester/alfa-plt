@@ -19,10 +19,6 @@ public class TestDataHelper {
   private Page page;
   private Page createdPage;
 
-  public TestDataHelper() {
-
-  }
-
   /**
    * Class constructor.
    * @param user user
@@ -42,16 +38,17 @@ public class TestDataHelper {
         .when().post()
         .then().log().ifStatusCodeMatches(not(200)).statusCode(200).extract().body()
         .jsonPath().getString("access_token");
-    page.getWidgetList(new ArrayList<>(Arrays.asList(RestAssured.given().relaxedHTTPSValidation()
-        .baseUri(props.getProperty("app.base.uri"))
-        .basePath(props.getProperty("app.base.path"))
-        .auth().oauth2(oauth2Token)
-        .contentType(ContentType.JSON)
-        .queryParams("device", "desktop")
-        .queryParams("pageId", page.getId())
-        .when().get("/content-store/admin-panel/meta-info-page-contents")
-        .then().log().ifStatusCodeMatches(not(200))
-        .statusCode(200).extract().body().as(Widget[].class))));
+    page.setWidgetList(new ArrayList<>(Arrays.asList(
+        RestAssured.given().relaxedHTTPSValidation()
+            .baseUri(props.getProperty("app.base.uri"))
+            .basePath(props.getProperty("app.base.path"))
+            .auth().oauth2(oauth2Token)
+            .contentType(ContentType.JSON)
+            .queryParams("device", "desktop")
+            .queryParams("pageId", page.getId())
+            .when().get("/content-store/admin-panel/meta-info-page-contents")
+            .then().log().ifStatusCodeMatches(not(200))
+            .statusCode(200).extract().body().as(Widget[].class))));
   }
 
   /**

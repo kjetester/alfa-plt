@@ -13,24 +13,20 @@ public class AlfaSitePage {
 
   private static final Logger LOGGER = LogManager.getLogger(AlfaSitePage.class);
 
-  @FindBy(css = "li > p > span")
-  private WebElement citySelectLink;
-  @FindBy(css = "input[type='text']")
-  private WebElement cityInputField;
-  @FindBy(css = "div[alfa-portal-container] div > div li > p")
-  private WebElement cityLink;
+  @FindBy(css = ".site-assr")
+  private WebElement site;
   @FindBy(id = "alfa")
   private WebElement mainBlock;
 
   /**
-   * Opening AlfaSite page.
+   * Open AlfaSite page.
    * @param testPage test page URI
    * @return this
    */
   public AlfaSitePage open(String testPage) {
     LOGGER.info(String.format("Перехожу по адресу '%s'", testPage));
     getDriver().get(testPage);
-    waitForElementBecomesVisible(mainBlock);
+    waitForElementBecomesVisible(site);
     return this;
   }
 
@@ -66,7 +62,7 @@ public class AlfaSitePage {
     int count = 3;
     long start = Instant.now().getEpochSecond();
     while (!b && count > 0) {
-      Thread.sleep(10_000);
+      Thread.sleep(15_000);
       setCityCookieAndRefreshPage(city);
       String actualTitle = getDriver().getTitle();
       b = expectedTitle.equals(actualTitle);
@@ -77,13 +73,13 @@ public class AlfaSitePage {
     }
     Assertions.assertThat(getDriver().getTitle()).isEqualTo(expectedTitle);
     LOGGER.info(String.format(
-            "Ожидание корректного заголовка страницы заняло %d секунд(ы) с момета дедлайна",
+        "Ожидание корректного заголовка страницы заняло %d секунд(ы) с момета дедлайна",
         (Instant.now().getEpochSecond() - start)));
     return this;
   }
 
   /**
-   * Waiting until deadline.
+   * Wait until deadline.
    * @param deadline deadline
    */
   public void wait(final LocalDateTime deadline) {
@@ -96,5 +92,18 @@ public class AlfaSitePage {
         e.printStackTrace();
       }
     }
+  }
+
+  /**
+   * Check page url.
+   * @param path page path
+   * @return this
+   */
+  public AlfaSitePage compareUrl(String path) {
+    Assertions
+        .assertThat(getDriver().getCurrentUrl())
+        .as("Проверка, туда ли перешли")
+        .contains(path);
+    return this;
   }
 }

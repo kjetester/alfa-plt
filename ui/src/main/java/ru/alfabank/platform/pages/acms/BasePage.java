@@ -1,6 +1,7 @@
 package ru.alfabank.platform.pages.acms;
 
 import org.apache.log4j.*;
+import org.assertj.core.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.*;
 import org.openqa.selenium.support.*;
@@ -14,6 +15,8 @@ public class BasePage {
 
   private static final Logger LOGGER = LogManager.getLogger(BasePage.class);
 
+  protected SoftAssertions softly = new SoftAssertions();
+
   @FindBy (css = ".ant-notification-notice > a")
   protected WebElement bannerCloseBttn;
   @FindBy(className = "ant-modal-body")
@@ -26,14 +29,15 @@ public class BasePage {
 
   /**
    * Open acms page.
-   * @param targetUrl targetUrl
+   * @param url url
    * @param login login
    * @param password password
    * @return this
    */
-  public MainSliderPage openAndAuthorize(String targetUrl, String login, String password) {
-    LOGGER.info(String.format("Перехожу по адресу '%s'", targetUrl));
-    getDriver().get(targetUrl);
+  public MainSliderPage openAndAuthorize(String url, String login, String password) {
+    String fullUrl =  url + "acms/";
+    LOGGER.info(String.format("Перехожу по адресу '%s'", fullUrl));
+    getDriver().get(fullUrl);
     return PageFactory.initElements(getDriver(), AuthPage.class).login(login, password);
   }
 
@@ -44,8 +48,8 @@ public class BasePage {
    * @param geoGroups array of geo-groups that should be selected
    */
   protected void setGeoGroupsTo(List<WebElement> geoGroupList,
-                             WebElement geoGroupsInput,
-                             String[] geoGroups) {
+                                WebElement geoGroupsInput,
+                                String[] geoGroups) {
 
     geoGroupList.forEach(geo ->
         geo.findElement(deleteGeoButtonSelector).click());
@@ -134,5 +138,21 @@ public class BasePage {
   protected void clickWithJavaScriptExecutor(WebElement element) {
     LOGGER.debug("Кликаю по труднодоступной кнопке JSом");
     ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", element);
+  }
+
+  /**
+   * Checkbox worker.
+   * @param checkbox checkbox
+   * @param isToBeSelected is to be selected
+   */
+  protected void setCheckboxTo(WebElement checkbox, boolean isToBeSelected) {
+    boolean isAlreadySelected = checkbox.isSelected();
+    String label = checkbox.findElement(By.xpath("../../../..//label[@for]")).getText();
+    LOGGER.info(String.format("Устанавливаю чекбокс '%s' в '%b'", label, isToBeSelected));
+    if (!isAlreadySelected && isToBeSelected) {
+      checkbox.click();
+    } else if (isAlreadySelected && !isToBeSelected) {
+      checkbox.click();
+    }
   }
 }

@@ -2,13 +2,10 @@ package ru.alfabank.platform.helpers;
 
 import org.apache.commons.io.*;
 import org.apache.commons.text.diff.*;
-import org.apache.log4j.*;
 
 import java.io.*;
 
 public class FileComparator {
-
-  private static final Logger LOGGER = LogManager.getLogger(FileComparator.class);
 
   /**
    * File comparator.
@@ -16,8 +13,7 @@ public class FileComparator {
    * @param expected expected
    * @throws IOException IOException
    */
-  public static String compare(final File actual,
-                             final File expected) throws IOException {
+  public static String compare(final File actual, final File expected) throws IOException {
     LineIterator act = FileUtils.lineIterator(actual,"utf-8");
     LineIterator exp = FileUtils.lineIterator(expected,"utf-8");
     FileCommandsVisitor fileCommandsVisitor = new FileCommandsVisitor();
@@ -39,8 +35,7 @@ public class FileComparator {
   }
 
   /*
-   * Custom visitor for file comparison which stores comparison & also generates
-   * HTML in the end.
+   * Store comparison & generate HTML.
    */
   private static class FileCommandsVisitor implements CommandVisitor<Character> {
     private static final String DELETION =

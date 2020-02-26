@@ -2,17 +2,14 @@ package ru.alfabank.platform.tests.acms;
 
 import org.openqa.selenium.support.*;
 import org.testng.annotations.*;
-import ru.alfabank.platform.buisenessobjects.*;
 import ru.alfabank.platform.pages.acms.*;
 import ru.alfabank.platform.reporting.*;
 import ru.alfabank.platform.tests.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
-@Listeners({ScreenShotListener.class})
+@Listeners({TestFailureListener.class})
 public class WidgetDeleteTest extends BaseTest {
-
-  private static final User USER = new User();
 
   /**
    * Opening page.
@@ -20,7 +17,7 @@ public class WidgetDeleteTest extends BaseTest {
   @BeforeClass
   public void settingUp() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize(baseUrl, USER.getLogin(), USER.getPassword())
+        .openAndAuthorize(baseUri, USER.getLogin(), USER.getPassword())
         .openPagesTree()
         .selectPage("sme-new/");
   }

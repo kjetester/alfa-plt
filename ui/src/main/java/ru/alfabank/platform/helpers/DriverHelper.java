@@ -4,6 +4,7 @@ import io.github.bonigarcia.wdm.*;
 import org.apache.log4j.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.*;
+import org.openqa.selenium.html5.*;
 import org.openqa.selenium.remote.*;
 import org.openqa.selenium.support.ui.*;
 
@@ -23,7 +24,7 @@ public class DriverHelper {
   private static RemoteWebDriver driver;
 
   /**
-   * Getting driver.
+   * WebDriver singleton.
    * @return driver
    */
   public static WebDriver getDriver() {
@@ -32,17 +33,25 @@ public class DriverHelper {
       WebDriverManager.chromedriver().setup();
       ChromeOptions opts = new ChromeOptions();
       opts
-          .setAcceptInsecureCerts(true)
-          .addArguments(
-              "--headless",
-              "--disable-gpu");
+//          .addArguments("--headless", "--disable-gpu")
+          .setAcceptInsecureCerts(true);
       driver = new ChromeDriver(opts);
-      driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-      driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+      driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
       driver.manage().window().setSize(new Dimension(1500, 800));
       driver.manage().window().setPosition(new Point(0, 0));
     }
     return driver;
+  }
+
+  public static SessionStorage getSessionStorage() {
+    WebStorage webStorage = (WebStorage) new Augmenter().augment(getDriver());
+    return webStorage.getSessionStorage();
+  }
+
+  public static LocalStorage getLocalStorage() {
+    WebStorage webStorage = (WebStorage) new Augmenter().augment(getDriver());
+    return webStorage.getLocalStorage();
   }
 
   /**
@@ -88,7 +97,7 @@ public class DriverHelper {
   public static void implicitlyWait(Boolean active) {
     if (active) {
       LOGGER.trace("Таймаут неявного ожидания = 5");
-      driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+      driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
     } else {
       LOGGER.trace("Таймаут неявного ожидания = 0");
       driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);

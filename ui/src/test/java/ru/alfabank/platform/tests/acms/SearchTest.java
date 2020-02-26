@@ -10,7 +10,7 @@ import ru.alfabank.platform.tests.*;
 
 import static ru.alfabank.platform.helpers.DriverHelper.*;
 
-@Listeners({ScreenShotListener.class})
+@Listeners({TestFailureListener.class})
 public class SearchTest extends BaseTest {
 
   private Widget testWidget;
@@ -23,11 +23,12 @@ public class SearchTest extends BaseTest {
   @BeforeMethod(description = "Авторизация и переход на страницу")
   public void beforeMethod() {
     PageFactory.initElements(getDriver(), MainPage.class)
-        .openAndAuthorize(baseUrl + "acms/", user.getLogin(), user.getPassword())
+        .openAndAuthorize(baseUri + "acms/", USER.getLogin(), USER.getPassword())
         .openPagesTree()
         .selectPage("sme-new/");
-    Page testPage = new Page("sme-new/", getDriver().getCurrentUrl());
-    TestDataHelper testData = new TestDataHelper(user, testPage);
+    //TODO: broken here
+    Page testPage = new Page.PageBuilder().build();
+    TestDataHelper testData = new TestDataHelper(USER, testPage);
     testWidget = testData.getTestWidget();
     testProperty = testWidget.getProperties()[0];
     testValue = testProperty.getValues()[0];
