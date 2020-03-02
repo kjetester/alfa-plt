@@ -32,7 +32,7 @@ public class EndToEndTest extends BaseTest {
   @Test(description = "Тест создания страницы")
   public void pageCreationTest() throws InterruptedException {
     basePage = PageFactory.initElements(getDriver(), PagesSliderPage.class)
-        .createNewPage(null)
+        .createNewPageWithinPage(null)
         .fillAndSubmitCreationForm(basePage);
     PageFactory.initElements(getDriver(), MainPage.class)
         .checkPageOpened(basePage.getUri());

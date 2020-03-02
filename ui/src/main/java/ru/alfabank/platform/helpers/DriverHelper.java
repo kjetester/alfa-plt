@@ -1,25 +1,32 @@
 package ru.alfabank.platform.helpers;
 
-import io.github.bonigarcia.wdm.*;
-import org.apache.log4j.*;
-import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.*;
-import org.openqa.selenium.html5.*;
-import org.openqa.selenium.remote.*;
-import org.openqa.selenium.support.ui.*;
+import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 
-import java.time.temporal.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.stream.*;
-
-import static java.time.Duration.*;
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class DriverHelper {
 
   private static final Logger LOGGER = LogManager.getLogger(DriverHelper.class);
-  private static final int TIMEOUT = 25;
+  private static final int TIMEOUT = 60;
 
   private static RemoteWebDriver driver;
 
@@ -33,7 +40,7 @@ public class DriverHelper {
       WebDriverManager.chromedriver().setup();
       ChromeOptions opts = new ChromeOptions();
       opts
-//          .addArguments("--headless", "--disable-gpu")
+           .addArguments("--headless", "--disable-gpu")
           .setAcceptInsecureCerts(true);
       driver = new ChromeDriver(opts);
       driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -42,16 +49,6 @@ public class DriverHelper {
       driver.manage().window().setPosition(new Point(0, 0));
     }
     return driver;
-  }
-
-  public static SessionStorage getSessionStorage() {
-    WebStorage webStorage = (WebStorage) new Augmenter().augment(getDriver());
-    return webStorage.getSessionStorage();
-  }
-
-  public static LocalStorage getLocalStorage() {
-    WebStorage webStorage = (WebStorage) new Augmenter().augment(getDriver());
-    return webStorage.getLocalStorage();
   }
 
   /**

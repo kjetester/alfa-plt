@@ -1,16 +1,26 @@
 package ru.alfabank.platform.pages.acms;
 
-import org.apache.log4j.*;
-import org.assertj.core.api.*;
-import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.*;
-import org.openqa.selenium.support.*;
-import ru.alfabank.platform.buisenessobjects.*;
+import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+import static ru.alfabank.platform.helpers.DriverHelper.implicitlyWait;
+import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesClickable;
+import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesVisible;
 
-import java.time.*;
-import java.util.*;
-
-import static ru.alfabank.platform.helpers.DriverHelper.*;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.assertj.core.api.SoftAssertions;
+import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotInteractableException;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.TestNGException;
+import ru.alfabank.platform.buisenessobjects.User;
 
 public class BasePage {
 
@@ -18,6 +28,12 @@ public class BasePage {
 
   protected SoftAssertions softly = new SoftAssertions();
 
+  @FindBy(css = ".ant-notification-notice")
+  private WebElement notificationBanner;
+  @FindBy(css = ".ant-notification-notice-message")
+  private WebElement notificationMessage;
+  @FindBy(css = ".ant-notification-notice-description")
+  private WebElement notificationDescription;
   @FindBy (css = ".ant-notification-notice > a")
   protected WebElement bannerCloseBttn;
   @FindBy(className = "ant-modal-body")
@@ -27,6 +43,7 @@ public class BasePage {
   @FindBy(xpath = "//i[@aria-label=\"icon: setting\"]/..")
   protected WebElement widgetSettings;
   private By deleteGeoButtonSelector = By.cssSelector(".ant-select-selection__choice__remove");
+  private By errorIconSelector = By.cssSelector("[class $= 'icon-error']");
 
   /**
    * Open acms page.
@@ -128,8 +145,12 @@ public class BasePage {
    * @param element element
    */
   protected void clickOnHiddenButton(WebElement element) {
-    new Actions(getDriver()).moveToElement(element)
-        .pause(Duration.ofSeconds(2)).click().build().perform();
+    new Actions(getDriver())
+        .moveToElement(element)
+        .pause(Duration.ofMillis(500L))
+        .click()
+        .build()
+        .perform();
   }
 
   /**
@@ -155,5 +176,24 @@ public class BasePage {
     } else if (isAlreadySelected && !isToBeSelected) {
       checkbox.click();
     }
+  }
+
+  /**
+   * Closing success banner if expected
+   * otherwise fails a test.
+   */
+  protected void closeSuccessBanner() {
+    waitForElementBecomesVisible(notificationBanner);
+    implicitlyWait(false);
+    try {
+      if (isPresent(errorIconSelector)) {
+        throw new TestNGException(String.format("'%s': '%s'",
+            notificationMessage.getText(),
+            notificationDescription.getText()));
+      }
+    } finally {
+      implicitlyWait(true);
+    }
+    waitForElementBecomesClickable(bannerCloseBttn).click();
   }
 }

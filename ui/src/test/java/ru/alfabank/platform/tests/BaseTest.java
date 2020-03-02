@@ -2,7 +2,6 @@ package ru.alfabank.platform.tests;
 
 import com.epam.reportportal.annotations.*;
 import org.apache.log4j.*;
-import org.assertj.core.api.*;
 import org.testng.*;
 import org.testng.annotations.*;
 import ru.alfabank.platform.buisenessobjects.*;
@@ -17,12 +16,11 @@ public class BaseTest {
   protected static final User USER = new User();
   protected static final String TEST_WIDGET = "MetaTitle";
   protected static final String TEST_PROPERTY = "title";
-  protected static final SoftAssertions softly = new SoftAssertions();
   protected static String baseUri;
 
   protected String pageUrl = getShortRandUuid();
   protected Page basePage = new Page.PageBuilder()
-      .setPath(pageUrl + "/")
+      .setUri(pageUrl + "/")
       .setTitle("title_" + pageUrl)
       .setDescription("description_" + pageUrl)
       .setKeywords("keywords_" + pageUrl)

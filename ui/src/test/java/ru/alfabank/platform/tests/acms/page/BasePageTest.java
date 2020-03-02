@@ -1,26 +1,29 @@
 package ru.alfabank.platform.tests.acms.page;
 
-import io.restassured.builder.*;
-import io.restassured.filter.log.*;
-import io.restassured.http.*;
-import io.restassured.specification.*;
-import org.apache.log4j.*;
-import org.testng.annotations.*;
-import ru.alfabank.platform.buisenessobjects.*;
-import ru.alfabank.platform.tests.*;
-
-import java.util.*;
-
-import static io.restassured.RestAssured.*;
-import static ru.alfabank.platform.helpers.DriverHelper.*;
+import static io.restassured.RestAssured.given;
+import static ru.alfabank.platform.helpers.DriverHelper.killDriver;
 import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
-import static ru.alfabank.platform.helpers.UUIDHelper.*;
+import static ru.alfabank.platform.helpers.UUIDHelper.getShortRandUuid;
+
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import ru.alfabank.platform.buisenessobjects.Page;
+import ru.alfabank.platform.tests.BaseTest;
 
 public class BasePageTest extends BaseTest {
 
   private static final Logger LOGGER = LogManager.getLogger(BasePageTest.class);
-  protected static final String PAGE_CONTROLLER_BASE_PATH =
-      "api/v1/content-store/admin-panel/pages/";
+  protected static final String PAGE_CONTROLLER_BASE_PATH = "api/v1/content-store/admin-panel/pages/";
 
   protected Page basicPage;
   protected RequestSpecification pageControllerSpec;
@@ -52,11 +55,11 @@ public class BasePageTest extends BaseTest {
    * Define test data.
    */
   @BeforeMethod(alwaysRun = true)
-  public void setUpBasePage() {
-    String pageUrl = getShortRandUuid() + "/";
+  public void beforeMethod() {
+    String pageUrl = getShortRandUuid();
     LOGGER.debug("Собираю pojo тестовой страницы");
     basicPage = new Page.PageBuilder()
-        .setPath(pageUrl)
+        .setUri(pageUrl)
         .setTitle("title_" + pageUrl)
         .setDescription("description_" + pageUrl)
         .setKeywords("keywords_" + pageUrl).build();
@@ -74,12 +77,11 @@ public class BasePageTest extends BaseTest {
    * Remove created instances.
    */
   @AfterClass(alwaysRun = true)
-  public void cleanUp() {
+  public void afterClass() {
     int i = createdPages.size();
     if (i > 0) {
-      createdPages.entrySet().forEach(entry -> {
+      createdPages.forEach((key, value) -> {
         LOGGER.info(String.format("Есть %d страниц(ы) на удаление", i));
-        String key = entry.getKey();
         int statusCode =
             given()
                 .spec(pageControllerSpec)

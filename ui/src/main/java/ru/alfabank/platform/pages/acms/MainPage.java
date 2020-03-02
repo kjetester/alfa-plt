@@ -71,7 +71,7 @@ public class MainPage extends BasePage {
    * @param pageName target page name
    * @return target page instance
    */
-  public MainPage copyWidgetOnPage(String widgetName, String pageName) throws InterruptedException {
+  public MainPage copyWidgetOnPage(String widgetName, String pageName) {
     LOGGER.info(String.format("Копирую виджет '%s' на страницу '%s'", widgetName, pageName));
     clickOnHiddenButton(findWidget(widgetName).findElement(copyButtonSelector));
     waitForElementBecomesClickable(pagesDropdownList).click();
@@ -80,7 +80,7 @@ public class MainPage extends BasePage {
         getDriver().findElement(By.cssSelector(String.format("[title='%s']", pageName))))
         .click();
     submitDialog();
-    Thread.sleep(2_000L);
+    closeSuccessBanner();
     return PageFactory.initElements(getDriver(), MainPage.class);
   }
 
@@ -140,7 +140,7 @@ public class MainPage extends BasePage {
   public MainPage saveDraft() {
     LOGGER.info("Сохраняю черновик");
     waitForElementBecomesClickable(saveButton).click();
-    waitForElementBecomesClickable(bannerCloseBttn).click();
+    closeSuccessBanner();
     return this;
   }
 
@@ -152,7 +152,7 @@ public class MainPage extends BasePage {
     LOGGER.info("Публикую черновик страницы");
     waitForElementBecomesClickable(publishButton).click();
     submitDialog();
-    waitForElementBecomesClickable(bannerCloseBttn).click();
+    closeSuccessBanner();
     return this;
   }
 
@@ -284,9 +284,42 @@ public class MainPage extends BasePage {
    * Delete page.
    */
   public void deletePage() {
-    LOGGER.info("УДАЛЯЮ СТРАНИЦУ");
+    LOGGER.info("Удаляю страницу");
     waitForElementBecomesClickable(deleteButton).click();
     submitDialog();
-    waitForElementBecomesClickable(bannerCloseBttn).click();
+    closeSuccessBanner();
+  }
+
+  /**
+   * Copy all widgets from a {@code sourcePage} to a {@code targetPage}.
+   * @param sourcePage sourcePage
+   * @param targetPage targetPage
+   */
+  public MainPage copyAllWidgets(String sourcePage, String targetPage) {
+    sourcePage = sourcePage.replaceAll("/", "");
+    targetPage = targetPage.replaceAll("/", "");
+    int widgetsCount = widgetsList.size();
+    if (widgetsCount > 0) {
+      LOGGER.info(String.format("Копирую все виджеты на страницу '%s'", targetPage));
+      for (int i = widgetsCount; i > 0; i--) {
+        clickOnHiddenButton(widgetsList.get(i - 1).findElement(copyButtonSelector));
+        waitForElementBecomesClickable(pagesDropdownList).click();
+        setValueToMonacoTextArea(
+            targetPage,
+            getDriver().switchTo().activeElement());
+        waitForElementBecomesClickable(
+            getDriver().findElement(By.cssSelector(String.format("[title='%s']", targetPage))))
+            .click();
+        submitDialog();
+        closeSuccessBanner();
+        if (i != 1) {
+          PageFactory.initElements(getDriver(), PagesSliderPage.class).openPage(sourcePage);
+        }
+      }
+    } else {
+      throw new TestNGException(
+          String.format("На странице '%s' нет виджетов для копирования.", sourcePage));
+    }
+    return PageFactory.initElements(getDriver(), MainPage.class);
   }
 }

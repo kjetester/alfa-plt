@@ -1,6 +1,7 @@
 package ru.alfabank.platform.buisenessobjects;
 
 import com.fasterxml.jackson.annotation.*;
+import com.sun.org.apache.xalan.internal.xsltc.dom.*;
 
 import java.time.*;
 import java.util.*;
@@ -26,7 +27,7 @@ public class Page {
    */
   public Page(final PageBuilder builder) {
     this.id = builder.id;
-    this.uri = builder.path;
+    this.uri = builder.uri;
     this.title = builder.title;
     this.description = builder.description;
     this.keywords = builder.keywords;
@@ -98,7 +99,7 @@ public class Page {
   @JsonIgnoreType
   public static class PageBuilder {
     private Integer id;
-    private String path;
+    private String uri;
     private String title;
     private String description;
     private String keywords;
@@ -111,8 +112,14 @@ public class Page {
       return this;
     }
 
-    public PageBuilder setPath(String path) {
-      this.path = path;
+    public PageBuilder setUri(String uri) {
+      if (!uri.startsWith("/")) {
+        uri = "/" + uri;
+      }
+      if (!uri.endsWith("/")) {
+        uri = uri + "/";
+      }
+      this.uri = uri;
       return this;
     }
 
@@ -153,7 +160,7 @@ public class Page {
      */
     public PageBuilder using(Page page) {
       this.id = page.id;
-      this.path = page.uri;
+      this.uri = page.uri;
       this.title = page.title;
       this.description = page.description;
       this.keywords = page.keywords;

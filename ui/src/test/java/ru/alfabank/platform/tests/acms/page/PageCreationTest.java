@@ -1,23 +1,27 @@
 package ru.alfabank.platform.tests.acms.page;
 
-import io.restassured.path.json.*;
-import org.apache.log4j.*;
-import org.openqa.selenium.support.*;
-import org.testng.annotations.*;
-import ru.alfabank.platform.buisenessobjects.*;
-import ru.alfabank.platform.pages.acms.*;
-import ru.alfabank.platform.reporting.*;
+import static io.restassured.RestAssured.given;
+import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
 
-import java.time.*;
-
-import static io.restassured.RestAssured.*;
-import static ru.alfabank.platform.helpers.DriverHelper.*;
-import static ru.alfabank.platform.helpers.KeycloakHelper.*;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import java.time.LocalDateTime;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.assertj.core.api.SoftAssertions;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+import ru.alfabank.platform.buisenessobjects.Page;
+import ru.alfabank.platform.pages.acms.MainPage;
+import ru.alfabank.platform.reporting.TestFailureListener;
 
 @Listeners({TestFailureListener.class})
 public class PageCreationTest extends BasePageTest {
 
   private static final Logger LOGGER = LogManager.getLogger(PageCreationTest.class);
+  private static final SoftAssertions SOFTLY = new SoftAssertions();
 
   @Test(description = "Тест создания страницы в корне.\n"
                     + "Все поля заполнены.\n"
@@ -27,38 +31,42 @@ public class PageCreationTest extends BasePageTest {
     Page page = PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(baseUri, USER)
         .openPagesTree()
-        .createNewPage(null)
+        .createNewPageWithinPage(null)
         .fillAndSubmitCreationForm(new Page.PageBuilder().using(basicPage)
             .setDateFrom(LocalDateTime.now())
             .setDateTo(LocalDateTime.now().plusMinutes(30))
             .setEnable(true).build());
     // Проверка перехода к созданной странице
-    PageFactory.initElements(getDriver(), MainPage.class).checkPageOpened(page.getUri());
-    createdPages.put(page.getUri(), page);
+    final String uri = page.getUri();
+    PageFactory.initElements(getDriver(), MainPage.class).checkPageOpened(uri);
+    createdPages.put(uri, page);
     // Проверка наличия созданной страницы в Системе и ее свойств
-    LOGGER.info(String.format("Запрос страницы '/%s' в '/pageController'", page.getUri()));
-    JsonPath savedPage = given().spec(pageControllerSpec)
+    LOGGER.info(String.format("Запрос страницы '%s' в '/pageController'", uri));
+    Response pageControllerResponse = given().spec(pageControllerSpec)
         .auth().oauth2(getToken(USER).getAccessToken())
-        .queryParam("uri","/" + page.getUri())
-        .when().get().then().extract().response().getBody().jsonPath();
-    LOGGER.info("Получен ответ:\n" + savedPage.prettyPrint());
-    softly.assertThat(savedPage.getInt("id")).isEqualTo(page.getId());
-    softly.assertThat(savedPage.getString("uri")).isEqualTo("/" + page.getUri());
-    softly.assertThat(savedPage.getString("title")).isEqualTo(page.getTitle());
-    softly.assertThat(savedPage.getString("description")).isEqualTo(page.getDescription());
-    softly.assertThat(savedPage.getBoolean("enable")).isEqualTo(page.isEnable());
-    softly.assertThat(savedPage.getString("dateFrom"))
+        .queryParam("uri", uri)
+        .when().get().then().extract().response();
+    LOGGER.info("Получен ответ:\n" + pageControllerResponse.prettyPrint());
+    SOFTLY.assertThat(pageControllerResponse.getStatusCode()).isEqualTo(200);
+    JsonPath pageControllerJson = pageControllerResponse.getBody().jsonPath();
+    SOFTLY.assertThat(pageControllerJson.getInt("id")).isEqualTo(page.getId());
+    SOFTLY.assertThat(pageControllerJson.getString("uri")).isEqualTo(uri);
+    SOFTLY.assertThat(pageControllerJson.getString("title")).isEqualTo(page.getTitle());
+    SOFTLY.assertThat(pageControllerJson.getString("description")).isEqualTo(page.getDescription());
+    SOFTLY.assertThat(pageControllerJson.getBoolean("enable")).isEqualTo(page.isEnable());
+    SOFTLY.assertThat(pageControllerJson.getString("dateFrom"))
         .contains(page.getDateFrom().substring(0, 16));
-    softly.assertThat(savedPage.getString("dateTo"))
+    SOFTLY.assertThat(pageControllerJson.getString("dateTo"))
         .contains(page.getDateTo().substring(0, 16));
     // Проверка того, что contentPageController не отдаст страницу без виджетов
-    LOGGER.info(String.format("Запрос страницы '%s' в '/contentPageController'", page.getUri()));
-    JsonPath view = given().spec(contentPageControllerSpec).queryParam("uri", "/" + page.getUri())
-            .when().get().then().extract().response().getBody().jsonPath();
-    LOGGER.info("Получен ответ:\n" + view.prettyPrint());
-    softly.assertThat(view.getString("code")).isEqualTo("404");
-    softly.assertThat(view.getString("message")).isEqualTo("Widgets not found.");
-    softly.assertAll();
+    LOGGER.info(String.format("Запрос страницы '%s' в '/contentPageController'", uri));
+    Response contentPageControllerResponse = given().spec(contentPageControllerSpec)
+        .queryParam("uri", uri)
+        .when().get().then().extract().response();
+    LOGGER.info("Получен ответ:\n" + contentPageControllerResponse.prettyPrint());
+    SOFTLY.assertThat(contentPageControllerResponse.getStatusCode()).isEqualTo(404);
+    SOFTLY.assertThat(contentPageControllerResponse.asString()).contains("Widgets not found");
+    SOFTLY.assertAll();
   }
 
   @Test(description = "Тест создания страницы в корне.\n"
@@ -66,41 +74,45 @@ public class PageCreationTest extends BasePageTest {
                     + "Неактивна.\n"
                     + "Виджетов нет.")
   public void inactivePageCreationTest() throws InterruptedException {
-    Page page = new Page.PageBuilder().using(basicPage)
+    Page page = new Page.PageBuilder()
+        .using(basicPage)
         .setEnable(false)
         .build();
     String parentPage = "qr";
     page = PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(baseUri, USER)
         .openPagesTree()
-        .createNewPage(parentPage)
+        .createNewPageWithinPage(parentPage)
         .fillAndSubmitCreationForm(page);
-    createdPages.put(page.getUri(), page);
+    final String uri = page.getUri();
+    createdPages.put(uri, page);
     // Проверка перехода к созданной странице
-    PageFactory.initElements(getDriver(), MainPage.class).checkPageOpened(page.getUri());
+    PageFactory.initElements(getDriver(), MainPage.class).checkPageOpened(uri);
     // Проверка наличия созданной страницы в Системе и ее свойств
-    LOGGER.info(String.format("Запрос страницы '/%s' в '/pageController'", page.getUri()));
-    String pageUri = "/" + parentPage + "/" + page.getUri();
-    JsonPath savedPage = given().spec(pageControllerSpec)
+    LOGGER.info(String.format("Запрос страницы '%s' в '/pageController'", uri));
+    String pageUri = "/" + parentPage + uri;
+    Response pageControllerResponse = given().spec(pageControllerSpec)
         .auth().oauth2(getToken(USER).getAccessToken())
         .queryParam("uri", pageUri)
-        .when().get().then().extract().response().getBody().jsonPath();
-    LOGGER.info("Получен ответ:\n" + savedPage.prettyPrint());
-    softly.assertThat(savedPage.getInt("id")).isEqualTo(page.getId());
-    softly.assertThat(savedPage.getString("uri")).isEqualTo(pageUri);
-    softly.assertThat(savedPage.getString("title")).isEqualTo(page.getTitle());
-    softly.assertThat(savedPage.getString("description")).isEqualTo(page.getDescription());
-    softly.assertThat(savedPage.getBoolean("enable")).isEqualTo(page.isEnable());
-    softly.assertThat(savedPage.getString("dateFrom")).isNullOrEmpty();
-    softly.assertThat(savedPage.getString("dateTo")).isNullOrEmpty();
+        .when().get().then().extract().response();
+    LOGGER.info("Получен ответ:\n" + pageControllerResponse.prettyPrint());
+    JsonPath pageControllerJson = pageControllerResponse.getBody().jsonPath();
+    SOFTLY.assertThat(pageControllerJson.getInt("id")).isEqualTo(page.getId());
+    SOFTLY.assertThat(pageControllerJson.getString("uri")).isEqualTo(pageUri);
+    SOFTLY.assertThat(pageControllerJson.getString("title")).isEqualTo(page.getTitle());
+    SOFTLY.assertThat(pageControllerJson.getString("description")).isEqualTo(page.getDescription());
+    SOFTLY.assertThat(pageControllerJson.getBoolean("enable")).isEqualTo(page.isEnable());
+    SOFTLY.assertThat(pageControllerJson.getString("dateFrom")).isNullOrEmpty();
+    SOFTLY.assertThat(pageControllerJson.getString("dateTo")).isNullOrEmpty();
     // Проверка того, что contentPageController не отдаст неактивную страницу
     LOGGER.info(String.format("Запрос страницы '%s' в '/contentPageController'", pageUri));
-    JsonPath view = given().spec(contentPageControllerSpec).queryParam("uri", pageUri)
-        .when().get().then().extract().response().getBody().jsonPath();
-    LOGGER.info("Получен ответ:\n" + view.prettyPrint());
-    softly.assertThat(view.getString("code")).isEqualTo("404");
+    Response contentPageControllerResponse = given().spec(contentPageControllerSpec)
+        .queryParam("uri", pageUri)
+        .when().get().then().extract().response();
+    LOGGER.info("Получен ответ:\n" + contentPageControllerResponse.prettyPrint());
+    SOFTLY.assertThat(contentPageControllerResponse.getStatusCode()).isEqualTo(404);
     //TODO: http://jira.moscow.alfaintra.net/browse/ALFABANKRU-18982
-    softly.assertThat(view.getString("message")).isEqualTo("Page not found.");
-    softly.assertAll();
+    SOFTLY.assertThat(contentPageControllerResponse.asString()).contains("Page not found");
+    SOFTLY.assertAll();
   }
 }
