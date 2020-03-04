@@ -33,20 +33,27 @@ public class BaseWidgetTest extends BasePageTest {
         String.format("Сравнение страниц - исходной: '%s' и новой: '%s'",
             sourcePage, page.getUri()));
     context.setAttribute("case", context.getName());
-    String expected = getExpected();
+    String expected = getExistedPageFromContentPageController();
     context.setAttribute("expected", expected);
-    String actual = getActual(page);
+    String actual = getCreatedPageFromContentPageController(page);
     context.setAttribute("actual", actual);
     LOGGER.debug(new ReportPortalMessage(String.format("Полученный JSON: '%s'", actual)));
-    JSONAssert.assertEquals(
-        expected,
-        actual,
-        new CustomComparator(
-            JSONCompareMode.STRICT_ORDER,
-            new Customization("title", (o1, o2) -> true),
-            new Customization("description", (o1, o2) -> true),
-            new Customization("**.uid", (o1, o2) -> true)
-        ));
+    CustomComparator comparator;
+    if (context.getName().contains("copy")) {
+      comparator = new CustomComparator(
+          JSONCompareMode.STRICT_ORDER,
+          new Customization("title", (o1, o2) -> true),
+          new Customization("description", (o1, o2) -> true),
+          new Customization("**.uid", (o1, o2) -> true)
+      );
+    } else {
+      comparator = new CustomComparator(
+          JSONCompareMode.STRICT_ORDER,
+          new Customization("title", (o1, o2) -> true),
+          new Customization("description", (o1, o2) -> true)
+      );
+    }
+    JSONAssert.assertEquals(expected, actual, comparator);
     LOGGER.info("Успех");
   }
 
@@ -54,7 +61,7 @@ public class BaseWidgetTest extends BasePageTest {
    * Get expected result.
    * @return result as string
    */
-  private String getExpected() {
+  private String getExistedPageFromContentPageController() {
     LOGGER.info(String.format("Запрос страницы '%s' в '/contentPageController'", sourcePage));
     return given().spec(contentPageControllerSpec)
         .queryParam("uri", sourcePage)
@@ -66,7 +73,7 @@ public class BaseWidgetTest extends BasePageTest {
    * @param page page
    * @return result as string
    */
-  private String getActual(Page page) {
+  private String getCreatedPageFromContentPageController(Page page) {
     LOGGER.info(String.format("Запрос страницы '%s' в '/contentPageController'", page.getUri()));
     return given().spec(contentPageControllerSpec)
         .queryParam("uri", page.getUri())
