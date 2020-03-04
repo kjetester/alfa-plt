@@ -38,8 +38,8 @@ public class MeDaCollTest extends BaseTest {
     String expected = getDriver().getPageSource();
     context.setAttribute("expected", expected);
     DriverHelper.killDriver();
-    PageFactory.initElements(getDriver(),
-        AlfaSitePage.class).open(String.format("%sapi/v1/collector/%s", baseUri, pageUrl));
+    PageFactory.initElements(getDriver(), AlfaSitePage.class)
+        .open(String.format("%sapi/v1/collector/%s", baseUri, pageUrl));
     String actual = getDriver().getPageSource();
     context.setAttribute("actual", actual);
     DriverHelper.killDriver();

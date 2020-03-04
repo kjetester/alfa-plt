@@ -3,9 +3,6 @@ package ru.alfabank.platform.tests.acms.widget;
 import static io.restassured.RestAssured.given;
 
 import com.epam.reportportal.message.ReportPortalMessage;
-import java.io.File;
-import java.io.IOException;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -45,12 +42,10 @@ public class BaseWidgetTest extends BasePageTest {
         expected,
         actual,
         new CustomComparator(
-            JSONCompareMode.LENIENT,
+            JSONCompareMode.STRICT_ORDER,
             new Customization("title", (o1, o2) -> true),
             new Customization("description", (o1, o2) -> true),
-            new Customization("uid", (o1, o2) -> true),
-            new Customization("widgets[*].uid", (o1, o2) -> true),
-            new Customization("widgets[*].children[*]", (o1, o2) -> true)
+            new Customization("**.uid", (o1, o2) -> true)
         ));
     LOGGER.info("Успех");
   }
@@ -76,17 +71,5 @@ public class BaseWidgetTest extends BasePageTest {
     return given().spec(contentPageControllerSpec)
         .queryParam("uri", page.getUri())
         .when().get().then().extract().response().getBody().asString();
-  }
-
-  /**
-   * asd.
-   * @param args sad
-   * @throws IOException asd
-   */
-  public static void main(String[] args) throws IOException {
-    FileUtils.readFileToString(
-        new File("/Users/juliankolodzey/Downloads/response_1582809790010.json"), "UTF-8");
-    FileUtils.readFileToString(
-        new File("/Users/juliankolodzey/Downloads/response_1582808992451.json"), "UTF-8");
   }
 }
