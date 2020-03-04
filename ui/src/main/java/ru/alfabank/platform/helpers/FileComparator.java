@@ -1,9 +1,11 @@
 package ru.alfabank.platform.helpers;
 
-import org.apache.commons.io.*;
-import org.apache.commons.text.diff.*;
-
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
+import org.apache.commons.text.diff.CommandVisitor;
+import org.apache.commons.text.diff.StringsComparator;
 
 public class FileComparator {
 

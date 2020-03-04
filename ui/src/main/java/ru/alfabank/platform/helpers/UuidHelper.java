@@ -1,12 +1,12 @@
 package ru.alfabank.platform.helpers;
 
-import org.apache.log4j.*;
+import java.util.UUID;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
-import java.util.*;
+public class UuidHelper {
 
-public class UUIDHelper {
-
-  private static final Logger LOGGER = LogManager.getLogger(UUIDHelper.class);
+  private static final Logger LOGGER = LogManager.getLogger(UuidHelper.class);
 
   /**
    * Generates a new UID.

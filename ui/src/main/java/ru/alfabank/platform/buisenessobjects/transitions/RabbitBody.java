@@ -1,7 +1,9 @@
 package ru.alfabank.platform.buisenessobjects.transitions;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.gson.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.Gson;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class RabbitBody {
@@ -11,11 +13,11 @@ public final class RabbitBody {
   @JsonProperty("headers")
   private Headers headers;
   @JsonProperty("routing_key")
-  private String routing_key;
+  private String routingKey;
   @JsonProperty("payload")
   private String payload;
   @JsonProperty("payload_encoding")
-  private String payload_encoding;
+  private String payloadEncoding;
 
   /**
    * Class constructor.
@@ -25,9 +27,9 @@ public final class RabbitBody {
   public RabbitBody(Body body) {
     this.properties = new Properties();
     this.headers = new Headers();
-    this.routing_key = "business-log.business-log-service";
+    this.routingKey = "business-log.business-log-service";
     this.payload = new Gson().toJson(body);
-    this.payload_encoding = "string";
+    this.payloadEncoding = "string";
   }
 
   public void setProperties(Properties properties) {
@@ -38,16 +40,16 @@ public final class RabbitBody {
     this.headers = headers;
   }
 
-  public void setRouting_key(String routing_key) {
-    this.routing_key = routing_key;
+  public void setRoutingKey(String routingKey) {
+    this.routingKey = routingKey;
   }
 
   public void setPayload(String payload) {
     this.payload = payload;
   }
 
-  public void setPayload_encoding(String payload_encoding) {
-    this.payload_encoding = new Gson().toJson(payload_encoding);
+  public void setPayloadEncoding(String payloadEncoding) {
+    this.payloadEncoding = new Gson().toJson(payloadEncoding);
   }
 
   @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)

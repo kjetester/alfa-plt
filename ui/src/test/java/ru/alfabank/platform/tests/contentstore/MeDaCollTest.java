@@ -1,21 +1,27 @@
 package ru.alfabank.platform.tests.contentstore;
 
-import org.apache.commons.csv.*;
-import org.apache.log4j.*;
+import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.assertj.core.api.Assertions;
-import org.openqa.selenium.support.*;
-import org.testng.*;
-import org.testng.annotations.*;
-import ru.alfabank.platform.buisenessobjects.*;
-import ru.alfabank.platform.helpers.*;
-import ru.alfabank.platform.pages.alfasite.*;
-import ru.alfabank.platform.reporting.*;
-import ru.alfabank.platform.tests.*;
-
-import java.io.*;
-import java.util.*;
-
-import static ru.alfabank.platform.helpers.DriverHelper.*;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.ITestContext;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+import ru.alfabank.platform.buisenessobjects.Page;
+import ru.alfabank.platform.helpers.DriverHelper;
+import ru.alfabank.platform.pages.alfasite.AlfaSitePage;
+import ru.alfabank.platform.reporting.DifferenceListener;
+import ru.alfabank.platform.tests.BaseTest;
 
 @Listeners(DifferenceListener.class)
 public class MeDaCollTest extends BaseTest {

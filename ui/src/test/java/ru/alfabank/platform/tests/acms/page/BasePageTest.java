@@ -1,14 +1,17 @@
 package ru.alfabank.platform.tests.acms.page;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.not;
 import static ru.alfabank.platform.helpers.DriverHelper.killDriver;
 import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
-import static ru.alfabank.platform.helpers.UUIDHelper.getShortRandUuid;
+import static ru.alfabank.platform.helpers.UuidHelper.getShortRandUuid;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.LogManager;
@@ -23,7 +26,8 @@ import ru.alfabank.platform.tests.BaseTest;
 public class BasePageTest extends BaseTest {
 
   private static final Logger LOGGER = LogManager.getLogger(BasePageTest.class);
-  protected static final String PAGE_CONTROLLER_BASE_PATH = "api/v1/content-store/admin-panel/pages/";
+  protected static final String PAGE_CONTROLLER_BASE_PATH =
+      "api/v1/content-store/admin-panel/pages/";
 
   protected Page basicPage;
   protected RequestSpecification pageControllerSpec;
@@ -100,5 +104,32 @@ public class BasePageTest extends BaseTest {
         }
       });
     }
+  }
+
+  /**
+   * Create a new page in root.
+   * @return page
+   */
+  protected Page createNewPageInRoot() {
+    LOGGER.info("\tСоздаю страницу в корне через 'Content Store API'");
+    Page page = new Page.PageBuilder().using(basicPage)
+        .setDateFrom(LocalDateTime.now())
+        .setDateTo(LocalDateTime.now().plusMinutes(30))
+        .setEnable(true).build();
+    page = new Page.PageBuilder().using(page).setId(
+        given()
+            .spec(pageControllerSpec)
+            .auth().oauth2(getToken(USER).getAccessToken())
+            .body(page)
+        .when()
+            .post()
+        .then()
+            .log().ifStatusCodeMatches(not(200))
+            .statusCode(200)
+            .extract().body().jsonPath().get("id"))
+        .build();
+    LOGGER.info(String.format("\tСоздана страница: '%s'", page.toString()));
+    createdPages.put(page.getUri(), page);
+    return page;
   }
 }

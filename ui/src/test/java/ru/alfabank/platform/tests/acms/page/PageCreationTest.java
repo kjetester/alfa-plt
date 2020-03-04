@@ -28,6 +28,7 @@ public class PageCreationTest extends BasePageTest {
                     + "Активна.\n"
                     + "Виджетов нет.")
   public void activePageCreationTest() throws InterruptedException {
+    // Шаги
     Page page = PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(baseUri, USER)
         .openPagesTree()

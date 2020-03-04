@@ -1,16 +1,22 @@
 package ru.alfabank.platform.pages.acms;
 
-import org.apache.log4j.*;
-import org.openqa.selenium.*;
-import org.openqa.selenium.support.*;
-import org.testng.*;
-import ru.alfabank.platform.pages.alfasite.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesClickable;
+import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesVisible;
 
-import java.util.*;
-import java.util.stream.*;
-
-import static org.assertj.core.api.Assertions.*;
-import static ru.alfabank.platform.helpers.DriverHelper.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.TestException;
+import org.testng.TestNGException;
+import ru.alfabank.platform.pages.alfasite.AlfaSitePage;
 
 public class MainPage extends BasePage {
 
@@ -28,6 +34,8 @@ public class MainPage extends BasePage {
   private WebElement publishButton;
   @FindBy(css = "[aria-haspopup = 'listbox']")
   private WebElement pagesDropdownList;
+  @FindBy(css = "[type='checkbox']")
+  private WebElement shareCheckbox;
   private By widgetsTitleLSelector = By.cssSelector("span > span");
   private By treeExpandButtonSelector = By.cssSelector("[aria-label = 'Expand']");
   private By treeCollapseButtonSelector = By.cssSelector("[aria-label = 'Collapse']");
@@ -226,12 +234,12 @@ public class MainPage extends BasePage {
     List<WebElement> otherWidgets = widgetsList.stream().filter(w ->
         !widgetName.equals(w.findElement(widgetsTitleLSelector).getText()))
         .collect(Collectors.toList());
-    targetWidgets.forEach(w -> assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
-        .contains("24, 144, 255"));
+    targetWidgets.forEach(w -> assertThat(
+        w.findElement(widgetSelector).getCssValue("background-color")).contains("24, 144, 255"));
     //TODO: fix it!
     LOGGER.info("Проверяю, что лишние виджеты не были отмечены, как соответствующий условю поиска");
-    otherWidgets.forEach(w -> assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
-        .contains(("255, 255, 255")));
+    otherWidgets.forEach(w -> assertThat(
+        w.findElement(widgetSelector).getCssValue("background-color")).contains(("255, 255, 255")));
     return this;
   }
 
@@ -240,7 +248,8 @@ public class MainPage extends BasePage {
    */
   public void checkNoWidgetIsMarked() {
     LOGGER.info("Проверяю, что виджет не отмечен, как соответствующий условю поиска");
-    widgetsList.forEach(w -> assertThat(w.findElement(widgetSelector).getCssValue("background-color"))
+    widgetsList.forEach(w -> assertThat(
+        w.findElement(widgetSelector).getCssValue("background-color"))
         .as("The other widget has been marked")
         .contains(("255, 255, 255")));
   }
@@ -296,6 +305,16 @@ public class MainPage extends BasePage {
    * @param targetPage targetPage
    */
   public MainPage copyAllWidgets(String sourcePage, String targetPage) {
+    copyOrShareWidgets(sourcePage, targetPage, false);
+    return PageFactory.initElements(getDriver(), MainPage.class);
+  }
+
+  public MainPage shareAllWidgets(String sourcePage, String targetPage) {
+    copyOrShareWidgets(sourcePage, targetPage, true);
+    return null;
+  }
+
+  private void copyOrShareWidgets(String sourcePage, String targetPage, boolean isSharing) {
     sourcePage = sourcePage.replaceAll("/", "");
     targetPage = targetPage.replaceAll("/", "");
     int widgetsCount = widgetsList.size();
@@ -310,6 +329,9 @@ public class MainPage extends BasePage {
         waitForElementBecomesClickable(
             getDriver().findElement(By.cssSelector(String.format("[title='%s']", targetPage))))
             .click();
+        if (isSharing) {
+          setCheckboxTo(shareCheckbox, true);
+        }
         submitDialog();
         closeSuccessBanner();
         if (i != 1) {
@@ -320,6 +342,5 @@ public class MainPage extends BasePage {
       throw new TestNGException(
           String.format("На странице '%s' нет виджетов для копирования.", sourcePage));
     }
-    return PageFactory.initElements(getDriver(), MainPage.class);
   }
 }

@@ -1,6 +1,6 @@
 package ru.alfabank.platform.tests.tranbilog;
 
-import org.assertj.core.api.*;
+import org.assertj.core.api.SoftAssertions;
 
 public class BaseTest {
 

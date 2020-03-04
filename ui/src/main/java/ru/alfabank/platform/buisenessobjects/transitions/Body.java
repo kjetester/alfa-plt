@@ -1,9 +1,11 @@
 package ru.alfabank.platform.buisenessobjects.transitions;
 
-import com.fasterxml.jackson.annotation.*;
-import org.apache.maven.surefire.shade.common.org.apache.commons.lang3.builder.*;
-
-import java.time.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import java.time.LocalDateTime;
+import org.apache.maven.surefire.shade.common.org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class Body {

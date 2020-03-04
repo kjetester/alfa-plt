@@ -1,20 +1,24 @@
 package ru.alfabank.platform.tests.tranbilog;
 
-import com.epam.reportportal.annotations.*;
-import io.restassured.builder.*;
-import io.restassured.filter.log.*;
-import io.restassured.http.*;
-import io.restassured.response.*;
-import io.restassured.specification.*;
-import org.apache.log4j.*;
-import org.testng.annotations.*;
-import ru.alfabank.platform.buisenessobjects.transitions.*;
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static ru.alfabank.platform.helpers.UuidHelper.getNewUuid;
 
-import java.time.*;
-
-import static io.restassured.RestAssured.*;
-import static org.assertj.core.api.Assertions.*;
-import static ru.alfabank.platform.helpers.UUIDHelper.*;
+import com.epam.reportportal.annotations.ParameterKey;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import java.time.LocalDateTime;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
+import org.testng.annotations.Test;
+import ru.alfabank.platform.buisenessobjects.transitions.Body;
 
 public class TranBiLogTest extends BaseTest {
 

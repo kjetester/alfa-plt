@@ -1,10 +1,12 @@
 package ru.alfabank.platform.buisenessobjects;
 
-import com.fasterxml.jackson.annotation.*;
-import com.sun.org.apache.xalan.internal.xsltc.dom.*;
-
-import java.time.*;
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
@@ -96,6 +98,13 @@ public class Page {
     this.widgetList = widgets;
   }
 
+  @Override
+  public String toString() { 
+    return String.format("Page{id='%s', uri='%s', title='%s', description='%s', keywords='%s', "
+        + "dateFrom='%s', dateTo='%s', enable='%s', widgetList= '%s'}", id, uri, title, description,
+        keywords, dateFrom, dateTo, enable, widgetList);
+  }
+
   @JsonIgnoreType
   public static class PageBuilder {
     private Integer id;
@@ -112,6 +121,11 @@ public class Page {
       return this;
     }
 
+    /**
+     * Set URI.
+     * @param uri uri
+     * @return PageBuilder
+     */
     public PageBuilder setUri(String uri) {
       if (!uri.startsWith("/")) {
         uri = "/" + uri;

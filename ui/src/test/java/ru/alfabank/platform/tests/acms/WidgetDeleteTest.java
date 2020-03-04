@@ -1,12 +1,14 @@
 package ru.alfabank.platform.tests.acms;
 
-import org.openqa.selenium.support.*;
-import org.testng.annotations.*;
-import ru.alfabank.platform.pages.acms.*;
-import ru.alfabank.platform.reporting.*;
-import ru.alfabank.platform.tests.*;
+import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 
-import static ru.alfabank.platform.helpers.DriverHelper.*;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+import ru.alfabank.platform.pages.acms.MainPage;
+import ru.alfabank.platform.reporting.TestFailureListener;
+import ru.alfabank.platform.tests.BaseTest;
 
 @Listeners({TestFailureListener.class})
 public class WidgetDeleteTest extends BaseTest {

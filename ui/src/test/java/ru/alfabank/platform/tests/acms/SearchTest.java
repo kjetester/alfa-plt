@@ -1,14 +1,20 @@
 package ru.alfabank.platform.tests.acms;
 
-import org.openqa.selenium.support.*;
-import org.testng.annotations.*;
-import ru.alfabank.platform.buisenessobjects.*;
-import ru.alfabank.platform.helpers.*;
-import ru.alfabank.platform.pages.acms.*;
-import ru.alfabank.platform.reporting.*;
-import ru.alfabank.platform.tests.*;
+import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+import static ru.alfabank.platform.helpers.DriverHelper.killDriver;
 
-import static ru.alfabank.platform.helpers.DriverHelper.*;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+import ru.alfabank.platform.buisenessobjects.Page;
+import ru.alfabank.platform.buisenessobjects.Widget;
+import ru.alfabank.platform.helpers.TestDataHelper;
+import ru.alfabank.platform.pages.acms.MainPage;
+import ru.alfabank.platform.pages.acms.SearchPage;
+import ru.alfabank.platform.reporting.TestFailureListener;
+import ru.alfabank.platform.tests.BaseTest;
 
 @Listeners({TestFailureListener.class})
 public class SearchTest extends BaseTest {

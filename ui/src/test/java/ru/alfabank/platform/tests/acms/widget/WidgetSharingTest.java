@@ -15,25 +15,23 @@ import ru.alfabank.platform.reporting.DifferenceListener;
 import ru.alfabank.platform.reporting.TestFailureListener;
 
 @Listeners ({TestFailureListener.class, DifferenceListener.class})
-public class WidgetCopyingTest extends BaseWidgetTest {
+public class WidgetSharingTest extends BaseWidgetTest {
 
-  private static final Logger LOGGER = LogManager.getLogger(WidgetCopyingTest.class);
+  private static final Logger LOGGER = LogManager.getLogger(WidgetSharingTest.class);
 
-  @Test(description = "Тест копирования виджета\n"
-                      + "\tна корневую страницу\n"
-                      + "\tс детьми\n"
-                      + "\tс пропсами\n")
-  public void widgetCopyingTest(final ITestContext testContext)
+  @Test (description = "Тест шаринга виджета\n"
+                    + "\tна корневую страницу\n"
+                    + "\tс детьми\n")
+  public void widgetSharingWithChildren(final ITestContext testContext)
       throws InterruptedException, JSONException {
     LOGGER.info("Выполняю предусловия");
     Page page = createNewPageInRoot();
     LOGGER.info("Выполняю шаги");
-    //TODO: http://jira.moscow.alfaintra.net/browse/ALFABANKRU-19598
     PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(baseUri, USER)
         .openPagesTree()
         .openPage(sourcePage)
-        .copyAllWidgets(sourcePage, page.getUri())
+        .shareAllWidgets(sourcePage, page.getUri())
         .publishDraft();
     Thread.sleep(5_000L);
     LOGGER.info("Выполняю тест");

@@ -1,15 +1,17 @@
 package ru.alfabank.platform.helpers;
 
-import io.restassured.http.*;
-import org.apache.log4j.*;
-import ru.alfabank.platform.buisenessobjects.*;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.not;
 
-import java.time.*;
-import java.time.temporal.*;
-import java.util.*;
-
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
+import io.restassured.http.ContentType;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import ru.alfabank.platform.buisenessobjects.AccessToken;
+import ru.alfabank.platform.buisenessobjects.User;
 
 public class KeycloakHelper {
 

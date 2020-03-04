@@ -1,16 +1,22 @@
 package ru.alfabank.platform.tests.acms;
 
-import org.openqa.selenium.support.*;
-import org.testng.annotations.*;
-import ru.alfabank.platform.pages.acms.*;
-import ru.alfabank.platform.pages.alfasite.*;
-import ru.alfabank.platform.reporting.*;
-import ru.alfabank.platform.tests.*;
+import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+import static ru.alfabank.platform.helpers.DriverHelper.killDriver;
 
-import java.time.*;
-import java.time.temporal.*;
-
-import static ru.alfabank.platform.helpers.DriverHelper.*;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Parameters;
+import org.testng.annotations.Test;
+import ru.alfabank.platform.pages.acms.MainPage;
+import ru.alfabank.platform.pages.acms.PagesSliderPage;
+import ru.alfabank.platform.pages.acms.WidgetSidebarPage;
+import ru.alfabank.platform.pages.alfasite.AlfaSitePage;
+import ru.alfabank.platform.reporting.TestFailureListener;
+import ru.alfabank.platform.tests.BaseTest;
 
 @Listeners({TestFailureListener.class})
 public class EndToEndTest extends BaseTest {

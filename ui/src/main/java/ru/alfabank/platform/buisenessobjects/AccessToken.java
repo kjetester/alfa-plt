@@ -1,8 +1,10 @@
 package ru.alfabank.platform.buisenessobjects;
 
-import com.fasterxml.jackson.annotation.*;
-
-import java.time.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
 
 @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class AccessToken {

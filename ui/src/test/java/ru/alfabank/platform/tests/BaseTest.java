@@ -1,13 +1,19 @@
 package ru.alfabank.platform.tests;
 
-import com.epam.reportportal.annotations.*;
-import org.apache.log4j.*;
-import org.testng.*;
-import org.testng.annotations.*;
-import ru.alfabank.platform.buisenessobjects.*;
+import static ru.alfabank.platform.helpers.DriverHelper.killDriver;
+import static ru.alfabank.platform.helpers.UuidHelper.getShortRandUuid;
 
-import static ru.alfabank.platform.helpers.DriverHelper.*;
-import static ru.alfabank.platform.helpers.UUIDHelper.*;
+import com.epam.reportportal.annotations.ParameterKey;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.testng.ITestContext;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
+import ru.alfabank.platform.buisenessobjects.Page;
+import ru.alfabank.platform.buisenessobjects.User;
 
 public class BaseTest {
 

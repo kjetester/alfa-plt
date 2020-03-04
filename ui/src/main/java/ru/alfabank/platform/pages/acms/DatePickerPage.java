@@ -1,15 +1,17 @@
 package ru.alfabank.platform.pages.acms;
 
-import org.apache.log4j.*;
-import org.openqa.selenium.*;
-import org.openqa.selenium.support.*;
-import org.testng.*;
+import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 
-import java.time.*;
-import java.util.*;
-import java.util.stream.*;
-
-import static ru.alfabank.platform.helpers.DriverHelper.*;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.IntStream;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.TestException;
 
 public class DatePickerPage extends BasePage {
 
@@ -100,7 +102,8 @@ public class DatePickerPage extends BasePage {
     scrollToElement(hourList.get(dateTime.getHour())).click();
     scrollToElement(minuteList.get(dateTime.getMinute())).click();
     scrollToElement(secondList.get(dateTime.getSecond())).click();
-    LOGGER.debug(String.format("Дата и время установлено как: '%s'", dateInput.getAttribute("value")));
+    LOGGER.debug(String.format("Дата и время установлено как: '%s'",
+        dateInput.getAttribute("value")));
     dataPickerOkButton.click();
     return PageFactory.initElements(getDriver(), WidgetMetaInfoPage.class);
   }

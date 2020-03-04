@@ -1,6 +1,7 @@
 package ru.alfabank.platform.buisenessobjects;
 
-import org.apache.log4j.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class User {
 
@@ -13,10 +14,10 @@ public class User {
    * Class constructor.
    */
   public User() {
-    this.login = "user";
+    this.login = "selenium";
     this.password = "123";
     LOGGER.debug(
-        String.format("Создан новый пользователь с логином '%s' и паролем '%s'", login, password));
+        String.format("Используется пользователь с логином '%s' и паролем '%s'", login, password));
   }
 
   public String getLogin() {
