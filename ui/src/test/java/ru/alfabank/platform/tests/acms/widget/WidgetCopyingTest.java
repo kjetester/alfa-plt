@@ -1,5 +1,6 @@
 package ru.alfabank.platform.tests.acms.widget;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 
 import org.apache.log4j.LogManager;
@@ -11,10 +12,10 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.buisenessobjects.Page;
 import ru.alfabank.platform.pages.acms.MainPage;
-import ru.alfabank.platform.reporting.DifferenceListener;
+import ru.alfabank.platform.pages.alfasite.AlfaSitePage;
 import ru.alfabank.platform.reporting.TestFailureListener;
 
-@Listeners ({TestFailureListener.class, DifferenceListener.class})
+@Listeners ({TestFailureListener.class})
 public class WidgetCopyingTest extends BaseWidgetTest {
 
   private static final Logger LOGGER = LogManager.getLogger(WidgetCopyingTest.class);
@@ -38,5 +39,12 @@ public class WidgetCopyingTest extends BaseWidgetTest {
     Thread.sleep(5_000L);
     LOGGER.info("Выполняю тест");
     compareCreatedAndSourcePages(page, testContext);
+    PageFactory.initElements(getDriver(), AlfaSitePage.class)
+        .open(baseUri + sourcePage);
+    String expected = getDriver().getPageSource();
+    PageFactory.initElements(getDriver(), AlfaSitePage.class)
+        .open(baseUri + page.getUri());
+    String actual = getDriver().getPageSource();
+    assertThat(expected).isEqualTo(actual);
   }
 }

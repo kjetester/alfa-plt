@@ -5,15 +5,17 @@ import static ru.alfabank.platform.helpers.FileComparator.compare;
 import com.epam.reportportal.message.ReportPortalMessage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
+import org.testng.TestNGException;
 
 /**
- * Listeners.
+ * Difference listener class.
  */
 public class DifferenceListener extends TestListenerAdapter {
 
@@ -21,13 +23,13 @@ public class DifferenceListener extends TestListenerAdapter {
 
   @Override
   public void onTestFailure(ITestResult result) {
-    if (result.getStatus() == ITestResult.FAILURE
-        && result.getThrowable().getMessage().contains("to be equal to")) {
+    if (result.getStatus() == ITestResult.FAILURE) {
       ITestContext context = result.getTestContext();
-      String url = (String) context.getAttribute("case");
-      String expectedPath = "target/results/" + url + "expected.html";
-      String actualPath = "target/results/" + url + "actual.html";
-      String diffPath = "target/results/" + url + "diff.html";
+      String path = Optional.of(context.getAttribute("case").toString().replaceAll("^/$",""))
+          .orElseThrow(() -> new TestNGException("Листнеру логировать нечего."));
+      String expectedPath = "target/results/" + path + "/expected.html";
+      String actualPath = "target/results/" + path + "/actual.html";
+      String diffPath = "target/results/" + path + "/diff.html";
       File expected = new File(expectedPath);
       File actual = new File(actualPath);
       File diff = new File(diffPath);

@@ -14,7 +14,7 @@ import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 
 /**
- * Listeners.
+ * Screenshot listener class.
  */
 public class TestFailureListener extends TestListenerAdapter {
 

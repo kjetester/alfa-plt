@@ -11,10 +11,9 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.buisenessobjects.Page;
 import ru.alfabank.platform.pages.acms.MainPage;
-import ru.alfabank.platform.reporting.DifferenceListener;
 import ru.alfabank.platform.reporting.TestFailureListener;
 
-@Listeners ({TestFailureListener.class, DifferenceListener.class})
+@Listeners ({TestFailureListener.class})
 public class WidgetSharingTest extends BaseWidgetTest {
 
   private static final Logger LOGGER = LogManager.getLogger(WidgetSharingTest.class);

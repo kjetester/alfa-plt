@@ -44,7 +44,7 @@ public class BaseTest {
       @Optional("develop")
       @ParameterKey("environment")
       final String environment) {
-    LOGGER.info(String.format("Base URI: '%s'", environment));
+    LOGGER.info(String.format("Окружение: '%s'", environment));
     switch (environment) {
       case "develop": baseUri = "http://develop.ci.k8s.alfa.link/";
         break;
@@ -55,6 +55,7 @@ public class BaseTest {
       default: baseUri = "http://develop.ci.k8s.alfa.link/";
         break;
     }
+    LOGGER.info(String.format("Base URI: '%s'", baseUri));
   }
 
   /**

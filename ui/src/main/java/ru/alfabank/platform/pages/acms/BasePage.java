@@ -68,12 +68,14 @@ public class BasePage {
   protected void setGeoGroupsTo(List<WebElement> geoGroupList,
                                 WebElement geoGroupsInput,
                                 String[] geoGroups) {
-
-    geoGroupList.forEach(geo ->
-        geo.findElement(deleteGeoButtonSelector).click());
+    LOGGER.info("Удаляю все гео у сущности");
+    geoGroupList.forEach(geo -> geo.findElement(deleteGeoButtonSelector).click());
+    LOGGER.debug("");
     geoGroupsInput.click();
-    Arrays.asList(geoGroups).forEach(geo ->
-        getDriver().switchTo().activeElement().sendKeys(geo, Keys.ENTER));
+    Arrays.asList(geoGroups).forEach(geo -> {
+      LOGGER.info(String.format("Устанавливаю гео: '%s'", geo));
+      getDriver().switchTo().activeElement().sendKeys(geo, Keys.ENTER);
+    });
     getDriver().switchTo().activeElement().sendKeys(Keys.ESCAPE);
   }
 
@@ -100,10 +102,14 @@ public class BasePage {
    */
   protected void setValueToMonacoTextArea(String textValue, WebElement textArea) {
     try {
+      LOGGER.debug("Ставлю фокус в инпут");
       textArea.click();
+      LOGGER.debug("Очищаю поле - SHIFT + END + PAGE_DOWN и DELETE");
       textArea.sendKeys(Keys.chord(Keys.SHIFT, Keys.END), Keys.PAGE_DOWN, Keys.DELETE);
+      LOGGER.info(String.format("Ввожу в инпут значение '%s'", textValue));
       textArea.sendKeys(textValue);
     } catch (ElementNotInteractableException e) {
+      LOGGER.warn("Element is Not Interactable Exception was caught");
       textArea.click();
       WebElement el = getDriver().switchTo().activeElement();
       el.sendKeys(Keys.HOME, Keys.chord(Keys.LEFT_SHIFT, Keys.END), Keys.DELETE);

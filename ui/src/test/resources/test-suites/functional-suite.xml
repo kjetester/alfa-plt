@@ -14,6 +14,7 @@
         <classes>
             <class name="ru.alfabank.platform.tests.acms.widget.WidgetCopyingTest"/>
             <class name="ru.alfabank.platform.tests.acms.widget.WidgetSharingTest"/>
+            <class name="ru.alfabank.platform.tests.acms.widget.WidgetCreationTest"/>
         </classes>
     </test>
 </suite>

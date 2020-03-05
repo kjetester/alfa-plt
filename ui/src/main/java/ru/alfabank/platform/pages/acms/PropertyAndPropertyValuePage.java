@@ -18,6 +18,10 @@ public class PropertyAndPropertyValuePage extends BasePage {
 
   private static final Logger LOGGER = LogManager.getLogger(PropertyAndPropertyValuePage.class);
 
+  @FindBy(css = "[role='combobox'] ")
+  private WebElement newPropDropdownList;
+  @FindBy(xpath = "//span[contains(text(), 'Добавить')]/..")
+  private WebElement newPropAddSubmitButton;
   @FindBy(xpath = "//*[@class = 'ant-btn ant-btn-default']")
   private WebElement addPropertyValueButton;
   private By propertyValuesSelector = By.cssSelector("[class ^= value-property-container]");
@@ -26,7 +30,6 @@ public class PropertyAndPropertyValuePage extends BasePage {
       By.cssSelector("div[class = 'ant-select-selection__rendered']");
   private By propertyValueSelectedGeoGroups = By.cssSelector("li[title]");
   private By propertyValueTextAreaSelector = By.cssSelector("div[class = 'view-line']");
-  private By propertyValueDivsSelector = By.cssSelector(".view-lines .view-line");
   private By propertyValueSpansSelector = By.cssSelector("span > span");
   private String propertySelectorXpath = "//span[text() = '%s']/../..";
 
@@ -68,7 +71,7 @@ public class PropertyAndPropertyValuePage extends BasePage {
                          String value,
                          String... geoGroup) {
     LOGGER.info(
-        String.format("Изменяю в проперти '%s' вэлью с названием '%s'", propertyName, value));
+        String.format("Устанавливаю вэлью '%s' в проперти с названием '%s'", value, propertyName));
     By propertySelector = By.xpath(String.format(propertySelectorXpath, propertyName));
     WebElement property = getDriver().findElement(propertySelector);
     List<WebElement> propertyValueList = property.findElements(propertyValuesSelector);
@@ -192,5 +195,19 @@ public class PropertyAndPropertyValuePage extends BasePage {
     String res = stringBuilder.toString().replaceAll("[\"]", "");
     LOGGER.debug(String.format("Собрана строка: '%s'", res));
     return res;
+  }
+
+  /**
+   * Create property.
+   * @param title property title
+   * @return this
+   */
+  public PropertyAndPropertyValuePage createNewProperty(String title) {
+    LOGGER.info("Открываю дропдаун справочника пропсов");
+    waitForElementBecomesClickable(newPropDropdownList).click();
+    setValueToMonacoTextArea(title, getDriver().switchTo().activeElement());
+    LOGGER.info("Нажимаю кнопку 'Добавить'");
+    waitForElementBecomesClickable(newPropAddSubmitButton).click();
+    return PageFactory.initElements(getDriver(), PropertyAndPropertyValuePage.class);
   }
 }

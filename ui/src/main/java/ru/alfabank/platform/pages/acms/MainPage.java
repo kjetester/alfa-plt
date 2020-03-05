@@ -32,6 +32,14 @@ public class MainPage extends BasePage {
   private WebElement saveButton;
   @FindBy(xpath = "//span[text() = 'Опубликовать']/..")
   private WebElement publishButton;
+  @FindBy(xpath = "//div[@class='ant-btn-group']//i[@aria-label='icon: plus']/..")
+  private WebElement createNewWidgetButton;
+  @FindBy(css = "[role='combobox']")
+  private WebElement widgetsDropdownList;
+  @FindBy(css = "[role='option']")
+  private List<WebElement> availableWidgetsList;
+  @FindBy(css = ".ant-modal-content button[class $= 'primary']")
+  private WebElement widgetCreateSubmitButton;
   @FindBy(css = "[aria-haspopup = 'listbox']")
   private WebElement pagesDropdownList;
   @FindBy(css = "[type='checkbox']")
@@ -311,9 +319,15 @@ public class MainPage extends BasePage {
 
   public MainPage shareAllWidgets(String sourcePage, String targetPage) {
     copyOrShareWidgets(sourcePage, targetPage, true);
-    return null;
+    return PageFactory.initElements(getDriver(), MainPage.class);
   }
 
+  /**
+   * Copies or shares all of one page's widgets towards another.
+   * @param sourcePage source page
+   * @param targetPage target page
+   * @param isSharing the flag if action is sharing
+   */
   private void copyOrShareWidgets(String sourcePage, String targetPage, boolean isSharing) {
     sourcePage = sourcePage.replaceAll("/", "");
     targetPage = targetPage.replaceAll("/", "");
@@ -342,5 +356,28 @@ public class MainPage extends BasePage {
       throw new TestNGException(
           String.format("На странице '%s' нет виджетов для копирования.", sourcePage));
     }
+  }
+
+  /**
+   * Create new widget.
+   * @param widgetName widget name
+   * @return this
+   */
+  public PropertyAndPropertyValuePage createNewWidget(String widgetName) {
+    LOGGER.info("Нажимаю кнопку добавления нового виджета на страницу");
+    waitForElementBecomesClickable(createNewWidgetButton).click();
+    LOGGER.info("Открываю дропдаун справочника виджетов");
+    waitForElementBecomesClickable(widgetsDropdownList).click();
+    setValueToMonacoTextArea(widgetName, getDriver().switchTo().activeElement());
+    LOGGER.info(
+        String.format("Выбираю в результирующем списке виджет с названием '%s'", widgetName));
+    PageFactory.initElements(getDriver(), MainPage.class)
+        .availableWidgetsList.stream().filter(w -> w.getText().equals(widgetName))
+        .findFirst().orElseThrow(() -> new TestNGException(
+            String.format("Виджет с названием '%s' не найден в списке", widgetName)))
+        .click();
+    LOGGER.info("Нажимаю кнопку OK");
+    waitForElementBecomesClickable(widgetCreateSubmitButton).click();
+    return PageFactory.initElements(getDriver(), PropertyAndPropertyValuePage.class);
   }
 }
