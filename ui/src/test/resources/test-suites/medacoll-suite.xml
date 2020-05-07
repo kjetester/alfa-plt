@@ -3,10 +3,10 @@
 <suite name = "MeDaColl Suite"
        thread-count = "1"
        configfailurepolicy = "continue"
-       verbose = "5">
+       verbose = "3">
     <test name="MeDaColl vs. ASSR Pages comparison test" enabled="true">
         <classes>
-            <class name="ru.alfabank.platform.tests.contentstore.MeDaCollTest"/>
+            <class name="ru.alfabank.platform.contentstore.MeDaCollTest"/>
         </classes>
     </test>
 </suite>

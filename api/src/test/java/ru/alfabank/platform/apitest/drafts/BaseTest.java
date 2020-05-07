@@ -41,7 +41,7 @@ public class BaseTest {
    * Clear operations.
    */
   @AfterClass(alwaysRun = true)
-  public void afterTest() {
+  public void afterClass() {
     operations.clear();
   }
 

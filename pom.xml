@@ -15,8 +15,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>13</maven.compiler.target>
+        <maven.compiler.source>13</maven.compiler.source>
         <testng.version>7.0.0</testng.version>
         <rest-assured.version>4.1.2</rest-assured.version>
         <selenium.version>4.0.0-alpha-3</selenium.version>

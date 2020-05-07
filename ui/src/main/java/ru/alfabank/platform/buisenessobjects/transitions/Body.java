@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import java.time.LocalDateTime;
-import org.apache.maven.surefire.shade.common.org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class Body {

@@ -2,6 +2,7 @@ package ru.alfabank.platform.pages.acms;
 
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 
+import java.util.concurrent.TimeUnit;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
@@ -26,7 +27,7 @@ public class SearchPage extends BasePage {
   public MainPage searchFor(String text) throws InterruptedException {
     LOGGER.info(String.format("Ввожу в поле поиска '%s'", text));
     setValueToMonacoTextArea(text, searchInput);
-    Thread.sleep(2_000);
+    TimeUnit.SECONDS.sleep(2);
     return PageFactory.initElements(getDriver(), MainPage.class);
   }
 }

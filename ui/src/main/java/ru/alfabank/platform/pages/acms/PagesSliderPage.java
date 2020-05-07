@@ -1,7 +1,6 @@
 package ru.alfabank.platform.pages.acms;
 
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
-import static ru.alfabank.platform.helpers.DriverHelper.implicitlyWait;
 
 import java.util.List;
 import org.apache.log4j.LogManager;
@@ -21,69 +20,49 @@ public class PagesSliderPage extends BasePage {
 
   /**
    * Open requested root page.
-   * @param pagePath requested page
+   * @param pageUri requested page
    * @return new instance of the MainPage class
    */
-  public MainPage openPage(String pagePath) {
-    LOGGER.info(String.format("Открываю страницу '%s'", pagePath));
-    getTargetPage(pagePath).click();
+  public MainPage openPage(String pageUri) {
+    LOGGER.info(String.format("Открываю страницу '%s'", pageUri));
+    getTargetPage(pageUri).click();
     return PageFactory.initElements(getDriver(), MainPage.class);
   }
 
   /**
    * Search target page with given title.
-   * @param pageName page name (URI)
+   * @param pageUri page name (URI)
    * @return result page
    */
-  private WebElement getTargetPage(String pageName) {
-    try {
-      implicitlyWait(false);
-      WebElement resultPage = null;
-      for (WebElement page : pageList) {
-        pageName = pageName
-            .replaceAll("^/", "")
-            .replaceAll("/$","");
-        if (isPresent(page, By.cssSelector("a"))) {
-          WebElement likelyPage = page.findElement(By.cssSelector("a"));
-          if (likelyPage.getText().contains(pageName)) {
-            resultPage = likelyPage;
-            return resultPage;
-          }
-        }
-        if (page.getText().contains(pageName)) {
-          resultPage = page;
-          return resultPage;
-        }
-      }
-      if (resultPage != null) {
-        return resultPage;
-      } else {
-        throw new TestNGException(String.format("Страница '%s' не найдена", pageName));
-      }
-    } finally {
-      implicitlyWait(true);
-    }
+  private WebElement getTargetPage(final String pageUri) {
+    return pageList.stream().filter(p ->
+        p.getText().equals(pageUri.replaceAll("^/", "")))
+        .findFirst().orElseThrow(() ->
+            new TestNGException(String.format("Страница '%s' не найдена", pageUri)));
   }
 
   /**
    * Create a new page.
+   * @param parentPageName parent page name
    * @return new Main Page instance
    */
   public NewPageCreationPage createNewPageWithinPage(String parentPageName) {
-    if (parentPageName == null) {
-      String rootPage = "https://alfabank.ru";
-      LOGGER.debug(String.format("Создаю новую страницу в корне страницы '%s'", rootPage));
-      parentPageName = rootPage;
-    }
-    WebElement targetPage = getTargetPage(parentPageName);
+    By createNewPageButtonSelector;
     WebElement createNewPageButton;
-    if (isPresent(targetPage, By.cssSelector("button"))) {
-      createNewPageButton = targetPage.findElement(By.cssSelector("button"));
+    if (parentPageName == null) {
+      LOGGER.debug("Создаю новую страницу в корне");
+      createNewPageButtonSelector = By.cssSelector("[data-test-id = 'pg_crt_btn_/']");
     } else {
-      createNewPageButton = targetPage.findElement(By.xpath("../button"));
+      LOGGER.debug(String.format("Создаю новую страницу в корне '%s'", parentPageName));
+      createNewPageButtonSelector =
+          By.cssSelector(String.format("[data-test-id ^= 'pg_crt_btn_/%s']", parentPageName));
     }
-    LOGGER.info(String.format(
-        "Открываю форму создания новой страницы в корне страницы '%s'", parentPageName));
+    createNewPageButton = getDriver().findElement(createNewPageButtonSelector);
+    LOGGER.info(parentPageName == null
+        ? "Открываю форму создания новой страницы в корне"
+        : String.format(
+        "Открываю форму создания новой страницы в корне страницы '%s'",
+        parentPageName));
     clickWithJavaScriptExecutor(createNewPageButton);
     return PageFactory.initElements(getDriver(), NewPageCreationPage.class);
   }

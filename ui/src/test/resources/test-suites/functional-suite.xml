@@ -3,18 +3,42 @@
 <suite name = "Functional Suite"
        thread-count = "1"
        configfailurepolicy = "continue"
-       verbose = "5">
-    <test name="Page Tests" enabled="true">
+       verbose = "1">
+
+    <!-- PAGES
+-->
+    <test name="Page Creation Test" enabled="true">
         <classes>
-            <class name="ru.alfabank.platform.tests.acms.page.PageCreationTest"/>
-            <class name="ru.alfabank.platform.tests.acms.page.PageDeletionTest"/>
+            <class name="ru.alfabank.platform.acms.page.PageCreationTest"/>
         </classes>
     </test>
-    <test name="Widget Tests" enabled="true">
+    <test name="Page Deletion Test" enabled="true">
         <classes>
-            <class name="ru.alfabank.platform.tests.acms.widget.WidgetCopyingTest"/>
-            <class name="ru.alfabank.platform.tests.acms.widget.WidgetSharingTest"/>
-            <class name="ru.alfabank.platform.tests.acms.widget.WidgetCreationTest"/>
+            <class name="ru.alfabank.platform.acms.page.PageDeletionTest"/>
         </classes>
     </test>
+    <test name="Page Copying Test" enabled="true">
+        <classes>
+            <class name="ru.alfabank.platform.acms.page.PageCopyingTest"/>
+        </classes>
+    </test>
+    <!-- WIDGETS
+  -->
+    <test name="Widget Copy Test" enabled="true">
+        <classes>
+            <class name="ru.alfabank.platform.acms.widget.WidgetCopyingTest"/>
+        </classes>
+    </test>
+    <test name="Widget Sharing Test" enabled="true">
+        <classes>
+            <class name="ru.alfabank.platform.acms.widget.WidgetSharingTest"/>
+        </classes>
+    </test>
+    <test name="Widget Creation Test" enabled="false">
+        <classes>
+            <class name="ru.alfabank.platform.acms.widget.WidgetCreationTest"/>
+        </classes>
+    </test>
+    <!-- PROPERTIES -->
+
 </suite>

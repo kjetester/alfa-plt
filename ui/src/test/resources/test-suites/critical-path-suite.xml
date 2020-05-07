@@ -3,15 +3,15 @@
 <suite name = "Critical Path Suite"
        thread-count = "1"
        configfailurepolicy = "continue"
-       verbose = "5">
+       verbose = "3">
     <test name = "End-To-End Test" enabled="true">
         <classes>
-            <class name = "ru.alfabank.platform.tests.acms.EndToEndTest"/>
+            <class name = "ru.alfabank.platform.acms.EndToEndTest"/>
         </classes>
     </test>
-<!--    <test name = "Search Test" enabled="true">-->
-<!--        <classes>-->
-<!--            <class name = "ru.alfabank.platform.tests.acms.SearchTest"/>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <!--    <test name = "Search Test" enabled="true">-->
+    <!--        <classes>-->
+    <!--            <class name = "ru.alfabank.platform.SearchTest"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
 </suite>
