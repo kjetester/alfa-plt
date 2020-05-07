@@ -2,9 +2,9 @@
 
 <suite name="All Suites">
     <suite-files>
-<!--        <suite-file path="test-suites/critical-path-suite.xml" />-->
+        <!--        <suite-file path="test-suites/critical-path-suite.xml" />-->
         <suite-file path="test-suites/functional-suite.xml" />
-<!--        <suite-file path="test-suites/tranbilog-test.xml" />-->
-<!--        <suite-file path="test-suites/medacoll-suite.xml" />-->
+<!--                <suite-file path="test-suites/tranbilog-test.xml" />-->
+        <!--        <suite-file path="test-suites/medacoll-suite.xml" />-->
     </suite-files>
 </suite>

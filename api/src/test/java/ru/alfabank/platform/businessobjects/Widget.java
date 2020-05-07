@@ -17,6 +17,8 @@ public class Widget {
   private boolean isEnabled;
   private String localization;
   private List<String> widgetGeo;
+  private String experimentOptionName;
+  private Boolean defaultWidget;
   private Children[] children;
   private List<Property> properties;
   private boolean reused;
@@ -58,6 +60,8 @@ public class Widget {
     this.isEnabled = isEnabled;
     this.localization = localization;
     this.widgetGeo = widgetGeo;
+    this.experimentOptionName = experimentOptionName;
+    this.defaultWidget = defaultWidget;
     this.children = children;
     this.properties = properties;
     this.reused = reused;
@@ -67,96 +71,48 @@ public class Widget {
     return uid;
   }
 
-  public void setUid(String uid) {
-    this.uid = uid;
-  }
-
   public String getName() {
     return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   public int getOrderNum() {
     return orderNum;
   }
 
-  public void setOrderNum(int orderNum) {
-    this.orderNum = orderNum;
-  }
-
   public Object getDateFrom() {
     return dateFrom;
-  }
-
-  public void setDateFrom(Object dateFrom) {
-    this.dateFrom = dateFrom;
   }
 
   public Object getDateTo() {
     return dateTo;
   }
 
-  public void setDateTo(Object dateTo) {
-    this.dateTo = dateTo;
-  }
-
   public Device getDevice() {
     return device;
-  }
-
-  public void setDevice(Device device) {
-    this.device = device;
   }
 
   public boolean isEnabled() {
     return isEnabled;
   }
 
-  public void setEnabled(boolean enabled) {
-    isEnabled = enabled;
-  }
-
   public String getLocalization() {
     return localization;
-  }
-
-  public void setLocalization(String localization) {
-    this.localization = localization;
   }
 
   public List<String> getWidgetGeo() {
     return widgetGeo;
   }
 
-  public void setWidgetGeo(List<String> widgetGeo) {
-    this.widgetGeo = widgetGeo;
-  }
-
   public List<Property> getProperties() {
     return properties;
-  }
-
-  public void setProperties(List<Property> properties) {
-    this.properties = properties;
   }
 
   public boolean isReused() {
     return reused;
   }
 
-  public void setReused(boolean reused) {
-    this.reused = reused;
-  }
-
   public Children[] getChildren() {
     return children;
-  }
-
-  public void setChildren(Children[] children) {
-    this.children = children;
   }
 
   @JsonIgnoreProperties(

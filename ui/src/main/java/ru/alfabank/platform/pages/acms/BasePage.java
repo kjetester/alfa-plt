@@ -5,9 +5,9 @@ import static ru.alfabank.platform.helpers.DriverHelper.implicitlyWait;
 import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesClickable;
 import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesVisible;
 
-import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
@@ -37,12 +37,12 @@ public class BasePage {
   @FindBy (css = ".ant-notification-notice > a")
   protected WebElement bannerCloseBttn;
   @FindBy(className = "ant-modal-body")
-  protected WebElement modalWindow;
+  protected WebElement modalWindowBody;
   @FindBy(css = "[class ^= 'ant-modal'] .ant-btn-primary")
-  protected WebElement modalWindowSubmitButton;
+  private WebElement modalWindowSubmitButton;
   @FindBy(xpath = "//i[@aria-label=\"icon: setting\"]/..")
   protected WebElement widgetSettings;
-  private By deleteGeoButtonSelector = By.cssSelector(".ant-select-selection__choice__remove");
+  private By deleteValueButtonSelector = By.cssSelector("[aria-label = 'close']");
   private By errorIconSelector = By.cssSelector("[class $= 'icon-error']");
 
   /**
@@ -60,22 +60,24 @@ public class BasePage {
   }
 
   /**
-   * Setting geo-groups without using dropdown list.
-   * @param geoGroupList geo-groups that are already chosen
-   * @param geoGroupsInput input for geo-groups
-   * @param geoGroups array of geo-groups that should be selected
+   * Setting values to combobox.
+   * @param selectedValues values that are already chosen
+   * @param input input
+   * @param desirableValues array of values that should be selected
    */
-  protected void setGeoGroupsTo(List<WebElement> geoGroupList,
-                                WebElement geoGroupsInput,
-                                String[] geoGroups) {
-    LOGGER.info("Удаляю все гео у сущности");
-    geoGroupList.forEach(geo -> geo.findElement(deleteGeoButtonSelector).click());
-    LOGGER.debug("");
-    geoGroupsInput.click();
-    Arrays.asList(geoGroups).forEach(geo -> {
-      LOGGER.info(String.format("Устанавливаю гео: '%s'", geo));
-      getDriver().switchTo().activeElement().sendKeys(geo, Keys.ENTER);
-    });
+  protected void setValuesToCombobox(List<WebElement> selectedValues,
+                                     WebElement input,
+                                     List<?> desirableValues) {
+    LOGGER.info("Удаляю все значения из комбобокса");
+    implicitlyWait(false);
+    selectedValues.forEach(value ->
+        value.findElement(deleteValueButtonSelector).click());
+    input.click();
+    desirableValues.stream().map(Object::toString)
+        .collect(Collectors.toList()).forEach(value -> {
+          LOGGER.info(String.format("Устанавливаю значение: '%s'", value));
+          getDriver().switchTo().activeElement().sendKeys(value, Keys.ENTER);
+        });
     getDriver().switchTo().activeElement().sendKeys(Keys.ESCAPE);
   }
 
@@ -88,7 +90,7 @@ public class BasePage {
     try {
       ((JavascriptExecutor) getDriver())
           .executeScript("arguments[0].scrollIntoView(true);", element);
-      Thread.sleep(500);
+      TimeUnit.SECONDS.sleep(1);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
@@ -102,6 +104,7 @@ public class BasePage {
    */
   protected void setValueToMonacoTextArea(String textValue, WebElement textArea) {
     try {
+      LOGGER.info(String.format("Устанавливаю вэлью '%s'", textValue));
       LOGGER.debug("Ставлю фокус в инпут");
       textArea.click();
       LOGGER.debug("Очищаю поле - SHIFT + END + PAGE_DOWN и DELETE");
@@ -109,12 +112,20 @@ public class BasePage {
       LOGGER.info(String.format("Ввожу в инпут значение '%s'", textValue));
       textArea.sendKeys(textValue);
     } catch (ElementNotInteractableException e) {
-      LOGGER.warn("Element is Not Interactable Exception was caught");
+      LOGGER.warn("An ElementNotInteractableException has been caught");
       textArea.click();
-      WebElement el = getDriver().switchTo().activeElement();
-      el.sendKeys(Keys.HOME, Keys.chord(Keys.LEFT_SHIFT, Keys.END), Keys.DELETE);
-      el.sendKeys(textValue);
+      clearInput(getDriver().switchTo().activeElement()).sendKeys(textValue);
     }
+  }
+
+  /**
+   * Clear input.
+   * @param element element
+   * @return element
+   */
+  protected WebElement clearInput(WebElement element) {
+    element.sendKeys(Keys.HOME, Keys.chord(Keys.LEFT_SHIFT, Keys.END), Keys.DELETE);
+    return element;
   }
 
   /**
@@ -148,12 +159,12 @@ public class BasePage {
 
   /**
    * Click by a button that showing by mouse hovering only.
-   * @param element element
+   * @param hiddenElement hidden element
    */
-  protected void clickOnHiddenButton(WebElement element) {
+  protected void hoverAndClick(WebElement hiddenElement) {
     new Actions(getDriver())
-        .moveToElement(element)
-        .pause(Duration.ofMillis(500L))
+        .moveToElement(hiddenElement)
+        .pause(500L)
         .click()
         .build()
         .perform();
@@ -175,7 +186,7 @@ public class BasePage {
    */
   protected void setCheckboxTo(WebElement checkbox, boolean isToBeSelected) {
     boolean isAlreadySelected = checkbox.isSelected();
-    // String label = checkbox.findElement(By.xpath("../../../..//label[@for]")).getText();
+    //TODO: String label = checkbox.findElement(By.xpath("../../../..//label[@for]")).getText();
     // LOGGER.info(String.format("Устанавливаю чекбокс '%s' в '%b'", label, isToBeSelected));
     if (!isAlreadySelected && isToBeSelected) {
       checkbox.click();
@@ -201,5 +212,14 @@ public class BasePage {
       implicitlyWait(true);
     }
     waitForElementBecomesClickable(bannerCloseBttn).click();
+  }
+
+  /**
+   * Submit in a modal window.
+   */
+  protected void submitDialog() {
+    LOGGER.debug("Подтверждаю действие");
+    waitForElementBecomesVisible(modalWindowBody);
+    modalWindowSubmitButton.click();
   }
 }

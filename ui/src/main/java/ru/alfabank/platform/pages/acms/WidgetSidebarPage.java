@@ -94,8 +94,7 @@ public class WidgetSidebarPage extends BasePage {
         + "'ant-collapse-header']/span[text() = '%s']/..//button", propName)));
     waitForElementBecomesClickable(deleteBttn);
     deleteBttn.click();
-    waitForElementBecomesVisible(modalWindow);
-    modalWindowSubmitButton.click();
+    submitDialog();
     return this;
   }
 

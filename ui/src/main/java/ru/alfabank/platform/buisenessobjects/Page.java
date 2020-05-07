@@ -1,27 +1,59 @@
 package ru.alfabank.platform.buisenessobjects;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.reactivex.annotations.NonNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.assertj.core.api.SoftAssertions;
+import ru.alfabank.platform.buisenessobjects.enums.Team;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude (JsonInclude.Include.NON_NULL)
 @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Page {
+
+  @JsonIgnore
+  private static final Logger LOGGER = LogManager.getLogger(Page.class);
 
   private Integer id;
   private String uri;
   private String title;
   private String description;
-  private String keywords;
   private String dateFrom;
   private String dateTo;
+  private List<Team> teamList;
   private Boolean enable;
-  @JsonIgnore
-  private List<Widget> widgetList;
+  @JsonIgnore private List<Widget> widgetList;
+  private List<String> childUids;
+
+  @JsonCreator
+  private Page(
+      @JsonProperty ("id") Integer id,
+      @JsonProperty ("uri") String uri,
+      @JsonProperty ("title") String title,
+      @JsonProperty ("description") String description,
+      @JsonProperty ("dateFrom") String dateFrom,
+      @JsonProperty ("dateTo") String dateTo,
+      @JsonProperty ("teams") List<Team> teamList,
+      @JsonProperty ("enable") Boolean enable) {
+    this.id = id;
+    this.uri = uri;
+    this.title = title;
+    this.description = description;
+    this.dateFrom = dateFrom;
+    this.dateTo = dateTo;
+    this.teamList = teamList;
+    this.enable = enable;
+  }
 
   /**
    * Class constructor.
@@ -32,7 +64,6 @@ public class Page {
     this.uri = builder.uri;
     this.title = builder.title;
     this.description = builder.description;
-    this.keywords = builder.keywords;
     if (builder.dateFrom == null) {
       this.dateFrom = null;
     } else {
@@ -43,7 +74,11 @@ public class Page {
     } else {
       this.dateTo = builder.dateTo.toString();
     }
+    this.teamList = builder.teamList;
     this.enable = builder.enable;
+    this.childUids = builder.childUids;
+    this.widgetList = Objects.requireNonNullElseGet(builder.widgets, ArrayList::new);
+    LOGGER.info(String.format("Создан (обновлен) объект 'страница':\n\t%s", this.toString()));
   }
 
   public Page(String uri) {
@@ -66,10 +101,7 @@ public class Page {
     return description;
   }
 
-  public String getKeywords() {
-    return keywords;
-  }
-
+  @JsonIgnore
   public LocalDateTime getLocalDateTimeFrom() {
     return LocalDateTime.parse(dateFrom);
   }
@@ -78,6 +110,7 @@ public class Page {
     return dateFrom;
   }
 
+  @JsonIgnore
   public LocalDateTime getLocalDateTimeTo() {
     return LocalDateTime.parse(dateTo);
   }
@@ -94,15 +127,69 @@ public class Page {
     return widgetList;
   }
 
-  public void setWidgetList(ArrayList<Widget> widgets) {
+  @JsonIgnore
+  public void setWidgetList(List<Widget> widgets) {
     this.widgetList = widgets;
   }
 
+  public List<Team> getTeamList() {
+    return teamList;
+  }
+
+  private List<String> getChildUids() {
+    return childUids;
+  }
+
   @Override
-  public String toString() { 
-    return String.format("Page{id='%s', uri='%s', title='%s', description='%s', keywords='%s', "
-        + "dateFrom='%s', dateTo='%s', enable='%s', widgetList= '%s'}", id, uri, title, description,
-        keywords, dateFrom, dateTo, enable, widgetList);
+  public String toString() {
+    return String.format("Page{id='%s', uri='%s', title='%s', description='%s', "
+            + "dateFrom='%s', dateTo='%s', enable='%s', widgetList= '%s'}",
+        id, uri, title, description, dateFrom, dateTo, enable, widgetList);
+  }
+
+  /**
+   * Compare this page against any page.
+   * @param page a page
+   */
+  @JsonIgnore
+  public void equals(@NonNull final Page page) {
+    final SoftAssertions softly = new SoftAssertions();
+    LOGGER.debug(String.format(
+        "Сравнение PAGES:\nACTUAL.\t\t%s\nEXPECTED.\t%s",
+        page.toString(),
+        this.toString()));
+    softly
+        .assertThat(this.getId())
+        .as("Проверка ID страницы")
+        .isEqualTo(page.getId());
+    softly
+        .assertThat(this.getUri())
+        .as("Проверка URI страницы")
+        .isEqualTo(page.getUri());
+    softly
+        .assertThat(this.getTitle())
+        .as("Проверка Title страницы")
+        .isEqualTo(page.getTitle());
+    softly
+        .assertThat(this.getDescription())
+        .as("Проверка Description страницы")
+        .isEqualTo(page.getDescription());
+    softly
+        .assertThat(this.isEnable())
+        .as("Проверка isEnable страницы")
+        .isEqualTo(page.isEnable());
+    softly
+        .assertThat(this.getDateFrom())
+        .as("Проверка DateFrom страницы")
+        .isEqualTo(page.getDateFrom());
+    softly
+        .assertThat(this.getDateTo())
+        .as("Проверка DateTo страницы")
+        .isEqualTo(page.getDateTo());
+    softly
+        .assertThat(this.getTeamList())
+        .as("Проверка Teams страницы")
+        .isEqualTo(page.getTeamList());
   }
 
   @JsonIgnoreType
@@ -111,10 +198,12 @@ public class Page {
     private String uri;
     private String title;
     private String description;
-    private String keywords;
     private LocalDateTime dateFrom;
     private LocalDateTime dateTo;
+    private List<Team> teamList;
     private Boolean enable;
+    private List<String> childUids;
+    private List<Widget> widgets;
 
     public PageBuilder setId(Integer id) {
       this.id = id;
@@ -147,11 +236,6 @@ public class Page {
       return this;
     }
 
-    public PageBuilder setKeywords(String keywords) {
-      this.keywords = keywords;
-      return this;
-    }
-
     public PageBuilder setDateFrom(LocalDateTime dateFrom) {
       this.dateFrom = dateFrom;
       return this;
@@ -162,13 +246,28 @@ public class Page {
       return this;
     }
 
+    public PageBuilder setTeamList(Team... teamList) {
+      this.teamList = Arrays.asList(teamList);
+      return this;
+    }
+
     public PageBuilder setEnable(Boolean enable) {
       this.enable = enable;
       return this;
     }
 
+    public PageBuilder setChildUids(List<String> childUids) {
+      this.childUids = childUids;
+      return this;
+    }
+
+    public PageBuilder setWidgets(List<Widget> widget) {
+      this.widgets = widget;
+      return this;
+    }
+
     /**
-     * Reusing spec.
+     * Reusing page.
      * @param page page
      * @return page builder
      */
@@ -177,7 +276,6 @@ public class Page {
       this.uri = page.uri;
       this.title = page.title;
       this.description = page.description;
-      this.keywords = page.keywords;
       if (page.dateFrom == null) {
         this.dateFrom = null;
       } else {
@@ -188,7 +286,9 @@ public class Page {
       } else {
         this.dateTo = LocalDateTime.parse(page.dateTo);
       }
+      this.teamList = page.teamList;
       this.enable = page.enable;
+      this.widgets = page.widgetList;
       return this;
     }
 

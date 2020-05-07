@@ -6,11 +6,15 @@ import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesVis
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.assertj.core.api.Assertions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import ru.alfabank.platform.buisenessobjects.enums.Geo;
 
 public class AlfaSitePage {
 
@@ -35,12 +39,12 @@ public class AlfaSitePage {
 
   /**
    * Assertion page title while widget is inactive.
-   * @param city city
+   * @param geos cities
    * @return this
    */
-  public AlfaSitePage checkPageTitleBefore(String... city) {
+  public AlfaSitePage checkPageTitleBefore(Geo... geos) {
     LOGGER.info("Проверяю, что заголовок страницы пуст");
-    setCityCookieAndRefreshPage(city);
+    setCityCookieAndRefreshPage(Arrays.asList(geos));
     Assertions
         .assertThat(getDriver().getTitle())
         .isEqualTo("");
@@ -51,27 +55,28 @@ public class AlfaSitePage {
    * Assertion page titles according to time and geo-group.
    * @param deadline deadline when to start assertion
    * @param expectedTitle title to expect
-   * @param city city where to expect
+   * @param geos city where to expect
    * @return this
    * @throws InterruptedException InterruptedException
    */
   public AlfaSitePage checkPageTitleAfter(LocalDateTime deadline,
                                           String expectedTitle,
-                                          String... city) throws InterruptedException {
+                                          Geo... geos) throws InterruptedException {
     LOGGER.info(String.format(
         "Проверяю, что заголовок соответствует значению '%s'", expectedTitle));
     wait(deadline);
-    boolean b = expectedTitle.equals(getDriver().getTitle());
+    boolean isTitleCorrect = expectedTitle.equals(getDriver().getTitle());
     int count = 3;
     long start = Instant.now().getEpochSecond();
-    while (!b && count > 0) {
-      Thread.sleep(15_000);
-      setCityCookieAndRefreshPage(city);
+    List<Geo> geoList = Arrays.asList(geos);
+    while (!isTitleCorrect && count > 0) {
+      TimeUnit.SECONDS.sleep(15);
+      setCityCookieAndRefreshPage(geoList);
       String actualTitle = getDriver().getTitle();
-      b = expectedTitle.equals(actualTitle);
+      isTitleCorrect = expectedTitle.equals(actualTitle);
       count--;
       LOGGER.debug(String.format(
-          b ? "Успех" : "Текущий заголовок '%s' не соответствует ожидаемому '%s'."
+          isTitleCorrect ? "Успех" : "Текущий заголовок '%s' не соответствует ожидаемому '%s'."
               + "Попробую еще %d раз(а)", actualTitle, expectedTitle, count));
     }
     Assertions.assertThat(getDriver().getTitle()).isEqualTo(expectedTitle);
@@ -90,7 +95,7 @@ public class AlfaSitePage {
       LOGGER.info(
           String.format("Жду '%d' секунд", deadline.compareTo(LocalDateTime.now())));
       try {
-        Thread.sleep(1000);
+        TimeUnit.SECONDS.sleep(1);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }

@@ -22,6 +22,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import ru.alfabank.platform.buisenessobjects.enums.Geo;
 
 public class DriverHelper {
 
@@ -40,7 +41,7 @@ public class DriverHelper {
       WebDriverManager.chromedriver().setup();
       ChromeOptions opts = new ChromeOptions();
       opts
-           .addArguments("--headless", "--disable-gpu")
+//          .addArguments("--headless", "--disable-gpu")
           .setAcceptInsecureCerts(true);
       driver = new ChromeDriver(opts);
       driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -115,18 +116,30 @@ public class DriverHelper {
 
   /**
    * Setting Cookie.
-   * @param cities cities
+   * @param geoList cities
    */
-  public static void setCityCookieAndRefreshPage(String... cities) {
+  public static void setCityCookieAndRefreshPage(List<Geo> geoList) {
     LOGGER.debug("Сетаю кукисы");
     Date expireDate = java.sql.Date.from(
         java.time.ZonedDateTime.now().plus(3, ChronoUnit.HOURS).toInstant());
     driver.manage().deleteAllCookies();
-    IntStream.range(0, cities.length).forEach(i -> {
+    IntStream.range(0, geoList.size()).forEach(i -> {
       driver.manage().addCookie(new Cookie(
-          "site_city", cities[i],"develop.ci.k8s.alfa.link", "/", expireDate, false, false));
+          "site_city",
+          geoList.get(i).toString(),
+          "develop.ci.k8s.alfa.link",
+          "/",
+          expireDate,
+          false,
+          false));
       driver.manage().addCookie(new Cookie(
-          "site_city", cities[i], ".develop.ci.k8s.alfa.link", "/", expireDate, false, false));
+          "site_city",
+          geoList.get(i).toString(),
+          ".develop.ci.k8s.alfa.link",
+          "/",
+          expireDate,
+          false,
+          false));
     });
     LOGGER.debug("Обновляю страницу");
     driver.navigate().refresh();

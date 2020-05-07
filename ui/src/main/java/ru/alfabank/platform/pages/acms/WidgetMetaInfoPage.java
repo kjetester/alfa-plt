@@ -3,12 +3,14 @@ package ru.alfabank.platform.pages.acms;
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesClickable;
 
+import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import ru.alfabank.platform.buisenessobjects.enums.Geo;
 
 public class WidgetMetaInfoPage extends BasePage {
 
@@ -61,13 +63,17 @@ public class WidgetMetaInfoPage extends BasePage {
 
   /**
    * Setting geo-groups into a Widget.
-   * @param geoGroups geo-groups
+   * @param geos geo-groups
    * @return this
    */
-  public WidgetMetaInfoPage setGeoGroupsToWidget(String... geoGroups) {
-    LOGGER.info(String.format("Устанавливаю гео-группы: '%s'", geoGroups));
+  public WidgetMetaInfoPage setGeoGroupsToWidget(Geo... geos) {
+    List<Object> geoList = Arrays.asList(geos);
+    LOGGER.info("Устанавливаю гео-группы");
+    geoList.forEach(geo -> {
+      LOGGER.info("\n" + geo.toString());
+    });
     waitForElementBecomesClickable(widgetGeoGroupsInput);
-    setGeoGroupsTo(widgetGeoGroupList, widgetGeoGroupsInput, geoGroups);
+    setValuesToCombobox(widgetGeoGroupList, widgetGeoGroupsInput, geoList);
     return this;
   }
 
