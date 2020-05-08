@@ -2,11 +2,11 @@ package ru.alfabank.platform.experiment.update.activate.negative;
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.ProductType.getRandomProductType;
-import static ru.alfabank.platform.businessobjects.Status.DISABLED;
+import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 
 import java.util.List;
 import org.testng.annotations.Test;
@@ -218,7 +218,8 @@ public class WidgetRelativesViolationTest extends BaseTest {
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
         .contains("Для варианта '", widget2_1.getUid(), widget2_2.getUid(),
-            "' должны быть помечены как 'forABtest' и быть выключенными");
+            "' должны быть помечены как 'forABtest',"
+                + " быть выключенными и не должны быть виджетами по умолчанию");
     getExperiment(actualExperiment).equals(new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
         .setCookieValue(actualExperiment.getCookieValue())

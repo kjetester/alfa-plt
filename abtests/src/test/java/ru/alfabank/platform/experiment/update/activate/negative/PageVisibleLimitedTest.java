@@ -2,11 +2,11 @@ package ru.alfabank.platform.experiment.update.activate.negative;
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.ProductType.getRandomProductType;
-import static ru.alfabank.platform.businessobjects.Status.DISABLED;
+import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;

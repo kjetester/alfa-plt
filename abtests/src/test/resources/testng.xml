@@ -6,7 +6,7 @@
        parallel="true"
        verbose = "1">
     <listeners>
-        <listener class-name="utils.RetryListener"/>
+        <listener class-name="ru.alfabank.platform.utils.RetryListener"/>
     </listeners>
     <test name="'Creation experiment' test" enabled="true">
         <classes>
@@ -40,7 +40,6 @@
             <class name="ru.alfabank.platform.experiment.update.activate.negative.PageVisibleLimitedTest"/>
             <class name="ru.alfabank.platform.experiment.update.activate.negative.WidgetActiveDatesCrossingExperimentActiveDatesTest"/>
             <class name="ru.alfabank.platform.experiment.update.activate.negative.DefaultOptionAssignedToInvalidWidgetTest"/>
-            <class name="ru.alfabank.platform.experiment.update.activate.negative.TwoOptionsNotAssociatedWithAnyWidget"/>
             <class name="ru.alfabank.platform.experiment.update.activate.negative.WrongExperimentStatusTest"/>
             <class name="ru.alfabank.platform.experiment.update.activate.negative.WidgetRelativesViolationTest"/>
         </classes>

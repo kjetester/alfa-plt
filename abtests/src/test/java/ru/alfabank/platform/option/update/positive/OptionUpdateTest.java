@@ -2,10 +2,10 @@ package ru.alfabank.platform.option.update.positive;
 
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
-import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;

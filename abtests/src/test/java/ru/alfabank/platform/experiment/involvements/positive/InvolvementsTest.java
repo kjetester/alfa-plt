@@ -1,17 +1,17 @@
 package ru.alfabank.platform.experiment.involvements.positive;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import io.restassured.response.Response;
 import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Device;
+import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.experiment.involvements.InvolvementsBaseTest;
 
 public class InvolvementsTest extends InvolvementsBaseTest {

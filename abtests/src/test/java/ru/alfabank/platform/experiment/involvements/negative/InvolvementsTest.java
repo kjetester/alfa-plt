@@ -1,9 +1,9 @@
 package ru.alfabank.platform.experiment.involvements.negative;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import io.restassured.response.Response;
@@ -11,7 +11,7 @@ import java.util.List;
 import org.apache.log4j.LogManager;
 import org.testng.SkipException;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Device;
+import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.experiment.involvements.InvolvementsBaseTest;
 
 public class InvolvementsTest extends InvolvementsBaseTest {

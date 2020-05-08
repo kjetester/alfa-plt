@@ -1,8 +1,8 @@
 package ru.alfabank.platform.experiment.involvements;
 
 import static io.restassured.RestAssured.given;
-import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.businessobjects.Device.mobile;
+import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
+import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
 import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
 
 import io.restassured.response.Response;
@@ -13,8 +13,8 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.DataProvider;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Device;
 import ru.alfabank.platform.businessobjects.Option;
+import ru.alfabank.platform.businessobjects.enums.Device;
 
 public class InvolvementsBaseTest extends BaseTest {
 
@@ -59,7 +59,9 @@ public class InvolvementsBaseTest extends BaseTest {
   protected static Object[][] dataProvider() {
     return new Object[][]{
         {desktop, List.of("ru")},
-        {desktop, List.of("ru", "msk")}
+        {mobile, List.of("ru")},
+        {desktop, List.of("ru", "msk")},
+        {mobile, List.of("ru", "msk")}
     };
   }
 

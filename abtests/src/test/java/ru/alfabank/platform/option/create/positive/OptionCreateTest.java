@@ -1,9 +1,9 @@
 package ru.alfabank.platform.option.create.positive;
 
-import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 
 import java.util.List;
 import org.assertj.core.api.SoftAssertions;

@@ -4,18 +4,19 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.parsing.Parser.JSON;
 import static java.time.ZoneOffset.UTC;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.describeBusinessObject;
-import static ru.alfabank.platform.businessobjects.Entity.PAGE;
-import static ru.alfabank.platform.businessobjects.Entity.WIDGET;
-import static ru.alfabank.platform.businessobjects.Method.CHANGE;
-import static ru.alfabank.platform.businessobjects.Method.CHANGE_LINKS;
-import static ru.alfabank.platform.businessobjects.Method.CREATE;
-import static ru.alfabank.platform.businessobjects.Status.CANCELLED;
-import static ru.alfabank.platform.businessobjects.Status.DISABLED;
-import static ru.alfabank.platform.businessobjects.Status.RUNNING;
+import static ru.alfabank.platform.businessobjects.enums.Entity.PAGE;
+import static ru.alfabank.platform.businessobjects.enums.Entity.WIDGET;
+import static ru.alfabank.platform.businessobjects.enums.Method.CHANGE;
+import static ru.alfabank.platform.businessobjects.enums.Method.CHANGE_LINKS;
+import static ru.alfabank.platform.businessobjects.enums.Method.CREATE;
+import static ru.alfabank.platform.businessobjects.enums.Status.CANCELLED;
+import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
+import static ru.alfabank.platform.businessobjects.enums.Status.RUNNING;
 import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
 import static ru.alfabank.platform.helpers.KeycloakHelper.logout;
 import static ru.alfabank.platform.helpers.UuidHelper.getNewUuid;
@@ -48,16 +49,16 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
-import ru.alfabank.platform.businessobjects.Device;
 import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.ExperimentOptionName;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.Page;
-import ru.alfabank.platform.businessobjects.ProductType;
 import ru.alfabank.platform.businessobjects.User;
 import ru.alfabank.platform.businessobjects.Widget;
 import ru.alfabank.platform.businessobjects.draft.DataDraft;
 import ru.alfabank.platform.businessobjects.draft.WrapperDraft;
+import ru.alfabank.platform.businessobjects.enums.Device;
+import ru.alfabank.platform.businessobjects.enums.ExperimentOptionName;
+import ru.alfabank.platform.businessobjects.enums.ProductType;
 
 public class BaseTest {
 
@@ -717,36 +718,6 @@ public class BaseTest {
         .as("Проверка статуса эксперимента")
         .isEqualTo(CANCELLED);
     createdExperiments.replace(experiment.getUuid(), stoppedExperiment);
-    return stoppedExperiment;
-  }
-
-  /**
-   * Deactivate Experiment assuming success.
-   * @param experiment experiment
-   * @return stopped experiment
-   */
-  protected Experiment stopDisabledExperiment(final Experiment experiment) {
-    var experiment2beStopped = new Experiment.Builder().setEnabled(false).build();
-    LOGGER.info("Выполняю запрос на активацию эксперимента:\n"
-        + describeBusinessObject(experiment));
-    final var response =
-        given()
-            .spec(getDeletePatchExperimentSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
-            .pathParam("uuid", experiment.getUuid())
-            .body(experiment2beStopped)
-            .when().patch()
-            .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
-    assertThat(response.statusCode())
-        .as("Проверка статус-кода")
-        .isEqualTo(SC_OK);
-    final var stoppedExperiment = response.as(Experiment.class);
-    assertThat(stoppedExperiment.getStatus())
-        .as("Проверка статуса эксперимента")
-        .isEqualTo(DISABLED);
     return stoppedExperiment;
   }
 
