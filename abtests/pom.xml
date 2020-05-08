@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>abtests</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>platform-test</artifactId>
@@ -13,11 +13,18 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <suite>src/test/resources/testng.xml</suite>
+    </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>com.alfabank.site</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>7.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -33,7 +40,6 @@
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>${maven-surefire-plugin.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -46,7 +52,6 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

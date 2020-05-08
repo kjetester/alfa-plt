@@ -2,11 +2,11 @@ package ru.alfabank.platform.experiment.update.activate.negative;
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.ProductType.getRandomProductType;
-import static ru.alfabank.platform.businessobjects.Status.DISABLED;
+import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
@@ -15,7 +15,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.ExperimentOptionName;
+import ru.alfabank.platform.businessobjects.enums.ExperimentOptionName;
 
 public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
 
@@ -109,13 +109,15 @@ public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
           .as("Проверка сообщения об ошибке")
           .contains("Для варианта по умолчанию '" + defaultOption.getName()
               + "' виджеты '[" + widget1.getUid()
-              + "]' должны быть с дефолтным названием варианта и быть включенными");
+              + "]' должны быть с дефолтным названием варианта,"
+              + " быть включенными и быть виджетами по умолчанию");
     } else {
       assertThat(result.asString())
           .as("Проверка сообщения об ошибке")
           .contains("Для варианта '" + nonDefaultOption.getName()
               + "' виджеты '[" + widget2.getUid()
-              + "]' должны быть помечены как 'forABtest' и быть выключенными");
+              + "]' должны быть помечены как 'forABtest',"
+              + " быть выключенными и не должны быть виджетами по умолчанию");
     }
     getExperiment(actualExperiment).checkUpdatedExperiment(expectedExperiment);
   }

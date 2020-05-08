@@ -1,0 +1,50 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name = "Functional Suite"
+       thread-count = "1"
+       configfailurepolicy = "continue"
+       verbose = "1">
+
+    <test name = "End-To-End Test" enabled="true">
+        <classes>
+            <class name = "ru.alfabank.platform.EndToEndTest"/>
+        </classes>
+    </test>
+
+    <!-- PAGES
+-->
+    <test name="Page Creation Test" enabled="true">
+        <classes>
+            <class name="ru.alfabank.platform.page.PageCreationTest"/>
+        </classes>
+    </test>
+    <test name="Page Deletion Test" enabled="true">
+        <classes>
+            <class name="ru.alfabank.platform.page.PageDeletionTest"/>
+        </classes>
+    </test>
+    <test name="Page Copying Test" enabled="true">
+        <classes>
+            <class name="ru.alfabank.platform.page.PageCopyingTest"/>
+        </classes>
+    </test>
+    <!-- WIDGETS
+  -->
+    <test name="Widget Copy Test" enabled="true">
+        <classes>
+            <class name="ru.alfabank.platform.widget.WidgetCopyingTest"/>
+        </classes>
+    </test>
+    <test name="Widget Sharing Test" enabled="true">
+        <classes>
+            <class name="ru.alfabank.platform.widget.WidgetSharingTest"/>
+        </classes>
+    </test>
+    <test name="Widget Creation Test" enabled="false">
+        <classes>
+            <class name="ru.alfabank.platform.widget.WidgetCreationTest"/>
+        </classes>
+    </test>
+    <!-- PROPERTIES -->
+
+</suite>

@@ -1,12 +1,12 @@
 package ru.alfabank.platform.experiment.update.deactivate.negative;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.ProductType.getRandomProductType;
-import static ru.alfabank.platform.businessobjects.Status.CANCELLED;
-import static ru.alfabank.platform.businessobjects.Status.DISABLED;
+import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
+import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.Status.CANCELLED;
+import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 
 import java.util.List;
 import org.apache.log4j.LogManager;
@@ -25,32 +25,22 @@ public class ExperimentDeactivationTest extends BaseTest {
     var page = createPage(null, null, true);
     final var pageId = page.getId();
     final var widget1 = createWidget(
-        page,
-        null,
-        desktop,
-        true,
-        DEFAULT,
-        true,
-        null,
-        null);
+        page, null, desktop, true, DEFAULT, true, null, null);
     page = createdPages.get(pageId);
     final var widget2 = createWidget(
-        page,
-        null,
-        desktop,
-        false,
-        FOR_AB_TEST,
-        false,
-        null,
-        null);
+        page, null, desktop, false, FOR_AB_TEST, false, null, null);
     final var device = widget1.getDevice();
     final var trafficRate = .5D;
-    var actualExperiment =
+    final var actualExperiment =
         createExperiment(device, pageId, getRandomProductType(), experimentEndDate, trafficRate);
     createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), trafficRate);
     createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), trafficRate);
     // TEST //
-    actualExperiment = stopDisabledExperiment(actualExperiment);
+    final var result = stopExperimentAssumingFail(actualExperiment);
+    assertThat(result.asString())
+        .as("Проверка сообщения об ошибке")
+        .contains("Невозможно деактивировать эксперимент '" + actualExperiment.getUuid()
+            + "' со статусом 'DISABLED'");
     getExperiment(actualExperiment).equals(new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
         .setCookieValue(actualExperiment.getCookieValue())
@@ -60,9 +50,9 @@ public class ExperimentDeactivationTest extends BaseTest {
         .setEndDate(actualExperiment.getEndDate())
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
-        .setEnabled(false)
         .setCreationDate(actualExperiment.getCreationDate())
         .setCreatedBy(actualExperiment.getCreatedBy())
+        .setEnabled(false)
         .setStatus(DISABLED)
         .build());
   }
@@ -74,24 +64,10 @@ public class ExperimentDeactivationTest extends BaseTest {
     var page = createPage(null, null, true);
     final var pageId = page.getId();
     final var widget1 = createWidget(
-        page,
-        null,
-        desktop,
-        true,
-        DEFAULT,
-        true,
-        null,
-        null);
+        page, null, desktop, true, DEFAULT, true, null, null);
     page = createdPages.get(pageId);
     final var widget2 = createWidget(
-        page,
-        null,
-        desktop,
-        false,
-        FOR_AB_TEST,
-        false,
-        null,
-        null);
+        page, null, desktop, false, FOR_AB_TEST, false, null, null);
     final var device = widget1.getDevice();
     final var trafficRate = .5D;
     var actualExperiment =
@@ -104,7 +80,7 @@ public class ExperimentDeactivationTest extends BaseTest {
     final var result = stopExperimentAssumingFail(actualExperiment);
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
-        .contains("Невозможно обновить эксперимент '" + actualExperiment.getUuid()
+        .contains("Невозможно деактивировать эксперимент '" + actualExperiment.getUuid()
             + "' со статусом 'CANCELLED'");
     getExperiment(actualExperiment).equals(new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
@@ -115,13 +91,13 @@ public class ExperimentDeactivationTest extends BaseTest {
         .setEndDate(actualExperiment.getEndDate())
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
-        .setEnabled(false)
         .setCreationDate(actualExperiment.getCreationDate())
         .setCreatedBy(actualExperiment.getCreatedBy())
         .setActivationDate(actualExperiment.getActivationDate())
         .setActivatedBy(actualExperiment.getActivatedBy())
         .setDeactivationDate(getCurrentDateTime().toString())
         .setDeactivatedBy(USER.getLogin())
+        .setEnabled(false)
         .setStatus(CANCELLED)
         .build());
   }

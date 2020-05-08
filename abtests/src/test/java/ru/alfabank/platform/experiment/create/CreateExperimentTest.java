@@ -7,18 +7,18 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.describeBusinessObject;
-import static ru.alfabank.platform.businessobjects.Device.all;
-import static ru.alfabank.platform.businessobjects.Device.desktop;
-import static ru.alfabank.platform.businessobjects.Device.mobile;
-import static ru.alfabank.platform.businessobjects.ProductType.CC;
-import static ru.alfabank.platform.businessobjects.ProductType.COM;
-import static ru.alfabank.platform.businessobjects.ProductType.DC;
-import static ru.alfabank.platform.businessobjects.ProductType.ERR;
-import static ru.alfabank.platform.businessobjects.ProductType.INV;
-import static ru.alfabank.platform.businessobjects.ProductType.MG;
-import static ru.alfabank.platform.businessobjects.ProductType.PIL;
-import static ru.alfabank.platform.businessobjects.ProductType.SME;
-import static ru.alfabank.platform.businessobjects.Status.DISABLED;
+import static ru.alfabank.platform.businessobjects.enums.Device.all;
+import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
+import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.CC;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.COM;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.DC;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.ERR;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.INV;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.MG;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.SME;
+import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
 
 import com.epam.reportportal.annotations.ParameterKey;
@@ -31,9 +31,9 @@ import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Device;
 import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.ProductType;
+import ru.alfabank.platform.businessobjects.enums.Device;
+import ru.alfabank.platform.businessobjects.enums.ProductType;
 
 public class CreateExperimentTest extends BaseTest {
 
