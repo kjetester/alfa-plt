@@ -246,7 +246,7 @@ public class MainPage extends BasePage {
         .collect(Collectors.toList());
     targetWidgets.forEach(w -> assertThat(
         w.findElement(widgetSelector).getCssValue("background-color")).contains("24, 144, 255"));
-    //TODO: fix it!
+    // FIXME: 09.05.2020
     LOGGER.info("Проверяю, что лишние виджеты не были отмечены, как соответствующий условю поиска");
     otherWidgets.forEach(w -> assertThat(
         w.findElement(widgetSelector).getCssValue("background-color")).contains(("255, 255, 255")));

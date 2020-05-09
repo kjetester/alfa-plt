@@ -294,7 +294,7 @@ public class Experiment extends AbstractBusinessObject {
     softly.assertThat(LocalDateTime.parse(actual.getActivationDate(), ISO_OFFSET_DATE_TIME))
         .as("Проверка соответствия Даты активации")
         .isCloseTo(LocalDateTime.parse(expected.getActivationDate(), ISO_OFFSET_DATE_TIME),
-            within(3, MINUTES));
+            within(10, MINUTES));
     softly.assertThat(actual.getDeactivatedBy())
         .as("Проверка соответствия Автора деактивации")
         .isEqualTo(expected.getDeactivatedBy());
@@ -362,7 +362,7 @@ public class Experiment extends AbstractBusinessObject {
           .as("Проверка соответствия Даты активации")
           .isCloseTo(
               LocalDateTime.parse(expected.getActivationDate(), ISO_OFFSET_DATE_TIME),
-              within(6, MINUTES));
+              within(10, MINUTES));
     } else {
       softly.assertThat(this.getActivationDate())
           .as("Проверка соответствия Даты активации")

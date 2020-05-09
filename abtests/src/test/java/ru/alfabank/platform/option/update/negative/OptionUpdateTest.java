@@ -12,6 +12,7 @@ import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomPr
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
+import java.util.Optional;
 import org.apache.log4j.LogManager;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.SkipException;
@@ -612,17 +613,6 @@ public class OptionUpdateTest extends OptionBaseTest {
   }
 
   /**
-   * After method.
-   */
-  @AfterMethod(onlyForGroups = "1")
-  public void afterMethod() {
-    if (createdOption != null) {
-      deleteOption(createdOption);
-      createdOption = null;
-    }
-  }
-
-  /**
    * Data Provider.
    * @return Data
    */
@@ -682,69 +672,44 @@ public class OptionUpdateTest extends OptionBaseTest {
       @ParameterKey("Тест-кейс") final String testCase,
       @ParameterKey("Вариант АБ-теста") final Option abTestOption,
       @ParameterKey("Вариант по-умолчанию") final Option defaultOption) {
-    Option createdAbTestOption;
-    Option createdDefaultOption;
+    Option createdAbTestOption = createOption(abTestOption);
+    Option abTestOptionModification = new Option.Builder()
+        .setDefault(false)
+        .setName(NAME + "1")
+        .setDescription(DESCRIPTION)
+        .setWidgetUids(List.of(abTestWidget.getUid()))
+        .setExperimentUuid(experiment1.getUuid())
+        .setTrafficRate(.5D)
+        .build();
+    Option createdDefaultOption = createOption(defaultOption);
+    Option defaultOptionModification = new Option.Builder()
+        .setDefault(false)
+        .setName(NAME + "2")
+        .setDescription(DESCRIPTION)
+        .setWidgetUids(List.of(abTestWidget.getUid()))
+        .setExperimentUuid(experiment1.getUuid())
+        .setTrafficRate(.5D)
+        .build();
     final var softly = new SoftAssertions();
     switch (Integer.parseInt(testCase.replaceAll("[\\D]", ""))) {
       case 1: {
-        createdAbTestOption = createOption(abTestOption);
-        createdDefaultOption = createOption(defaultOption);
         runExperimentAssumingSuccess(experiment1);
-        final var response1 = modifyOptionAssumingFail(
-            createdAbTestOption,
-            new Option.Builder()
-                .setDefault(false)
-                .setName(NAME + "1")
-                .setDescription(DESCRIPTION)
-                .setWidgetUids(List.of(abTestWidget.getUid()))
-                .setExperimentUuid(experiment1.getUuid())
-                .setTrafficRate(.5D)
-                .build());
-        final var response2 = modifyOptionAssumingFail(
-            createdDefaultOption,
-            new Option.Builder()
-                .setDefault(false)
-                .setName(NAME + "2")
-                .setDescription(DESCRIPTION)
-                .setWidgetUids(List.of(abTestWidget.getUid()))
-                .setExperimentUuid(experiment1.getUuid())
-                .setTrafficRate(.5D)
-                .build());
+        final var response1 = modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification);
+        final var response2 = modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification);
         softly.assertThat(response1.asString())
             .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
         softly.assertThat(response2.asString())
-            .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
+            .contains("Невозможно изменить вариант '" + createdDefaultOption.getUuid());
         break;
       }
-      case 2:   {
-        createdAbTestOption = createOption(abTestOption);
-        createdDefaultOption = createOption(defaultOption);
-        runExperimentAssumingSuccess(experiment1);
+      case 2: {
         stopExperimentAssumingSuccess(experiment1);
-        final var response1 = modifyOptionAssumingFail(
-            createdAbTestOption,
-            new Option.Builder()
-                .setDefault(false)
-                .setName(NAME + "1")
-                .setDescription(DESCRIPTION)
-                .setWidgetUids(List.of(abTestWidget.getUid()))
-                .setExperimentUuid(experiment1.getUuid())
-                .setTrafficRate(.5D)
-                .build());
-        final var response2 = modifyOptionAssumingFail(
-            createdDefaultOption,
-            new Option.Builder()
-                .setDefault(false)
-                .setName(NAME + "2")
-                .setDescription(DESCRIPTION)
-                .setWidgetUids(List.of(abTestWidget.getUid()))
-                .setExperimentUuid(experiment1.getUuid())
-                .setTrafficRate(.5D)
-                .build());
+        final var response1 = modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification);
+        final var response2 = modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification);
         softly.assertThat(response1.asString())
             .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
         softly.assertThat(response2.asString())
-            .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
+            .contains("Невозможно изменить вариант '" + createdDefaultOption.getUuid());
         break;
       }
       case 3: {
@@ -764,5 +729,16 @@ public class OptionUpdateTest extends OptionBaseTest {
             .using(createdDefaultOption)
             .build());
     softly.assertAll();
+  }
+
+  /**
+   * After method.
+   */
+  @AfterMethod(onlyForGroups = "1")
+  public void afterMethod() {
+    if (createdOption != null) {
+      deleteOption(createdOption);
+      createdOption = null;
+    }
   }
 }

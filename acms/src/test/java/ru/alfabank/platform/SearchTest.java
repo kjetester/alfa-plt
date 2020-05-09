@@ -33,7 +33,7 @@ public class SearchTest extends BaseTest {
         .openAndAuthorize(baseUri + "acms/", USER)
         .openPagesTree()
         .openPage("sme-new/");
-    //TODO: broken here
+    // FIXME: 09.05.2020 here
     Page testPage = new Page.Builder().build();
     TestDataHelper testData = new TestDataHelper(USER, testPage);
     testWidget = testData.getTestWidget();

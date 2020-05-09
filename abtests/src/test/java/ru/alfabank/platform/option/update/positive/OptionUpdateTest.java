@@ -490,7 +490,7 @@ public class OptionUpdateTest extends OptionBaseTest {
 
   @Test(description = "Позитивный тест апдейта вариантов",
       dataProvider = "optionUpdateTestDataProvider")
-  public void optionCreateTest(
+  public void optionUpdateTest(
       @ParameterKey("Тест-кейс") final String testCase,
       @ParameterKey("Существующий вариант") final Option existing,
       @ParameterKey("Изменить на") final Option modification) {

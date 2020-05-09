@@ -16,7 +16,7 @@ public class OptionCreateTest extends OptionBaseTest {
 
   @Test (description = "Позитивный тест создания вариантов", dataProvider = "dataProvider")
   public void optionCreateTest(final Boolean isDefaultNotAssignedWidget) {
-    final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
+    final var experimentEnd = getCurrentDateTime().plusDays(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
     Widget widget;
@@ -24,7 +24,7 @@ public class OptionCreateTest extends OptionBaseTest {
       widget = createWidget(page, null, desktop,false, FOR_AB_TEST, false, null, null);
       page = createdPages.get(pageId);
     } else {
-      final var widget1 = createWidget(
+      createWidget(
               page, null, desktop,true, DEFAULT, true, null, null);
       final var widget1_1 = createWidget(
               page, null, desktop,false, FOR_AB_TEST, false, null, null);
@@ -32,7 +32,7 @@ public class OptionCreateTest extends OptionBaseTest {
               page, widget1_1, desktop,true, DEFAULT, true, null, null);
       widget = createWidget(
               page, widget1_1_1, desktop,true, DEFAULT, true, null, null);
-      final var widget1_1_1_1_1 = createWidget(
+      createWidget(
               page, widget, desktop,true, DEFAULT, true, null, null);
     }
     final var widget2 = createWidget(

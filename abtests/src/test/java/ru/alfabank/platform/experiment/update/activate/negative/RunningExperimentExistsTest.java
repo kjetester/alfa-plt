@@ -63,7 +63,8 @@ public class RunningExperimentExistsTest extends BaseTest {
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
-        .containsIgnoringCase("Для страницы '" + pageId + "' уже существует активный эксперимент");
+        .containsIgnoringCase("Для страницы '" + pageId + "' и типа устройства '"
+            + expectedExperiment.getDevice() + "' уже существует активный эксперимент");
     getExperiment(actualExperiment).checkUpdatedExperiment(expectedExperiment);
   }
 }

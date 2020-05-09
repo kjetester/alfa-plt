@@ -17,7 +17,6 @@ public class WidgetMetaInfoPage extends BasePage {
   private static final Logger LOGGER = LogManager.getLogger(WidgetMetaInfoPage.class);
   private static final String WIDGET_GEO_XPATH =
       "//*[text() = 'Тип устройства:']/../..//*[text() = 'Выберите нужные гео-группы']/..";
-  //TODO: [class ^= city-groups-select-container]:first-of-type
 
   @FindBy(css = "[type *= 'checkbox']")
   private WebElement visibilityCheckbox;

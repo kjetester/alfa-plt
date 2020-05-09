@@ -186,8 +186,6 @@ public class BasePage {
    */
   protected void setCheckboxTo(WebElement checkbox, boolean isToBeSelected) {
     boolean isAlreadySelected = checkbox.isSelected();
-    //TODO: String label = checkbox.findElement(By.xpath("../../../..//label[@for]")).getText();
-    // LOGGER.info(String.format("Устанавливаю чекбокс '%s' в '%b'", label, isToBeSelected));
     if (!isAlreadySelected && isToBeSelected) {
       checkbox.click();
     } else if (isAlreadySelected && !isToBeSelected) {

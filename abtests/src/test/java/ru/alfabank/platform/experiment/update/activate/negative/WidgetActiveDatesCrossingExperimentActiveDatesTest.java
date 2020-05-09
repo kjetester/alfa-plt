@@ -1,6 +1,8 @@
 package ru.alfabank.platform.experiment.update.activate.negative;
 
+import static io.netty.util.internal.SystemPropertyUtil.contains;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
@@ -24,18 +26,18 @@ public class WidgetActiveDatesCrossingExperimentActiveDatesTest extends BaseTest
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
-    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null);
-    createWidget(createdPages.get(pageId), null, desktop, false, FOR_AB_TEST, false, null, null);
-    final var widget1 = page.getWidgetList().get(0);
-    final var widget2 = page.getWidgetList().get(1);
-    final var device = widget1.getDevice();
+    final var defaultWidget = createWidget(
+        createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null);
+    final var abTestWidget = createWidget(
+        createdPages.get(pageId), null, desktop, false, FOR_AB_TEST, false, null, null);
+    final var device = defaultWidget.getDevice();
     final var trafficRate = .5D;
     final var actualExperiment =
         createExperiment(device, pageId, getRandomProductType(), experimentEnd, trafficRate);
-    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), trafficRate);
-    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), trafficRate);
-    changeWidgetActiveDates(widget1, pageId, start, end);
-    changeWidgetActiveDates(widget2, pageId,start, end);
+    createOption(true, List.of(defaultWidget.getUid()), actualExperiment.getUuid(), trafficRate);
+    createOption(false, List.of(abTestWidget.getUid()), actualExperiment.getUuid(), trafficRate);
+    changeWidgetActiveDates(defaultWidget, pageId, start, end);
+    changeWidgetActiveDates(abTestWidget, pageId,start, end);
     final var experimentStart = getCurrentDateTime().plusSeconds(10).toString();
     final var expectedExperiment = new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
@@ -59,8 +61,8 @@ public class WidgetActiveDatesCrossingExperimentActiveDatesTest extends BaseTest
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
         .contains(
-            widget1.getUid(),
-            widget2.getUid(),
+            defaultWidget.getUid(),
+            abTestWidget.getUid(),
             "должны быть активны в момент начала и завершения эксперимента");
     getExperiment(actualExperiment).checkUpdatedExperiment(expectedExperiment);
   }
@@ -106,10 +108,7 @@ public class WidgetActiveDatesCrossingExperimentActiveDatesTest extends BaseTest
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
-        .contains(
-            defaultWidget.getUid(),
-            abTestWidget.getUid(),
-            "должны быть активны в момент начала и завершения эксперимента");
+        .contains("должны", "быть выключенными");
     getExperiment(actualExperiment).checkUpdatedExperiment(expectedExperiment);
   }
 
@@ -120,18 +119,18 @@ public class WidgetActiveDatesCrossingExperimentActiveDatesTest extends BaseTest
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
-    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null);
-    createWidget(createdPages.get(pageId), null, desktop, false, FOR_AB_TEST, false, null, null);
-    final var widget1 = page.getWidgetList().get(0);
-    final var widget2 = page.getWidgetList().get(1);
-    final var device = widget1.getDevice();
+    final var defaultWidget = createWidget(
+        createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null);
+    final var abTestWidget = createWidget(
+        createdPages.get(pageId), null, desktop, false, FOR_AB_TEST, false, null, null);
+    final var device = defaultWidget.getDevice();
     final var trafficRate = .5D;
     final var actualExperiment =
         createExperiment(device, pageId, getRandomProductType(), experimentEnd, trafficRate);
-    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), trafficRate);
-    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), trafficRate);
-    changeWidgetActiveDates(widget1, pageId, null, widgetStart);
-    changeWidgetActiveDates(widget2, pageId, null, widgetStart);
+    createOption(true, List.of(defaultWidget.getUid()), actualExperiment.getUuid(), trafficRate);
+    createOption(false, List.of(abTestWidget.getUid()), actualExperiment.getUuid(), trafficRate);
+    changeWidgetActiveDates(defaultWidget, pageId, null, widgetStart);
+    changeWidgetActiveDates(abTestWidget, pageId, null, widgetStart);
     final var experimentStart = getCurrentDateTime().plusSeconds(10).toString();
     final var expectedExperiment = new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
@@ -154,10 +153,7 @@ public class WidgetActiveDatesCrossingExperimentActiveDatesTest extends BaseTest
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
-        .contains(
-            widget1.getUid(),
-            widget2.getUid(),
-            "должны быть активны в момент начала и завершения эксперимента");
+        .contains("должны", "быть выключенными");
     getExperiment(actualExperiment).checkUpdatedExperiment(expectedExperiment);
   }
 }

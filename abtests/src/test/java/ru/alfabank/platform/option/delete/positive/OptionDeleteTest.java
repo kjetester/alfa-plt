@@ -41,7 +41,7 @@ public class OptionDeleteTest extends OptionBaseTest {
   }
 
   @Test(description = "Позитивный тест удаления вариантов")
-  public void optionCreateTest() {
+  public void optionDeleteTest() {
     final var createdDefaultOption = createOption(
         new Option.Builder()
             .setDefault(true)

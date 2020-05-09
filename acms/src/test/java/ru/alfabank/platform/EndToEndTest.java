@@ -198,7 +198,7 @@ public class EndToEndTest extends BaseTest {
       description = "Тест изменения активности виджета и проперти для разных городов",
       priority = 3,
       enabled = false)
-  //TODO: включить, когда будет реализована инвалидации кеша при наступлении "от - до"
+  // FIXME: 09.05.2020 включить, когда будет реализована инвалидации кеша при наступлении "от - до"
   public void widgetActivePeriodTest() throws InterruptedException {
     final LocalDateTime startActiveTime = LocalDateTime.now().plus(30, ChronoUnit.SECONDS);
     final LocalDateTime endActiveTime = LocalDateTime.now().plus(60, ChronoUnit.SECONDS);

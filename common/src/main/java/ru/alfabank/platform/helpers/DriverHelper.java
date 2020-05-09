@@ -41,7 +41,7 @@ public class DriverHelper {
       WebDriverManager.chromedriver().setup();
       ChromeOptions opts = new ChromeOptions();
       opts
-//          .addArguments("--headless", "--disable-gpu")
+          .addArguments("--headless", "--disable-gpu")
           .setAcceptInsecureCerts(true);
       driver = new ChromeDriver(opts);
       driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
