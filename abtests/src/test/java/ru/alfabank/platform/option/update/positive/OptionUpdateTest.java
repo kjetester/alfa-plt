@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionUpdateTest extends OptionBaseTest {
@@ -36,6 +37,7 @@ public class OptionUpdateTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();

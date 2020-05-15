@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionPropertiesViolationTest extends OptionBaseTest {
@@ -42,6 +43,7 @@ public class OptionPropertiesViolationTest extends OptionBaseTest {
       @ParameterKey("widgetUids") final List<String> widgetUids,
       @ParameterKey("experimentUuid") final String experimentUuid,
       @ParameterKey("trafficRate") final Double trafficRate) {
+    setUser(User.CONTENT_MANAGER);
     final var result = createOptionAssumingFail(isDefault, widgetUids, experimentUuid, trafficRate);
     switch (testCase) {
       case 1: {

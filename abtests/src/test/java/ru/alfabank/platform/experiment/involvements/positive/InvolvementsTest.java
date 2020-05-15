@@ -12,6 +12,7 @@ import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.enums.Device;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.experiment.involvements.InvolvementsBaseTest;
 
 public class InvolvementsTest extends InvolvementsBaseTest {
@@ -22,6 +23,7 @@ public class InvolvementsTest extends InvolvementsBaseTest {
   public void involvementsRunningExperimentTest(
       @ParameterKey("Устройство пользователя") final Device clientDevice,
       @ParameterKey("Гео-метка пользователя") final List<String> geos) {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusHours(27).plusMinutes(10).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
@@ -34,8 +36,8 @@ public class InvolvementsTest extends InvolvementsBaseTest {
     final var experiment = createExperiment(
         experimentDevice, pageId, getRandomProductType(), experimentEnd, .5D);
     final var option1 = createOption(true, List.of(widget1.getUid()), experiment.getUuid(), .33D);
-    option2 = createOption(false, null, experiment.getUuid(),.33D);
-    option3 = createOption(false, List.of(widget2.getUid()), experiment.getUuid(),.34D);
+    option2 = createOption(false, null, experiment.getUuid(), .33D);
+    option3 = createOption(false, List.of(widget2.getUid()), experiment.getUuid(), .34D);
     final var runningExperiment = runExperimentAssumingSuccess(experiment);
     // TEST //
     Response response = getInvolvements(pageId, clientDevice, geos);

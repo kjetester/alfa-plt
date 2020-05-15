@@ -13,12 +13,14 @@ import java.util.List;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
 
   @Test (description = "Тест активации эксперимента с негативным условием:"
       + "\n\tВарианты привязаны к шаренным виджетам")
   public void bothVariantsAssignedToSharedWidgetTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page1 = createPage(null, null, true);
@@ -63,7 +65,7 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(start)
         .setStatus(DISABLED)
         .setCreationDate(start)
@@ -83,6 +85,7 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
   @Test (description = "Тест активации эксперимента с негативным условием:"
       + "\n\tДефолтный вариант привязан к шаренному виджету")
   public void defaultVariantAssignedToSharedWidgetTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page1 = createPage(null, null, true);
@@ -126,7 +129,7 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(start)
         .setStatus(DISABLED)
         .setCreationDate(start)
@@ -146,6 +149,7 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
   @Test (description = "Тест активации эксперимента с негативным условием:"
       + "\n\tНедефолтный вариант привязан к шаренному виджету")
   public void nonDefaultVariantAssignedToSharedWidgetTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page1 = createPage(null, null, true);
@@ -189,7 +193,7 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(start)
         .setStatus(DISABLED)
         .setCreationDate(start)

@@ -12,6 +12,7 @@ import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class AssignmentToWrongWidgetTypeTest extends OptionBaseTest {
@@ -20,6 +21,7 @@ public class AssignmentToWrongWidgetTypeTest extends OptionBaseTest {
       + "enabled", dataProvider = "dataProvider")
   public void assignmentWidgetEnabledValueTest(
       @ParameterKey ("Дефолтный вариант") final Boolean isDefaultOption) {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
@@ -38,12 +40,12 @@ public class AssignmentToWrongWidgetTypeTest extends OptionBaseTest {
     Response response2 = null;
     if (isDefaultOption) {
       response1 = createOptionAssumingFail(
-              isDefaultOption, List.of(widget1.getUid()), experiment.getUuid(),.5D);
+              isDefaultOption, List.of(widget1.getUid()), experiment.getUuid(), .5D);
     } else {
       response1 = createOptionAssumingFail(
-              isDefaultOption, List.of(widget1.getUid()), experiment.getUuid(),.5D);
+              isDefaultOption, List.of(widget1.getUid()), experiment.getUuid(), .5D);
       response2 = createOptionAssumingFail(
-              isDefaultOption, List.of(widget2.getUid()), experiment.getUuid(),.5D);
+              isDefaultOption, List.of(widget2.getUid()), experiment.getUuid(), .5D);
     }
     final var softly = new SoftAssertions();
     softly.assertThat(response1.getStatusCode())

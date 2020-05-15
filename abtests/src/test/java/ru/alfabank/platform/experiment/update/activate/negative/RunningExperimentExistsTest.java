@@ -12,12 +12,14 @@ import java.util.List;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class RunningExperimentExistsTest extends BaseTest {
 
   @Test (description = "Тест активации эксперимента с негативным условием:"
       + "\n\tЕсть запущенный эксперимент")
   public void runningExperimentExistsTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
@@ -41,7 +43,7 @@ public class RunningExperimentExistsTest extends BaseTest {
     final var actualExperiment =
         createExperiment(device, pageId, getRandomProductType(), end, trafficRate);
     createOption(true, List.of(widget3.getUid()), actualExperiment.getUuid(), trafficRate);
-    createOption(false,List.of(widget4.getUid()), actualExperiment.getUuid(),trafficRate);
+    createOption(false, List.of(widget4.getUid()), actualExperiment.getUuid(), trafficRate);
     final var expectedExperiment = new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
         .setCookieValue(actualExperiment.getCookieValue())
@@ -52,7 +54,7 @@ public class RunningExperimentExistsTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(start)
         .setStatus(DISABLED)
         .setCreationDate(start)

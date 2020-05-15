@@ -12,6 +12,7 @@ import java.util.List;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class WidgetRelativesViolationTest extends BaseTest {
 
@@ -29,6 +30,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
       + "\n\t\t\t* experimentOptionName=forABtest"
       + "\n\t\t\t* defaultWidget=false")
   public void defaultWidgetHasInvalidRelativesTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
@@ -56,7 +58,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
-        .contains("Для варианта по умолчанию ",widget1_1.getUid(), widget1_2.getUid(),
+        .contains("Для варианта по умолчанию ", widget1_1.getUid(), widget1_2.getUid(),
             "' должны быть с дефолтным названием варианта, быть включенными и быть виджетами по "
                 + "умолчанию");
     getExperiment(actualExperiment).equals(new Experiment.Builder()
@@ -68,7 +70,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
         .setEndDate(actualExperiment.getEndDate())
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setStatus(DISABLED)
         .setEnabled(false)
         .setCreationDate(start)
@@ -85,6 +87,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
       + "\n\t\t\t* experimentOptionName=forABtest"
       + "\n\t\t\t* defaultWidget=false")
   public void nonDefaultWidgetHasInvalidAncestorTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
@@ -121,7 +124,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
         .setEndDate(actualExperiment.getEndDate())
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setStatus(DISABLED)
         .setEnabled(false)
         .setCreationDate(start)
@@ -138,6 +141,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
       + "\n\t\t\t* experimentOptionName=forABtest"
       + "\n\t\t\t* defaultWidget=false")
   public void nonDefaultWidgetHasInvalidFatherTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
@@ -173,7 +177,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
         .setEndDate(actualExperiment.getEndDate())
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setStatus(DISABLED)
         .setEnabled(false)
         .setCreationDate(start)
@@ -190,6 +194,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
       + "\n\t\t\t* experimentOptionName=forABtest"
       + "\n\t\t\t* defaultWidget=false")
   public void nonDefaultWidgetHasInvalidChildrenTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
@@ -229,7 +234,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
         .setEndDate(actualExperiment.getEndDate())
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setStatus(DISABLED)
         .setEnabled(false)
         .setCreationDate(start)

@@ -11,6 +11,7 @@ import java.util.List;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 
 public class OnlyOneVariantTest extends BaseTest {
@@ -18,11 +19,12 @@ public class OnlyOneVariantTest extends BaseTest {
   @Test(description = "Тест активации эксперимента с негативным условием:"
       + "\n\tЕсть только 1 вариант")
   public void onlyOneVariantTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
-    createWidget(createdPages.get(pageId), null, desktop,true, DEFAULT, true, null, null);
+    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null);
     final var widget = createdPages.get(pageId).getWidgetList().get(0);
     final var device = widget.getDevice();
     final var trafficRate = .5D;
@@ -39,7 +41,7 @@ public class OnlyOneVariantTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(start)
         .setStatus(DISABLED)
         .setCreationDate(start)

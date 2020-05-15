@@ -10,6 +10,7 @@ import java.util.List;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class ExperimentActivationTwoTest extends BaseTest {
 
@@ -30,6 +31,7 @@ public class ExperimentActivationTwoTest extends BaseTest {
       + "\n\t\t\t* defaultWidget=false"
       + "\n\t\t3. Недефолтный вариант не привязан виджету")
   public void positiveExperimentActivationTwoTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusHours(27).plusMinutes(10).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
@@ -54,9 +56,9 @@ public class ExperimentActivationTwoTest extends BaseTest {
     final var actualExperiment =
         createExperiment(createdPages.get(page.getId()).getWidgetList().get(0).getDevice(),
             page.getId(), getRandomProductType(), experimentEnd, .5D);
-    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), .33D);
-    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(),.33D);
-    createOption(false, null, actualExperiment.getUuid(),.34D);
+    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(),  .33D);
+    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), .33D);
+    createOption(false, null, actualExperiment.getUuid(), .34D);
     final var expectedExperiment = new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
         .setCookieValue(actualExperiment.getCookieValue())
@@ -67,8 +69,8 @@ public class ExperimentActivationTwoTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(true)
-        .setCreatedBy(USER.getLogin())
-        .setActivatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
+        .setActivatedBy(getUser().getLogin())
         .setActivationDate(start)
         .setStatus(RUNNING)
         .setCreationDate(start)

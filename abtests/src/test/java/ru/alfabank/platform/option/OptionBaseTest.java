@@ -11,12 +11,12 @@ import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
 
 import io.restassured.response.Response;
 import java.util.List;
-import java.util.Optional;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.testng.annotations.DataProvider;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Option;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class OptionBaseTest extends BaseTest {
 
@@ -34,6 +34,7 @@ public class OptionBaseTest extends BaseTest {
                                               final List<String> widgetUids,
                                               final String experimentUuid,
                                               final Double trafficRate) {
+    setUser(User.CONTENT_MANAGER);
     Response response;
     var option =
         new Option.Builder()
@@ -48,7 +49,7 @@ public class OptionBaseTest extends BaseTest {
     response =
         given()
             .spec(getAllOrDeleteOptionSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
+            .auth().oauth2(getToken(getUser()).getAccessToken())
             .pathParam("experimentUuid", experimentUuid)
             .body(option)
         .when().post()
@@ -69,7 +70,7 @@ public class OptionBaseTest extends BaseTest {
     LOGGER.info("Выполняю запрос на создание варианта:\n" + describeBusinessObject(option));
     response = given()
             .spec(getAllOrDeleteOptionSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
+            .auth().oauth2(getToken(getUser()).getAccessToken())
             .pathParam("experimentUuid", option.getExperimentUuid())
             .body(option)
         .when().post()
@@ -94,7 +95,7 @@ public class OptionBaseTest extends BaseTest {
     final var response =
         given()
             .spec(getDeletePatchOptionSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
+            .auth().oauth2(getToken(getUser()).getAccessToken())
             .pathParam("optionUuid", option2beModified.getUuid())
             .body(modification)
         .when().patch()
@@ -121,7 +122,7 @@ public class OptionBaseTest extends BaseTest {
     final var response =
         given()
             .spec(getDeletePatchOptionSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
+            .auth().oauth2(getToken(getUser()).getAccessToken())
             .pathParam("optionUuid", option2beModified.getUuid())
             .body(modification)
             .when().patch()
@@ -142,7 +143,7 @@ public class OptionBaseTest extends BaseTest {
     final var response =
         given()
             .spec(getDeletePatchOptionSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
+            .auth().oauth2(getToken(getUser()).getAccessToken())
             .pathParam("optionUuid", option2beDeleted.getUuid())
             .when().delete()
             .then().extract().response();
@@ -164,7 +165,7 @@ public class OptionBaseTest extends BaseTest {
     final var response =
         given()
             .spec(getDeletePatchOptionSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
+            .auth().oauth2(getToken(getUser()).getAccessToken())
             .pathParam("optionUuid", option2beDeleted.getUuid())
             .when().delete()
             .then().extract().response();

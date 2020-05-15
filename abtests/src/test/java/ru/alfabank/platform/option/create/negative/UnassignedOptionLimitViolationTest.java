@@ -9,6 +9,7 @@ import com.epam.reportportal.annotations.ParameterKey;
 import io.restassured.response.Response;
 import java.util.List;
 import org.testng.annotations.Test;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class UnassignedOptionLimitViolationTest extends OptionBaseTest {
@@ -17,6 +18,7 @@ public class UnassignedOptionLimitViolationTest extends OptionBaseTest {
       dataProvider = "dataProvider")
   public void oneDefaultOptionLimitTest(
       @ParameterKey ("Дефолтный вариант") final Boolean isDefaultOption) {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();

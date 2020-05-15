@@ -12,11 +12,13 @@ import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class ExperimentDeletionTest extends BaseTest {
 
   @Test (description = "Негативный тест удаления эксперимента со статусом 'RUNNING'")
   public void experimentRunningTest() {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEndDate = getCurrentDateTime().plusDays(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();

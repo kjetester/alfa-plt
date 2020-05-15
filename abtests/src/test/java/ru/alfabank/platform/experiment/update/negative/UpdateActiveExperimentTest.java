@@ -25,6 +25,7 @@ import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.experiment.update.positive.UpdateInactiveExperimentTest;
 
 public class UpdateActiveExperimentTest extends BaseTest {
@@ -39,8 +40,7 @@ public class UpdateActiveExperimentTest extends BaseTest {
   @BeforeMethod(description = "Создание активного эксперимента "
       + "для негативного теста изменения активного эксперимента")
   public void beforeMethod() {
-    final var start = getCurrentDateTime().plusSeconds(10).toString();
-    final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
+    setUser(User.CONTENT_MANAGER);
     var page = createPage(null, null, true);
     createWidget(
         createdPages.get(page.getId()),
@@ -160,7 +160,7 @@ public class UpdateActiveExperimentTest extends BaseTest {
     var response =
         given()
             .spec(getDeletePatchExperimentSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
+            .auth().oauth2(getToken(getUser()).getAccessToken())
             .pathParam("uuid", experiment.getUuid())
             .body(changeSetBody)
         .when()

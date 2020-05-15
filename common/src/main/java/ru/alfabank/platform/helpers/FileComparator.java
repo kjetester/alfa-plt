@@ -16,8 +16,8 @@ public class FileComparator {
    * @throws IOException IOException
    */
   public static String compare(final File actual, final File expected) throws IOException {
-    LineIterator act = FileUtils.lineIterator(actual,"utf-8");
-    LineIterator exp = FileUtils.lineIterator(expected,"utf-8");
+    LineIterator act = FileUtils.lineIterator(actual, "utf-8");
+    LineIterator exp = FileUtils.lineIterator(expected, "utf-8");
     FileCommandsVisitor fileCommandsVisitor = new FileCommandsVisitor();
     while (act.hasNext() || exp.hasNext()) {
       String left = (act.hasNext() ? act.nextLine() : "") + "\n";

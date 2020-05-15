@@ -14,6 +14,7 @@ import org.testng.SkipException;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest;
 
 public class ExperimentDeactivationTest extends BaseTest {
@@ -21,6 +22,7 @@ public class ExperimentDeactivationTest extends BaseTest {
   @Test (description = "Тест активации эксперимента с негативным условием:"
       + "\n\t1. Эксперимент имеет статус 'DISABLED'")
   public void experimentDisabledTest() {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEndDate = getCurrentDateTime().plusDays(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
@@ -60,6 +62,7 @@ public class ExperimentDeactivationTest extends BaseTest {
   @Test (description = "Тест деактивации эксперимента с негативным условием:"
       + "\n\t1. Эксперимент имеет статус 'CANCELED'")
   public void experimentCanceledTest() {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEndDate = getCurrentDateTime().plusDays(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
@@ -96,7 +99,7 @@ public class ExperimentDeactivationTest extends BaseTest {
         .setActivationDate(actualExperiment.getActivationDate())
         .setActivatedBy(actualExperiment.getActivatedBy())
         .setDeactivationDate(getCurrentDateTime().toString())
-        .setDeactivatedBy(USER.getLogin())
+        .setDeactivatedBy(getUser().getLogin())
         .setEnabled(false)
         .setStatus(CANCELLED)
         .build());

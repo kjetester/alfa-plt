@@ -14,6 +14,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class PageVisibleLimitedTest extends BaseTest {
 
@@ -25,6 +26,7 @@ public class PageVisibleLimitedTest extends BaseTest {
   public void pageVisibleLimitedTest(@ParameterKey("Дата начала") final String start,
                                      @ParameterKey("Дата окончания") final String end,
                                      @ParameterKey("Видимость") final Boolean isEnabled) {
+    setUser(User.CONTENT_MANAGER);
     final var experimentStart = getCurrentDateTime().plusSeconds(10).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(start, end, isEnabled);
@@ -49,7 +51,7 @@ public class PageVisibleLimitedTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(null)
         .setStatus(DISABLED)
         .setCreationDate(experimentStart)

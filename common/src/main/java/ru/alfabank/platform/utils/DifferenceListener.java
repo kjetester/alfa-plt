@@ -24,7 +24,7 @@ public class DifferenceListener extends TestListenerAdapter {
     if (result.getStatus() == ITestResult.FAILURE) {
       ITestContext context = result.getTestContext();
       if (context.getAttribute("case") != null) {
-        String path = context.getAttribute("case").toString().replaceAll("^/$","");
+        String path = context.getAttribute("case").toString().replaceAll("^/$", "");
         String expectedPath = "target/results/" + path + "/expected.html";
         String actualPath = "target/results/" + path + "/actual.html";
         String diffPath = "target/results/" + path + "/diff.html";

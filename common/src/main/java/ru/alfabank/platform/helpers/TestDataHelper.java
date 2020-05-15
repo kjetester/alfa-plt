@@ -14,8 +14,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.testng.TestNGException;
 import ru.alfabank.platform.businessobjects.Page;
-import ru.alfabank.platform.businessobjects.User;
 import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class TestDataHelper {
 
@@ -37,7 +37,7 @@ public class TestDataHelper {
         .baseUri(props.getProperty("keycloak.base.uri"))
         .basePath(props.getProperty("keycloak.base.path"))
         .contentType(ContentType.URLENC)
-        .formParam("client_id","acms")
+        .formParam("client_id", "acms")
         .formParam("username", user.getLogin())
         .formParam("password", user.getPassword())
         .formParam("grant_type", "password")

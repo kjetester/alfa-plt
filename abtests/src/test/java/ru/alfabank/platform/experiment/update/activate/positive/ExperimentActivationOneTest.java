@@ -1,5 +1,6 @@
 package ru.alfabank.platform.experiment.update.activate.positive;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
@@ -13,6 +14,7 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class ExperimentActivationOneTest extends BaseTest {
 
@@ -39,6 +41,7 @@ public class ExperimentActivationOneTest extends BaseTest {
       + "\n\t\t\t* родитель experimentOptionName=default"
       + "\n\t\t\t* ребенок experimentOptionName=forABtest")
   public void positiveExperimentActivationOneTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().toString();
     final var end = getCurrentDateTime().plusHours(27).plusMinutes(20).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(15).toString();
@@ -101,8 +104,8 @@ public class ExperimentActivationOneTest extends BaseTest {
         .setTrafficRate(desktopExperiment.getTrafficRate())
         .setDevice(desktopExperiment.getDevice())
         .setEnabled(true)
-        .setCreatedBy(USER.getLogin())
-        .setActivatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
+        .setActivatedBy(getUser().getLogin())
         .setActivationDate(start)
         .setStatus(RUNNING)
         .setCreationDate(start)
@@ -121,8 +124,8 @@ public class ExperimentActivationOneTest extends BaseTest {
         .setTrafficRate(mobileExperiment.getTrafficRate())
         .setDevice(mobileExperiment.getDevice())
         .setEnabled(true)
-        .setCreatedBy(USER.getLogin())
-        .setActivatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
+        .setActivatedBy(getUser().getLogin())
         .setActivationDate(start)
         .setStatus(RUNNING)
         .setCreationDate(start)
@@ -163,7 +166,7 @@ public class ExperimentActivationOneTest extends BaseTest {
                             .build())).build())).build());
     final var actualDesktopWidgetsList = getWidgetsList(pageId, desktop);
     IntStream.range(0, expectedDesktopWidgetsList.size()).forEach(i ->
-        actualDesktopWidgetsList.get(i).equals(expectedDesktopWidgetsList.get(i)));
+        assertThat(actualDesktopWidgetsList.get(i)).isEqualTo(expectedDesktopWidgetsList.get(i)));
 
     // Проверка переопределения названий MOBILE виджетов
     final var expectedMobileWidgetsList = List.of(
@@ -198,6 +201,6 @@ public class ExperimentActivationOneTest extends BaseTest {
                             .build())).build())).build());
     final var actualMobileWidgetsList = getWidgetsList(pageId, mobile);
     IntStream.range(0, expectedMobileWidgetsList.size()).forEach(i ->
-        actualMobileWidgetsList.get(i).equals(expectedMobileWidgetsList.get(i)));
+        assertThat(actualMobileWidgetsList.get(i)).isEqualTo(expectedMobileWidgetsList.get(i)));
   }
 }

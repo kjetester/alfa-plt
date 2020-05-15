@@ -10,39 +10,41 @@ import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionCreateTest extends OptionBaseTest {
 
   @Test (description = "Позитивный тест создания вариантов", dataProvider = "dataProvider")
   public void optionCreateTest(final Boolean isDefaultNotAssignedWidget) {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
     Widget widget;
     if (isDefaultNotAssignedWidget) {
-      widget = createWidget(page, null, desktop,false, FOR_AB_TEST, false, null, null);
+      widget = createWidget(page, null, desktop, false, FOR_AB_TEST, false, null, null);
       page = createdPages.get(pageId);
     } else {
       createWidget(
-              page, null, desktop,true, DEFAULT, true, null, null);
+              page, null, desktop, true, DEFAULT, true, null, null);
       final var widget1_1 = createWidget(
-              page, null, desktop,false, FOR_AB_TEST, false, null, null);
+              page, null, desktop, false, FOR_AB_TEST, false, null, null);
       final var widget1_1_1 = createWidget(
-              page, widget1_1, desktop,true, DEFAULT, true, null, null);
+              page, widget1_1, desktop, true, DEFAULT, true, null, null);
       widget = createWidget(
-              page, widget1_1_1, desktop,true, DEFAULT, true, null, null);
+              page, widget1_1_1, desktop, true, DEFAULT, true, null, null);
       createWidget(
-              page, widget, desktop,true, DEFAULT, true, null, null);
+              page, widget, desktop, true, DEFAULT, true, null, null);
     }
     final var widget2 = createWidget(
-            page, null, desktop,true, DEFAULT, true, null, null);
+            page, null, desktop, true, DEFAULT, true, null, null);
     final var widget2_1 = createWidget(
-            page, null, desktop,true, DEFAULT, true, null, null);
+            page, null, desktop, true, DEFAULT, true, null, null);
     final var widget2_1_1 = createWidget(
-            page, widget2, desktop,false, FOR_AB_TEST, false, null, null);
+            page, widget2, desktop, false, FOR_AB_TEST, false, null, null);
     final var widget2_1_1_1 = createWidget(
-            page, widget2_1, desktop,false, FOR_AB_TEST, false, null, null);
+            page, widget2_1, desktop, false, FOR_AB_TEST, false, null, null);
     final var device = widget2.getDevice();
     final var experiment = createExperiment(
             device, pageId, getRandomProductType(), experimentEnd, .5D);

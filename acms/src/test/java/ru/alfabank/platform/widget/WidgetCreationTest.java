@@ -20,7 +20,7 @@ public class WidgetCreationTest extends ru.alfabank.platform.widget.BaseWidgetTe
       + "\t1. На корневой странице\n"
       + "\t2. С гео\n"
       + "\t3. С пропсами\n",
-      groups = {"widget","creationWidget"})
+      groups = {"widget", "creationWidget"})
   public void widgetCreationTest() {
     // PRECONDITIONS //
     Page page = createNewPageInRoot();

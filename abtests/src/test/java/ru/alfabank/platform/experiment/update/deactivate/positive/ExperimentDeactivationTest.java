@@ -1,5 +1,6 @@
 package ru.alfabank.platform.experiment.update.deactivate.positive;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
@@ -12,11 +13,13 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class ExperimentDeactivationTest extends BaseTest {
 
   @Test (description = "Позитивный тест деактивации эксперимента")
   public void experimentDeactivationTest() {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEndDate = getCurrentDateTime().plusDays(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
@@ -81,7 +84,7 @@ public class ExperimentDeactivationTest extends BaseTest {
         .setActivationDate(actualExperiment.getActivationDate())
         .setActivatedBy(actualExperiment.getActivatedBy())
         .setDeactivationDate(getCurrentDateTime().toString())
-        .setDeactivatedBy(USER.getLogin())
+        .setDeactivatedBy(getUser().getLogin())
         .setStatus(CANCELLED)
         .build());
     final var expectedWidgetsList = List.of(
@@ -100,6 +103,6 @@ public class ExperimentDeactivationTest extends BaseTest {
             .build());
     final var actualWidgetsList = getWidgetsList(pageId, device);
     IntStream.range(0, expectedWidgetsList.size()).forEach(i ->
-        actualWidgetsList.get(i).equals(expectedWidgetsList.get(i)));
+        assertThat(actualWidgetsList.get(i)).isEqualTo(expectedWidgetsList.get(i)));
   }
 }

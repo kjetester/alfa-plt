@@ -8,12 +8,14 @@ import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomPr
 
 import java.util.List;
 import org.testng.annotations.Test;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionsTrafficRateSumLimitViolationTest extends OptionBaseTest {
 
   @Test (description = "Тест создания более одного непривязанного к виджету варианта")
   public void optionsTrafficRateSumLimitViolationTest() {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();

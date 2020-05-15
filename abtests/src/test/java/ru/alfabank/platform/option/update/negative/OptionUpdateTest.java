@@ -12,7 +12,6 @@ import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomPr
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
-import java.util.Optional;
 import org.apache.log4j.LogManager;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.SkipException;
@@ -23,6 +22,7 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest;
 import ru.alfabank.platform.option.OptionBaseTest;
 
@@ -54,6 +54,7 @@ public class OptionUpdateTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(5).toString();
     var page1 = createPage(null, null, true);
     final var page2 = createPage(null, null, true);
@@ -694,8 +695,10 @@ public class OptionUpdateTest extends OptionBaseTest {
     switch (Integer.parseInt(testCase.replaceAll("[\\D]", ""))) {
       case 1: {
         runExperimentAssumingSuccess(experiment1);
-        final var response1 = modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification);
-        final var response2 = modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification);
+        final var response1 =
+            modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification);
+        final var response2 =
+            modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification);
         softly.assertThat(response1.asString())
             .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
         softly.assertThat(response2.asString())
@@ -704,8 +707,10 @@ public class OptionUpdateTest extends OptionBaseTest {
       }
       case 2: {
         stopExperimentAssumingSuccess(experiment1);
-        final var response1 = modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification);
-        final var response2 = modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification);
+        final var response1 =
+            modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification);
+        final var response2 =
+            modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification);
         softly.assertThat(response1.asString())
             .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
         softly.assertThat(response2.asString())

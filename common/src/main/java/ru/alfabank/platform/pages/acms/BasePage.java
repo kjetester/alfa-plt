@@ -20,7 +20,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.TestNGException;
-import ru.alfabank.platform.businessobjects.User;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class BasePage {
 

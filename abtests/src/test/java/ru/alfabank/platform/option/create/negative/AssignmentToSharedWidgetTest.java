@@ -12,6 +12,7 @@ import io.restassured.response.Response;
 import java.util.List;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class AssignmentToSharedWidgetTest extends OptionBaseTest {
@@ -20,6 +21,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
       dataProvider = "dataProvider")
   public void assignmentToSharedWidgetTest(
       @ParameterKey("Дефолтный вариант") final Boolean isDefaultOption) {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
@@ -37,10 +39,10 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
     Response response;
     if (isDefaultOption) {
       response = createOptionAssumingFail(
-              true, List.of(widget.getUid()), experiment.getUuid(),.5D);
+              true, List.of(widget.getUid()), experiment.getUuid(), .5D);
     } else {
       response = createOptionAssumingFail(
-              false, List.of(widget.getUid()), experiment.getUuid(),.5D);
+              false, List.of(widget.getUid()), experiment.getUuid(), .5D);
     }
     assertThat(response.getStatusCode())
         .as("Проверка статус-кода")
@@ -78,10 +80,10 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
     Response response;
     if (isDefaultOption) {
       response = createOptionAssumingFail(
-              true, List.of(widget.getUid()), experiment.getUuid(),.5D);
+              true, List.of(widget.getUid()), experiment.getUuid(), .5D);
     } else {
       response = createOptionAssumingFail(
-              false, List.of(widget.getUid()), experiment.getUuid(),.5D);
+              false, List.of(widget.getUid()), experiment.getUuid(), .5D);
     }
     assertThat(response.getStatusCode())
         .as("Проверка статус-кода")
@@ -124,10 +126,10 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
     Response response;
     if (isDefaultOption) {
       response = createOptionAssumingFail(
-              true, List.of(widget.getUid()), experiment.getUuid(),.5D);
+              true, List.of(widget.getUid()), experiment.getUuid(), .5D);
     } else {
       response = createOptionAssumingFail(
-              false, List.of(widget.getUid()), experiment.getUuid(),.5D);
+              false, List.of(widget.getUid()), experiment.getUuid(), .5D);
     }
     assertThat(response.getStatusCode())
         .as("Проверка статус-кода")

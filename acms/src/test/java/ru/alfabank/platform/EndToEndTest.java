@@ -9,13 +9,13 @@ import static ru.alfabank.platform.helpers.DriverHelper.killDriver;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.pages.acms.MainPage;
 import ru.alfabank.platform.pages.acms.PagesSliderPage;
 import ru.alfabank.platform.pages.acms.WidgetSidebarPage;
@@ -84,7 +84,7 @@ public class EndToEndTest extends BaseTest {
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(dateFrom)
         .openEndDatePicker().setDateTo(dateTo)
-        .setGeoGroupsToWidget(RU)
+        .setGeoGroupsToWidget(List.of(RU))
         .collapseWidgetMetaInfoAnd()
         .modifyValueContinueWithPropertyPage(testProperty, "\"" + MSK_MO + "\"", MSK_MO)
         .createValue(testProperty, "\"" + BEZ_MSK_MO + "\"", BEZ_MSK_MO)
@@ -111,7 +111,7 @@ public class EndToEndTest extends BaseTest {
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(dateFrom)
         .openEndDatePicker().setDateTo(dateTo)
-        .setGeoGroupsToWidget(MSK_MO)
+        .setGeoGroupsToWidget(List.of(MSK_MO))
         .collapseWidgetMetaInfoAnd()
         .modifyValueAndContinueWithWidgetSidebarPage(testProperty, "\"" + MSK_MO + "\"", MSK_MO)
         .submitChanges()
@@ -138,7 +138,7 @@ public class EndToEndTest extends BaseTest {
         .setVisibilityTo(false)
         .openStartDatePicker().setDateTo(dateFrom)
         .openEndDatePicker().setDateTo(dateTo)
-        .setGeoGroupsToWidget(RU)
+        .setGeoGroupsToWidget(List.of(RU))
         .collapseWidgetMetaInfoAnd()
         .modifyValueContinueWithPropertyPage(testProperty, "\"" + MSK_MO + "\"", MSK_MO)
         .createValue(testProperty, "\"" + BEZ_MSK_MO + "\"", BEZ_MSK_MO)
@@ -208,7 +208,7 @@ public class EndToEndTest extends BaseTest {
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(startActiveTime)
         .openEndDatePicker().setDateTo(endActiveTime)
-        .setGeoGroupsToWidget(RU)
+        .setGeoGroupsToWidget(List.of(RU))
         .collapseWidgetMetaInfoAnd()
         .modifyValueContinueWithPropertyPage(testProperty, "\"" + MSK_MO + "\"", MSK_MO)
         .createValue(testProperty, "\"" + BEZ_MSK_MO + "\"", BEZ_MSK_MO)
@@ -244,7 +244,7 @@ public class EndToEndTest extends BaseTest {
         .setVisibilityTo(true)
         .openStartDatePicker().setDateTo(dateFrom)
         .openEndDatePicker().setDateTo(dateTo)
-        .setGeoGroupsToWidget(RU)
+        .setGeoGroupsToWidget(List.of(RU))
         .collapseWidgetMetaInfoAnd()
         .restorePropertyAndValues(testProperty,
             "\"Удобный банк для малого бизнеса — «Альфа-Банк» - Москва\"", RU)

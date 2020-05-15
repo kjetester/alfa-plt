@@ -8,6 +8,7 @@ import static ru.alfabank.platform.businessobjects.enums.Team.INVEST;
 import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE;
 import static ru.alfabank.platform.businessobjects.enums.Team.PIL;
 import static ru.alfabank.platform.businessobjects.enums.Team.SME;
+import static ru.alfabank.platform.businessobjects.enums.User.CONTENT_MANAGER;
 import static ru.alfabank.platform.helpers.UuidHelper.getShortRandUuid;
 
 import com.epam.reportportal.annotations.ParameterKey;
@@ -26,13 +27,13 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import ru.alfabank.platform.businessobjects.Page;
-import ru.alfabank.platform.businessobjects.User;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class BaseTest {
 
   private static final Logger LOGGER = LogManager.getLogger(BaseTest.class);
   private static final String URL_ENDING = ".ci.k8s.alfa.link/";
-  protected static final User USER = new User();
+  protected static final User USER = CONTENT_MANAGER;
   protected static final String TEST_WIDGET = "MetaTitle";
   protected static final String TEST_PROPERTY = "title";
   protected static final String PAGE_CONTROLLER_BASE_PATH =

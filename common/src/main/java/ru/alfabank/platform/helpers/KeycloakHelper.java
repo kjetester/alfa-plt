@@ -3,20 +3,22 @@ package ru.alfabank.platform.helpers;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.Matchers.not;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import io.restassured.http.ContentType;
 import java.time.LocalDateTime;
 import java.util.Map;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
 import ru.alfabank.platform.businessobjects.AccessToken;
-import ru.alfabank.platform.businessobjects.User;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 /**
  * Keycloak helper.
  */
-public class KeycloakHelper {
+public class KeycloakHelper extends AbstractBusinessObject {
 
   private static final Logger LOGGER = LogManager.getLogger(KeycloakHelper.class);
   private static final String KEYCLOAK_BASE_URL = "https://keycloak.k8s.alfa.link";
@@ -33,7 +35,9 @@ public class KeycloakHelper {
    * @return actual valid token
    */
   public static AccessToken getToken(final User user) {
-    if (tokensSet == null || LocalDateTime.now().isAfter(tokensSet.getExpireRefreshTokenTime())) {
+    if (tokensSet == null
+        || LocalDateTime.now().isAfter(tokensSet.getExpireRefreshTokenTime())
+        || !decode(tokensSet.getAccessToken()).equals(user.getLogin())) {
       LOGGER.info("Выполняю запрос токена авторизации");
       Map<String, String> formParams = Map.of(
           "client_id", "acms",
@@ -44,6 +48,7 @@ public class KeycloakHelper {
               .basePath(KEYCLOAK_BASE_URI + TOKEN_RESOURCE).contentType(ContentType.URLENC)
               .formParams(formParams).log().all().when().post().then().log()
               .ifError().statusCode(SC_OK).extract().body().as(AccessToken.class);
+      LOGGER.info("Получен ответ\n" + describeBusinessObject(tokensSet));
       return tokensSet;
     } else if (LocalDateTime.now().isAfter(tokensSet.getExpireAccessTokenTime())) {
       LOGGER.info("Выполняю запрос обновления токена авторизации");
@@ -57,6 +62,24 @@ public class KeycloakHelper {
           .ifError().statusCode(SC_OK).extract().body().as(AccessToken.class);
     }
     return tokensSet;
+  }
+
+  /**
+   * Decode JWT.
+   * @param accessToken accessToken
+   * @return login
+   */
+  private static String decode(String accessToken) {
+    try {
+      return JWT.decode(accessToken)
+          .getClaims()
+          .get("name")
+          .asString()
+          .toLowerCase()
+          .replaceAll(" ", "_");
+    } catch (JWTDecodeException exception) {
+      throw new IllegalArgumentException();
+    }
   }
 
   /**

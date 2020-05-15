@@ -14,12 +14,14 @@ import java.util.concurrent.TimeUnit;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class ExpiredExperimentEndDateTimeTest extends BaseTest {
 
   @Test (description = "Тест активации эксперимента с негативным условием:"
       + "\n\tДата окончания эксперимента менее, чем +1 день")
   public void variantAssignedToSharedWidgetTest() throws InterruptedException {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusDays(1).plusMinutes(5);
     final var endDateTimeAsString = end.toString();
@@ -45,7 +47,7 @@ public class ExpiredExperimentEndDateTimeTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(start)
         .setStatus(DISABLED)
         .setCreationDate(start)

@@ -16,6 +16,7 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.enums.ExperimentOptionName;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
 
@@ -37,6 +38,7 @@ public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
       final ExperimentOptionName expOptName2,
       @ParameterKey("Is Widget for NON default option default")
       final Boolean defaultWidget2) {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEndDate = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
@@ -95,7 +97,7 @@ public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(experimentStart)
         .setStatus(DISABLED)
         .setCreationDate(experimentStart)

@@ -35,7 +35,7 @@ public class WidgetCopyingTest extends ru.alfabank.platform.widget.BaseWidgetTes
           + "\t1. На корневую страницу\n"
           + "\t2. С детьми\n"
           + "\t3. С пропсами\n",
-      groups = {"widget","copyingWidget"})
+      groups = {"widget", "copyingWidget"})
   public void widgetCopyingTest() throws InterruptedException {
     // STEPS //
     PageFactory.initElements(getDriver(), MainPage.class)

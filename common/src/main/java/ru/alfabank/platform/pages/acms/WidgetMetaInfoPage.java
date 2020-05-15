@@ -3,7 +3,6 @@ package ru.alfabank.platform.pages.acms;
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 import static ru.alfabank.platform.helpers.DriverHelper.waitForElementBecomesClickable;
 
-import java.util.Arrays;
 import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -62,11 +61,10 @@ public class WidgetMetaInfoPage extends BasePage {
 
   /**
    * Setting geo-groups into a Widget.
-   * @param geos geo-groups
+   * @param geoList geo-groups
    * @return this
    */
-  public WidgetMetaInfoPage setGeoGroupsToWidget(Geo... geos) {
-    List<Object> geoList = List.of(geos);
+  public WidgetMetaInfoPage setGeoGroupsToWidget(List<Object> geoList) {
     LOGGER.info("Устанавливаю гео-группы");
     geoList.forEach(geo -> {
       LOGGER.info("\n" + geo.toString());

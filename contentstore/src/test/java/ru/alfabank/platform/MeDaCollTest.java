@@ -54,7 +54,7 @@ public class MeDaCollTest extends BaseTest {
   @DataProvider(name = "pages")
   public Object[][] pages() throws IOException {
     Object[][] arr = new Object[resourcesList().size()][1];
-    for (int i = 0; i < resourcesList().size();i++) {
+    for (int i = 0; i < resourcesList().size(); i++) {
       arr[i][0] = resourcesList().get(i);
     }
     return arr;

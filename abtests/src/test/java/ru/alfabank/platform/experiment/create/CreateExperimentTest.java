@@ -34,6 +34,7 @@ import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class CreateExperimentTest extends BaseTest {
 
@@ -57,6 +58,7 @@ public class CreateExperimentTest extends BaseTest {
       @ParameterKey("Experiment 2 productType") final ProductType experiment2productType,
       @ParameterKey("Experiment 2 endDate") final String experiment2endDate,
       @ParameterKey("Experiment 2 trafficRate") final Double experiment2trafficRate) {
+    setUser(User.CONTENT_MANAGER);
     final var experiment1ToCreate = new Experiment.Builder()
         .setDescription(experiment1description)
         .setCookieValue(experiment1cookieValue)
@@ -71,7 +73,7 @@ public class CreateExperimentTest extends BaseTest {
     Response experiment1creationResponse =
         given()
             .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
+            .auth().oauth2(getToken(getUser()).getAccessToken())
             .body(experiment1ToCreate)
         .when().post()
         .then().extract().response();
@@ -87,7 +89,7 @@ public class CreateExperimentTest extends BaseTest {
         new Experiment.Builder()
             .using(experiment1ToCreate)
             .setEnabled(false)
-            .setCreatedBy(USER.getLogin())
+            .setCreatedBy(getUser().getLogin())
             .setStatus(DISABLED)
             .setCreationDate(LocalDateTime.now(ZoneOffset.UTC).toString())
             .build());
@@ -105,7 +107,7 @@ public class CreateExperimentTest extends BaseTest {
     Response experiment2creationResponse =
         given()
             .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
+            .auth().oauth2(getToken(getUser()).getAccessToken())
             .body(experiment2ToCreate)
             .when().post()
             .then().extract().response();
@@ -121,7 +123,7 @@ public class CreateExperimentTest extends BaseTest {
         new Experiment.Builder()
             .using(experiment2ToCreate)
             .setEnabled(false)
-            .setCreatedBy(USER.getLogin())
+            .setCreatedBy(getUser().getLogin())
             .setStatus(DISABLED)
             .setCreationDate(LocalDateTime.now(ZoneOffset.UTC).toString())
             .build());
@@ -261,28 +263,10 @@ public class CreateExperimentTest extends BaseTest {
       @ParameterKey("productType") final ProductType productType,
       @ParameterKey("endDate") final String endDate,
       @ParameterKey("trafficRate") final Double trafficRate) {
+    setUser(User.CONTENT_MANAGER);
     LOGGER.info("Test case:" + testCase);
-    final var experimentToCreate = new Experiment.Builder()
-        .setDescription(description)
-        .setCookieValue(cookieValue)
-        .setPageId(pageId)
-        .setDevice(device)
-        .setProductTypeKey(productType)
-        .setEndDate(endDate)
-        .setTrafficRate(trafficRate)
-        .build();
-    LOGGER.info("Выполняю запрос на создание эксперимента:\n"
-        + describeBusinessObject(experimentToCreate));
-    final var response =
-        given()
-            .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
-            .body(experimentToCreate)
-        .when().post()
-            .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    final Response response = createExperimentAssumingFail(
+        description, cookieValue, device, pageId, productType, endDate, trafficRate);
     final var softly = new SoftAssertions();
     softly.assertThat(response.statusCode()).isGreaterThanOrEqualTo(SC_BAD_REQUEST);
     final var fieldViolations = response.getBody().jsonPath().getList("fieldViolations");
@@ -362,7 +346,7 @@ public class CreateExperimentTest extends BaseTest {
         softly
             .assertThat(fieldViolations.get(0).toString())
             .as("Проверка обрабоки отсутствующего значения 'pageId'")
-            .contains("pageId","Необходимо указать адрес страницы");
+            .contains("pageId", "Необходимо указать адрес страницы");
       } else {
         assertThat(fieldViolations)
             .as("Проверка отсутствия ошибок в 'fieldViolations'")
@@ -423,6 +407,7 @@ public class CreateExperimentTest extends BaseTest {
     }
     softly.assertAll();
   }
+
 
   /**
    * Data provider.

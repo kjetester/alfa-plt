@@ -18,7 +18,7 @@ public class WidgetSharingTest extends ru.alfabank.platform.widget.BaseWidgetTes
       + "\t1. На корневую страницу\n"
       + "\t2. С детьми\n"
       + "\t3. С пропсами\n",
-      groups = {"widget","sharingWidget"})
+      groups = {"widget", "sharingWidget"})
   public void widgetSharingWithChildren() throws InterruptedException {
     // PRECONDITIONS
     Page createdPage = createNewPageInRoot();

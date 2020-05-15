@@ -14,12 +14,14 @@ import org.assertj.core.api.SoftAssertions;
 import org.testng.SkipException;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest;
 
 public class ExperimentDeletionTest extends BaseTest {
 
   @Test (description = "Позитивный тест удаления эксперимента со статусом 'DISABLED'")
   public void experimentDisabledTest() {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEndDate = getCurrentDateTime().plusDays(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
@@ -50,6 +52,7 @@ public class ExperimentDeletionTest extends BaseTest {
 
   @Test (description = "Позитивный тест удаления эксперимента со статусом 'CANCELLED'")
   public void experimentCancelledTest() {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEndDate = getCurrentDateTime().plusDays(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();

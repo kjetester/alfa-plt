@@ -47,8 +47,4 @@ public enum ProductType {
     } while (result == ERR);
     return result;
   }
-
-  public static void main(String[] args) {
-    System.out.println(getRandomProductType());
-  }
 }

@@ -19,6 +19,7 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest;
 import ru.alfabank.platform.option.OptionBaseTest;
 
@@ -38,6 +39,7 @@ public class OptionDeleteTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
+    setUser(User.CONTENT_MANAGER);
     var page = createPage(null, null, true);
     final var pageId = page.getId();
     defaultWidget = createWidget(

@@ -28,6 +28,7 @@ import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
 import ru.alfabank.platform.businessobjects.enums.Status;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class UpdateInactiveExperimentTest extends BaseTest {
 
@@ -41,6 +42,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
   @BeforeMethod(description = "Создание неактивного эксперимента "
       + "для негативного теста изменения неактивного эксперимента")
   public void beforeMethod() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(start, end, true);
@@ -48,7 +50,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
     experiment =
         given()
             .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getToken(USER).getAccessToken())
+            .auth().oauth2(getToken(getUser()).getAccessToken())
             .body(
                 new Experiment.Builder()
                     .setDevice(desktop)
@@ -225,7 +227,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
     LOGGER.info("Выполняю запрос изменения эксперимента:\n"
         + describeBusinessObject(changeSetBody));
     Response response = given().spec(getDeletePatchExperimentSpec)
-        .auth().oauth2(getToken(USER).getAccessToken())
+        .auth().oauth2(getToken(getUser()).getAccessToken())
         .pathParam("uuid", experiment.getUuid())
         .body(changeSetBody)
         .when().patch()
@@ -235,7 +237,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         response.prettyPrint()));
     // CHECKS //
     final var actual = given().spec(getDeletePatchExperimentSpec)
-        .auth().oauth2(getToken(USER).getAccessToken())
+        .auth().oauth2(getToken(getUser()).getAccessToken())
         .pathParam("uuid", experiment.getUuid())
         .when().get().then().extract().as(Experiment.class);
     final var fieldViolations = response.getBody().jsonPath().getList("fieldViolations");

@@ -1,8 +1,6 @@
 package ru.alfabank.platform.experiment.update.activate.negative;
 
-import static io.netty.util.internal.SystemPropertyUtil.contains;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
@@ -14,6 +12,7 @@ import java.util.List;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class WidgetActiveDatesCrossingExperimentActiveDatesTest extends BaseTest {
 
@@ -21,6 +20,7 @@ public class WidgetActiveDatesCrossingExperimentActiveDatesTest extends BaseTest
       + "\n\t1. Дата начала отображения виджета больше даты начала эксперимента"
       + "\n\t2. Дата окончания отображения виджета меньше даты окончания эксперимента")
   public void widgetActiveDatesCrossingExperimentActiveDatesTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusHours(6).toString();
     final var end = getCurrentDateTime().plusHours(12).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
@@ -37,7 +37,7 @@ public class WidgetActiveDatesCrossingExperimentActiveDatesTest extends BaseTest
     createOption(true, List.of(defaultWidget.getUid()), actualExperiment.getUuid(), trafficRate);
     createOption(false, List.of(abTestWidget.getUid()), actualExperiment.getUuid(), trafficRate);
     changeWidgetActiveDates(defaultWidget, pageId, start, end);
-    changeWidgetActiveDates(abTestWidget, pageId,start, end);
+    changeWidgetActiveDates(abTestWidget, pageId, start, end);
     final var experimentStart = getCurrentDateTime().plusSeconds(10).toString();
     final var expectedExperiment = new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
@@ -49,7 +49,7 @@ public class WidgetActiveDatesCrossingExperimentActiveDatesTest extends BaseTest
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(experimentStart)
         .setStatus(DISABLED)
         .setCreationDate(experimentStart)
@@ -97,7 +97,7 @@ public class WidgetActiveDatesCrossingExperimentActiveDatesTest extends BaseTest
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(experimentStart)
         .setStatus(DISABLED)
         .setCreationDate(experimentStart)
@@ -142,7 +142,7 @@ public class WidgetActiveDatesCrossingExperimentActiveDatesTest extends BaseTest
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(experimentStart)
         .setStatus(DISABLED)
         .setCreationDate(experimentStart)

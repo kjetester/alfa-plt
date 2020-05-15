@@ -13,6 +13,7 @@ import org.testng.SkipException;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest;
 
 public class WrongExperimentStatusTest extends BaseTest {
@@ -20,11 +21,12 @@ public class WrongExperimentStatusTest extends BaseTest {
   @Test (description = "Тест активации эксперимента с негативным условием:"
       + "\n\t1. Эксперимент имеет статус 'RUNNING'")
   public void experimentRunningTest() {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEndDate = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
-    createWidget(createdPages.get(pageId), null, desktop,true, DEFAULT, true, null, null);
-    createWidget(createdPages.get(pageId), null, desktop,false, FOR_AB_TEST, false, null, null);
+    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null);
+    createWidget(createdPages.get(pageId), null, desktop, false, FOR_AB_TEST, false, null, null);
     final var widget1 = page.getWidgetList().get(0);
     final var widget2 = page.getWidgetList().get(1);
     final var device = widget1.getDevice();
@@ -54,7 +56,7 @@ public class WrongExperimentStatusTest extends BaseTest {
         .setEnabled(actualExperiment.getEnabled())
         .setCreatedBy(actualExperiment.getCreatedBy())
         .setActivationDate(getCurrentDateTime().toString())
-        .setActivatedBy(USER.getLogin())
+        .setActivatedBy(getUser().getLogin())
         .setStatus(actualExperiment.getStatus())
         .setCreationDate(actualExperiment.getCreationDate())
         .build());
@@ -63,6 +65,7 @@ public class WrongExperimentStatusTest extends BaseTest {
   @Test (description = "Тест активации эксперимента с негативным условием:"
       + "\n\t1. Эксперимент имеет статус 'CANCELED'")
   public void experimentCanceledTest() {
+    setUser(User.CONTENT_MANAGER);
     final var experimentEndDate = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
@@ -102,7 +105,7 @@ public class WrongExperimentStatusTest extends BaseTest {
         .setActivationDate(actualExperiment.getActivationDate())
         .setActivatedBy(actualExperiment.getActivatedBy())
         .setDeactivationDate(getCurrentDateTime().toString())
-        .setDeactivatedBy(USER.getLogin())
+        .setDeactivatedBy(getUser().getLogin())
         .setStatus(actualExperiment.getStatus())
         .build());
   }

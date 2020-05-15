@@ -113,4 +113,9 @@
             <class name="ru.alfabank.platform.option.delete.negative.OptionDeleteTest"/>
         </classes>
     </test>
+    <test name="Role model test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.rolemodel.RoleModelTest"/>
+        </classes>
+    </test>
 </suite>

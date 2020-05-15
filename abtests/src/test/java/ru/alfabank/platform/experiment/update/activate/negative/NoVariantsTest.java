@@ -10,18 +10,20 @@ import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.enums.User;
 
 public class NoVariantsTest extends BaseTest {
 
   @Test (description = "Тест активации эксперимента с негативным условием:"
       + "\n\tНет вариантов")
   public void noVariantsTest() {
+    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
     var page = createPage(null, null, true);
     final var pageId = page.getId();
-    createWidget(createdPages.get(pageId), null, desktop,true, DEFAULT, true, null, null);
-    createWidget(createdPages.get(pageId), null, desktop,true, DEFAULT, true, null, null);
+    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null);
+    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null);
     final var device = page.getWidgetList().get(0).getDevice();
     final var trafficRate = .5D;
     final var actualExperiment =
@@ -36,7 +38,7 @@ public class NoVariantsTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(USER.getLogin())
+        .setCreatedBy(getUser().getLogin())
         .setActivationDate(start)
         .setStatus(DISABLED)
         .setCreationDate(start)

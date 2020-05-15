@@ -48,7 +48,7 @@ public class PageDeletionTest extends BasePageTest {
     LOGGER.info(String.format("Запрос страницы '%s' в '/pageController'", page.getUri()));
     int pageControllerStatusCode = given().spec(pageControllerSpec)
         .auth().oauth2(getToken(USER).getAccessToken())
-        .queryParam("uri","/" + page.getUri())
+        .queryParam("uri", "/" + page.getUri())
         .when().get().getStatusCode();
     LOGGER.info(String.format("Запрос страницы '%s' в '/contentPageController'", page.getUri()));
     int contentPageControllerStatusCode = given().spec(contentPageControllerSpec)

@@ -30,7 +30,7 @@ public class Page extends AbstractBusinessObject {
   private String dateFrom;
   private String dateTo;
   private Boolean enable;
-  private List<Team> teamsList;
+  private List<Team> teams;
   @JsonIgnore private List<Widget> widgetList;
   private List<String> childUids;
 
@@ -39,7 +39,7 @@ public class Page extends AbstractBusinessObject {
       @JsonProperty ("id") Integer id,
       @JsonProperty ("uri") String uri,
       @JsonProperty ("title") String title,
-      @JsonProperty ("teams") List<Team> teamsList,
+      @JsonProperty ("teams") List<Team> teams,
       @JsonProperty ("description") String description,
       @JsonProperty ("dateFrom") String dateFrom,
       @JsonProperty ("dateTo") String dateTo,
@@ -50,7 +50,7 @@ public class Page extends AbstractBusinessObject {
     this.description = description;
     this.dateFrom = dateFrom;
     this.dateTo = dateTo;
-    this.teamsList = teamsList;
+    this.teams = teams;
     this.enable = enable;
   }
 
@@ -73,7 +73,7 @@ public class Page extends AbstractBusinessObject {
     } else {
       this.dateTo = builder.dateTo.toString();
     }
-    this.teamsList = builder.teamsList;
+    this.teams = builder.teams;
     this.enable = builder.enable;
     this.childUids = builder.childUids;
     this.widgetList = Objects.requireNonNullElseGet(builder.widgets, ArrayList::new);
@@ -132,7 +132,7 @@ public class Page extends AbstractBusinessObject {
   }
 
   public List<Team> getTeams() {
-    return teamsList;
+    return teams;
   }
 
   private List<String> getChildUids() {
@@ -200,7 +200,7 @@ public class Page extends AbstractBusinessObject {
     private String dateFrom;
     private String dateTo;
     private Boolean enable;
-    private List<Team> teamsList;
+    private List<Team> teams;
     private List<String> childUids;
     private List<Widget> widgets;
 
@@ -245,8 +245,8 @@ public class Page extends AbstractBusinessObject {
       return this;
     }
 
-    public Builder setTeamsList(List<Team> teamsList) {
-      this.teamsList = teamsList;
+    public Builder setTeamsList(List<Team> teams) {
+      this.teams = teams;
       return this;
     }
 
@@ -285,7 +285,7 @@ public class Page extends AbstractBusinessObject {
       } else {
         this.dateTo = page.dateTo;
       }
-      this.teamsList = page.teamsList;
+      this.teams = page.teams;
       this.enable = page.enable;
       this.widgets = page.widgetList;
       return this;

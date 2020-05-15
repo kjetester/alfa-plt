@@ -34,7 +34,6 @@ import ru.alfabank.platform.businessobjects.Page;
 import ru.alfabank.platform.businessobjects.Widget;
 import ru.alfabank.platform.businessobjects.draft.DataDraft;
 import ru.alfabank.platform.businessobjects.draft.WrapperDraft;
-import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.Experiment;
 import ru.alfabank.platform.businessobjects.enums.Geo;
 import ru.alfabank.platform.pages.acms.MainPage;

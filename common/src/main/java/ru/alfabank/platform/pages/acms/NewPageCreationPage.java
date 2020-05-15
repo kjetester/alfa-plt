@@ -98,7 +98,7 @@ public class NewPageCreationPage extends BasePage {
    */
   public NewPageCreationPage checkAutoFilledCreationForm(Page page) {
     LOGGER.info("Проверяю предзаполненные поля формы копирования страницы");
-    final String uri = page.getUri().replaceAll("/$","") + "-copy/";
+    final String uri = page.getUri().replaceAll("/$", "") + "-copy/";
     softly.assertThat(uriInput.getAttribute("value")).as("Поле 'Путь': '%s'", uri)
         .isEqualTo(uri);
     softly.assertThat(titleInput.getAttribute("value")).as("Поле 'Имя': '%s'", page.getTitle())

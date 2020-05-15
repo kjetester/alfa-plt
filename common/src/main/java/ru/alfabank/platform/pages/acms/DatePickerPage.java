@@ -104,9 +104,9 @@ public class DatePickerPage extends BasePage {
     }
     int diff = dateTime.getMonthValue() - month;
     if (diff > 0) {
-      IntStream.range(0,diff).forEach(i -> plusMonthButton.click());
+      IntStream.range(0, diff).forEach(i -> plusMonthButton.click());
     } else if (diff < 0) {
-      IntStream.range(0,-diff).forEach(i -> minusMonthButton.click());
+      IntStream.range(0, -diff).forEach(i -> minusMonthButton.click());
     }
     List<WebElement> dateList = getDriver().findElements(By.cssSelector(DATES_CSS_SELECTOR));
     dateList.get(dateTime.getDayOfMonth() - 1).click();
