@@ -5,29 +5,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class DefaultOptionLimitViolationTest extends OptionBaseTest {
 
   @Test (description = "Тест создания более одного дефолтного варианта одного эксперимента")
   public void defaultOptionLimitViolationTest() {
-    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true);
+    var page = createPage(null, null, true, getContentManager());
     final var pageId = page.getId();
-    final var widget1 = createWidget(page, null, desktop, true, DEFAULT, true, null, null);
-    final var widget2 = createWidget(page, null, desktop, true, DEFAULT, true, null, null);
+    final var widget1 = createWidget(page, null, desktop, true, DEFAULT, true, null, null, getContentManager());
+    final var widget2 = createWidget(page, null, desktop, true, DEFAULT, true, null, null, getContentManager());
     page = createdPages.get(pageId);
     final var device = widget1.getDevice();
     final var experiment = createExperiment(
-            device, pageId, getRandomProductType(), experimentEnd, .5D);
-    createOption(true, List.of(widget1.getUid()), experiment.getUuid(), .5D);
+            device, pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
+    createOption(true, List.of(widget1.getUid()), experiment.getUuid(), .5D, getContentManager());
     final var result = createOptionAssumingFail(
-            true, List.of(widget2.getUid()), experiment.getUuid(), .5D);
+            true, List.of(widget2.getUid()), experiment.getUuid(), .5D, getContentManager());
     assertThat(result.getStatusCode())
         .as("Проверка статус-кода")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;

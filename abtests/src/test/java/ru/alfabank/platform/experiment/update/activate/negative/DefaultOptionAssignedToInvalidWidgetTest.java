@@ -7,6 +7,7 @@ import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DE
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
@@ -16,7 +17,6 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.enums.ExperimentOptionName;
-import ru.alfabank.platform.businessobjects.enums.User;
 
 public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
 
@@ -38,9 +38,8 @@ public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
       final ExperimentOptionName expOptName2,
       @ParameterKey("Is Widget for NON default option default")
       final Boolean defaultWidget2) {
-    setUser(User.CONTENT_MANAGER);
     final var experimentEndDate = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true);
+    var page = createPage(null, null, true, getContentManager());
     final var pageId = page.getId();
     final var widget1 = createWidget(
         createdPages.get(pageId),
@@ -50,7 +49,8 @@ public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     final var widget2 = createWidget(
         createdPages.get(pageId),
         null,
@@ -59,7 +59,8 @@ public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     final var device = widget1.getDevice();
     final var trafficRate = .5D;
     final var actualExperiment = createExperiment(
@@ -67,24 +68,27 @@ public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
         pageId,
         getRandomProductType(),
         experimentEndDate,
-        trafficRate);
+        trafficRate,
+        getContentManager());
     final var defaultOption = createOption(true,
         List.of(widget1.getUid()),
         actualExperiment.getUuid(),
-        trafficRate);
+        trafficRate,
+        getContentManager());
     final var nonDefaultOption = createOption(false,
         List.of(widget2.getUid()),
         actualExperiment.getUuid(),
-        trafficRate);
+        trafficRate,
+        getContentManager());
     if (widget1.isEnabled() != enabledWidget1
         || !widget1.getExperimentOptionName().equals(expOptName1)
         || widget1.isDefaultWidget() != defaultWidget1) {
-      changeWidgetABtestProps(widget1, pageId, enabledWidget1, expOptName1, defaultWidget1);
+      changeWidgetABtestProps(widget1, pageId, enabledWidget1, expOptName1, defaultWidget1, getContentManager());
     }
     if (widget2.isEnabled() != enabledWidget2
         || !widget2.getExperimentOptionName().equals(expOptName2)
         || widget2.isDefaultWidget() != defaultWidget2) {
-      changeWidgetABtestProps(widget2, pageId, enabledWidget2, expOptName2, defaultWidget2);
+      changeWidgetABtestProps(widget2, pageId, enabledWidget2, expOptName2, defaultWidget2, getContentManager());
     }
     final var experimentStart = getCurrentDateTime().plusSeconds(10).toString();
     final var expectedExperiment = new Experiment.Builder()
@@ -97,12 +101,12 @@ public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(getUser().getLogin())
+        .setCreatedBy(getContentManager().getLogin())
         .setActivationDate(experimentStart)
         .setStatus(DISABLED)
         .setCreationDate(experimentStart)
         .build();
-    final var result = runExperimentAssumingFail(actualExperiment);
+    final var result = runExperimentAssumingFail(actualExperiment, getContentManager());
     assertThat(result.getStatusCode())
         .as("Проверка статус-кода")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
@@ -121,7 +125,7 @@ public class DefaultOptionAssignedToInvalidWidgetTest extends BaseTest {
               + "]' должны быть помечены как 'forABtest',"
               + " быть выключенными и не должны быть виджетами по умолчанию");
     }
-    getExperiment(actualExperiment).checkUpdatedExperiment(expectedExperiment);
+    getExperiment(actualExperiment, getContentManager()).checkUpdatedExperiment(expectedExperiment);
   }
 
   /**

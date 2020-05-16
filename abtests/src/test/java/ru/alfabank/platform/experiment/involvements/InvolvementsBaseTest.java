@@ -15,7 +15,7 @@ import org.testng.annotations.DataProvider;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.enums.Device;
-import ru.alfabank.platform.businessobjects.enums.User;
+import ru.alfabank.platform.users.AccessibleUser;
 
 public class InvolvementsBaseTest extends BaseTest {
 
@@ -31,17 +31,20 @@ public class InvolvementsBaseTest extends BaseTest {
    * @param pageId pageId
    * @param device device
    * @param geoGroups geos
+   * @param user user
    * @return response
    */
-  protected Response getInvolvements(Integer pageId, Device device, List<String> geoGroups) {
-    setUser(User.CONTENT_MANAGER);
+  protected Response getInvolvements(final Integer pageId,
+                                     final Device device,
+                                     final List<String> geoGroups,
+                                     final AccessibleUser user) {
     LOGGER.info(String.format(
         "Выполняю запрос на получение флага для страницы '%d', девайса '%s' и гео-групп '%s'",
         pageId, device, Arrays.toString(geoGroups.toArray())));
     final var response =
         given()
             .spec(involvementsSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .queryParam("pageId", pageId)
             .queryParam("device", device)
             .queryParam("geoGroups", geoGroups)

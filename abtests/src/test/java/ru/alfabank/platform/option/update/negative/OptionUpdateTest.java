@@ -9,6 +9,7 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
@@ -22,7 +23,6 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.Widget;
-import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest;
 import ru.alfabank.platform.option.OptionBaseTest;
 
@@ -54,10 +54,9 @@ public class OptionUpdateTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
-    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(5).toString();
-    var page1 = createPage(null, null, true);
-    final var page2 = createPage(null, null, true);
+    var page1 = createPage(null, null, true, getContentManager());
+    final var page2 = createPage(null, null, true, getContentManager());
     final var pageId1 = page1.getId();
     final var pageId2 = page2.getId();
     defaultWidget = createWidget(
@@ -68,7 +67,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     page1 = createdPages.get(pageId1);
     defaultWidget1 = createWidget(
         page1,
@@ -78,7 +78,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     widget1 = createWidget(page1,
         defaultWidget1,
         desktop,
@@ -86,7 +87,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     page1 = createdPages.get(pageId1);
     defaultWidget2 = createWidget(
         page1,
@@ -96,7 +98,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     widget2 = createWidget(
         page1,
         defaultWidget2,
@@ -105,7 +108,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     page1 = createdPages.get(pageId1);
     abTestWidget = createWidget(
         page1,
@@ -115,7 +119,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     abTestWidget1 = createWidget(
         page1,
         null,
@@ -124,7 +129,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     widget4 = createWidget(
         page1,
         abTestWidget1,
@@ -133,7 +139,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     page1 = createdPages.get(pageId1);
     abTestWidget2 = createWidget(
         page1,
@@ -143,7 +150,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     widget5 = createWidget(
         page1,
         abTestWidget2,
@@ -152,7 +160,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     page1 = createdPages.get(pageId1);
     final var widget6 = createWidget(
         page1,
@@ -162,7 +171,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     abTestWidget3 = createWidget(
         page1,
         widget6,
@@ -171,19 +181,22 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     experiment1 = createExperiment(
         defaultWidget.getDevice(),
         pageId1,
         getRandomProductType(),
         experimentEnd,
-        .5D);
+        .5D,
+        getContentManager());
     experiment2 = createExperiment(
         defaultWidget.getDevice(),
         pageId2,
         getRandomProductType(),
         experimentEnd,
-        .5D);
+        .5D,
+        getContentManager());
   }
 
   /**
@@ -473,8 +486,8 @@ public class OptionUpdateTest extends OptionBaseTest {
   public void optionUpdateTest(@ParameterKey("Тест-кейс") final String testCase,
                                @ParameterKey("Существующий вариант") final Option existingOption,
                                @ParameterKey("Изменить на") final Option optionModification) {
-    createdOption = createOption(existingOption);
-    final var response = modifyOptionAssumingFail(createdOption, optionModification);
+    createdOption = createOption(existingOption, getContentManager());
+    final var response = modifyOptionAssumingFail(createdOption, optionModification, getContentManager());
     final var softly = new SoftAssertions();
     switch (Integer.parseInt(testCase.replaceAll("[\\D]", ""))) {
       case 1:
@@ -606,7 +619,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         throw new IllegalArgumentException("Неучтенный тест-кейс");
       }
     }
-    getOption(createdOption)
+    getOption(createdOption, getContentManager())
         .equals(new Option.Builder()
             .using(createdOption)
             .build());
@@ -673,7 +686,7 @@ public class OptionUpdateTest extends OptionBaseTest {
       @ParameterKey("Тест-кейс") final String testCase,
       @ParameterKey("Вариант АБ-теста") final Option abTestOption,
       @ParameterKey("Вариант по-умолчанию") final Option defaultOption) {
-    Option createdAbTestOption = createOption(abTestOption);
+    Option createdAbTestOption = createOption(abTestOption, getContentManager());
     Option abTestOptionModification = new Option.Builder()
         .setDefault(false)
         .setName(NAME + "1")
@@ -682,7 +695,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         .setExperimentUuid(experiment1.getUuid())
         .setTrafficRate(.5D)
         .build();
-    Option createdDefaultOption = createOption(defaultOption);
+    Option createdDefaultOption = createOption(defaultOption, getContentManager());
     Option defaultOptionModification = new Option.Builder()
         .setDefault(false)
         .setName(NAME + "2")
@@ -694,11 +707,11 @@ public class OptionUpdateTest extends OptionBaseTest {
     final var softly = new SoftAssertions();
     switch (Integer.parseInt(testCase.replaceAll("[\\D]", ""))) {
       case 1: {
-        runExperimentAssumingSuccess(experiment1);
+        runExperimentAssumingSuccess(experiment1, getContentManager());
         final var response1 =
-            modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification);
+            modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification, getContentManager());
         final var response2 =
-            modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification);
+            modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification, getContentManager());
         softly.assertThat(response1.asString())
             .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
         softly.assertThat(response2.asString())
@@ -706,11 +719,11 @@ public class OptionUpdateTest extends OptionBaseTest {
         break;
       }
       case 2: {
-        stopExperimentAssumingSuccess(experiment1);
+        stopExperimentAssumingSuccess(experiment1, getContentManager());
         final var response1 =
-            modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification);
+            modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification, getContentManager());
         final var response2 =
-            modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification);
+            modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification, getContentManager());
         softly.assertThat(response1.asString())
             .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
         softly.assertThat(response2.asString())
@@ -725,11 +738,11 @@ public class OptionUpdateTest extends OptionBaseTest {
         throw new IllegalArgumentException("Неучтенный тест-кейс");
       }
     }
-    getOption(createdAbTestOption)
+    getOption(createdAbTestOption, getContentManager())
         .equals(new Option.Builder()
             .using(createdAbTestOption)
             .build());
-    getOption(createdDefaultOption)
+    getOption(createdDefaultOption, getContentManager())
         .equals(new Option.Builder()
             .using(createdDefaultOption)
             .build());
@@ -742,7 +755,7 @@ public class OptionUpdateTest extends OptionBaseTest {
   @AfterMethod(onlyForGroups = "1")
   public void afterMethod() {
     if (createdOption != null) {
-      deleteOption(createdOption);
+      deleteOption(createdOption, getContentManager());
       createdOption = null;
     }
   }

@@ -20,7 +20,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.TestNGException;
-import ru.alfabank.platform.businessobjects.enums.User;
+import ru.alfabank.platform.users.AccessibleUser;
 
 public class BasePage {
 
@@ -51,7 +51,8 @@ public class BasePage {
    * @param user user
    * @return this
    */
-  public MainSliderPage openAndAuthorize(final String url, final User user) {
+  public MainSliderPage openAndAuthorize(final String url,
+                                         final AccessibleUser user) {
     String fullUrl =  url + "acms/";
     LOGGER.info(String.format("Перехожу по адресу '%s'", fullUrl));
     getDriver().get(fullUrl);

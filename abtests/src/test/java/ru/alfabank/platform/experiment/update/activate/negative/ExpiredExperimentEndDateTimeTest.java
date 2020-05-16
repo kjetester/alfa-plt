@@ -7,6 +7,7 @@ import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DE
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,29 +15,27 @@ import java.util.concurrent.TimeUnit;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.enums.User;
 
 public class ExpiredExperimentEndDateTimeTest extends BaseTest {
 
   @Test (description = "Тест активации эксперимента с негативным условием:"
       + "\n\tДата окончания эксперимента менее, чем +1 день")
   public void variantAssignedToSharedWidgetTest() throws InterruptedException {
-    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusDays(1).plusMinutes(5);
     final var endDateTimeAsString = end.toString();
-    var page = createPage(null, null, true);
+    var page = createPage(null, null, true, getContentManager());
     final var pageId = page.getId();
-    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null);
-    createWidget(createdPages.get(pageId), null, desktop, false, FOR_AB_TEST, false, null, null);
+    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null, getContentManager());
+    createWidget(createdPages.get(pageId), null, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
     final var widget1 = page.getWidgetList().get(0);
     final var widget2 = page.getWidgetList().get(1);
     final var device = widget1.getDevice();
     final var trafficRate = .5D;
     final var actualExperiment =
-        createExperiment(device, pageId, getRandomProductType(), endDateTimeAsString, trafficRate);
-    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), trafficRate);
-    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), trafficRate);
+        createExperiment(device, pageId, getRandomProductType(), endDateTimeAsString, trafficRate, getContentManager());
+    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
+    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
     final var expectedExperiment = new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
         .setCookieValue(actualExperiment.getCookieValue())
@@ -47,7 +46,7 @@ public class ExpiredExperimentEndDateTimeTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(getUser().getLogin())
+        .setCreatedBy(getContentManager().getLogin())
         .setActivationDate(start)
         .setStatus(DISABLED)
         .setCreationDate(start)
@@ -56,7 +55,7 @@ public class ExpiredExperimentEndDateTimeTest extends BaseTest {
     while (LocalDateTime.now().isBefore(deadline)) {
       TimeUnit.SECONDS.sleep(1);
     }
-    final var result = runExperimentAssumingFail(actualExperiment);
+    final var result = runExperimentAssumingFail(actualExperiment, getContentManager());
     assertThat(result.getStatusCode())
         .as("Проверка статус-кода")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
@@ -64,6 +63,6 @@ public class ExpiredExperimentEndDateTimeTest extends BaseTest {
         .as("Проверка сообщения об ошибке")
         .containsIgnoringCase("Минимально допустимая продолжительность эксперимента "
             + actualExperiment.getUuid() + " составляет: 1 день");
-    getExperiment(actualExperiment).checkUpdatedExperiment(expectedExperiment);
+    getExperiment(actualExperiment, getContentManager()).checkUpdatedExperiment(expectedExperiment);
   }
 }

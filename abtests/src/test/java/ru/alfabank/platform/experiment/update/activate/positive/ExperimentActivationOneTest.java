@@ -7,6 +7,7 @@ import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DE
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.RUNNING;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -14,7 +15,6 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Widget;
-import ru.alfabank.platform.businessobjects.enums.User;
 
 public class ExperimentActivationOneTest extends BaseTest {
 
@@ -41,57 +41,56 @@ public class ExperimentActivationOneTest extends BaseTest {
       + "\n\t\t\t* родитель experimentOptionName=default"
       + "\n\t\t\t* ребенок experimentOptionName=forABtest")
   public void positiveExperimentActivationOneTest() {
-    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().toString();
     final var end = getCurrentDateTime().plusHours(27).plusMinutes(20).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(15).toString();
-    var page = createPage(start, end, true);
+    var page = createPage(start, end, true, getContentManager());
     final var pageId = page.getId();
     // Создание эксперимента для DESKTOP версии страницы
     final var desktopWidget0 = createWidget(
-        page, null, desktop, false, FOR_AB_TEST, false, start, end);
+        page, null, desktop, false, FOR_AB_TEST, false, start, end, getContentManager());
     final var desktopWidget1 = createWidget(
-        page, desktopWidget0, desktop, true, DEFAULT, true, start, end);
+        page, desktopWidget0, desktop, true, DEFAULT, true, start, end, getContentManager());
     final var desktopWidget1_1 = createWidget(
-        page, desktopWidget1, desktop, true, DEFAULT, true, start, end);
+        page, desktopWidget1, desktop, true, DEFAULT, true, start, end, getContentManager());
     final var desktopWidget1_1_1 = createWidget(
-        page, desktopWidget1_1, desktop, true, DEFAULT, true, start, end);
+        page, desktopWidget1_1, desktop, true, DEFAULT, true, start, end, getContentManager());
     page = createdPages.get(pageId);
     final var desktopWidget2 = createWidget(
-        page, null, desktop, true, DEFAULT, true, null, null);
+        page, null, desktop, true, DEFAULT, true, null, null, getContentManager());
     final var desktopWidget2_1 = createWidget(
-        page, desktopWidget2, desktop, false, FOR_AB_TEST, false, null, null);
+        page, desktopWidget2, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
     final var desktopWidget2_1_1 = createWidget(
-        page, desktopWidget2_1, desktop, false, FOR_AB_TEST, false, null, null);
+        page, desktopWidget2_1, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
     page = createdPages.get(pageId);
     final var desktopExperiment = createExperiment(
-        desktop, pageId, getRandomProductType(), experimentEnd, .5D);
+        desktop, pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
     final var desktopExperimentDefaultOption = createOption(
-        true, List.of(desktopWidget1_1.getUid()), desktopExperiment.getUuid(), .5D);
+        true, List.of(desktopWidget1_1.getUid()), desktopExperiment.getUuid(), .5D, getContentManager());
     final var desktopExperimentAbTestOption = createOption(
-        false, List.of(desktopWidget2_1.getUid()), desktopExperiment.getUuid(), .5D);
+        false, List.of(desktopWidget2_1.getUid()), desktopExperiment.getUuid(), .5D, getContentManager());
     // Создание эксперимента для MOBILE версии страницы
     final var mobileWidget0 = createWidget(
-        page, null, mobile, false, FOR_AB_TEST, false, start, end);
+        page, null, mobile, false, FOR_AB_TEST, false, start, end, getContentManager());
     final var mobileWidget1 = createWidget(
-        page, mobileWidget0, mobile, true, DEFAULT, true, start, end);
+        page, mobileWidget0, mobile, true, DEFAULT, true, start, end, getContentManager());
     final var mobileWidget1_1 = createWidget(
-        page, mobileWidget1, mobile, true, DEFAULT, true, start, end);
+        page, mobileWidget1, mobile, true, DEFAULT, true, start, end, getContentManager());
     final var mobileWidget1_1_1 = createWidget(
-        page, mobileWidget1_1, mobile, true, DEFAULT, true, start, end);
+        page, mobileWidget1_1, mobile, true, DEFAULT, true, start, end, getContentManager());
     page = createdPages.get(pageId);
     final var mobileWidget2 = createWidget(
-        page, null, mobile, true, DEFAULT, true, null, null);
+        page, null, mobile, true, DEFAULT, true, null, null, getContentManager());
     final var mobileWidget2_1 = createWidget(
-        page, mobileWidget2, mobile, false, FOR_AB_TEST, false, null, null);
+        page, mobileWidget2, mobile, false, FOR_AB_TEST, false, null, null, getContentManager());
     final var mobileWidget2_1_1 = createWidget(
-        page, mobileWidget2_1, mobile, false, FOR_AB_TEST, false, null, null);
+        page, mobileWidget2_1, mobile, false, FOR_AB_TEST, false, null, null, getContentManager());
     final var mobileExperiment = createExperiment(
-        mobile, pageId, getRandomProductType(), experimentEnd, .5D);
+        mobile, pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
     final var mobileExperimentDefaultOption = createOption(
-        true, List.of(mobileWidget1_1.getUid()), mobileExperiment.getUuid(), .5D);
+        true, List.of(mobileWidget1_1.getUid()), mobileExperiment.getUuid(), .5D, getContentManager());
     final var mobileExperimentAbTestOption = createOption(
-        false, List.of(mobileWidget2_1.getUid()), mobileExperiment.getUuid(), .5D);
+        false, List.of(mobileWidget2_1.getUid()), mobileExperiment.getUuid(), .5D, getContentManager());
 
     // Проверка запуска экспермиента для DESKTOP версии страницы
     final var expectedDesktopExperiment = new Experiment.Builder()
@@ -104,14 +103,14 @@ public class ExperimentActivationOneTest extends BaseTest {
         .setTrafficRate(desktopExperiment.getTrafficRate())
         .setDevice(desktopExperiment.getDevice())
         .setEnabled(true)
-        .setCreatedBy(getUser().getLogin())
-        .setActivatedBy(getUser().getLogin())
+        .setCreatedBy(getContentManager().getLogin())
+        .setActivatedBy(getContentManager().getLogin())
         .setActivationDate(start)
         .setStatus(RUNNING)
         .setCreationDate(start)
         .build();
-    runExperimentAssumingSuccess(desktopExperiment);
-    getExperiment(desktopExperiment).equals(expectedDesktopExperiment);
+    runExperimentAssumingSuccess(desktopExperiment, getContentManager());
+    getExperiment(desktopExperiment, getContentManager()).equals(expectedDesktopExperiment);
 
     // Проверка запуска экспермиента для MOBILE версии страницы
     final var expectedMobileExperiment = new Experiment.Builder()
@@ -124,14 +123,14 @@ public class ExperimentActivationOneTest extends BaseTest {
         .setTrafficRate(mobileExperiment.getTrafficRate())
         .setDevice(mobileExperiment.getDevice())
         .setEnabled(true)
-        .setCreatedBy(getUser().getLogin())
-        .setActivatedBy(getUser().getLogin())
+        .setCreatedBy(getContentManager().getLogin())
+        .setActivatedBy(getContentManager().getLogin())
         .setActivationDate(start)
         .setStatus(RUNNING)
         .setCreationDate(start)
         .build();
-    runExperimentAssumingSuccess(mobileExperiment);
-    getExperiment(mobileExperiment).equals(expectedMobileExperiment);
+    runExperimentAssumingSuccess(mobileExperiment, getContentManager());
+    getExperiment(mobileExperiment, getContentManager()).equals(expectedMobileExperiment);
 
     // Проверка переопределения названий DESKTOP виджетов
     final var expectedDesktopWidgetsList = List.of(
@@ -164,7 +163,7 @@ public class ExperimentActivationOneTest extends BaseTest {
                             .setExperimentOptionName(desktopExperimentAbTestOption.getName())
                             .isEnabled(true)
                             .build())).build())).build());
-    final var actualDesktopWidgetsList = getWidgetsList(pageId, desktop);
+    final var actualDesktopWidgetsList = getWidgetsList(pageId, desktop, getContentManager());
     IntStream.range(0, expectedDesktopWidgetsList.size()).forEach(i ->
         assertThat(actualDesktopWidgetsList.get(i)).isEqualTo(expectedDesktopWidgetsList.get(i)));
 
@@ -199,7 +198,7 @@ public class ExperimentActivationOneTest extends BaseTest {
                             .setExperimentOptionName(mobileExperimentAbTestOption.getName())
                             .isEnabled(true)
                             .build())).build())).build());
-    final var actualMobileWidgetsList = getWidgetsList(pageId, mobile);
+    final var actualMobileWidgetsList = getWidgetsList(pageId, mobile, getContentManager());
     IntStream.range(0, expectedMobileWidgetsList.size()).forEach(i ->
         assertThat(actualMobileWidgetsList.get(i)).isEqualTo(expectedMobileWidgetsList.get(i)));
   }

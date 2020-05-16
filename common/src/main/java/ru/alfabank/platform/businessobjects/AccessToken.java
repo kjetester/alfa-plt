@@ -79,8 +79,7 @@ public class AccessToken {
   }
 
   @JsonIgnore
-  private AccessToken setExpireRefreshTokenTime(LocalDateTime expireRefreshTokenTime) {
+  private void setExpireRefreshTokenTime(LocalDateTime expireRefreshTokenTime) {
     this.expireRefreshTokenTime = expireRefreshTokenTime;
-    return this;
   }
 }

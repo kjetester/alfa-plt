@@ -6,28 +6,27 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.enums.User;
 
 public class NoVariantsTest extends BaseTest {
 
   @Test (description = "Тест активации эксперимента с негативным условием:"
       + "\n\tНет вариантов")
   public void noVariantsTest() {
-    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true);
+    var page = createPage(null, null, true, getContentManager());
     final var pageId = page.getId();
-    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null);
-    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null);
+    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null, getContentManager());
+    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null, getContentManager());
     final var device = page.getWidgetList().get(0).getDevice();
     final var trafficRate = .5D;
     final var actualExperiment =
-        createExperiment(device, pageId, getRandomProductType(), end, trafficRate);
+        createExperiment(device, pageId, getRandomProductType(), end, trafficRate, getContentManager());
     final var expectedExperiment = new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
         .setCookieValue(actualExperiment.getCookieValue())
@@ -38,12 +37,12 @@ public class NoVariantsTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(false)
-        .setCreatedBy(getUser().getLogin())
+        .setCreatedBy(getContentManager().getLogin())
         .setActivationDate(start)
         .setStatus(DISABLED)
         .setCreationDate(start)
         .build();
-    final var result = runExperimentAssumingFail(actualExperiment);
+    final var result = runExperimentAssumingFail(actualExperiment, getContentManager());
     assertThat(result.getStatusCode())
         .as("Проверка статус-кода")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
@@ -51,6 +50,6 @@ public class NoVariantsTest extends BaseTest {
         .as("Проверка сообщения об ошибке")
         .containsIgnoringCase("У эксперимента '"
             + actualExperiment.getUuid() + "' должно быть минимум 2 вариаций");
-    getExperiment(actualExperiment).checkUpdatedExperiment(expectedExperiment);
+    getExperiment(actualExperiment, getContentManager()).checkUpdatedExperiment(expectedExperiment);
   }
 }

@@ -12,6 +12,7 @@ import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FO
 import static ru.alfabank.platform.businessobjects.enums.ProductType.MG;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
@@ -25,7 +26,6 @@ import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
-import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.experiment.update.positive.UpdateInactiveExperimentTest;
 
 public class UpdateActiveExperimentTest extends BaseTest {
@@ -40,8 +40,7 @@ public class UpdateActiveExperimentTest extends BaseTest {
   @BeforeMethod(description = "Создание активного эксперимента "
       + "для негативного теста изменения активного эксперимента")
   public void beforeMethod() {
-    setUser(User.CONTENT_MANAGER);
-    var page = createPage(null, null, true);
+    var page = createPage(null, null, true, getContentManager());
     createWidget(
         createdPages.get(page.getId()),
         null,
@@ -50,7 +49,8 @@ public class UpdateActiveExperimentTest extends BaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     page = createdPages.get(page.getId());
     final var widget = page.getWidgetList().get(0);
     experiment = createExperiment(
@@ -58,10 +58,11 @@ public class UpdateActiveExperimentTest extends BaseTest {
         page.getId(),
         getRandomProductType(),
         getValidEndDate(),
-        0.9);
-    createOption(true, emptyList(), experiment.getUuid(), .5D);
-    createOption(false, List.of(widget.getUid()), experiment.getUuid(), .5D);
-    experiment = runExperimentAssumingSuccess(experiment);
+        0.9,
+        getContentManager());
+    createOption(true, emptyList(), experiment.getUuid(), .5D, getContentManager());
+    createOption(false, List.of(widget.getUid()), experiment.getUuid(), .5D, getContentManager());
+    experiment = runExperimentAssumingSuccess(experiment, getContentManager());
   }
 
   @Test (
@@ -160,7 +161,7 @@ public class UpdateActiveExperimentTest extends BaseTest {
     var response =
         given()
             .spec(getDeletePatchExperimentSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(getContentManager().getJwt().getAccessToken())
             .pathParam("uuid", experiment.getUuid())
             .body(changeSetBody)
         .when()

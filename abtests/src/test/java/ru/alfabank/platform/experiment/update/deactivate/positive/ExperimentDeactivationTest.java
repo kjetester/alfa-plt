@@ -6,6 +6,7 @@ import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DE
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.CANCELLED;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -13,15 +14,13 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Widget;
-import ru.alfabank.platform.businessobjects.enums.User;
 
 public class ExperimentDeactivationTest extends BaseTest {
 
   @Test (description = "Позитивный тест деактивации эксперимента")
   public void experimentDeactivationTest() {
-    setUser(User.CONTENT_MANAGER);
     final var experimentEndDate = getCurrentDateTime().plusDays(5).toString();
-    var page = createPage(null, null, true);
+    var page = createPage(null, null, true, getContentManager());
     final var pageId = page.getId();
     final var widget1 = createWidget(
         page,
@@ -31,7 +30,8 @@ public class ExperimentDeactivationTest extends BaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     final var widget1_1 = createWidget(
         page,
         widget1,
@@ -40,7 +40,8 @@ public class ExperimentDeactivationTest extends BaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     page = createdPages.get(pageId);
     final var widget2 = createWidget(
         page,
@@ -50,7 +51,8 @@ public class ExperimentDeactivationTest extends BaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     final var widget2_1 = createWidget(
         page,
         widget2,
@@ -59,17 +61,18 @@ public class ExperimentDeactivationTest extends BaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     final var device = widget1.getDevice();
     final var trafficRate = .5D;
     var actualExperiment =
-        createExperiment(device, pageId, getRandomProductType(), experimentEndDate, trafficRate);
-    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), trafficRate);
-    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), trafficRate);
-    actualExperiment = runExperimentAssumingSuccess(actualExperiment);
+        createExperiment(device, pageId, getRandomProductType(), experimentEndDate, trafficRate, getContentManager());
+    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
+    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
+    actualExperiment = runExperimentAssumingSuccess(actualExperiment, getContentManager());
     // TEST //
-    actualExperiment = stopExperimentAssumingSuccess(actualExperiment);
-    getExperiment(actualExperiment).equals(new Experiment.Builder()
+    actualExperiment = stopExperimentAssumingSuccess(actualExperiment, getContentManager());
+    getExperiment(actualExperiment, getContentManager()).equals(new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
         .setCookieValue(actualExperiment.getCookieValue())
         .setDescription(actualExperiment.getDescription())
@@ -84,7 +87,7 @@ public class ExperimentDeactivationTest extends BaseTest {
         .setActivationDate(actualExperiment.getActivationDate())
         .setActivatedBy(actualExperiment.getActivatedBy())
         .setDeactivationDate(getCurrentDateTime().toString())
-        .setDeactivatedBy(getUser().getLogin())
+        .setDeactivatedBy(getContentManager().getLogin())
         .setStatus(CANCELLED)
         .build());
     final var expectedWidgetsList = List.of(
@@ -101,7 +104,7 @@ public class ExperimentDeactivationTest extends BaseTest {
                     .setExperimentOptionName(DEFAULT.toString())
                     .build()))
             .build());
-    final var actualWidgetsList = getWidgetsList(pageId, device);
+    final var actualWidgetsList = getWidgetsList(pageId, device, getContentManager());
     IntStream.range(0, expectedWidgetsList.size()).forEach(i ->
         assertThat(actualWidgetsList.get(i)).isEqualTo(expectedWidgetsList.get(i)));
   }

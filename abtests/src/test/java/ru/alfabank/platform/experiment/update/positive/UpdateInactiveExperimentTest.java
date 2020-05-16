@@ -6,6 +6,7 @@ import static org.apache.http.HttpStatus.SC_CREATED;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,6 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
-import ru.alfabank.platform.businessobjects.enums.User;
 
 public class UpdateInactiveExperimentTest extends BaseTest {
 
@@ -31,15 +31,14 @@ public class UpdateInactiveExperimentTest extends BaseTest {
   @BeforeMethod(description = "Создание неактивного эксперимента "
       + "для позитивного теста изменения неактивного эксперимента")
   public void beforeMethod() {
-    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(start, end, true);
+    var page = createPage(start, end, true, getContentManager());
     final var randomAlphanumeric = randomAlphanumeric(50);
     experiment =
         given()
             .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(getContentManager().getJwt().getAccessToken())
             .body(
                 new Experiment.Builder()
                     .setDevice(desktop)
@@ -124,7 +123,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         throw new IllegalArgumentException();
       }
     }
-    modifyExperiment(experiment, changeSetBody).checkUpdatedExperiment(expected);
+    modifyExperiment(experiment, changeSetBody, getContentManager()).checkUpdatedExperiment(expected);
   }
 
   /**

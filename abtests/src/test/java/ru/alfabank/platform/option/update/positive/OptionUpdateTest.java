@@ -6,6 +6,7 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
@@ -16,7 +17,6 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.Widget;
-import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionUpdateTest extends OptionBaseTest {
@@ -37,9 +37,8 @@ public class OptionUpdateTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
-    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(5).toString();
-    var page = createPage(null, null, true);
+    var page = createPage(null, null, true, getContentManager());
     final var pageId = page.getId();
     final var widget_1 = createWidget(
         page,
@@ -49,7 +48,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     final var widget_1_1 = createWidget(
         page,
         widget_1,
@@ -58,7 +58,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     defaultWidget1 = createWidget(
         page,
         widget_1_1,
@@ -67,7 +68,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     createWidget(
         page,
         defaultWidget1,
@@ -76,7 +78,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     final var widget_2 = createWidget(
         page,
         null,
@@ -85,7 +88,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     final var widget_2_1 = createWidget(
         page,
         widget_2,
@@ -94,7 +98,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     defaultWidget2 = createWidget(
         page,
         widget_2_1,
@@ -103,7 +108,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     createWidget(
         page,
         defaultWidget2,
@@ -112,7 +118,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     page = createdPages.get(pageId);
     final var widget_3 = createWidget(
         page,
@@ -122,7 +129,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     abTestWidget1 = createWidget(
         page,
         widget_3,
@@ -131,7 +139,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     createWidget(
         page,
         abTestWidget1,
@@ -140,7 +149,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     final var widget_4 = createWidget(
         page,
         null,
@@ -149,7 +159,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         DEFAULT,
         true,
         null,
-        null);
+        null,
+        getContentManager());
     abTestWidget2 = createWidget(
         page,
         widget_4,
@@ -158,7 +169,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     createWidget(
         page,
         abTestWidget2,
@@ -167,13 +179,15 @@ public class OptionUpdateTest extends OptionBaseTest {
         FOR_AB_TEST,
         false,
         null,
-        null);
+        null,
+        getContentManager());
     experiment = createExperiment(
         widget_1.getDevice(),
         pageId,
         getRandomProductType(),
         experimentEnd,
-        .5D);
+        .5D,
+        getContentManager());
 
   }
 
@@ -496,17 +510,17 @@ public class OptionUpdateTest extends OptionBaseTest {
       @ParameterKey("Тест-кейс") final String testCase,
       @ParameterKey("Существующий вариант") final Option existing,
       @ParameterKey("Изменить на") final Option modification) {
-    createdOption = createOption(existing);
-    final var modifiedOption = modifyOption(createdOption, modification);
+    createdOption = createOption(existing, getContentManager());
+    final var modifiedOption = modifyOption(createdOption, modification, getContentManager());
     if (testCase.contains("Изменение ассоцииации варианта с экспериментом ")) {
-      getOption(modifiedOption)
+      getOption(modifiedOption, getContentManager())
           .equals(new Option.Builder()
               .using(modification)
               .setUuid(modifiedOption.getUuid())
               .setExperimentUuid(modification.getExperimentUuid())
               .build());
     } else {
-      getOption(modifiedOption)
+      getOption(modifiedOption, getContentManager())
           .equals(new Option.Builder()
               .using(modification)
               .setUuid(modifiedOption.getUuid())
@@ -520,7 +534,7 @@ public class OptionUpdateTest extends OptionBaseTest {
   @AfterMethod
   public void afterMethod() {
     if (createdOption != null) {
-      deleteOption(createdOption);
+      deleteOption(createdOption, getContentManager());
       createdOption = null;
     }
   }

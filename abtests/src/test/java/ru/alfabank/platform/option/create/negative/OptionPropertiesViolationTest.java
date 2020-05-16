@@ -4,13 +4,13 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
 import java.util.UUID;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionPropertiesViolationTest extends OptionBaseTest {
@@ -22,10 +22,10 @@ public class OptionPropertiesViolationTest extends OptionBaseTest {
   @DataProvider
   public Object[][] valuesProvider() {
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true);
+    var page = createPage(null, null, true, getContentManager());
     final var pageId = page.getId();
     final var experiment = createExperiment(
-        desktop, pageId, getRandomProductType(), experimentEnd, .5D);
+        desktop, pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
     return new Object[][]{
         {1, true, List.of("absentWidgetUUID"), experiment.getUuid(), .1D},
         {2, true, List.of(), UUID.randomUUID().toString(), .1D},
@@ -43,8 +43,7 @@ public class OptionPropertiesViolationTest extends OptionBaseTest {
       @ParameterKey("widgetUids") final List<String> widgetUids,
       @ParameterKey("experimentUuid") final String experimentUuid,
       @ParameterKey("trafficRate") final Double trafficRate) {
-    setUser(User.CONTENT_MANAGER);
-    final var result = createOptionAssumingFail(isDefault, widgetUids, experimentUuid, trafficRate);
+    final var result = createOptionAssumingFail(isDefault, widgetUids, experimentUuid, trafficRate, getContentManager());
     switch (testCase) {
       case 1: {
         assertThat(result.getStatusCode())

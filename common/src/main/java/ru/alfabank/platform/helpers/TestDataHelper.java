@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import org.testng.TestNGException;
 import ru.alfabank.platform.businessobjects.Page;
 import ru.alfabank.platform.businessobjects.Widget;
-import ru.alfabank.platform.businessobjects.enums.User;
+import ru.alfabank.platform.users.AccessibleUser;
 
 public class TestDataHelper {
 
@@ -30,7 +30,8 @@ public class TestDataHelper {
    * @param user user
    * @param page test page
    */
-  public TestDataHelper(User user, Page page) {
+  public TestDataHelper(final AccessibleUser user,
+                        final Page page) {
     this.page = page;
     loadProps();
     String oauth2Token = given().relaxedHTTPSValidation()

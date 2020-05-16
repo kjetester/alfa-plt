@@ -4,12 +4,12 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import io.restassured.response.Response;
 import java.util.List;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class UnassignedOptionLimitViolationTest extends OptionBaseTest {
@@ -18,19 +18,18 @@ public class UnassignedOptionLimitViolationTest extends OptionBaseTest {
       dataProvider = "dataProvider")
   public void oneDefaultOptionLimitTest(
       @ParameterKey ("Дефолтный вариант") final Boolean isDefaultOption) {
-    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true);
+    var page = createPage(null, null, true, getContentManager());
     final var pageId = page.getId();
     final var experiment = createExperiment(
-        desktop, pageId, getRandomProductType(), experimentEnd, .5D);
+        desktop, pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
     final Response result;
     if (isDefaultOption) {
-      createOption(false, List.of(), experiment.getUuid(), .5D);
-      result = createOptionAssumingFail(true, List.of(), experiment.getUuid(), .5D);
+      createOption(false, List.of(), experiment.getUuid(), .5D, getContentManager());
+      result = createOptionAssumingFail(true, List.of(), experiment.getUuid(), .5D, getContentManager());
     } else {
-      createOption(true, List.of(), experiment.getUuid(), .5D);
-      result = createOptionAssumingFail(false, List.of(), experiment.getUuid(), .5D);
+      createOption(true, List.of(), experiment.getUuid(), .5D, getContentManager());
+      result = createOptionAssumingFail(false, List.of(), experiment.getUuid(), .5D, getContentManager());
     }
     assertThat(result.getStatusCode())
         .as("Проверка статус-кода")

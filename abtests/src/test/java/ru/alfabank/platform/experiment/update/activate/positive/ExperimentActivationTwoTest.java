@@ -5,12 +5,12 @@ import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DE
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.RUNNING;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.enums.User;
 
 public class ExperimentActivationTwoTest extends BaseTest {
 
@@ -31,11 +31,10 @@ public class ExperimentActivationTwoTest extends BaseTest {
       + "\n\t\t\t* defaultWidget=false"
       + "\n\t\t3. Недефолтный вариант не привязан виджету")
   public void positiveExperimentActivationTwoTest() {
-    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusHours(27).plusMinutes(10).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(start, end, true);
+    var page = createPage(start, end, true, getContentManager());
     final var widget1 = createWidget(createdPages.get(page.getId()),
         null,
         desktop,
@@ -43,7 +42,8 @@ public class ExperimentActivationTwoTest extends BaseTest {
         DEFAULT,
         true,
         start,
-        end);
+        end,
+        getContentManager());
     final var widget2 = createWidget(createdPages.get(page.getId()),
         null,
         desktop,
@@ -51,14 +51,15 @@ public class ExperimentActivationTwoTest extends BaseTest {
         FOR_AB_TEST,
         false,
         start,
-        end);
+        end,
+        getContentManager());
     page = createdPages.get(page.getId());
     final var actualExperiment =
         createExperiment(createdPages.get(page.getId()).getWidgetList().get(0).getDevice(),
-            page.getId(), getRandomProductType(), experimentEnd, .5D);
-    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(),  .33D);
-    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), .33D);
-    createOption(false, null, actualExperiment.getUuid(), .34D);
+            page.getId(), getRandomProductType(), experimentEnd, .5D, getContentManager());
+    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(),  .33D, getContentManager());
+    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), .33D, getContentManager());
+    createOption(false, null, actualExperiment.getUuid(), .34D, getContentManager());
     final var expectedExperiment = new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
         .setCookieValue(actualExperiment.getCookieValue())
@@ -69,14 +70,14 @@ public class ExperimentActivationTwoTest extends BaseTest {
         .setTrafficRate(actualExperiment.getTrafficRate())
         .setDevice(actualExperiment.getDevice())
         .setEnabled(true)
-        .setCreatedBy(getUser().getLogin())
-        .setActivatedBy(getUser().getLogin())
+        .setCreatedBy(getContentManager().getLogin())
+        .setActivatedBy(getContentManager().getLogin())
         .setActivationDate(start)
         .setStatus(RUNNING)
         .setCreationDate(start)
         .build();
 
     // TEST //
-    runExperimentAssumingSuccess(actualExperiment).checkActivatedExperiment(expectedExperiment);
+    runExperimentAssumingSuccess(actualExperiment, getContentManager()).checkActivatedExperiment(expectedExperiment);
   }
 }

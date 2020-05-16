@@ -6,6 +6,7 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import io.restassured.response.Response;
@@ -19,7 +20,6 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.Widget;
-import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest;
 import ru.alfabank.platform.option.OptionBaseTest;
 
@@ -39,15 +39,14 @@ public class OptionDeleteTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
-    setUser(User.CONTENT_MANAGER);
-    var page = createPage(null, null, true);
+    var page = createPage(null, null, true, getContentManager());
     final var pageId = page.getId();
     defaultWidget = createWidget(
-        page, null, desktop, true, DEFAULT, true, null, null);
+        page, null, desktop, true, DEFAULT, true, null, null, getContentManager());
     abTestWidget = createWidget(
-        page, null, desktop, false, FOR_AB_TEST, false, null, null);
+        page, null, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
     experiment = createExperiment(
-        defaultWidget.getDevice(), pageId, getRandomProductType(), experimentEnd, .5D);
+        defaultWidget.getDevice(), pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
   }
 
   /**
@@ -121,17 +120,17 @@ public class OptionDeleteTest extends OptionBaseTest {
     Response response2;
     switch (Integer.parseInt(testCase.replaceAll("[\\D]", ""))) {
       case 1: {
-        createdDefaultOption = createOption(defaultOption);
-        createdAbTestOption = createOption(abTestOption);
-        runExperimentAssumingSuccess(experiment);
-        response1 = deleteOptionAssumingFail(createdDefaultOption);
-        response2 = deleteOptionAssumingFail(createdAbTestOption);
+        createdDefaultOption = createOption(defaultOption, getContentManager());
+        createdAbTestOption = createOption(abTestOption, getContentManager());
+        runExperimentAssumingSuccess(experiment, getContentManager());
+        response1 = deleteOptionAssumingFail(createdDefaultOption, getContentManager());
+        response2 = deleteOptionAssumingFail(createdAbTestOption, getContentManager());
         break;
       }
       case 2: {
-        stopExperimentAssumingSuccess(experiment);
-        response1 = deleteOptionAssumingFail(createdDefaultOption);
-        response2 = deleteOptionAssumingFail(createdAbTestOption);
+        stopExperimentAssumingSuccess(experiment, getContentManager());
+        response1 = deleteOptionAssumingFail(createdDefaultOption, getContentManager());
+        response2 = deleteOptionAssumingFail(createdAbTestOption, getContentManager());
         break;
       }
       case 3: {
@@ -156,10 +155,10 @@ public class OptionDeleteTest extends OptionBaseTest {
     softly.assertThat(response2.asString())
         .as("Невозможно удалить вариант")
         .contains("Невозможно удалить вариант '" + createdAbTestOption.getUuid());
-    softly.assertThat(getOption(createdDefaultOption))
+    softly.assertThat(getOption(createdDefaultOption, getContentManager()))
         .as("Проверка существования варианта")
         .isNotNull();
-    softly.assertThat(getOption(createdAbTestOption))
+    softly.assertThat(getOption(createdAbTestOption, getContentManager()))
         .as("Проверка существования варианта")
         .isNotNull();
     softly.assertAll();

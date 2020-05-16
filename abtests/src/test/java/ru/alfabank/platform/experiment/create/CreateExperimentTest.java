@@ -20,6 +20,7 @@ import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.SME;
 import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import io.restassured.response.Response;
@@ -34,7 +35,6 @@ import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
-import ru.alfabank.platform.businessobjects.enums.User;
 
 public class CreateExperimentTest extends BaseTest {
 
@@ -58,7 +58,6 @@ public class CreateExperimentTest extends BaseTest {
       @ParameterKey("Experiment 2 productType") final ProductType experiment2productType,
       @ParameterKey("Experiment 2 endDate") final String experiment2endDate,
       @ParameterKey("Experiment 2 trafficRate") final Double experiment2trafficRate) {
-    setUser(User.CONTENT_MANAGER);
     final var experiment1ToCreate = new Experiment.Builder()
         .setDescription(experiment1description)
         .setCookieValue(experiment1cookieValue)
@@ -73,7 +72,7 @@ public class CreateExperimentTest extends BaseTest {
     Response experiment1creationResponse =
         given()
             .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(getContentManager().getJwt().getAccessToken())
             .body(experiment1ToCreate)
         .when().post()
         .then().extract().response();
@@ -89,7 +88,7 @@ public class CreateExperimentTest extends BaseTest {
         new Experiment.Builder()
             .using(experiment1ToCreate)
             .setEnabled(false)
-            .setCreatedBy(getUser().getLogin())
+            .setCreatedBy(getContentManager().getLogin())
             .setStatus(DISABLED)
             .setCreationDate(LocalDateTime.now(ZoneOffset.UTC).toString())
             .build());
@@ -107,7 +106,7 @@ public class CreateExperimentTest extends BaseTest {
     Response experiment2creationResponse =
         given()
             .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(getContentManager().getJwt().getAccessToken())
             .body(experiment2ToCreate)
             .when().post()
             .then().extract().response();
@@ -123,7 +122,7 @@ public class CreateExperimentTest extends BaseTest {
         new Experiment.Builder()
             .using(experiment2ToCreate)
             .setEnabled(false)
-            .setCreatedBy(getUser().getLogin())
+            .setCreatedBy(getContentManager().getLogin())
             .setStatus(DISABLED)
             .setCreationDate(LocalDateTime.now(ZoneOffset.UTC).toString())
             .build());
@@ -263,10 +262,9 @@ public class CreateExperimentTest extends BaseTest {
       @ParameterKey("productType") final ProductType productType,
       @ParameterKey("endDate") final String endDate,
       @ParameterKey("trafficRate") final Double trafficRate) {
-    setUser(User.CONTENT_MANAGER);
     LOGGER.info("Test case:" + testCase);
     final Response response = createExperimentAssumingFail(
-        description, cookieValue, device, pageId, productType, endDate, trafficRate);
+        description, cookieValue, device, pageId, productType, endDate, trafficRate, getContentManager());
     final var softly = new SoftAssertions();
     softly.assertThat(response.statusCode()).isGreaterThanOrEqualTo(SC_BAD_REQUEST);
     final var fieldViolations = response.getBody().jsonPath().getList("fieldViolations");

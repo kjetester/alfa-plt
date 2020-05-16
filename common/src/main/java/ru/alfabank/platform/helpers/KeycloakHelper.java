@@ -3,17 +3,34 @@ package ru.alfabank.platform.helpers;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_OK;
+import static ru.alfabank.platform.users.CommonUser.getCommonUser;
+import static ru.alfabank.platform.users.CreditCardUser.getCreditCardUser;
+import static ru.alfabank.platform.users.DebitCardUser.getDebitCardUser;
+import static ru.alfabank.platform.users.InvestUser.getInvestUser;
+import static ru.alfabank.platform.users.MortgageUser.getMortgageUser;
+import static ru.alfabank.platform.users.PilUser.getPilUser;
+import static ru.alfabank.platform.users.SmeUser.getSmeUser;
+import static ru.alfabank.platform.users.UnclaimedUser.getUnclaimedUser;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import io.restassured.http.ContentType;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
 import ru.alfabank.platform.businessobjects.AccessToken;
-import ru.alfabank.platform.businessobjects.enums.User;
+import ru.alfabank.platform.users.AccessibleUser;
+import ru.alfabank.platform.users.CommonUser;
+import ru.alfabank.platform.users.CreditCardUser;
+import ru.alfabank.platform.users.DebitCardUser;
+import ru.alfabank.platform.users.InvestUser;
+import ru.alfabank.platform.users.MortgageUser;
+import ru.alfabank.platform.users.PilUser;
+import ru.alfabank.platform.users.SmeUser;
+import ru.alfabank.platform.users.UnclaimedUser;
 
 /**
  * Keycloak helper.
@@ -34,7 +51,7 @@ public class KeycloakHelper extends AbstractBusinessObject {
    * @param user user
    * @return actual valid token
    */
-  public static AccessToken getToken(final User user) {
+  public static AccessToken getToken(final AccessibleUser user) {
     if (tokensSet == null
         || LocalDateTime.now().isAfter(tokensSet.getExpireRefreshTokenTime())
         || !decode(tokensSet.getAccessToken()).equals(user.getLogin())) {
@@ -85,19 +102,25 @@ public class KeycloakHelper extends AbstractBusinessObject {
   /**
    * Log out.
    */
-  public static void logout(final User user) {
-    if (tokensSet != null && LocalDateTime.now().isBefore(tokensSet.getExpireAccessTokenTime())) {
+  public static void logoutAllUsers() {
+    final var users = List.of(
+        getCreditCardUser(),
+        getDebitCardUser(),
+        getInvestUser(),
+        getMortgageUser(),
+        getPilUser(),
+        getSmeUser(),
+        getCommonUser(),
+        getUnclaimedUser());
+    for (AccessibleUser user : users) {
       LOGGER.info("Выполняю разлогин");
       Map<String, String> formParams = Map.of(
           "client_id", "acms",
-          "refresh_token", tokensSet.getRefreshToken());
+          "refresh_token", user.getJwt().getRefreshToken());
       given().relaxedHTTPSValidation().baseUri(KEYCLOAK_BASE_URL)
           .basePath(KEYCLOAK_BASE_URI + LOGOUT_RESOURCE).contentType(ContentType.URLENC)
           .formParams(formParams).log().all().when().post().then().log().ifError()
           .statusCode(SC_NO_CONTENT);
-    } else {
-      getToken(user);
-      logout(user);
     }
   }
 }

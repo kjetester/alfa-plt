@@ -7,7 +7,6 @@ import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.describeBusinessObject;
-import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
 
 import io.restassured.response.Response;
 import java.util.List;
@@ -16,7 +15,7 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.DataProvider;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Option;
-import ru.alfabank.platform.businessobjects.enums.User;
+import ru.alfabank.platform.users.AccessibleUser;
 
 public class OptionBaseTest extends BaseTest {
 
@@ -28,13 +27,14 @@ public class OptionBaseTest extends BaseTest {
    * @param widgetUids widgetUids
    * @param experimentUuid experimentUuid
    * @param trafficRate trafficRate
+   * @param user user
    * @return response
    */
   protected Response createOptionAssumingFail(final Boolean isDefault,
                                               final List<String> widgetUids,
                                               final String experimentUuid,
-                                              final Double trafficRate) {
-    setUser(User.CONTENT_MANAGER);
+                                              final Double trafficRate,
+                                              final AccessibleUser user) {
     Response response;
     var option =
         new Option.Builder()
@@ -49,7 +49,7 @@ public class OptionBaseTest extends BaseTest {
     response =
         given()
             .spec(getAllOrDeleteOptionSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("experimentUuid", experimentUuid)
             .body(option)
         .when().post()
@@ -63,14 +63,16 @@ public class OptionBaseTest extends BaseTest {
   /**
    * Create new Option.
    * @param option option
+   * @param user user
    * @return option
    */
-  protected Option createOption(final Option option) {
+  protected Option createOption(final Option option,
+                                final AccessibleUser user) {
     Response response;
     LOGGER.info("Выполняю запрос на создание варианта:\n" + describeBusinessObject(option));
     response = given()
             .spec(getAllOrDeleteOptionSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("experimentUuid", option.getExperimentUuid())
             .body(option)
         .when().post()
@@ -86,16 +88,19 @@ public class OptionBaseTest extends BaseTest {
    * Modify option.
    * @param option2beModified option to be modified
    * @param modification modification
+   * @param user user
    * @return modified option
    */
-  protected Option modifyOption(Option option2beModified, Option modification) {
+  protected Option modifyOption(final Option option2beModified,
+                                final Option modification,
+                                final AccessibleUser user) {
     LOGGER.info("Выполняю запрос на изменение варианта с:\n"
         + describeBusinessObject(option2beModified) + "\nна:\n"
         + describeBusinessObject(modification));
     final var response =
         given()
             .spec(getDeletePatchOptionSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("optionUuid", option2beModified.getUuid())
             .body(modification)
         .when().patch()
@@ -113,16 +118,19 @@ public class OptionBaseTest extends BaseTest {
    * Modify option.
    * @param option2beModified option to be modified
    * @param modification modification
+   * @param user user
    * @return modified option
    */
-  protected Response modifyOptionAssumingFail(Option option2beModified, Option modification) {
+  protected Response modifyOptionAssumingFail(final Option option2beModified,
+                                              final Option modification,
+                                              final AccessibleUser user) {
     LOGGER.info("Выполняю запрос на изменение варианта с:\n"
         + describeBusinessObject(option2beModified) + "\nна:\n"
         + describeBusinessObject(modification));
     final var response =
         given()
             .spec(getDeletePatchOptionSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("optionUuid", option2beModified.getUuid())
             .body(modification)
             .when().patch()
@@ -136,14 +144,16 @@ public class OptionBaseTest extends BaseTest {
   /**
    * Delete option.
    * @param option2beDeleted option to be deleted
+   * @param user user
    */
-  protected void deleteOption(Option option2beDeleted) {
+  protected void deleteOption(final Option option2beDeleted,
+                              final AccessibleUser user) {
     LOGGER.info("Выполняю запрос на удаление варианта:\n"
         + describeBusinessObject(option2beDeleted));
     final var response =
         given()
             .spec(getDeletePatchOptionSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("optionUuid", option2beDeleted.getUuid())
             .when().delete()
             .then().extract().response();
@@ -158,14 +168,17 @@ public class OptionBaseTest extends BaseTest {
   /**
    * Delete option.
    * @param option2beDeleted option to be deleted
+   * @param user user
+   * @return respomse
    */
-  protected Response deleteOptionAssumingFail(Option option2beDeleted) {
+  protected Response deleteOptionAssumingFail(final Option option2beDeleted,
+                                              final AccessibleUser user) {
     LOGGER.info("Выполняю запрос на удаление варианта:\n"
         + describeBusinessObject(option2beDeleted));
     final var response =
         given()
             .spec(getDeletePatchOptionSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("optionUuid", option2beDeleted.getUuid())
             .when().delete()
             .then().extract().response();

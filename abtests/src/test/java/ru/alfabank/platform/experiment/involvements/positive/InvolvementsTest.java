@@ -5,6 +5,7 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import io.restassured.response.Response;
@@ -12,7 +13,6 @@ import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.enums.Device;
-import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.experiment.involvements.InvolvementsBaseTest;
 
 public class InvolvementsTest extends InvolvementsBaseTest {
@@ -23,24 +23,23 @@ public class InvolvementsTest extends InvolvementsBaseTest {
   public void involvementsRunningExperimentTest(
       @ParameterKey("Устройство пользователя") final Device clientDevice,
       @ParameterKey("Гео-метка пользователя") final List<String> geos) {
-    setUser(User.CONTENT_MANAGER);
     final var start = getCurrentDateTime().plusSeconds(10).toString();
     final var end = getCurrentDateTime().plusHours(27).plusMinutes(10).toString();
     final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(start, end, true);
+    var page = createPage(start, end, true, getContentManager());
     final var pageId = page.getId();
-    final var widget1 = createWidget(page, null, desktop, true, DEFAULT, true, start, end);
+    final var widget1 = createWidget(page, null, desktop, true, DEFAULT, true, start, end, getContentManager());
     page = createdPages.get(pageId);
-    final var widget2 = createWidget(page, null, desktop, false, FOR_AB_TEST, false, start, end);
+    final var widget2 = createWidget(page, null, desktop, false, FOR_AB_TEST, false, start, end, getContentManager());
     final var experimentDevice = widget1.getDevice();
     final var experiment = createExperiment(
-        experimentDevice, pageId, getRandomProductType(), experimentEnd, .5D);
-    final var option1 = createOption(true, List.of(widget1.getUid()), experiment.getUuid(), .33D);
-    option2 = createOption(false, null, experiment.getUuid(), .33D);
-    option3 = createOption(false, List.of(widget2.getUid()), experiment.getUuid(), .34D);
-    final var runningExperiment = runExperimentAssumingSuccess(experiment);
+        experimentDevice, pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
+    final var option1 = createOption(true, List.of(widget1.getUid()), experiment.getUuid(), .33D, getContentManager());
+    option2 = createOption(false, null, experiment.getUuid(), .33D, getContentManager());
+    option3 = createOption(false, List.of(widget2.getUid()), experiment.getUuid(), .34D, getContentManager());
+    final var runningExperiment = runExperimentAssumingSuccess(experiment, getContentManager());
     // TEST //
-    Response response = getInvolvements(pageId, clientDevice, geos);
+    Response response = getInvolvements(pageId, clientDevice, geos, getContentManager());
     final var softly = new SoftAssertions();
     if (clientDevice.equals(experimentDevice)) {
       assertThat(response.jsonPath().getBoolean("involved"))

@@ -15,11 +15,10 @@ import static ru.alfabank.platform.businessobjects.enums.Method.CHANGE_LINKS;
 import static ru.alfabank.platform.businessobjects.enums.Method.CREATE;
 import static ru.alfabank.platform.businessobjects.enums.Status.CANCELLED;
 import static ru.alfabank.platform.businessobjects.enums.Status.RUNNING;
-import static ru.alfabank.platform.businessobjects.enums.User.CONTENT_MANAGER;
-import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
-import static ru.alfabank.platform.helpers.KeycloakHelper.logout;
+import static ru.alfabank.platform.helpers.KeycloakHelper.logoutAllUsers;
 import static ru.alfabank.platform.helpers.UuidHelper.getNewUuid;
 import static ru.alfabank.platform.helpers.UuidHelper.getShortRandUuid;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +42,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
@@ -60,7 +58,7 @@ import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ExperimentOptionName;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
 import ru.alfabank.platform.businessobjects.enums.Team;
-import ru.alfabank.platform.businessobjects.enums.User;
+import ru.alfabank.platform.users.AccessibleUser;
 
 public class BaseTest {
 
@@ -86,7 +84,6 @@ public class BaseTest {
   // META_INFO_PAGE_CONTENTS
   private static final String META_INFO_CONTENT_PAGE_CONTROLLER = CS + "/meta-info-page-contents";
 
-  private User user;
   protected static String baseUri;
   protected static RequestSpecification baseSpec;
   protected static RequestSpecification getAllOrCreateExperimentSpec;
@@ -142,7 +139,7 @@ public class BaseTest {
         if (!isDeletable) {
           LOGGER.info(String.format("Эксперимент '%s' нуждается в остановке", experimentsCount));
           final var response = given().spec(getDeletePatchExperimentSpec).auth()
-              .oauth2(getToken(CONTENT_MANAGER).getAccessToken())
+              .oauth2(getContentManager().getJwt().getAccessToken())
               .pathParam("uuid", experiment.getUuid())
               .body(new Experiment.Builder().setEnabled(false).build()).patch();
           isDeletable = response.getStatusCode() == SC_OK;
@@ -157,7 +154,7 @@ public class BaseTest {
         }
         if (isDeletable) {
           final var response = given().spec(getDeletePatchExperimentSpec).auth()
-              .oauth2(getToken(CONTENT_MANAGER).getAccessToken())
+              .oauth2(getContentManager().getJwt().getAccessToken())
               .pathParam("uuid", experiment.getUuid())
               .when().delete();
           if (response.getStatusCode() == SC_OK) {
@@ -173,7 +170,7 @@ public class BaseTest {
         }
       });
     }
-    logout(user);
+    logoutAllUsers();
   }
 
   /**
@@ -187,17 +184,21 @@ public class BaseTest {
       createdPages.entrySet().parallelStream().forEach(entry -> {
         LOGGER.info(String.format("Начинаю процесс удаления страницы '%s'",
             entry.getValue().getUri()));
-        if (given().spec(pageControllerSpec).basePath(PAGE_BASE_PATH + "/{id}")
-            .auth().oauth2(getToken(CONTENT_MANAGER).getAccessToken())
+        final var response = given().spec(pageControllerSpec).basePath(PAGE_BASE_PATH + "/{id}")
+            .auth().oauth2(getContentManager().getJwt().getAccessToken())
             .pathParam("id", entry.getValue().getId())
-            .when().delete().getStatusCode() == SC_OK) {
+            .when().delete();
+        if (response.getStatusCode() == SC_OK) {
           LOGGER.info(String.format("Страница '%s' удалена", entry.getValue().getUri()));
         } else {
-          LOGGER.warn(String.format("Не удалось удалить страницу '%s'", entry.getValue().getUri()));
+          LOGGER.warn(String.format(
+              "Не удалось удалить страницу '%s'\n%s",
+              entry.getValue().getUri(),
+              response.asString()));
         }
       });
     }
-    logout(user);
+    logoutAllUsers();
   }
 
   /**
@@ -336,29 +337,33 @@ public class BaseTest {
 
   /**
    * Create new page.
-   * @param teamsList teams list
+   * @param user user
    * @return created page
    */
-  protected Page createPage(List<Team> teamsList) {
+  protected Page createPage(final List<Team> teams,
+                            final AccessibleUser user) {
     String pageUri = getShortRandUuid();
     var page = new Page.Builder()
         .setUri("/qr/automation/" + pageUri)
         .setTitle("title_" + pageUri)
         .setEnable(true)
-        .setTeamsList(teamsList)
+        .setTeamsList(teams)
         .build();
-    return getPage(page);
+    return createPage(page, user);
   }
 
   /**
    * Create new page.
    * @param start start date
    * @param end end date
+   * @param isEnabled is enabled
+   * @param user user
    * @return created page
    */
   protected Page createPage(final String start,
                             final String end,
-                            final Boolean isEnabled) {
+                            final Boolean isEnabled,
+                            final AccessibleUser user) {
     String pageUri = getShortRandUuid();
     var page = new Page.Builder()
         .setUri("/qr/automation/" + pageUri)
@@ -367,17 +372,23 @@ public class BaseTest {
         .setDateTo(end)
         .setEnable(isEnabled)
         .build();
-    return getPage(page);
+    return createPage(page, user);
   }
 
-  @NotNull
-  private Page getPage(Page page) {
+  /**
+   * Create page.
+   * @param page page
+   * @param user user
+   * @return created page
+   */
+  private Page createPage(Page page,
+                          final AccessibleUser user) {
     LOGGER.info(String.format("Выполняю запрос создания страницы\n%s",
         describeBusinessObject(page)));
     var response =
         given()
             .spec(pageControllerSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .body(page)
             .when().post()
             .then().extract().response();
@@ -403,6 +414,7 @@ public class BaseTest {
    * @param defaultWidget is default widget
    * @param start start date
    * @param end end date
+   * @param user user
    * @return widget
    */
   protected Widget createWidget(final Page page,
@@ -412,7 +424,8 @@ public class BaseTest {
                                 final ExperimentOptionName experimentOptionName,
                                 final Boolean defaultWidget,
                                 final String start,
-                                final String end) {
+                                final String end,
+                                final AccessibleUser user) {
     final var widget = new Widget.Builder()
         .setUid(getNewUuid())
         .setName(randomAlphanumeric(10))
@@ -479,7 +492,7 @@ public class BaseTest {
     var response =
         given()
             .spec(pageDraftControllerSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("pageId", page.getId())
             .body(draft)
             .when().put()
@@ -488,7 +501,7 @@ public class BaseTest {
         response.getStatusCode(),
         response.prettyPrint()));
     response.then().statusCode(SC_OK);
-    publishDraft(page.getId(), device);
+    publishDraft(page.getId(), device, user);
     if (parentWidget == null) {
       createdPages.get(page.getId()).getWidgetList().add(widget);
     }
@@ -501,11 +514,13 @@ public class BaseTest {
    * @param pageId page ID
    * @param start start date
    * @param end end date
+   * @param user user
    */
   protected void changeWidgetActiveDates(final Widget widget,
                                          final Integer pageId,
                                          final String start,
-                                         final String end) {
+                                         final String end,
+                                         final AccessibleUser user) {
     var changedWidget = new Widget.Builder()
         .using(widget)
         .setDateFrom(start)
@@ -533,7 +548,7 @@ public class BaseTest {
     var response =
         given()
             .spec(pageDraftControllerSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("pageId", pageId)
             .body(draft)
             .when().put()
@@ -542,7 +557,7 @@ public class BaseTest {
         response.getStatusCode(),
         response.prettyPrint()));
     response.then().statusCode(SC_OK);
-    publishDraft(pageId, widget.getDevice());
+    publishDraft(pageId, widget.getDevice(), user);
   }
 
   /**
@@ -552,12 +567,14 @@ public class BaseTest {
    * @param isEnabled isEnabled
    * @param experimentOptionName experimentOptionName
    * @param isDefaultWidget isDefaultWidget
+   * @param user user
    */
   public void changeWidgetABtestProps(final Widget widget,
                                       final Integer pageId,
                                       final Boolean isEnabled,
                                       final ExperimentOptionName experimentOptionName,
-                                      final Boolean isDefaultWidget) {
+                                      final Boolean isDefaultWidget,
+                                      final AccessibleUser user) {
     var changedWidget = new Widget.Builder()
         .using(widget)
         .isEnabled(isEnabled)
@@ -588,7 +605,7 @@ public class BaseTest {
     var response =
         given()
             .spec(pageDraftControllerSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("pageId", pageId)
             .body(draft)
             .when().put()
@@ -597,20 +614,23 @@ public class BaseTest {
         response.getStatusCode(),
         response.prettyPrint()));
     response.then().statusCode(SC_OK);
-    publishDraft(pageId, widget.getDevice());
+    publishDraft(pageId, widget.getDevice(), user);
   }
 
   /**
    * Publish draft.
    * @param pageId page
+   * @param user user
    */
-  private void publishDraft(final Integer pageId, final Device device) {
+  private void publishDraft(final Integer pageId,
+                            final Device device,
+                            final AccessibleUser user) {
     Response response;
     LOGGER.info("Выполняю запрос публикации черновика страницы с ID: " + pageId);
     response =
         given()
             .spec(pageDraftControllerPublishSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("pageId", pageId)
             .queryParams("device", device)
             .when().post()
@@ -625,9 +645,11 @@ public class BaseTest {
    * Share a Widget to another Page.
    * @param widget widget
    * @param page page
+   * @param user user
    */
   protected void shareWidgetToAnotherPage(final Widget widget,
-                                          final Page page) {
+                                          final Page page,
+                                          final AccessibleUser user) {
     Response response;
     var widgetsList = page.getWidgetList()
         .stream()
@@ -649,7 +671,7 @@ public class BaseTest {
     response =
         given()
             .spec(pageDraftControllerSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("pageId", page.getId())
             .body(draft)
             .when().put()
@@ -658,23 +680,25 @@ public class BaseTest {
         response.getStatusCode(),
         response.prettyPrint()));
     response.then().statusCode(SC_OK);
-    publishDraft(page.getId(), widget.getDevice());
+    publishDraft(page.getId(), widget.getDevice(), user);
     createdPages.get(page.getId()).getWidgetList().add(widget);
   }
 
   /**
    * Activate Experiment assuming success.
    * @param experiment experiment
+   * @param user user
    * @return activated experiment
    */
-  protected Experiment runExperimentAssumingSuccess(final Experiment experiment) {
+  protected Experiment runExperimentAssumingSuccess(final Experiment experiment,
+                                                    final AccessibleUser user) {
     var runnedExperiment = new Experiment.Builder().setEnabled(true).build();
     LOGGER.info("Выполняю запрос на активацию эксперимента:\n"
         + describeBusinessObject(experiment));
     final var response =
         given()
             .spec(getDeletePatchExperimentSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("uuid", experiment.getUuid())
             .body(runnedExperiment)
         .when().patch()
@@ -696,16 +720,18 @@ public class BaseTest {
   /**
    * Activate Experiment assuming fail.
    * @param experiment experiment
+   * @param user user
    * @return activated experiment
    */
-  protected Response runExperimentAssumingFail(final Experiment experiment) {
+  protected Response runExperimentAssumingFail(final Experiment experiment,
+                                               final AccessibleUser user) {
     var body = new Experiment.Builder().setEnabled(true).build();
     LOGGER.info("Выполняю запрос на активацию эксперимента:\n"
         + describeBusinessObject(experiment));
     final var response =
         given()
             .spec(getDeletePatchExperimentSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("uuid", experiment.getUuid())
             .body(body)
             .when().patch()
@@ -719,16 +745,18 @@ public class BaseTest {
   /**
    * Deactivate Experiment assuming success.
    * @param experiment experiment
+   * @param user user
    * @return stopped experiment
    */
-  protected Experiment stopExperimentAssumingSuccess(final Experiment experiment) {
+  protected Experiment stopExperimentAssumingSuccess(final Experiment experiment,
+                                                     final AccessibleUser user) {
     var experiment2beStopped = new Experiment.Builder().setEnabled(false).build();
     LOGGER.info("Выполняю запрос на активацию эксперимента:\n"
         + describeBusinessObject(experiment));
     final var response =
         given()
             .spec(getDeletePatchExperimentSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("uuid", experiment.getUuid())
             .body(experiment2beStopped)
             .when().patch()
@@ -750,16 +778,18 @@ public class BaseTest {
   /**
    * Deactivate Experiment assuming fail.
    * @param experiment experiment
+   * @param user user
    * @return response
    */
-  protected Response stopExperimentAssumingFail(final Experiment experiment) {
+  protected Response stopExperimentAssumingFail(final Experiment experiment,
+                                                final AccessibleUser user) {
     var experiment2beStopped = new Experiment.Builder().setEnabled(false).build();
     LOGGER.info("Выполняю запрос на деактивацию эксперимента:\n"
         + describeBusinessObject(experiment));
     final var response =
         given()
             .spec(getDeletePatchExperimentSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("uuid", experiment.getUuid())
             .body(experiment2beStopped)
             .when().patch()
@@ -773,15 +803,17 @@ public class BaseTest {
   /**
    * Delete Experiment.
    * @param experiment experiment
+   * @param user user
    * @return response
    */
-  protected Response deleteExperiment(Experiment experiment) {
+  protected Response deleteExperiment(final Experiment experiment,
+                                      final AccessibleUser user) {
     LOGGER.info("Выполняю запрос на удаление эксперимента:\n"
         + describeBusinessObject(experiment));
     final var response =
         given()
             .spec(getDeletePatchExperimentSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("uuid", experiment.getUuid())
             .when().delete()
             .then().extract().response();
@@ -794,12 +826,14 @@ public class BaseTest {
   /**
    * Read experiment.
    * @param experiment experiment
+   * @param user user
    * @return experiment
    */
-  protected Experiment getExperiment(final Experiment experiment) {
+  protected Experiment getExperiment(final Experiment experiment,
+                                     final AccessibleUser user) {
     LOGGER.info("Выполняю запрос на чтение эксперимента");
     final var response =
-        given().spec(getDeletePatchExperimentSpec).auth().oauth2(getToken(user).getAccessToken())
+        given().spec(getDeletePatchExperimentSpec).auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("uuid", experiment.getUuid()).get();
     LOGGER.info(String.format("Получен ответ: %s\n%s",
         response.getStatusCode(),
@@ -810,12 +844,14 @@ public class BaseTest {
   /**
    * Read absent experiment.
    * @param experiment experiment
+   * @param user user
    * @return response
    */
-  protected Response getAbsentExperiment(final Experiment experiment) {
+  protected Response getAbsentExperiment(final Experiment experiment,
+                                         final AccessibleUser user) {
     LOGGER.info("Выполняю запрос на чтение отсутствующего эксперимента");
     final var response =
-        given().spec(getDeletePatchExperimentSpec).auth().oauth2(getToken(user).getAccessToken())
+        given().spec(getDeletePatchExperimentSpec).auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("uuid", experiment.getUuid()).get();
     LOGGER.info(String.format("Получен ответ: %s\n%s",
         response.getStatusCode(),
@@ -826,12 +862,14 @@ public class BaseTest {
   /**
    * Read experiment.
    * @param option option
+   * @param user user
    * @return option
    */
-  protected Option getOption(final Option option) {
+  protected Option getOption(final Option option,
+                             final AccessibleUser user) {
     LOGGER.info("Выполняю запрос на чтение варианта");
     final var response =
-        given().spec(getDeletePatchOptionSpec).auth().oauth2(getToken(user).getAccessToken())
+        given().spec(getDeletePatchOptionSpec).auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("optionUuid", option.getUuid()).get();
     LOGGER.info(String.format("Получен ответ: %s\n%s",
         response.getStatusCode(),
@@ -843,12 +881,14 @@ public class BaseTest {
   /**
    * Read absent option.
    * @param option option
+   * @param user user
    * @return response
    */
-  protected Response getAbsentOption(final Option option) {
+  protected Response getAbsentOption(final Option option,
+                                     final AccessibleUser user) {
     LOGGER.info("Выполняю запрос на чтение отсутствующего варианта");
     final var response =
-        given().spec(getDeletePatchOptionSpec).auth().oauth2(getToken(user).getAccessToken())
+        given().spec(getDeletePatchOptionSpec).auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("optionUuid", option.getUuid()).get();
     LOGGER.info(String.format("Получен ответ: %s\n%s",
         response.getStatusCode(),
@@ -862,12 +902,14 @@ public class BaseTest {
    * @param widgetUids widgetUids
    * @param experimentUuid experimentUuid
    * @param trafficRate trafficRate
+   * @param user user
    * @return option
    */
   protected Option createOption(final Boolean isDefault,
                                 final List<String> widgetUids,
                                 final String experimentUuid,
-                                final Double trafficRate) {
+                                final Double trafficRate,
+                                final AccessibleUser user) {
     Response response;
     var option =
         new Option.Builder()
@@ -882,7 +924,7 @@ public class BaseTest {
     response =
         given()
             .spec(getAllOrDeleteOptionSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("experimentUuid", experimentUuid)
             .body(option)
         .when().post()
@@ -902,13 +944,15 @@ public class BaseTest {
    * @param productType productType
    * @param endDate endDate
    * @param trafficRate trafficRate
+   * @param user user
    * @return created Experiment
    */
   protected Experiment createExperiment(final Device device,
                                         final Integer pageId,
                                         final ProductType productType,
                                         final String endDate,
-                                        final Double trafficRate) {
+                                        final Double trafficRate,
+                                        final AccessibleUser user) {
     var experiment = new Experiment.Builder()
         .setDescription(randomAlphanumeric(50))
         .setCookieValue(randomAlphanumeric(50))
@@ -923,7 +967,7 @@ public class BaseTest {
     var response =
         given()
             .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .body(experiment)
         .when().post()
         .then().extract().response();
@@ -942,6 +986,7 @@ public class BaseTest {
    * @param productType productType
    * @param endDate endDate
    * @param trafficRate trafficRate
+   * @param user user
    * @return response
    */
   protected Response createExperimentAssumingFail(String description,
@@ -950,7 +995,8 @@ public class BaseTest {
                                                   final Integer pageId,
                                                   final ProductType productType,
                                                   final String endDate,
-                                                  final Double trafficRate) {
+                                                  final Double trafficRate,
+                                                  final AccessibleUser user) {
     final var experiment = new Builder()
         .setDescription(description)
         .setCookieValue(cookieValue)
@@ -965,7 +1011,7 @@ public class BaseTest {
     final var response =
         given()
             .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getToken(getUser()).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .body(experiment)
             .when().post()
             .then().extract().response();
@@ -979,14 +1025,16 @@ public class BaseTest {
    * Update existed Experiment.
    * @param experiment experiment
    * @param changeSetBody changeSetBody
+   * @param user user
    * @return updated experiment
    */
   protected Experiment modifyExperiment(final Experiment experiment,
-                                        final Experiment changeSetBody) {
+                                        final Experiment changeSetBody,
+                                        final AccessibleUser user) {
     LOGGER.info("Выполняю запрос на изменение:\n" + describeBusinessObject(changeSetBody));
     var response = given()
         .spec(getDeletePatchExperimentSpec)
-        .auth().oauth2(getToken(getUser()).getAccessToken())
+        .auth().oauth2(user.getJwt().getAccessToken())
         .pathParam("uuid", experiment.getUuid())
         .body(changeSetBody)
         .when().patch()
@@ -1004,14 +1052,16 @@ public class BaseTest {
    * Update Experiment assuming fail.
    * @param experiment experiment
    * @param changeSetBody changeSetBody
+   * @param user user
    * @return response
    */
   protected Response modifyExperimentAssumingFail(final Experiment experiment,
-                                                    final Experiment changeSetBody) {
+                                                  final Experiment changeSetBody,
+                                                  final AccessibleUser user) {
     LOGGER.info("Выполняю запрос на изменение:\n" + describeBusinessObject(changeSetBody));
     var response = given()
         .spec(getDeletePatchExperimentSpec)
-        .auth().oauth2(getToken(getUser()).getAccessToken())
+        .auth().oauth2(user.getJwt().getAccessToken())
         .pathParam("uuid", experiment.getUuid())
         .body(changeSetBody)
         .when().patch()
@@ -1026,17 +1076,19 @@ public class BaseTest {
    * Get Widgets list from CS.
    * @param pageId page ID
    * @param device device
+   * @param user user
    * @return list of widgets
    */
   protected List<Widget> getWidgetsList(final Integer pageId,
-                                        final Device device) {
+                                        final Device device,
+                                        final AccessibleUser user) {
     LOGGER.info(String.format(
         "Запрос страницы '%s' в '/metaInfoContentPageController'",
         pageId));
     Response response =
         given()
             .spec(metaInfoContentPageControllerSpec)
-            .auth().oauth2(getToken(user).getAccessToken())
+            .auth().oauth2(user.getJwt().getAccessToken())
             .queryParam("device", device)
             .queryParam("pageId", pageId)
             .when().get()
@@ -1047,13 +1099,5 @@ public class BaseTest {
         response.getStatusLine(),
         response.prettyPrint()));
     return Arrays.asList(response.as(Widget[].class));
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
   }
 }

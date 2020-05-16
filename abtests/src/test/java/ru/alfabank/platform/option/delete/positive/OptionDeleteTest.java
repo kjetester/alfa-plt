@@ -7,6 +7,7 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
 import org.testng.annotations.BeforeClass;
@@ -14,7 +15,6 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.Widget;
-import ru.alfabank.platform.businessobjects.enums.User;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionDeleteTest extends OptionBaseTest {
@@ -30,16 +30,15 @@ public class OptionDeleteTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
-    setUser(User.CONTENT_MANAGER);
     final var experimentEnd = getCurrentDateTime().plusDays(5).toString();
-    var page = createPage(null, null, true);
+    var page = createPage(null, null, true, getContentManager());
     final var pageId = page.getId();
     defaultWidget = createWidget(
-        page, null, desktop, true, DEFAULT, true, null, null);
+        page, null, desktop, true, DEFAULT, true, null, null, getContentManager());
     abTestWidget = createWidget(
-        page, null, desktop, false, FOR_AB_TEST, false, null, null);
+        page, null, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
     experiment = createExperiment(
-        defaultWidget.getDevice(), pageId, getRandomProductType(), experimentEnd, .5D);
+        defaultWidget.getDevice(), pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
   }
 
   @Test(description = "Позитивный тест удаления вариантов")
@@ -52,7 +51,7 @@ public class OptionDeleteTest extends OptionBaseTest {
             .setWidgetUids(List.of(defaultWidget.getUid()))
             .setExperimentUuid(experiment.getUuid())
             .setTrafficRate(.5D)
-            .build());
+            .build(), getContentManager());
     final var createdAbTestOption = createOption(
         new Option.Builder()
             .setDefault(false)
@@ -61,13 +60,13 @@ public class OptionDeleteTest extends OptionBaseTest {
             .setWidgetUids(List.of(abTestWidget.getUid()))
             .setExperimentUuid(experiment.getUuid())
             .setTrafficRate(.5D)
-            .build());
-    deleteOption(createdDefaultOption);
-    deleteOption(createdAbTestOption);
-    assertThat(getAbsentOption(createdDefaultOption).getStatusCode())
+            .build(), getContentManager());
+    deleteOption(createdDefaultOption, getContentManager());
+    deleteOption(createdAbTestOption, getContentManager());
+    assertThat(getAbsentOption(createdDefaultOption, getContentManager()).getStatusCode())
         .as("Проверка отсутствия варианта")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
-    assertThat(getAbsentOption(createdAbTestOption).getStatusCode())
+    assertThat(getAbsentOption(createdAbTestOption, getContentManager()).getStatusCode())
         .as("Проверка отсутствия варианта")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
   }
