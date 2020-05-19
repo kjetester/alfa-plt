@@ -12,7 +12,7 @@ import ru.alfabank.platform.businessobjects.Page;
 import ru.alfabank.platform.pages.acms.MainPage;
 import ru.alfabank.platform.utils.TestFailureListener;
 
-@Listeners ({TestFailureListener.class})
+@Listeners({TestFailureListener.class})
 public class WidgetCopyingTest extends ru.alfabank.platform.widget.BaseWidgetTest {
 
   private Page createdPage;

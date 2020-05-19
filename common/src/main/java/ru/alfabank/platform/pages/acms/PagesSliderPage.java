@@ -15,11 +15,12 @@ public class PagesSliderPage extends BasePage {
 
   private static final Logger LOGGER = LogManager.getLogger(PagesSliderPage.class);
 
-  @FindBy (css = ".ant-tree-title > div")
+  @FindBy(css = ".ant-tree-title > div")
   private List<WebElement> pageList;
 
   /**
    * Open requested root page.
+   *
    * @param pageUri requested page
    * @return new instance of the MainPage class
    */
@@ -31,6 +32,7 @@ public class PagesSliderPage extends BasePage {
 
   /**
    * Search target page with given title.
+   *
    * @param pageUri page name (URI)
    * @return result page
    */
@@ -43,6 +45,7 @@ public class PagesSliderPage extends BasePage {
 
   /**
    * Create a new page.
+   *
    * @param parentPageName parent page name
    * @return new Main Page instance
    */

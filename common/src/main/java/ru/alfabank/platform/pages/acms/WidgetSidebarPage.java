@@ -36,6 +36,7 @@ public class WidgetSidebarPage extends BasePage {
 
   /**
    * New Property addition to widget.
+   *
    * @param newPropertyName name
    * @return this
    */
@@ -49,6 +50,7 @@ public class WidgetSidebarPage extends BasePage {
 
   /**
    * New Property addition to widget.
+   *
    * @param newPropertyName name
    * @return PropertyAndPropertyValuePage
    */
@@ -62,6 +64,7 @@ public class WidgetSidebarPage extends BasePage {
 
   /**
    * Checking the result of the new Property addition.
+   *
    * @param newName name
    */
   public WidgetSidebarPage checkIfPropertyWasAdded(String newName) {
@@ -76,6 +79,7 @@ public class WidgetSidebarPage extends BasePage {
 
   /**
    * Submitting changes.
+   *
    * @return Main Page reinitiated instance.
    */
   public MainPage submitChanges() {
@@ -86,6 +90,7 @@ public class WidgetSidebarPage extends BasePage {
 
   /**
    * Deleting property.
+   *
    * @param propName property name
    * @return this
    */
@@ -100,6 +105,7 @@ public class WidgetSidebarPage extends BasePage {
 
   /**
    * Checking the result of deletion the Widget.
+   *
    * @param propName property name
    * @return this
    */
@@ -113,6 +119,7 @@ public class WidgetSidebarPage extends BasePage {
 
   /**
    * Expanding a Widget Meta Info panel.
+   *
    * @return new instance of WidgetMetaInfoPage
    */
   public WidgetMetaInfoPage expandWidgetMetaInfo() {
@@ -123,6 +130,7 @@ public class WidgetSidebarPage extends BasePage {
 
   /**
    * Closing Widget's sidebar.
+   *
    * @return new instance of the MainSliderPage class
    */
   public MainSliderPage closeWidgetSidebarAndGoToMainSlider() {
@@ -132,6 +140,7 @@ public class WidgetSidebarPage extends BasePage {
 
   /**
    * Closing Widget's sidebar.
+   *
    * @return new instance of the MainPage class
    */
   public MainPage closeWidgetSidebarAndGoToMainPage() {

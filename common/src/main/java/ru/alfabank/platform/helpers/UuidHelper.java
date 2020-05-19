@@ -10,6 +10,7 @@ public class UuidHelper {
 
   /**
    * Generates a new UID.
+   *
    * @return new UID
    */
   public static String getNewUuid() {
@@ -20,6 +21,7 @@ public class UuidHelper {
 
   /**
    * Generates a new UID.
+   *
    * @return new short random UID
    */
   public static String getShortRandUuid() {

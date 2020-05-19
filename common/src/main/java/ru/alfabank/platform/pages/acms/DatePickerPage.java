@@ -60,6 +60,7 @@ public class DatePickerPage extends BasePage {
 
   /**
    * Setting the date and time.
+   *
    * @param dateTime date and time to be set
    * @return new WidgetMetaInfoPage instance
    */
@@ -76,31 +77,44 @@ public class DatePickerPage extends BasePage {
     int month;
     waitForElementBecomesClickable(monthPickerButton);
     switch (monthPickerButton.getText()) {
-      case "янв." : month = 1;
+      case "янв.":
+        month = 1;
         break;
-      case "февр.": month = 2;
+      case "февр.":
+        month = 2;
         break;
-      case "март" : month = 3;
+      case "март":
+        month = 3;
         break;
-      case "апр." : month = 4;
+      case "апр.":
+        month = 4;
         break;
-      case "май"  : month = 5;
+      case "май":
+        month = 5;
         break;
-      case "июнь" : month = 6;
+      case "июнь":
+        month = 6;
         break;
-      case "июль" : month = 7;
+      case "июль":
+        month = 7;
         break;
-      case "авг." : month = 8;
+      case "авг.":
+        month = 8;
         break;
-      case "сент.": month = 9;
+      case "сент.":
+        month = 9;
         break;
-      case "окт." : month = 10;
+      case "окт.":
+        month = 10;
         break;
-      case "нояб.": month = 11;
+      case "нояб.":
+        month = 11;
         break;
-      case "дек." : month = 12;
+      case "дек.":
+        month = 12;
         break;
-      default: throw new TestException("Был передеан неизвестный месяц");
+      default:
+        throw new TestException("Был передеан неизвестный месяц");
     }
     int diff = dateTime.getMonthValue() - month;
     if (diff > 0) {

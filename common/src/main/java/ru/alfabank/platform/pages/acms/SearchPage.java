@@ -20,6 +20,7 @@ public class SearchPage extends BasePage {
 
   /**
    * Searching text.
+   *
    * @param text text
    * @return MainPage
    * @throws InterruptedException InterruptedException

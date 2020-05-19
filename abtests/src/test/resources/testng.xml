@@ -1,36 +1,42 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name = "AB Tests suite"
-       thread-count = "10"
-       configfailurepolicy = "continue"
+<suite name="AB Tests suite"
+       thread-count="10"
+       configfailurepolicy="continue"
        parallel="true"
-       verbose = "1">
+       verbose="1">
     <listeners>
         <listener class-name="ru.alfabank.platform.utils.RetryListener"/>
     </listeners>
-    <test name="'Creation experiment' test" enabled="true">
-        <classes>
-            <class name="ru.alfabank.platform.experiment.create.CreateExperimentTest"/>
-        </classes>
-    </test>
-    <test name="'Updating Experiment' positive test" enabled="true">
-        <classes>
-            <class name="ru.alfabank.platform.experiment.update.positive.UpdateInactiveExperimentTest"/>
-        </classes>
-    </test>
-    <test name="'Updating Experiment' negative test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.experiment.update.negative.UpdateActiveExperimentTest"/>
-        </classes>
-    </test>
-    <test name="'Experiment Activation' positive test" enabled="true" thread-count="1">
+    <!-- ROLE MODEL TESTS -->
+<!--    <test name="Role model tests" enabled="true" thread-count="1">-->
+<!--        <classes>-->
+<!--            <class name="ru.alfabank.platform.rolemodel.PositiveRoleModelTest"/>-->
+<!--            <class name="ru.alfabank.platform.rolemodel.NegativeRoleModelTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+    <!-- EXPERIMENT TESTS -->
+<!--    <test name="Experiment creation tests" enabled="true">-->
+<!--        <classes>-->
+<!--            <class name="ru.alfabank.platform.experiment.create.CreateExperimentTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+<!--    <test name="Experiment deletion tests" enabled="true" thread-count="1">-->
+<!--        <classes>-->
+<!--            <class name="ru.alfabank.platform.experiment.delete.positive.ExperimentDeletionTest"/>-->
+<!--            <class name="ru.alfabank.platform.experiment.delete.negative.ExperimentDeletionTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+<!--    <test name="Experiment updating tests" enabled="true">-->
+<!--        <classes>-->
+<!--            <class name="ru.alfabank.platform.experiment.update.positive.UpdateInactiveExperimentTest"/>-->
+<!--            <class name="ru.alfabank.platform.experiment.update.negative.UpdateActiveExperimentTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+    <test name="Experiment activation tests" enabled="true" thread-count="1">
         <classes>
             <class name="ru.alfabank.platform.experiment.update.activate.positive.ExperimentActivationOneTest"/>
             <class name="ru.alfabank.platform.experiment.update.activate.positive.ExperimentActivationTwoTest"/>
-        </classes>
-    </test>
-    <test name="'Experiment Activation' negative test" enabled="true" thread-count="1">
-        <classes>
             <class name="ru.alfabank.platform.experiment.update.activate.negative.RunningExperimentExistsTest"/>
             <class name="ru.alfabank.platform.experiment.update.activate.negative.NoDefaultVariantTest"/>
             <class name="ru.alfabank.platform.experiment.update.activate.negative.OnlyOneVariantTest"/>
@@ -44,78 +50,44 @@
             <class name="ru.alfabank.platform.experiment.update.activate.negative.WidgetRelativesViolationTest"/>
         </classes>
     </test>
-    <test name="'Experiment deactivation' positive test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.experiment.update.deactivate.positive.ExperimentDeactivationTest"/>
-        </classes>
-    </test>
-    <test name="'Experiment deactivation' negative test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.experiment.update.deactivate.negative.ExperimentDeactivationTest"/>
-        </classes>
-    </test>
-    <test name="'Experiment deletion' positive test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.experiment.delete.positive.ExperimentDeletionTest"/>
-        </classes>
-    </test>
-    <test name="'Experiment deletion' negative test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.experiment.delete.negative.ExperimentDeletionTest"/>
-        </classes>
-    </test>
-    <test name="'Experiment involvement' positive test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.experiment.involvements.positive.InvolvementsTest"/>
-        </classes>
-    </test>
-    <test name="'Experiment involvement' negative test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest"/>
-        </classes>
-    </test>
-
-    <test name="'Create Option' positive test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.option.create.positive.OptionCreateTest"/>
-        </classes>
-    </test>
-    <test name="'Create Option' negative test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.option.create.negative.AssignmentToSharedWidgetTest"/>
-            <class name="ru.alfabank.platform.option.create.negative.AssignmentToAlreadyAssignedWidgetTest"/>
-            <class name="ru.alfabank.platform.option.create.negative.AssignmentToWrongWidgetTypeTest"/>
-            <class name="ru.alfabank.platform.option.create.negative.DefaultOptionLimitViolationTest"/>
-            <class name="ru.alfabank.platform.option.create.negative.DefaultWidgetHasInvalidRelativesTest"/>
-            <class name="ru.alfabank.platform.option.create.negative.NonDefaultWidgetHasInvalidRelativesTest"/>
-            <class name="ru.alfabank.platform.option.create.negative.OptionPropertiesViolationTest"/>
-            <class name="ru.alfabank.platform.option.create.negative.OptionsTrafficRateSumLimitViolationTest"/>
-            <class name="ru.alfabank.platform.option.create.negative.UnassignedOptionLimitViolationTest"/>
-        </classes>
-    </test>
-    <test name="'Update Option' positive test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.option.update.positive.OptionUpdateTest"/>
-        </classes>
-    </test>
-    <test name="'Update Option' negative test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.option.update.negative.OptionUpdateTest"/>
-        </classes>
-    </test>
-    <test name="'Delete Option' positive test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.option.delete.positive.OptionDeleteTest"/>
-        </classes>
-    </test>
-    <test name="'Delete Option' negative test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.option.delete.negative.OptionDeleteTest"/>
-        </classes>
-    </test>
-    <test name="Role model test" enabled="true" thread-count="1">
-        <classes>
-            <class name="ru.alfabank.platform.rolemodel.NegativeRoleModelTest"/>
-        </classes>
-    </test>
+<!--    <test name="Experiment deactivation tests" enabled="true" thread-count="1">-->
+<!--        <classes>-->
+<!--            <class name="ru.alfabank.platform.experiment.update.deactivate.positive.ExperimentDeactivationTest"/>-->
+<!--            <class name="ru.alfabank.platform.experiment.update.deactivate.negative.ExperimentDeactivationTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+<!--    <test name="Experiment involvement tests" enabled="true" thread-count="1">-->
+<!--        <classes>-->
+<!--            <class name="ru.alfabank.platform.experiment.involvements.positive.InvolvementsTest"/>-->
+<!--            <class name="ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+    <!-- OPTION TESTS -->
+<!--    <test name="Option creation tests" enabled="true" thread-count="1">-->
+<!--        <classes>-->
+<!--            <class name="ru.alfabank.platform.option.create.positive.OptionCreateTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.create.negative.AssignmentToSharedWidgetTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.create.negative.AssignmentToAlreadyAssignedWidgetTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.create.negative.AssignmentToWrongWidgetTypeTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.create.negative.DefaultOptionLimitViolationTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.create.negative.DefaultWidgetHasInvalidRelativesTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.create.negative.NonDefaultWidgetHasInvalidRelativesTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.create.negative.OptionPropertiesViolationTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.create.negative.OptionsTrafficRateSumLimitViolationTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.create.negative.UnassignedOptionLimitViolationTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+<!--    <test name="Option deletion tests" enabled="true" thread-count="1">-->
+<!--        <classes>-->
+<!--            <class name="ru.alfabank.platform.option.delete.positive.OptionDeleteTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.delete.negative.OptionDeleteTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+<!--    <test name="Option updating tests" enabled="true" thread-count="1">-->
+<!--        <classes>-->
+<!--            <class name="ru.alfabank.platform.option.update.positive.OptionUpdateTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.update.negative.OptionUpdateTest"/>-->
+<!--            <class name="ru.alfabank.platform.option.update.negative.WrongExperimentStatusOptionUpdateTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 </suite>

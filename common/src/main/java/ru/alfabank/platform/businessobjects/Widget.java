@@ -22,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import ru.alfabank.platform.businessobjects.enums.CopyMethod;
 import ru.alfabank.platform.businessobjects.enums.Device;
 
-@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonInclude (JsonInclude.Include.NON_NULL)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Widget implements Comparable<Widget> {
 
   @JsonIgnore
@@ -50,11 +50,14 @@ public class Widget implements Comparable<Widget> {
   private Boolean isReused;
   @JsonProperty("children")
   private List<Widget> childrenWidgetsList;
-  @JsonIgnore private LocalDateTime localDateTimeFrom;
-  @JsonIgnore private LocalDateTime localDateTimeTo;
+  @JsonIgnore
+  private LocalDateTime localDateTimeFrom;
+  @JsonIgnore
+  private LocalDateTime localDateTimeTo;
 
   /**
    * Class constructor.
+   *
    * @param builder builder
    */
   public Widget(final Builder builder) {
@@ -217,6 +220,7 @@ public class Widget implements Comparable<Widget> {
 
   /**
    * Compare widgets.
+   *
    * @param widget comparing widget
    * @param method copying method
    */
@@ -416,6 +420,7 @@ public class Widget implements Comparable<Widget> {
 
     /**
      * Reusing widget.
+     *
      * @param widget widget
      * @return this
      */
@@ -446,6 +451,7 @@ public class Widget implements Comparable<Widget> {
 
     /**
      * Build widget.
+     *
      * @return widget
      */
     public Widget build() {

@@ -6,6 +6,7 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
@@ -37,11 +38,10 @@ public class OptionUpdateTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
-    final var experimentEnd = getCurrentDateTime().plusDays(5).toString();
-    var page = createPage(null, null, true, getContentManager());
-    final var pageId = page.getId();
-    final var widget_1 = createWidget(
-        page,
+    final var experimentEnd = getValidEndDatePlusWeek();
+    final var page_id = PAGES_STEPS.createPage(null, null, true, getContentManager());
+    final var widget_1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
@@ -50,8 +50,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    final var widget_1_1 = createWidget(
-        page,
+    final var widget_1_1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         widget_1,
         desktop,
         false,
@@ -60,8 +60,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    defaultWidget1 = createWidget(
-        page,
+    defaultWidget1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         widget_1_1,
         desktop,
         true,
@@ -70,8 +70,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    createWidget(
-        page,
+    DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         defaultWidget1,
         desktop,
         true,
@@ -80,8 +80,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    final var widget_2 = createWidget(
-        page,
+    final var widget_2 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
@@ -90,8 +90,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    final var widget_2_1 = createWidget(
-        page,
+    final var widget_2_1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         widget_2,
         desktop,
         false,
@@ -100,8 +100,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    defaultWidget2 = createWidget(
-        page,
+    defaultWidget2 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         widget_2_1,
         desktop,
         true,
@@ -110,8 +110,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    createWidget(
-        page,
+    DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         defaultWidget2,
         desktop,
         true,
@@ -120,9 +120,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    page = createdPages.get(pageId);
-    final var widget_3 = createWidget(
-        page,
+    final var widget_3 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
@@ -131,8 +130,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    abTestWidget1 = createWidget(
-        page,
+    abTestWidget1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         widget_3,
         desktop,
         false,
@@ -141,8 +140,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    createWidget(
-        page,
+    DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         abTestWidget1,
         desktop,
         false,
@@ -151,8 +150,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    final var widget_4 = createWidget(
-        page,
+    final var widget_4 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
@@ -161,8 +160,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    abTestWidget2 = createWidget(
-        page,
+    abTestWidget2 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         widget_4,
         desktop,
         false,
@@ -171,8 +170,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    createWidget(
-        page,
+    DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         abTestWidget2,
         desktop,
         false,
@@ -181,18 +180,46 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    experiment = createExperiment(
+    experiment = EXPERIMENT_STEPS.createExperiment(
         widget_1.getDevice(),
-        pageId,
+        page_id,
         getRandomProductType(),
-        experimentEnd,
+        getValidEndDate(),
         .5D,
         getContentManager());
 
   }
 
+  @Test(description = "Позитивный тест апдейта вариантов",
+      dataProvider = "optionUpdateTestDataProvider")
+  public void optionUpdatePositiveTest(
+      @ParameterKey("Тест-кейс") final String testCase,
+      @ParameterKey("Существующий вариант") final Option existing,
+      @ParameterKey("Изменить на") final Option modification) {
+    createdOption = OPTION_STEPS.createOption(existing, getContentManager());
+    final var modifiedOption = OPTION_STEPS.modifyOption(
+        createdOption,
+        modification,
+        getContentManager());
+    if (testCase.contains("Изменение ассоцииации варианта с экспериментом ")) {
+      OPTION_STEPS.getOption(modifiedOption, getContentManager())
+          .equals(new Option.Builder()
+              .using(modification)
+              .setUuid(modifiedOption.getUuid())
+              .setExperimentUuid(modification.getExperimentUuid())
+              .build());
+    } else {
+      OPTION_STEPS.getOption(modifiedOption, getContentManager())
+          .equals(new Option.Builder()
+              .using(modification)
+              .setUuid(modifiedOption.getUuid())
+              .build());
+    }
+  }
+
   /**
    * Data Provider.
+   *
    * @return Data
    */
   @DataProvider
@@ -504,37 +531,13 @@ public class OptionUpdateTest extends OptionBaseTest {
     };
   }
 
-  @Test(description = "Позитивный тест апдейта вариантов",
-      dataProvider = "optionUpdateTestDataProvider")
-  public void optionUpdateTest(
-      @ParameterKey("Тест-кейс") final String testCase,
-      @ParameterKey("Существующий вариант") final Option existing,
-      @ParameterKey("Изменить на") final Option modification) {
-    createdOption = createOption(existing, getContentManager());
-    final var modifiedOption = modifyOption(createdOption, modification, getContentManager());
-    if (testCase.contains("Изменение ассоцииации варианта с экспериментом ")) {
-      getOption(modifiedOption, getContentManager())
-          .equals(new Option.Builder()
-              .using(modification)
-              .setUuid(modifiedOption.getUuid())
-              .setExperimentUuid(modification.getExperimentUuid())
-              .build());
-    } else {
-      getOption(modifiedOption, getContentManager())
-          .equals(new Option.Builder()
-              .using(modification)
-              .setUuid(modifiedOption.getUuid())
-              .build());
-    }
-  }
-
   /**
    * After Method.
    */
   @AfterMethod
   public void afterMethod() {
     if (createdOption != null) {
-      deleteOption(createdOption, getContentManager());
+      OPTION_STEPS.deleteOption(createdOption, getContentManager());
       createdOption = null;
     }
   }

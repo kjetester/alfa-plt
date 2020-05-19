@@ -61,6 +61,7 @@ public class BaseTest {
 
   /**
    * Prepare environment before a test.
+   *
    * @param environment environment
    */
   @BeforeSuite(
@@ -75,8 +76,7 @@ public class BaseTest {
   @Parameters({"environment"})
   public void beforeSuite(
       @Optional("develop")
-      @ParameterKey("environment")
-      final String environment) {
+      @ParameterKey("environment") final String environment) {
     setUpEnvironment(environment);
     setUpSourcePage();
     setUpBaseRequestConfiguration();
@@ -95,6 +95,7 @@ public class BaseTest {
 
   /**
    * Set up environment.
+   *
    * @param environment environment
    */
   private void setUpEnvironment(
@@ -155,13 +156,13 @@ public class BaseTest {
         .setDateFrom(LocalDateTime.now().toString())
         .setDateTo(LocalDateTime.now().plusMinutes(30).toString())
         .setTeamsList(List.of(
-                 SME,
-                 COMMON,
-                 CREDIT_CARD,
-                 DEBIT_CARD,
-                 INVEST,
-                 MORTGAGE,
-                 PIL))
+            SME,
+            COMMON,
+            CREDIT_CARD,
+            DEBIT_CARD,
+            INVEST,
+            MORTGAGE,
+            PIL))
         .setEnable(true)
         .build();
     LOGGER.info(String.format("Скелет новой страницы:\n\t %s", basePage.toString()));

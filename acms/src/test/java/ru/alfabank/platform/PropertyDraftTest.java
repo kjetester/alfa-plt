@@ -20,7 +20,7 @@ public class PropertyDraftTest extends BaseTest {
   /**
    * Opening acms.
    */
-  @BeforeClass (alwaysRun = true)
+  @BeforeClass(alwaysRun = true)
   public void settingUp() {
     PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(baseUri, USER)

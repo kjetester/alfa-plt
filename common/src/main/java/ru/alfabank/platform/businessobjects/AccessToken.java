@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class AccessToken {
 
   private static final int DRIFT = 15;
@@ -19,18 +19,21 @@ public class AccessToken {
   private String scope;
   private int expiresIn;
   private int refreshExpiresIn;
-  @JsonIgnore private LocalDateTime expireAccessTokenTime;
-  @JsonIgnore private LocalDateTime expireRefreshTokenTime;
+  @JsonIgnore
+  private Instant expireAccessTokenTime;
+  @JsonIgnore
+  private Instant expireRefreshTokenTime;
 
   /**
    * Class constructor.
-   * @param accessToken accessToken
-   * @param refreshToken refreshToken
-   * @param tokenType tokenType
-   * @param notBeforePolicy noBeforePolicy
-   * @param sessionState sessionState
-   * @param scope scope
-   * @param expiresIn expiresIn
+   *
+   * @param accessToken      accessToken
+   * @param refreshToken     refreshToken
+   * @param tokenType        tokenType
+   * @param notBeforePolicy  noBeforePolicy
+   * @param sessionState     sessionState
+   * @param scope            scope
+   * @param expiresIn        expiresIn
    * @param refreshExpiresIn refreshExpiresIn
    */
   @JsonCreator
@@ -50,9 +53,9 @@ public class AccessToken {
     this.sessionState = sessionState;
     this.scope = scope;
     this.expiresIn = expiresIn;
-    setExpireAccessTokenTime(LocalDateTime.now().plusSeconds(expiresIn - DRIFT));
+    setExpireAccessTokenTime(Instant.now().plusSeconds(expiresIn - DRIFT));
     this.refreshExpiresIn = refreshExpiresIn;
-    setExpireRefreshTokenTime(LocalDateTime.now().plusSeconds(refreshExpiresIn - DRIFT));
+    setExpireRefreshTokenTime(Instant.now().plusSeconds(refreshExpiresIn - DRIFT));
   }
 
   public String getAccessToken() {
@@ -64,22 +67,22 @@ public class AccessToken {
   }
 
   @JsonIgnore
-  private void setExpireAccessTokenTime(LocalDateTime expireAccessTokenTime) {
+  private void setExpireAccessTokenTime(Instant expireAccessTokenTime) {
     this.expireAccessTokenTime = expireAccessTokenTime;
   }
 
   @JsonIgnore
-  public LocalDateTime getExpireAccessTokenTime() {
+  public Instant getExpireAccessTokenTime() {
     return expireAccessTokenTime;
   }
 
   @JsonIgnore
-  public LocalDateTime getExpireRefreshTokenTime() {
+  public Instant getExpireRefreshTokenTime() {
     return expireRefreshTokenTime;
   }
 
   @JsonIgnore
-  private void setExpireRefreshTokenTime(LocalDateTime expireRefreshTokenTime) {
+  private void setExpireRefreshTokenTime(Instant expireRefreshTokenTime) {
     this.expireRefreshTokenTime = expireRefreshTokenTime;
   }
 }

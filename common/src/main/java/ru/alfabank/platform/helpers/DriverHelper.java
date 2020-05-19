@@ -33,6 +33,7 @@ public class DriverHelper {
 
   /**
    * WebDriver singleton.
+   *
    * @return driver
    */
   public static WebDriver getDriver() {
@@ -54,6 +55,7 @@ public class DriverHelper {
 
   /**
    * Waiting for WebElement becomes visible.
+   *
    * @param element element
    */
   public static void waitForElementBecomesVisible(WebElement element) {
@@ -65,6 +67,7 @@ public class DriverHelper {
 
   /**
    * Waiting for all WebElements becomes visible.
+   *
    * @param elements elements
    */
   public static void waitForElementsBecomeVisible(List<WebElement> elements) {
@@ -77,6 +80,7 @@ public class DriverHelper {
 
   /**
    * Waiting for WebElement becomes clickable.
+   *
    * @param element element
    */
   public static WebElement waitForElementBecomesClickable(WebElement element) {
@@ -90,6 +94,7 @@ public class DriverHelper {
 
   /**
    * Turns implicit waitings off or on.
+   *
    * @param active boolean
    */
   public static void implicitlyWait(Boolean active) {
@@ -116,6 +121,7 @@ public class DriverHelper {
 
   /**
    * Setting Cookie.
+   *
    * @param geoList cities
    */
   public static void setCityCookieAndRefreshPage(List<Geo> geoList) {

@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import ru.alfabank.platform.businessobjects.enums.Geo;
 
 public class WidgetMetaInfoPage extends BasePage {
 
@@ -30,6 +29,7 @@ public class WidgetMetaInfoPage extends BasePage {
 
   /**
    * Setting visibility of a Widget.
+   *
    * @param isToBeSelected to be selected
    * @return this
    */
@@ -41,6 +41,7 @@ public class WidgetMetaInfoPage extends BasePage {
 
   /**
    * Opens the Start date picker.
+   *
    * @return new instance of DatePickerPage
    */
   public DatePickerPage openStartDatePicker() {
@@ -51,6 +52,7 @@ public class WidgetMetaInfoPage extends BasePage {
 
   /**
    * Opens the End date picker.
+   *
    * @return new instance of DatePickerPage
    */
   public DatePickerPage openEndDatePicker() {
@@ -61,6 +63,7 @@ public class WidgetMetaInfoPage extends BasePage {
 
   /**
    * Setting geo-groups into a Widget.
+   *
    * @param geoList geo-groups
    * @return this
    */
@@ -76,6 +79,7 @@ public class WidgetMetaInfoPage extends BasePage {
 
   /**
    * Collapsing a Widget Meta Info Pane.
+   *
    * @return WidgetSidebarPage
    */
   public WidgetSidebarPage collapseWidgetMetaInfo() {
@@ -85,6 +89,7 @@ public class WidgetMetaInfoPage extends BasePage {
 
   /**
    * Collapsing a Widget Meta Info Pane.
+   *
    * @return WidgetSidebarPage
    */
   public PropertyAndPropertyValuePage collapseWidgetMetaInfoAnd() {

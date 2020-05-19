@@ -1,11 +1,8 @@
 package ru.alfabank.platform.experiment.update.positive;
 
-import static io.restassured.RestAssured.given;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
-import static org.apache.http.HttpStatus.SC_CREATED;
-import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
+import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
-import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
@@ -31,36 +28,22 @@ public class UpdateInactiveExperimentTest extends BaseTest {
   @BeforeMethod(description = "Создание неактивного эксперимента "
       + "для позитивного теста изменения неактивного эксперимента")
   public void beforeMethod() {
-    final var start = getCurrentDateTime().plusSeconds(10).toString();
-    final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(start, end, true, getContentManager());
-    final var randomAlphanumeric = randomAlphanumeric(50);
-    experiment =
-        given()
-            .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getContentManager().getJwt().getAccessToken())
-            .body(
-                new Experiment.Builder()
-                    .setDevice(desktop)
-                    .setCookieValue(randomAlphanumeric)
-                    .setDescription(randomAlphanumeric)
-                    .setPageId(page.getId())
-                    .setProductTypeKey(getRandomProductType())
-                    .setEndDate(getValidEndDate())
-                    .setTrafficRate(0.50D)
-                    .build())
-            .when()
-            .post()
-            .then()
-            .statusCode(SC_CREATED)
-            .extract().as(Experiment.class);
-    createdExperiments.put(experiment.getUuid(), experiment);
+    final var start = getValidEndDatePlus10Seconds();
+    final var end = getValidEndDate();
+    final var page_id = PAGES_STEPS.createPage(start, end, true, getContentManager());
+    experiment = EXPERIMENT_STEPS.createExperiment(
+        mobile,
+        page_id,
+        getRandomProductType(),
+        end,
+        .05,
+        getContentManager());
   }
 
-  @Test (
+  @Test(
       description = "Позитивный тест изменения неактивного эксперимента",
       dataProvider = "Positive data provider")
-  public void positiveInactiveExperimentUpdateTest(
+  public void inactiveExperimentUpdatePositiveTest(
       @ParameterKey("Test Case") final String testCase,
       @ParameterKey("New Value") final Object newValue) {
     LOGGER.info("Test case: " + testCase);
@@ -68,7 +51,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
     Experiment expected;
     Experiment changeSetBody;
     switch (field2bChanged) {
-      case "cookieValue" : {
+      case "cookieValue": {
         expected = new Experiment.Builder()
             .using(experiment)
             .setCookieValue((String) newValue)
@@ -78,7 +61,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
             .build();
         break;
       }
-      case "description" : {
+      case "description": {
         expected = new Experiment.Builder()
             .using(experiment)
             .setDescription((String) newValue)
@@ -88,7 +71,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
             .build();
         break;
       }
-      case "productTypeKey" : {
+      case "productTypeKey": {
         expected = new Experiment.Builder()
             .using(experiment)
             .setProductTypeKey((ProductType) newValue)
@@ -98,7 +81,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
             .build();
         break;
       }
-      case "trafficRate" : {
+      case "trafficRate": {
         expected = new Experiment.Builder()
             .using(experiment)
             .setTrafficRate((Double) newValue)
@@ -108,12 +91,12 @@ public class UpdateInactiveExperimentTest extends BaseTest {
             .build();
         break;
       }
-      case "endDate" : {
+      case "endDate": {
         expected =
             new Experiment.Builder()
-            .using(experiment)
-            .setEndDate((String) newValue)
-            .build();
+                .using(experiment)
+                .setEndDate((String) newValue)
+                .build();
         changeSetBody = new Experiment.Builder()
             .setEndDate((String) newValue)
             .build();
@@ -123,11 +106,14 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         throw new IllegalArgumentException();
       }
     }
-    modifyExperiment(experiment, changeSetBody, getContentManager()).checkUpdatedExperiment(expected);
+    EXPERIMENT_STEPS
+        .modifyExperiment(experiment, changeSetBody, getContentManager())
+        .checkUpdatedExperiment(expected);
   }
 
   /**
    * Positive data provider.
+   *
    * @return test data
    */
   @DataProvider(name = "Positive data provider")
@@ -140,7 +126,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         {"Изменение 'productTypeKey'", getRandomProductType()},
         {"Минимальное значение 'trafficRate'", 0.01D},
         {"Максимальное значение 'trafficRate'", 1.00D},
-        {"Изменение 'endDate'", getValidEndDatePlusOneMonth()}
+        {"Изменение 'endDate'", getValidEndDatePlusWeek()}
     };
   }
 }

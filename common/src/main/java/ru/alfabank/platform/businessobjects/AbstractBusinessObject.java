@@ -9,6 +9,7 @@ public abstract class AbstractBusinessObject {
 
   /**
    * POJO to pretty JSON.
+   *
    * @param o object
    * @return json as string
    */

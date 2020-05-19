@@ -11,6 +11,7 @@ public class Retry implements IRetryAnalyzer {
 
   /**
    * Retry.
+   *
    * @param testResult testResult
    * @return boolean
    */

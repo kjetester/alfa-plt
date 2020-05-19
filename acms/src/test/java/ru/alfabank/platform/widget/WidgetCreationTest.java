@@ -11,7 +11,7 @@ import ru.alfabank.platform.businessobjects.Page;
 import ru.alfabank.platform.pages.acms.MainPage;
 import ru.alfabank.platform.utils.TestFailureListener;
 
-@Listeners ({TestFailureListener.class})
+@Listeners({TestFailureListener.class})
 public class WidgetCreationTest extends ru.alfabank.platform.widget.BaseWidgetTest {
 
   private static final Logger LOGGER = LogManager.getLogger(WidgetCreationTest.class);

@@ -19,7 +19,7 @@ public class PageCopyingTest extends BasePageTest {
 
   private Page copiedPage;
 
-  @Test (
+  @Test(
       description = "Тест копирования страницы:\n"
           + "\t1. Метод - CURRENT\n",
       groups = {"page", "copyingPage"})
@@ -40,7 +40,7 @@ public class PageCopyingTest extends BasePageTest {
     comparePagesInContentPageController(copiedPage, CURRENT);
   }
 
-  @Test (
+  @Test(
       description = "Тест копирования страницы:\n"
           + "\t1. Метод - COPY\n",
       groups = {"page", "copyingPage"})
@@ -62,7 +62,7 @@ public class PageCopyingTest extends BasePageTest {
     comparePagesInContentPageController(copiedPage, COPY);
   }
 
-  @Test (
+  @Test(
       description = "Тест копирования страницы:\n"
           + "\t1. Метод - SHARE\n",
       groups = {"page", "copyingPage"})

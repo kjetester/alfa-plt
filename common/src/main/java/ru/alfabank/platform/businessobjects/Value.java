@@ -29,9 +29,10 @@ public class Value implements Comparable<Value> {
 
   /**
    * Class constructor.
-   * @param uid uid
+   *
+   * @param uid   uid
    * @param value value
-   * @param geo geo
+   * @param geo   geo
    */
   @JsonCreator
   public Value(
@@ -83,7 +84,8 @@ public class Value implements Comparable<Value> {
 
   /**
    * Compare value.
-   * @param value comparing value
+   *
+   * @param value  comparing value
    * @param method copying method
    */
   public void equals(Value value, CopyMethod method, boolean isReused) {

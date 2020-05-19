@@ -9,7 +9,7 @@ import static ru.alfabank.platform.businessobjects.enums.Team.PIL;
 import static ru.alfabank.platform.businessobjects.enums.Team.SME;
 import static ru.alfabank.platform.businessobjects.enums.Team.UNCLAIMED;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import ru.alfabank.platform.businessobjects.AccessToken;
 import ru.alfabank.platform.businessobjects.enums.Team;
@@ -47,6 +47,7 @@ public class ContentManager extends User implements AccessibleUser {
 
   /**
    * Get user.
+   *
    * @return user
    */
   public static ContentManager getContentManager() {
@@ -54,7 +55,7 @@ public class ContentManager extends User implements AccessibleUser {
       user = new ContentManager();
     }
     if (user.jwt == null
-        || LocalDateTime.now().isAfter(user.jwt.getExpireAccessTokenTime())) {
+        || Instant.now().isAfter(user.jwt.getExpireAccessTokenTime())) {
       getAccessToken(user);
     }
     return user;

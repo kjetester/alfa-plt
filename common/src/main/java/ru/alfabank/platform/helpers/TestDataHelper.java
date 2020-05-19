@@ -27,6 +27,7 @@ public class TestDataHelper {
 
   /**
    * Class constructor.
+   *
    * @param user user
    * @param page test page
    */
@@ -74,6 +75,7 @@ public class TestDataHelper {
 
   /**
    * Defining the test widget.
+   *
    * @return widget
    */
   public Widget getTestWidget() {

@@ -37,6 +37,7 @@ public enum ProductType {
 
   /**
    * Get random Product Type except ERR.
+   *
    * @return ProductType
    */
   public static ProductType getRandomProductType() {

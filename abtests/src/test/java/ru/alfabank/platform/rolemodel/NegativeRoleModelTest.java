@@ -2,7 +2,6 @@ package ru.alfabank.platform.rolemodel;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.in;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.CC;
@@ -17,6 +16,7 @@ import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD;
 import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD;
 import static ru.alfabank.platform.businessobjects.enums.Team.INVEST;
 import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE;
+import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.CommonUser.getCommonUser;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 import static ru.alfabank.platform.users.CreditCardUser.getCreditCardUser;
@@ -29,10 +29,8 @@ import static ru.alfabank.platform.users.UnclaimedUser.getUnclaimedUser;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.AccessToken;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Option.Builder;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
@@ -60,27 +58,7 @@ public class NegativeRoleModelTest extends OptionBaseTest {
   private static final CommonUser COMMON_USER = getCommonUser();
   private static final UnclaimedUser UNCLAIMED_USER = getUnclaimedUser();
 
-  private final String experimentEndDate = getCurrentDateTime().plusDays(5).toString();
-
-  private AccessibleUser actualizeToken(AccessibleUser user) {
-    if (user instanceof CreditCardUser) {
-      return getCreditCardUser();
-    } else if (user instanceof DebitCardUser) {
-      return getDebitCardUser();
-    } else if (user instanceof InvestUser) {
-      return getInvestUser();
-    } else if (user instanceof MortgageUser) {
-      return getMortgageUser();
-    } else if (user instanceof PilUser) {
-      return getPilUser();
-    } else if (user instanceof SmeUser) {
-      return getSmeUser();
-    } else if (user instanceof CommonUser) {
-      return getCommonUser();
-    } else {
-      return getUnclaimedUser();
-    }
-  }
+  private final String experimentEndDate = getValidEndDatePlusWeek();
 
   @Test(description = "Негативный тест создания экспермента",
       dataProvider = "negativeDataProvider")
@@ -88,13 +66,12 @@ public class NegativeRoleModelTest extends OptionBaseTest {
       @ParameterKey("user") AccessibleUser user,
       @ParameterKey("page team") final List<Team> teams,
       @ParameterKey("productType") final ProductType productType) {
-    user = actualizeToken(user);
-    var page = createPage(teams, getContentManager());
-    final var response = createExperimentAssumingFail(
+    final var page_id = PAGES_STEPS.createPage(teams, getContentManager());
+    final var response = EXPERIMENT_STEPS.createExperimentAssumingFail(
         randomAlphanumeric(50),
         randomAlphanumeric(50),
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
@@ -102,79 +79,72 @@ public class NegativeRoleModelTest extends OptionBaseTest {
     assertThat(response.asString()).contains(ERRORS);
   }
 
-  @Test(
-      description = "Негативный тест чтения экспермента",
+  @Test(description = "Негативный тест чтения экспермента",
       dataProvider = "negativeDataProvider")
   public void negativeReadExperimentTest(
       @ParameterKey("user") AccessibleUser user,
       @ParameterKey("page team") final List<Team> teams,
       @ParameterKey("productType") final ProductType productType) {
-    user = actualizeToken(user);
-    var page = createPage(teams, getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(teams, getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    getExperiment(experiment, user);
+    EXPERIMENT_STEPS.getExistingExperiment(experiment, user);
   }
 
-  @Test(
-      description = "Негативный тест изменения экспермента",
+  @Test(description = "Негативный тест изменения экспермента",
       dataProvider = "negativeDataProvider")
   public void negativeModifyExperimentTest(
       @ParameterKey("user") AccessibleUser user,
       @ParameterKey("page team") final List<Team> teams,
       @ParameterKey("productType") final ProductType productType) {
-    user = actualizeToken(user);
-    var page = createPage(teams, getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(teams, getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    final var response = modifyExperimentAssumingFail(
+    final var response = EXPERIMENT_STEPS.modifyExperimentAssumingFail(
         experiment,
-        new Experiment.Builder().setTrafficRate(.3D).build(),
-        user);
+        new Experiment.Builder().setTrafficRate(.3D).build(), user);
     assertThat(response.asString()).contains(ERRORS);
   }
 
-  @Test(
-      description = "Негативный тест удаления экспермента",
+  @Test(description = "Негативный тест удаления экспермента",
       dataProvider = "negativeDataProvider")
   public void negativeDeleteExperimentTest(
       @ParameterKey("user") AccessibleUser user,
       @ParameterKey("page team") final List<Team> teams,
       @ParameterKey("productType") final ProductType productType) {
-    user = actualizeToken(user);
-    var page = createPage(teams, getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(teams, getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    final var response = deleteExperiment(experiment, user);
+    final var response = EXPERIMENT_STEPS.deleteExperiment(experiment, user);
     assertThat(response.asString()).contains(ERRORS);
   }
 
-  @Test(
-      description = "Негативный тест запуска экспермента",
+  @Test(description = "Негативный тест запуска экспермента",
       dataProvider = "negativeDataProvider")
   public void negativeRunExperimentTest(
       @ParameterKey("user") AccessibleUser user,
       @ParameterKey("page team") final List<Team> teams,
       @ParameterKey("productType") final ProductType productType) {
-    user = actualizeToken(user);
-    var page = createPage(teams, getContentManager());
-    final var widget = createWidget(
-        page,
+    final var page_id = PAGES_STEPS.createPage(
+        teams,
+        getContentManager());
+    final var widget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
@@ -183,40 +153,40 @@ public class NegativeRoleModelTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    final var experiment = createExperiment(
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    createOption(
+    OPTION_STEPS.createOption(
         true,
         List.of(widget.getUid()),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    createOption(
+    OPTION_STEPS.createOption(
         false,
         List.of(),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    final var response = runExperimentAssumingFail(experiment, user);
-    assertThat(response.asString()).contains(ERRORS);
+    assertThat(EXPERIMENT_STEPS.runExperimentAssumingFail(experiment, user).asString())
+        .contains(ERRORS);
   }
 
-  @Test(
-      description = "Негативный тест остановки экспермента",
+  @Test(description = "Негативный тест остановки экспермента",
       dataProvider = "negativeDataProvider")
   public void negativeStopExperimentTest(
       @ParameterKey("user") AccessibleUser user,
       @ParameterKey("page team") final List<Team> teams,
       @ParameterKey("productType") final ProductType productType) {
-    user = actualizeToken(user);
-    var page = createPage(teams, getContentManager());
-    final var widget = createWidget(
-        page,
+    final var page_id = PAGES_STEPS.createPage(
+        teams,
+        getContentManager());
+    final var widget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
@@ -225,135 +195,129 @@ public class NegativeRoleModelTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    final var experiment = createExperiment(
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    createOption(
+    OPTION_STEPS.createOption(
         true,
         List.of(widget.getUid()),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    createOption(
+    OPTION_STEPS.createOption(
         false,
         List.of(),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    runExperimentAssumingSuccess(experiment, getContentManager());
-    final var response = stopExperimentAssumingFail(experiment, user);
-    assertThat(response.asString()).contains(ERRORS);
+    EXPERIMENT_STEPS.runExperimentAssumingSuccess(experiment, getContentManager());
+    assertThat(
+        EXPERIMENT_STEPS.stopExperimentAssumingFail(experiment, user).asString())
+        .contains(ERRORS);
   }
 
-  @Test(
-      description = "Негативный тест создания вариата",
+  @Test(description = "Негативный тест создания вариата",
       dataProvider = "negativeDataProvider")
   public void negativeCreateOptionTest(
       @ParameterKey("user") AccessibleUser user,
       @ParameterKey("page team") final List<Team> teams,
       @ParameterKey("productType") final ProductType productType) {
-    user = actualizeToken(user);
-    var page = createPage(teams, getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(teams, getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    final var response = createOptionAssumingFail(
+    assertThat(OPTION_STEPS.createOptionAssumingFail(
         true,
         List.of(),
         experiment.getUuid(),
         .5D,
-        user);
-    assertThat(response.asString()).contains(ERRORS);
+        user).asString())
+        .contains(ERRORS);
   }
 
-  @Test(
-      description = "Негативный тест чтения вариата",
+  @Test(description = "Негативный тест чтения вариата",
       dataProvider = "negativeDataProvider")
   public void negativeReadOptionTest(
       @ParameterKey("user") AccessibleUser user,
       @ParameterKey("page team") final List<Team> teams,
       @ParameterKey("productType") final ProductType productType) {
-    user = actualizeToken(user);
-    var page = createPage(teams, getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(teams, getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    final var option = createOption(
+    final var option = OPTION_STEPS.createOption(
         true,
         List.of(),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    getOption(option, user);
+    OPTION_STEPS.getOption(option, user);
   }
 
-  @Test(
-      description = "Негативный тест изменения вариата",
+  @Test(description = "Негативный тест изменения вариата",
       dataProvider = "negativeDataProvider")
   public void negativeModifyOptionTest(
       @ParameterKey("user") AccessibleUser user,
       @ParameterKey("page team") final List<Team> teams,
       @ParameterKey("productType") final ProductType productType) {
-    user = actualizeToken(user);
-    var page = createPage(teams, getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(
+        teams,
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    getExperiment(experiment, user);
-    final var option = createOption(
+    EXPERIMENT_STEPS.getExistingExperiment(experiment, user);
+    final var option = OPTION_STEPS.createOption(
         true,
         List.of(),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    final var response = modifyOptionAssumingFail(
+    final var response = OPTION_STEPS.modifyOptionAssumingFail(
         option,
-        new Builder().setTrafficRate(.4D).build(),
-        user);
+        new Builder().setTrafficRate(.4D).build(), user);
     assertThat(response.asString()).contains(ERRORS);
   }
 
-  @Test(
-      description = "Негативный тест удаления вариата",
+  @Test(description = "Негативный тест удаления вариата",
       dataProvider = "negativeDataProvider")
   public void negativeDeleteOptionTest(
       @ParameterKey("user") AccessibleUser user,
       @ParameterKey("page team") final List<Team> teams,
       @ParameterKey("productType") final ProductType productType) {
-    user = actualizeToken(user);
-    var page = createPage(teams, getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(teams, getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    getExperiment(experiment, user);
-    final var option = createOption(
+    EXPERIMENT_STEPS.getExistingExperiment(experiment, user);
+    final var option = OPTION_STEPS.createOption(
         true,
         List.of(),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    final var response = deleteOptionAssumingFail(option, user);
-    assertThat(response.asString()).contains(ERRORS);
+    assertThat(OPTION_STEPS.deleteOptionAssumingFail(option, user).asString())
+        .contains(ERRORS);
   }
 
   /**
@@ -362,56 +326,15 @@ public class NegativeRoleModelTest extends OptionBaseTest {
    */
   @DataProvider
   public static Object[][] negativeDataProvider() {
-    return new Object[][] {
-        {CREDIT_CARD_USER,  List.of(DEBIT_CARD),   DC},
-        {CREDIT_CARD_USER,  List.of(INVEST),       INV},
-        {CREDIT_CARD_USER,  List.of(MORTGAGE),     MG},
-        {CREDIT_CARD_USER,  List.of(Team.PIL),     PIL},
-        {CREDIT_CARD_USER,  List.of(Team.SME),     SME},
-        {CREDIT_CARD_USER,  List.of(COMMON),       COM},
-        {DEBIT_CARD_USER,   List.of(INVEST),       INV},
-        {DEBIT_CARD_USER,   List.of(MORTGAGE),     MG},
-        {DEBIT_CARD_USER,   List.of(Team.PIL),     PIL},
-        {DEBIT_CARD_USER,   List.of(Team.SME),     SME},
-        {DEBIT_CARD_USER,   List.of(COMMON),       COM},
-        {DEBIT_CARD_USER,   List.of(CREDIT_CARD),  CC},
-        {INVEST_USER,       List.of(MORTGAGE),     MG},
-        {INVEST_USER,       List.of(Team.PIL),     PIL},
-        {INVEST_USER,       List.of(Team.SME),     SME},
-        {INVEST_USER,       List.of(COMMON),       COM},
-        {INVEST_USER,       List.of(CREDIT_CARD),  CC},
-        {INVEST_USER,       List.of(DEBIT_CARD),   DC},
-        {MORTGAGE_USER,     List.of(Team.PIL),     PIL},
-        {MORTGAGE_USER,     List.of(Team.SME),     SME},
-        {MORTGAGE_USER,     List.of(COMMON),       COM},
-        {MORTGAGE_USER,     List.of(CREDIT_CARD),  CC},
-        {MORTGAGE_USER,     List.of(DEBIT_CARD),   DC},
-        {MORTGAGE_USER,     List.of(INVEST),       INV},
-        {PIL_USER,          List.of(Team.SME),     SME},
-        {PIL_USER,          List.of(COMMON),       COM},
-        {PIL_USER,          List.of(CREDIT_CARD),  CC},
-        {PIL_USER,          List.of(DEBIT_CARD),   DC},
-        {PIL_USER,          List.of(INVEST),       INV},
-        {PIL_USER,          List.of(MORTGAGE),     MG},
-        {SME_USER,          List.of(COMMON),       COM},
-        {SME_USER,          List.of(CREDIT_CARD),  CC},
-        {SME_USER,          List.of(DEBIT_CARD),   DC},
-        {SME_USER,          List.of(INVEST),       INV},
-        {SME_USER,          List.of(MORTGAGE),     MG},
-        {SME_USER,          List.of(Team.PIL),     PIL},
-        {COMMON_USER,       List.of(CREDIT_CARD),  CC},
-        {COMMON_USER,       List.of(DEBIT_CARD),   DC},
-        {COMMON_USER,       List.of(INVEST),       INV},
-        {COMMON_USER,       List.of(MORTGAGE),     MG},
-        {COMMON_USER,       List.of(Team.PIL),     PIL},
-        {COMMON_USER,       List.of(Team.SME),     SME},
-        {UNCLAIMED_USER,    List.of(CREDIT_CARD),  CC},
-        {UNCLAIMED_USER,    List.of(DEBIT_CARD),   DC},
-        {UNCLAIMED_USER,    List.of(INVEST),       INV},
-        {UNCLAIMED_USER,    List.of(MORTGAGE),     MG},
-        {UNCLAIMED_USER,    List.of(Team.PIL),     PIL},
-        {UNCLAIMED_USER,    List.of(Team.SME),     SME},
-        {UNCLAIMED_USER,    List.of(COMMON),       COM}
+    return new Object[][]{
+        {CREDIT_CARD_USER, List.of(DEBIT_CARD), DC},
+        {DEBIT_CARD_USER, List.of(INVEST), INV},
+        {INVEST_USER, List.of(MORTGAGE), MG},
+        {MORTGAGE_USER, List.of(Team.PIL), PIL},
+        {PIL_USER, List.of(Team.SME), SME},
+        {SME_USER, List.of(COMMON), COM},
+        {COMMON_USER, List.of(CREDIT_CARD), CC},
+        {UNCLAIMED_USER, List.of(CREDIT_CARD), CC}
     };
   }
 }

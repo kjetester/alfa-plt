@@ -18,6 +18,7 @@ public class MainSliderPage extends BasePage {
 
   /**
    * Open pages list.
+   *
    * @return new instance of the PagesSliderPage class
    */
   public PagesSliderPage openPagesTree() {

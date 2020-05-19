@@ -6,6 +6,7 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import ru.alfabank.platform.option.OptionBaseTest;
 
 public class DefaultWidgetHasInvalidRelativesTest extends OptionBaseTest {
 
-  @Test (description = "Тест создания дефлотного варианта с привязкой к виджету:"
+  @Test(description = "Тест создания дефлотного варианта с привязкой к виджету:"
       + "\n\t* enable=true"
       + "\n\t* experimentOptionName=default"
       + "\n\t* defaultWidget=true"
@@ -27,24 +28,55 @@ public class DefaultWidgetHasInvalidRelativesTest extends OptionBaseTest {
       + "\n\t\t\t* enable=false"
       + "\n\t\t\t* experimentOptionName=forABtest"
       + "\n\t\t\t* defaultWidget=false")
-  public void defaultWidgetHasInvalidRelativesTest() {
-    final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true, getContentManager());
-    final var pageId = page.getId();
-    final var widget1 = createWidget(
-        page, null, desktop, true, DEFAULT, true, null, null, getContentManager());
-    final var widget1_1 = createWidget(
-        page, widget1, desktop, false, DEFAULT, true, null, null, getContentManager());
-    final var widget1_2 = createWidget(
-        page, widget1, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
+  public void defaultWidgetHasInvalidRelativesNegativeTest() {
+    final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    final var widget1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
+        null,
+        desktop,
+        true,
+        DEFAULT,
+        true,
+        null,
+        null,
+        getContentManager());
+    final var widget1_1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
+        widget1,
+        desktop,
+        false,
+        DEFAULT,
+        true,
+        null,
+        null,
+        getContentManager());
+    final var widget1_2 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
+        widget1,
+        desktop,
+        false,
+        FOR_AB_TEST,
+        false,
+        null,
+        null,
+        getContentManager());
     final var device = widget1.getDevice();
-    final var actualExperiment = createExperiment(
-        device, pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
-    final var result = createOptionAssumingFail(
-        true, List.of(widget1.getUid()), actualExperiment.getUuid(), .5D, getContentManager());
+    final var actualExperiment = EXPERIMENT_STEPS.createExperiment(
+        device,
+        page_id,
+        getRandomProductType(),
+        getValidEndDate(),
+        .5D,
+        getContentManager());
+    final var result = OPTION_STEPS.createOptionAssumingFail(
+        true,
+        List.of(widget1.getUid()),
+        actualExperiment.getUuid(),
+        .5D,
+        getContentManager());
     assertThat(result.getStatusCode())
         .as("Проверка статус-кода")
-        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
+        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
         .contains("Для варианта по умолчанию '", widget1_1.getUid(), widget1_2.getUid(),

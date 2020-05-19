@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import ru.alfabank.platform.businessobjects.enums.Device;
 
-@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class WrapperDraft {
 
@@ -16,6 +16,7 @@ public class WrapperDraft {
 
   /**
    * Class constructor.
+   *
    * @param operations operations
    */
   @JsonCreator
@@ -28,8 +29,8 @@ public class WrapperDraft {
   /**
    * OperationDraft Class.
    */
-  @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
-  @JsonInclude (JsonInclude.Include.NON_NULL)
+  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+  @JsonInclude(JsonInclude.Include.NON_NULL)
   public static class OperationDraft {
 
     private final Object data;
@@ -39,10 +40,11 @@ public class WrapperDraft {
 
     /**
      * Class constructor.
-     * @param data data
+     *
+     * @param data   data
      * @param entity entity
      * @param method method
-     * @param uid uid
+     * @param uid    uid
      */
     @JsonCreator
     public OperationDraft(Object data, String entity, String method, Object uid) {

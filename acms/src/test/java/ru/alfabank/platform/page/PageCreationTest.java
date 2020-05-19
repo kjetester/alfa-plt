@@ -118,16 +118,16 @@ public class PageCreationTest extends BasePageTest {
     // STEPS //
     Page page = PageFactory.initElements(getDriver(), MainPage.class)
         .openAndAuthorize(BaseTest.baseUri, BaseTest.USER)
-          .openPagesTree()
-          .createNewPageWithinPage(null)
-          .fillAndSubmitCreationForm(
-              new Page.Builder()
-                  .using(BaseTest.basePage)
-                  .setDateFrom(null)
-                   .setTeamsList(List.of(
-                       INVEST,
-                       MORTGAGE))
-                  .build());
+        .openPagesTree()
+        .createNewPageWithinPage(null)
+        .fillAndSubmitCreationForm(
+            new Page.Builder()
+                .using(BaseTest.basePage)
+                .setDateFrom(null)
+                .setTeamsList(List.of(
+                    INVEST,
+                    MORTGAGE))
+                .build());
     // создание виджета A
     Widget widgetA = new Widget.Builder()
         .setUid(getNewUuid())
@@ -169,8 +169,8 @@ public class PageCreationTest extends BasePageTest {
             .auth().oauth2(getToken(USER).getAccessToken())
             .pathParam("pageId", page.getId())
             .body(draft)
-        .when().put()
-        .then().extract().response();
+            .when().put()
+            .then().extract().response();
     LOGGER.info(String.format(
         "Получен ответ:\n%s\n%s",
         savingDraftResponse.getStatusLine(),
@@ -182,8 +182,8 @@ public class PageCreationTest extends BasePageTest {
             .auth().oauth2(getToken(USER).getAccessToken())
             .pathParam("pageId", page.getId())
             .queryParams("device", desktop)
-        .when().post()
-        .then().extract().response();
+            .when().post()
+            .then().extract().response();
     LOGGER.info(String.format(
         "Получен ответ:\n%s\n%s",
         publishDraftResponse.statusLine(),
@@ -219,8 +219,8 @@ public class PageCreationTest extends BasePageTest {
                     .using(BaseTest.basePage)
                     .setDateFrom(null)
                     .setTeamsList(List.of(
-                         INVEST,
-                         MORTGAGE))
+                        INVEST,
+                        MORTGAGE))
                     .setEnable(false)
                     .build());
     // создание виджета A
@@ -264,8 +264,8 @@ public class PageCreationTest extends BasePageTest {
             .auth().oauth2(getToken(USER).getAccessToken())
             .pathParam("pageId", page.getId())
             .body(draft)
-        .when().put()
-        .then().extract().response();
+            .when().put()
+            .then().extract().response();
     LOGGER.info(String.format(
         "Получен ответ:\n%s\n%s",
         savingDraftResponse.getStatusLine(),
@@ -277,8 +277,8 @@ public class PageCreationTest extends BasePageTest {
             .auth().oauth2(getToken(USER).getAccessToken())
             .pathParam("pageId", page.getId())
             .queryParams("device", desktop)
-        .when().post()
-        .then().extract().response();
+            .when().post()
+            .then().extract().response();
     LOGGER.info(String.format(
         "Получен ответ:\n%s\n%s",
         publishDraftResponse.statusLine(),

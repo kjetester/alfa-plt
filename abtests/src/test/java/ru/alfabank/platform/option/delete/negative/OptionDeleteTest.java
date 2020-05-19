@@ -6,6 +6,7 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
@@ -25,32 +26,50 @@ import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionDeleteTest extends OptionBaseTest {
 
-  private String experimentEnd = getCurrentDateTime().plusHours(26).toString();
   private Widget defaultWidget;
   private Widget abTestWidget;
   private Experiment experiment;
   private Option createdDefaultOption;
   private Option createdAbTestOption;
-  private static final String NAME = randomAlphanumeric(16);
-  private static final String DESCRIPTION = randomAlphanumeric(50);
 
   /**
    * Before Class.
    */
   @BeforeClass
   public void beforeClass() {
-    var page = createPage(null, null, true, getContentManager());
-    final var pageId = page.getId();
-    defaultWidget = createWidget(
-        page, null, desktop, true, DEFAULT, true, null, null, getContentManager());
-    abTestWidget = createWidget(
-        page, null, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
-    experiment = createExperiment(
-        defaultWidget.getDevice(), pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
+    final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    defaultWidget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
+        null,
+        desktop,
+        true,
+        DEFAULT,
+        true,
+        null,
+        null,
+        getContentManager());
+    abTestWidget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
+        null,
+        desktop,
+        false,
+        FOR_AB_TEST,
+        false,
+        null,
+        null,
+        getContentManager());
+    experiment = EXPERIMENT_STEPS.createExperiment(
+        defaultWidget.getDevice(),
+        page_id,
+        getRandomProductType(),
+        getValidEndDatePlusWeek(),
+        .5D,
+        getContentManager());
   }
 
   /**
    * Data Provider.
+   *
    * @return Data
    */
   @DataProvider
@@ -60,15 +79,15 @@ public class OptionDeleteTest extends OptionBaseTest {
             "1. Удаление варианта, ассоциированным с экспериментом со статусом 'RUNNING'",
             new Option.Builder()
                 .setDefault(true)
-                .setName(NAME + "1")
-                .setDescription(DESCRIPTION + "1")
+                .setName(randomAlphanumeric(11))
+                .setDescription(randomAlphanumeric(11))
                 .setWidgetUids(List.of(defaultWidget.getUid()))
                 .setExperimentUuid(experiment.getUuid())
                 .setTrafficRate(.5D).build(),
             new Option.Builder()
                 .setDefault(false)
-                .setName(NAME + "2")
-                .setDescription(DESCRIPTION + "2")
+                .setName(randomAlphanumeric(11))
+                .setDescription(randomAlphanumeric(11))
                 .setWidgetUids(List.of(abTestWidget.getUid()))
                 .setExperimentUuid(experiment.getUuid())
                 .setTrafficRate(.5D).build()
@@ -77,15 +96,15 @@ public class OptionDeleteTest extends OptionBaseTest {
             "2. Удаление варианта, ассоциированным с экспериментом со статусом 'CANCELLED'",
             new Option.Builder()
                 .setDefault(true)
-                .setName(NAME + "2")
-                .setDescription(DESCRIPTION + "2")
+                .setName(randomAlphanumeric(11))
+                .setDescription(randomAlphanumeric(11))
                 .setWidgetUids(List.of(defaultWidget.getUid()))
                 .setExperimentUuid(experiment.getUuid())
                 .setTrafficRate(.5D).build(),
             new Option.Builder()
                 .setDefault(false)
-                .setName(NAME)
-                .setDescription(DESCRIPTION)
+                .setName(randomAlphanumeric(11))
+                .setDescription(randomAlphanumeric(11))
                 .setWidgetUids(List.of(abTestWidget.getUid()))
                 .setExperimentUuid(experiment.getUuid())
                 .setTrafficRate(.5D).build()
@@ -94,15 +113,15 @@ public class OptionDeleteTest extends OptionBaseTest {
             "3. Удаление варианта, ассоциированным с экспериментом со статусом 'EXPIRED'",
             new Option.Builder()
                 .setDefault(true)
-                .setName(NAME + "3")
-                .setDescription(DESCRIPTION + "3")
+                .setName(randomAlphanumeric(11))
+                .setDescription(randomAlphanumeric(11))
                 .setWidgetUids(List.of(defaultWidget.getUid()))
                 .setExperimentUuid(experiment.getUuid())
                 .setTrafficRate(.5D).build(),
             new Option.Builder()
                 .setDefault(false)
-                .setName(NAME + "3")
-                .setDescription(DESCRIPTION + "3")
+                .setName(randomAlphanumeric(11))
+                .setDescription(randomAlphanumeric(11))
                 .setWidgetUids(List.of(abTestWidget.getUid()))
                 .setExperimentUuid(experiment.getUuid())
                 .setTrafficRate(.5D).build()
@@ -112,7 +131,7 @@ public class OptionDeleteTest extends OptionBaseTest {
 
   @Test(description = "Позитивный тест удаления вариантов",
       dataProvider = "optionDeleteTestDataProvider")
-  public void optionDeleteTest(
+  public void optionDeleteNegativeTest(
       @ParameterKey("Тест-кейс") final String testCase,
       @ParameterKey("Вариант по-умолчанию") final Option defaultOption,
       @ParameterKey("Вариант для АБ-тестирования") final Option abTestOption) {
@@ -120,17 +139,33 @@ public class OptionDeleteTest extends OptionBaseTest {
     Response response2;
     switch (Integer.parseInt(testCase.replaceAll("[\\D]", ""))) {
       case 1: {
-        createdDefaultOption = createOption(defaultOption, getContentManager());
-        createdAbTestOption = createOption(abTestOption, getContentManager());
-        runExperimentAssumingSuccess(experiment, getContentManager());
-        response1 = deleteOptionAssumingFail(createdDefaultOption, getContentManager());
-        response2 = deleteOptionAssumingFail(createdAbTestOption, getContentManager());
+        createdDefaultOption = OPTION_STEPS.createOption(
+            defaultOption,
+            getContentManager());
+        createdAbTestOption = OPTION_STEPS.createOption(
+            abTestOption,
+            getContentManager());
+        EXPERIMENT_STEPS.runExperimentAssumingSuccess(
+            experiment,
+            getContentManager());
+        response1 = OPTION_STEPS.deleteOptionAssumingFail(
+            createdDefaultOption,
+            getContentManager());
+        response2 = OPTION_STEPS.deleteOptionAssumingFail(
+            createdAbTestOption,
+            getContentManager());
         break;
       }
       case 2: {
-        stopExperimentAssumingSuccess(experiment, getContentManager());
-        response1 = deleteOptionAssumingFail(createdDefaultOption, getContentManager());
-        response2 = deleteOptionAssumingFail(createdAbTestOption, getContentManager());
+        EXPERIMENT_STEPS.stopExperimentAssumingSuccess(
+            experiment,
+            getContentManager());
+        response1 = OPTION_STEPS.deleteOptionAssumingFail(
+            createdDefaultOption,
+            getContentManager());
+        response2 = OPTION_STEPS.deleteOptionAssumingFail(
+            createdAbTestOption,
+            getContentManager());
         break;
       }
       case 3: {
@@ -155,10 +190,14 @@ public class OptionDeleteTest extends OptionBaseTest {
     softly.assertThat(response2.asString())
         .as("Невозможно удалить вариант")
         .contains("Невозможно удалить вариант '" + createdAbTestOption.getUuid());
-    softly.assertThat(getOption(createdDefaultOption, getContentManager()))
+    softly.assertThat(OPTION_STEPS.getOption(
+        createdDefaultOption,
+        getContentManager()))
         .as("Проверка существования варианта")
         .isNotNull();
-    softly.assertThat(getOption(createdAbTestOption, getContentManager()))
+    softly.assertThat(OPTION_STEPS.getOption(
+        createdAbTestOption,
+        getContentManager()))
         .as("Проверка существования варианта")
         .isNotNull();
     softly.assertAll();

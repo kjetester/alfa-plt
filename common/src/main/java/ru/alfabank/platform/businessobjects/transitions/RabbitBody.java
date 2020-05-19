@@ -21,6 +21,7 @@ public final class RabbitBody {
 
   /**
    * Class constructor.
+   *
    * @param body body
    */
   @JsonCreator(mode = JsonCreator.Mode.DISABLED)

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import java.time.LocalDateTime;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class Body {
 
   private Object businessUid;
@@ -25,6 +25,7 @@ public final class Body {
 
   /**
    * Class constructor.
+   *
    * @param builder builder
    */
   @JsonCreator
@@ -62,7 +63,6 @@ public final class Body {
      * Modifying existing Body.
      *
      * @param body body
-     *
      * @return this
      */
     public BodyBuilder using(Body body) {
@@ -150,7 +150,7 @@ public final class Body {
     }
   }
 
-  @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
+  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class FeedBackData {
 
     private String statusCode;
@@ -184,7 +184,7 @@ public final class Body {
     }
   }
 
-  @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
+  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class EmptyFeedBackData {
 
     @JsonCreator
@@ -192,7 +192,7 @@ public final class Body {
     }
   }
 
-  @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
+  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class ClientData {
     private String platformId;
     private String bannerId;
@@ -224,7 +224,7 @@ public final class Body {
     }
   }
 
-  @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
+  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class EmptyClientData {
 
     @JsonCreator
@@ -232,7 +232,7 @@ public final class Body {
     }
   }
 
-  @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
+  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class Data {
     private String product;
     private String productType;
@@ -251,6 +251,7 @@ public final class Body {
 
     /**
      * Class constructor.
+     *
      * @param builder builder
      */
     @JsonCreator
@@ -364,7 +365,7 @@ public final class Body {
     }
   }
 
-  @JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
+  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class EmptyData {
 
     @JsonCreator

@@ -82,6 +82,7 @@ public class BasePageTest extends BaseTest {
 
   /**
    * Create a new page in root.
+   *
    * @return page
    */
   protected Page createNewPageInRoot() {
@@ -97,6 +98,7 @@ public class BasePageTest extends BaseTest {
 
   /**
    * Comparing a given page against a source page in the '/content-page-controller'.
+   *
    * @param createdPage page
    */
   public void comparePagesInPageController(final Page createdPage) {
@@ -112,11 +114,12 @@ public class BasePageTest extends BaseTest {
   /**
    * Get expected / actual (if page parameter was passed)
    * result from the '/page-controller'.
+   *
    * @param page created page
    * @return page from the '/page-controller'
    */
   protected Page getPageFromPageController(final Page... page) {
-    int pageId = page.length > 0 ?  page[0].getId() : sourcePage.getId();
+    int pageId = page.length > 0 ? page[0].getId() : sourcePage.getId();
     LOGGER.info(String.format(
         "Запрос страницы с id=%d в '/pageController'",
         pageId));
@@ -126,7 +129,7 @@ public class BasePageTest extends BaseTest {
             .basePath(PAGE_CONTROLLER_BASE_PATH + "{id}")
             .pathParam("id", pageId)
             .auth().oauth2(getToken(USER).getAccessToken())
-        .when().get()
+            .when().get()
             .then().extract().response();
     LOGGER.info(String.format(
         "Получен ответ:\n%s\n%s,",
@@ -138,8 +141,9 @@ public class BasePageTest extends BaseTest {
 
   /**
    * Compare pages in the '/content-page-controller/.
+   *
    * @param createdPage page
-   * @param method copy page method
+   * @param method      copy page method
    */
   protected void comparePagesInContentPageController(
       final Page createdPage, final CopyMethod method) {
@@ -158,12 +162,13 @@ public class BasePageTest extends BaseTest {
 
   /**
    * Get expected / actual (if was passed) page(s) from the '/content-page-controller'.
+   *
    * @param page created page
-   * @return  list of Widgets
+   * @return list of Widgets
    */
   protected List<ContentPageControllerResponse.Widget> getPageFromContentPageController(
       final Page... page) {
-    String pageUri = page.length > 0 ?  page[0].getUri() : sourcePage.getUri();
+    String pageUri = page.length > 0 ? page[0].getUri() : sourcePage.getUri();
     LOGGER.info(String.format(
         "Запрос страницы '%s' в '/contentPageController'",
         pageUri));
@@ -181,8 +186,9 @@ public class BasePageTest extends BaseTest {
 
   /**
    * Compare pages in the '/meta-info-content-page-controller'.
+   *
    * @param createdPage page
-   * @param method copy page method
+   * @param method      copy page method
    */
   protected void comparePagesMetaInfoContentPageController(
       final Page createdPage, final CopyMethod method) {
@@ -199,11 +205,12 @@ public class BasePageTest extends BaseTest {
 
   /**
    * Get expected / actual (if was passed) page(s) from the '/meta-info-content-page-controller'.
+   *
    * @param page created page
    * @return list of Widgets
    */
   private List<Widget> getPageFromMetaInfoContentPageController(final Page... page) {
-    Integer pageId = page.length > 0 ?  page[0].getId() : sourcePage.getId();
+    Integer pageId = page.length > 0 ? page[0].getId() : sourcePage.getId();
     LOGGER.info(String.format(
         "Запрос страницы '%s' в '/metaInfoContentPageController'",
         pageId));
@@ -212,8 +219,8 @@ public class BasePageTest extends BaseTest {
             .spec(metaInfoContentPageControllerSpec)
             .auth().oauth2(getToken(USER).getAccessToken())
             .queryParam("pageId", pageId)
-        .when().get()
-        .then().extract().response();
+            .when().get()
+            .then().extract().response();
     assertThat(response.statusCode()).isEqualTo(200);
     LOGGER.info(String.format(
         "Получен ответ:\n%s\n%s,",
@@ -224,6 +231,7 @@ public class BasePageTest extends BaseTest {
 
   /**
    * Request to page-controller API.
+   *
    * @param page page
    * @return page with id
    */
@@ -251,6 +259,7 @@ public class BasePageTest extends BaseTest {
 
   /**
    * Check created page at the '/page-controller'.
+   *
    * @param page page
    */
   protected void checkCreatedPageAtPageController(Page page) {
@@ -326,6 +335,7 @@ public class BasePageTest extends BaseTest {
 
   /**
    * Check created page in the '/content-page-controller'.
+   *
    * @param page page
    */
   protected void checkCreatedPageAtContentPageController(Page page) {
@@ -382,6 +392,7 @@ public class BasePageTest extends BaseTest {
 
   /**
    * Check page for mandatory fields.
+   *
    * @param page page
    */
   private void checkPageForMandatoryFields(Page page) {

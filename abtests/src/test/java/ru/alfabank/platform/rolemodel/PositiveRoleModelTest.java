@@ -9,6 +9,7 @@ import static ru.alfabank.platform.businessobjects.enums.ProductType.INV;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.MG;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.SME;
+import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.CommonUser.getCommonUser;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 import static ru.alfabank.platform.users.CreditCardUser.getCreditCardUser;
@@ -48,15 +49,23 @@ public class PositiveRoleModelTest extends OptionBaseTest {
   private static final CommonUser COMMON_USER = getCommonUser();
   private static final UnclaimedUser UNCLAIMED_USER = getUnclaimedUser();
 
-  private final String experimentEndDate = getCurrentDateTime().plusDays(5).toString();
+  private final String experimentEndDate = getValidEndDatePlusWeek();
 
   @Test(description = "Позитивный тест создания экспермента",
       dataProvider = "positiveDataProvider")
   public void positiveCreateExperimentTest(
       @ParameterKey("user") final AccessibleUser user,
       @ParameterKey("productType") final ProductType productType) {
-    var page = createPage(user.getTeams(), getContentManager());
-    createExperiment(desktop, page.getId(), productType, experimentEndDate, .5D, user);
+    final var page_id = PAGES_STEPS.createPage(
+        user.getTeams(),
+        getContentManager());
+    EXPERIMENT_STEPS.createExperiment(
+        desktop,
+        page_id,
+        productType,
+        experimentEndDate,
+        .5D,
+        user);
   }
 
   @Test(
@@ -65,15 +74,19 @@ public class PositiveRoleModelTest extends OptionBaseTest {
   public void positiveReadExperimentTest(
       @ParameterKey("user") final AccessibleUser user,
       @ParameterKey("productType") final ProductType productType) {
-    var page = createPage(user.getTeams(), getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(
+        user.getTeams(),
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    getExperiment(experiment, user);
+    EXPERIMENT_STEPS.getExistingExperiment(
+        experiment,
+        user);
   }
 
   @Test(
@@ -82,15 +95,20 @@ public class PositiveRoleModelTest extends OptionBaseTest {
   public void positiveModifyExperimentTest(
       @ParameterKey("user") final AccessibleUser user,
       @ParameterKey("productType") final ProductType productType) {
-    var page = createPage(user.getTeams(), getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(
+        user.getTeams(),
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    modifyExperiment(experiment, new Experiment.Builder().setTrafficRate(.3D).build(), user);
+    EXPERIMENT_STEPS.modifyExperiment(
+        experiment,
+        new Experiment.Builder().setTrafficRate(.3D).build(),
+        user);
   }
 
   @Test(
@@ -99,15 +117,19 @@ public class PositiveRoleModelTest extends OptionBaseTest {
   public void positiveDeleteExperimentTest(
       @ParameterKey("user") final AccessibleUser user,
       @ParameterKey("productType") final ProductType productType) {
-    var page = createPage(user.getTeams(), getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(
+        user.getTeams(),
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    deleteExperiment(experiment, user);
+    EXPERIMENT_STEPS.deleteExperiment(
+        experiment,
+        user);
   }
 
   @Test(
@@ -116,9 +138,11 @@ public class PositiveRoleModelTest extends OptionBaseTest {
   public void positiveRunExperimentTest(
       @ParameterKey("user") final AccessibleUser user,
       @ParameterKey("productType") final ProductType productType) {
-    var page = createPage(user.getTeams(), getContentManager());
-    final var widget = createWidget(
-        page,
+    final var page_id = PAGES_STEPS.createPage(
+        user.getTeams(),
+        getContentManager());
+    final var widget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
@@ -127,26 +151,28 @@ public class PositiveRoleModelTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    final var experiment = createExperiment(
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    createOption(
+    OPTION_STEPS.createOption(
         true,
         List.of(widget.getUid()),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    createOption(
+    OPTION_STEPS.createOption(
         false,
         List.of(),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    runExperimentAssumingSuccess(experiment, user);
+    EXPERIMENT_STEPS.runExperimentAssumingSuccess(
+        experiment,
+        user);
   }
 
   @Test(
@@ -155,9 +181,11 @@ public class PositiveRoleModelTest extends OptionBaseTest {
   public void positiveStopExperimentTest(
       @ParameterKey("user") final AccessibleUser user,
       @ParameterKey("productType") final ProductType productType) {
-    var page = createPage(user.getTeams(), getContentManager());
-    final var widget = createWidget(
-        page,
+    final var page_id = PAGES_STEPS.createPage(
+        user.getTeams(),
+        getContentManager());
+    final var widget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
@@ -166,44 +194,50 @@ public class PositiveRoleModelTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    final var experiment = createExperiment(
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    createOption(
+    OPTION_STEPS.createOption(
         true,
         List.of(widget.getUid()),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    createOption(
+    OPTION_STEPS.createOption(
         false,
         List.of(),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    runExperimentAssumingSuccess(experiment, getContentManager());
-    stopExperimentAssumingSuccess(experiment, user);
+    EXPERIMENT_STEPS.runExperimentAssumingSuccess(
+        experiment,
+        getContentManager());
+    EXPERIMENT_STEPS.stopExperimentAssumingSuccess(
+        experiment,
+        user);
   }
-  
+
   @Test(
       description = "Позитивный тест создания вариата",
       dataProvider = "positiveDataProvider")
   public void positiveCreateOptionTest(
       @ParameterKey("user") final AccessibleUser user,
       @ParameterKey("productType") final ProductType productType) {
-    var page = createPage(user.getTeams(), getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(
+        user.getTeams(),
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    createOption(
+    OPTION_STEPS.createOption(
         true,
         List.of(),
         experiment.getUuid(),
@@ -217,21 +251,25 @@ public class PositiveRoleModelTest extends OptionBaseTest {
   public void positiveReadOptionTest(
       @ParameterKey("user") final AccessibleUser user,
       @ParameterKey("productType") final ProductType productType) {
-    var page = createPage(user.getTeams(), getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(
+        user.getTeams(),
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    final var option = createOption(
+    final var option = OPTION_STEPS.createOption(
         true,
         List.of(),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    getOption(option, user);
+    OPTION_STEPS.getOption(
+        option,
+        user);
   }
 
   @Test(
@@ -240,22 +278,29 @@ public class PositiveRoleModelTest extends OptionBaseTest {
   public void positiveModifyOptionTest(
       @ParameterKey("user") final AccessibleUser user,
       @ParameterKey("productType") final ProductType productType) {
-    var page = createPage(user.getTeams(), getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(
+        user.getTeams(),
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    getExperiment(experiment, user);
-    final var option = createOption(
+    EXPERIMENT_STEPS.getExistingExperiment(
+        experiment,
+        user);
+    final var option = OPTION_STEPS.createOption(
         true,
         List.of(),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    modifyOption(option, new Builder().setTrafficRate(.4D).build(), user);
+    OPTION_STEPS.modifyOption(
+        option,
+        new Builder().setTrafficRate(.4D).build(),
+        user);
   }
 
   @Test(
@@ -264,26 +309,29 @@ public class PositiveRoleModelTest extends OptionBaseTest {
   public void positiveDeleteOptionTest(
       @ParameterKey("user") final AccessibleUser user,
       @ParameterKey("productType") final ProductType productType) {
-    var page = createPage(user.getTeams(), getContentManager());
-    final var experiment = createExperiment(
+    final var page_id = PAGES_STEPS.createPage(
+        user.getTeams(),
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
-        page.getId(),
+        page_id,
         productType,
         experimentEndDate,
         .5D,
         getContentManager());
-    getExperiment(experiment, user);
-    final var option = createOption(
+    EXPERIMENT_STEPS.getExistingExperiment(experiment, user);
+    final var option = OPTION_STEPS.createOption(
         true,
         List.of(),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    deleteOption(option, user);
+    OPTION_STEPS.deleteOption(option, user);
   }
-  
+
   /**
    * Data provider.
+   *
    * @return test data
    */
   @DataProvider

@@ -34,7 +34,7 @@ public class BasePage {
   private WebElement notificationMessage;
   @FindBy(css = ".ant-notification-notice-description")
   private WebElement notificationDescription;
-  @FindBy (css = ".ant-notification-notice > a")
+  @FindBy(css = ".ant-notification-notice > a")
   protected WebElement bannerCloseBttn;
   @FindBy(className = "ant-modal-body")
   protected WebElement modalWindowBody;
@@ -47,13 +47,14 @@ public class BasePage {
 
   /**
    * Open acms page.
-   * @param url url
+   *
+   * @param url  url
    * @param user user
    * @return this
    */
   public MainSliderPage openAndAuthorize(final String url,
                                          final AccessibleUser user) {
-    String fullUrl =  url + "acms/";
+    String fullUrl = url + "acms/";
     LOGGER.info(String.format("Перехожу по адресу '%s'", fullUrl));
     getDriver().get(fullUrl);
     return PageFactory.initElements(getDriver(), AuthPage.class)
@@ -62,8 +63,9 @@ public class BasePage {
 
   /**
    * Setting values to combobox.
-   * @param selectedValues values that are already chosen
-   * @param input input
+   *
+   * @param selectedValues  values that are already chosen
+   * @param input           input
    * @param desirableValues array of values that should be selected
    */
   protected void setValuesToCombobox(List<WebElement> selectedValues,
@@ -84,6 +86,7 @@ public class BasePage {
 
   /**
    * Scrolling to given element.
+   *
    * @param element WebElement
    * @return WebElement
    */
@@ -100,8 +103,9 @@ public class BasePage {
 
   /**
    * Clearing MonacoTextArea and setting given value.
+   *
    * @param textValue value
-   * @param textArea MonacoTextArea
+   * @param textArea  MonacoTextArea
    */
   protected void setValueToMonacoTextArea(String textValue, WebElement textArea) {
     try {
@@ -121,6 +125,7 @@ public class BasePage {
 
   /**
    * Clear input.
+   *
    * @param element element
    * @return element
    */
@@ -131,7 +136,8 @@ public class BasePage {
 
   /**
    * Check if element is present within an element.
-   * @param element element
+   *
+   * @param element  element
    * @param selector selector
    * @return boolean
    */
@@ -146,6 +152,7 @@ public class BasePage {
 
   /**
    * Check if element is present on a page.
+   *
    * @param sharedMarkerSelector selector
    * @return boolean
    */
@@ -160,6 +167,7 @@ public class BasePage {
 
   /**
    * Click by a button that showing by mouse hovering only.
+   *
    * @param hiddenElement hidden element
    */
   protected void hoverAndClick(WebElement hiddenElement) {
@@ -173,6 +181,7 @@ public class BasePage {
 
   /**
    * JS click.
+   *
    * @param element element
    */
   protected void clickWithJavaScriptExecutor(WebElement element) {
@@ -182,7 +191,8 @@ public class BasePage {
 
   /**
    * Checkbox worker.
-   * @param checkbox checkbox
+   *
+   * @param checkbox       checkbox
    * @param isToBeSelected is to be selected
    */
   protected void setCheckboxTo(WebElement checkbox, boolean isToBeSelected) {

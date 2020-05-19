@@ -6,6 +6,7 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
+import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
@@ -18,18 +19,35 @@ public class OnlyOneVariantTest extends BaseTest {
 
   @Test(description = "Тест активации эксперимента с негативным условием:"
       + "\n\tЕсть только 1 вариант")
-  public void onlyOneVariantTest() {
-    final var start = getCurrentDateTime().plusSeconds(10).toString();
-    final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true, getContentManager());
-    final var pageId = page.getId();
-    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null, getContentManager());
-    final var widget = createdPages.get(pageId).getWidgetList().get(0);
+  public void onlyOneVariantExperimentUpdateNegativeTest() {
+    final var start = getValidEndDatePlus10Seconds();
+    final var end = getValidEndDate();
+    final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    final var widget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
+        null,
+        desktop,
+        true,
+        DEFAULT,
+        true,
+        null,
+        null,
+        getContentManager());
     final var device = widget.getDevice();
     final var trafficRate = .5D;
-    final var actualExperiment =
-        createExperiment(device, pageId, getRandomProductType(), end, trafficRate, getContentManager());
-    createOption(true, List.of(widget.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
+    final var actualExperiment = EXPERIMENT_STEPS.createExperiment(
+        device,
+        page_id,
+        getRandomProductType(),
+        end,
+        trafficRate,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        true,
+        List.of(widget.getUid()),
+        actualExperiment.getUuid(),
+        trafficRate,
+        getContentManager());
     final var expectedExperiment = new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
         .setCookieValue(actualExperiment.getCookieValue())
@@ -45,15 +63,18 @@ public class OnlyOneVariantTest extends BaseTest {
         .setStatus(DISABLED)
         .setCreationDate(start)
         .build();
-    final var result = runExperimentAssumingFail(actualExperiment, getContentManager());
+    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(
+        actualExperiment,
+        getContentManager());
     assertThat(result.getStatusCode())
         .as("Проверка статус-кода")
-        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
+        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
         .containsIgnoringCase("У эксперимента '"
             + actualExperiment.getUuid() + "' должно быть минимум 2 вариаций");
-    getExperiment(actualExperiment, getContentManager()).checkUpdatedExperiment(expectedExperiment);
+    EXPERIMENT_STEPS.getExistingExperiment(actualExperiment, getContentManager())
+        .checkUpdatedExperiment(expectedExperiment);
   }
 
 }

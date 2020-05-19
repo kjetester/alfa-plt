@@ -8,6 +8,7 @@ import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DE
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
+import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
@@ -17,15 +18,14 @@ import ru.alfabank.platform.businessobjects.Experiment;
 
 public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
 
-  @Test (description = "Тест активации эксперимента с негативным условием:"
+  @Test(description = "Тест активации эксперимента с негативным условием:"
       + "\n\tВарианты привязаны к шаренным виджетам")
-  public void bothVariantsAssignedToSharedWidgetTest() {
-    final var start = getCurrentDateTime().plusSeconds(10).toString();
-    final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page1 = createPage(null, null, true, getContentManager());
-    final var page_1_id = page1.getId();
-    createWidget(
-        createdPages.get(page_1_id),
+  public void bothVariantsAssignedToSharedWidgetExperimentUpdateNegativeTest() {
+    final var start = getValidEndDatePlus10Seconds();
+    final var end = getValidEndDate();
+    final var page_1_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    final var widget_1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         null,
         desktop,
         true,
@@ -34,8 +34,8 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
         null,
         null,
         getContentManager());
-    createWidget(
-        createdPages.get(page_1_id),
+    final var widget_2 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         null,
         desktop,
         false,
@@ -44,18 +44,36 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
         null,
         null,
         getContentManager());
-    final var widget1 = page1.getWidgetList().get(0);
-    final var widget2 = page1.getWidgetList().get(1);
-    final var device = widget1.getDevice();
+    final var device = widget_1.getDevice();
     final var trafficRate = .5D;
-    final var actualExperiment =
-        createExperiment(device, page_1_id, getRandomProductType(), end, trafficRate, getContentManager());
-    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
-    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
-    var page2 = createPage(null, null, true, getContentManager());
-    final var page_2_id = page2.getId();
-    shareWidgetToAnotherPage(widget1, createdPages.get(page_2_id), getContentManager());
-    shareWidgetToAnotherPage(widget2, createdPages.get(page_2_id), getContentManager());
+    final var actualExperiment = EXPERIMENT_STEPS.createExperiment(
+        device,
+        page_1_id,
+        getRandomProductType(),
+        end,
+        trafficRate,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        true,
+        List.of(widget_1.getUid()),
+        actualExperiment.getUuid(),
+        trafficRate,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        false,
+        List.of(widget_2.getUid()),
+        actualExperiment.getUuid(),
+        trafficRate,
+        getContentManager());
+    final var page_2_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    DRAFT_STEPS.shareWidgetToAnotherPage(
+        widget_1,
+        CREATED_PAGES.get(page_2_id),
+        getContentManager());
+    DRAFT_STEPS.shareWidgetToAnotherPage(
+        widget_2,
+        CREATED_PAGES.get(page_2_id),
+        getContentManager());
     final var expectedExperiment = new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
         .setCookieValue(actualExperiment.getCookieValue())
@@ -71,72 +89,9 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
         .setStatus(DISABLED)
         .setCreationDate(start)
         .build();
-    final var result = runExperimentAssumingFail(actualExperiment, getContentManager());
-    assertThat(result.getStatusCode())
-        .as("Проверка статус-кода")
-        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
-    assertThat(result.asString())
-        .as("Проверка сообщения об ошибке")
-        .contains(
-            "В эксперименте не могут участвовать виджеты, общие для нескольких страниц.")
-        .contains(widget2.getUid(), widget1.getUid());
-    getExperiment(actualExperiment, getContentManager()).checkUpdatedExperiment(expectedExperiment);
-  }
-
-  @Test (description = "Тест активации эксперимента с негативным условием:"
-      + "\n\tДефолтный вариант привязан к шаренному виджету")
-  public void defaultVariantAssignedToSharedWidgetTest() {
-    final var start = getCurrentDateTime().plusSeconds(10).toString();
-    final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page1 = createPage(null, null, true, getContentManager());
-    final var page_1_id = page1.getId();
-    createWidget(
-        createdPages.get(page_1_id),
-        null,
-        desktop,
-        true,
-        DEFAULT,
-        true,
-        null,
-        null,
+    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(
+        actualExperiment,
         getContentManager());
-    createWidget(
-        createdPages.get(page_1_id),
-        null,
-        desktop,
-        false,
-        FOR_AB_TEST,
-        false,
-        null,
-        null,
-        getContentManager());
-    final var widget1 = page1.getWidgetList().get(0);
-    final var widget2 = page1.getWidgetList().get(1);
-    final var device = widget1.getDevice();
-    final var trafficRate = .5D;
-    final var actualExperiment =
-        createExperiment(device, page_1_id, getRandomProductType(), end, trafficRate, getContentManager());
-    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
-    createOption(false, emptyList(), actualExperiment.getUuid(), trafficRate, getContentManager());
-    var page2 = createPage(start, end, true, getContentManager());
-    final var page_2_id = page2.getId();
-    shareWidgetToAnotherPage(widget1, createdPages.get(page_2_id), getContentManager());
-    final var expectedExperiment = new Experiment.Builder()
-        .setUuid(actualExperiment.getUuid())
-        .setCookieValue(actualExperiment.getCookieValue())
-        .setDescription(actualExperiment.getDescription())
-        .setPageId(actualExperiment.getPageId())
-        .setProductTypeKey(actualExperiment.getProductTypeKey())
-        .setEndDate(actualExperiment.getEndDate())
-        .setTrafficRate(actualExperiment.getTrafficRate())
-        .setDevice(actualExperiment.getDevice())
-        .setEnabled(false)
-        .setCreatedBy(getContentManager().getLogin())
-        .setActivationDate(start)
-        .setStatus(DISABLED)
-        .setCreationDate(start)
-        .build();
-    final var result = runExperimentAssumingFail(actualExperiment, getContentManager());
     assertThat(result.getStatusCode())
         .as("Проверка статус-кода")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
@@ -144,19 +99,19 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
         .as("Проверка сообщения об ошибке")
         .contains(
             "В эксперименте не могут участвовать виджеты, общие для нескольких страниц.")
-        .contains("Отвяжите следующие виджеты: [" + widget1.getUid() + "]");
-    getExperiment(actualExperiment, getContentManager()).checkUpdatedExperiment(expectedExperiment);
+        .contains(widget_2.getUid(), widget_1.getUid());
+    EXPERIMENT_STEPS.getExistingExperiment(actualExperiment, getContentManager())
+        .checkUpdatedExperiment(expectedExperiment);
   }
 
-  @Test (description = "Тест активации эксперимента с негативным условием:"
-      + "\n\tНедефолтный вариант привязан к шаренному виджету")
-  public void nonDefaultVariantAssignedToSharedWidgetTest() {
-    final var start = getCurrentDateTime().plusSeconds(10).toString();
-    final var end = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page1 = createPage(null, null, true, getContentManager());
-    final var page_1_id = page1.getId();
-    createWidget(
-        createdPages.get(page_1_id),
+  @Test(description = "Тест активации эксперимента с негативным условием:"
+      + "\n\tДефолтный вариант привязан к шаренному виджету")
+  public void defaultVariantAssignedToSharedWidgetExperimentUpdateNegativeTest() {
+    final var start = getValidEndDatePlus10Seconds();
+    final var end = getValidEndDate();
+    final var page_1_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    final var widget_1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         null,
         desktop,
         true,
@@ -165,8 +120,8 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
         null,
         null,
         getContentManager());
-    createWidget(
-        createdPages.get(page_1_id),
+    final var widget_2 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         null,
         desktop,
         false,
@@ -175,17 +130,36 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
         null,
         null,
         getContentManager());
-    final var widget1 = page1.getWidgetList().get(0);
-    final var widget2 = page1.getWidgetList().get(1);
-    final var device = widget1.getDevice();
+    final var device = widget_1.getDevice();
     final var trafficRate = .5D;
-    final var actualExperiment =
-        createExperiment(device, page_1_id, getRandomProductType(), end, trafficRate, getContentManager());
-    createOption(true, emptyList(), actualExperiment.getUuid(), trafficRate, getContentManager());
-    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
-    var page2 = createPage(start, end, true, getContentManager());
-    final var page_2_id = page2.getId();
-    shareWidgetToAnotherPage(widget2, createdPages.get(page_2_id), getContentManager());
+    final var actualExperiment = EXPERIMENT_STEPS.createExperiment(
+        device,
+        page_1_id,
+        getRandomProductType(),
+        end,
+        trafficRate,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        true,
+        List.of(widget_1.getUid()),
+        actualExperiment.getUuid(),
+        trafficRate,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        false,
+        emptyList(),
+        actualExperiment.getUuid(),
+        trafficRate,
+        getContentManager());
+    final var page_2_id = PAGES_STEPS.createPage(
+        start,
+        end,
+        true,
+        getContentManager());
+    DRAFT_STEPS.shareWidgetToAnotherPage(
+        widget_1,
+        CREATED_PAGES.get(page_2_id),
+        getContentManager());
     final var expectedExperiment = new Experiment.Builder()
         .setUuid(actualExperiment.getUuid())
         .setCookieValue(actualExperiment.getCookieValue())
@@ -201,16 +175,105 @@ public class VariantsAssignedToSharedWidgetsTest extends BaseTest {
         .setStatus(DISABLED)
         .setCreationDate(start)
         .build();
-    final var result = runExperimentAssumingFail(actualExperiment, getContentManager());
+    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(
+        actualExperiment,
+        getContentManager());
     assertThat(result.getStatusCode())
         .as("Проверка статус-кода")
-        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
+        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
         .contains(
             "В эксперименте не могут участвовать виджеты, общие для нескольких страниц.")
-        .contains("Отвяжите следующие виджеты: [" + widget2.getUid() + "]");
-    getExperiment(actualExperiment, getContentManager()).checkUpdatedExperiment(expectedExperiment);
+        .contains("Отвяжите следующие виджеты: [" + widget_1.getUid() + "]");
+    EXPERIMENT_STEPS.getExistingExperiment(actualExperiment, getContentManager())
+        .checkUpdatedExperiment(expectedExperiment);
+  }
+
+  @Test(description = "Тест активации эксперимента с негативным условием:"
+      + "\n\tНедефолтный вариант привязан к шаренному виджету")
+  public void nonDefaultVariantAssignedToSharedWidgetExperimentUpdateNegativeTest() {
+    final var start = getValidEndDatePlus10Seconds();
+    final var end = getValidEndDate();
+    final var page_1_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    final var widget_1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
+        null,
+        desktop,
+        true,
+        DEFAULT,
+        true,
+        null,
+        null,
+        getContentManager());
+    final var widget_2 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
+        null,
+        desktop,
+        false,
+        FOR_AB_TEST,
+        false,
+        null,
+        null,
+        getContentManager());
+    final var device = widget_1.getDevice();
+    final var trafficRate = .5D;
+    final var actualExperiment = EXPERIMENT_STEPS.createExperiment(
+        device,
+        page_1_id,
+        getRandomProductType(),
+        end,
+        trafficRate,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        true,
+        emptyList(),
+        actualExperiment.getUuid(),
+        trafficRate,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        false,
+        List.of(widget_2.getUid()),
+        actualExperiment.getUuid(),
+        trafficRate,
+        getContentManager());
+    final var page_2_id = PAGES_STEPS.createPage(
+        start,
+        end,
+        true,
+        getContentManager());
+    DRAFT_STEPS.shareWidgetToAnotherPage(
+        widget_2,
+        CREATED_PAGES.get(page_2_id),
+        getContentManager());
+    final var expectedExperiment = new Experiment.Builder()
+        .setUuid(actualExperiment.getUuid())
+        .setCookieValue(actualExperiment.getCookieValue())
+        .setDescription(actualExperiment.getDescription())
+        .setPageId(actualExperiment.getPageId())
+        .setProductTypeKey(actualExperiment.getProductTypeKey())
+        .setEndDate(actualExperiment.getEndDate())
+        .setTrafficRate(actualExperiment.getTrafficRate())
+        .setDevice(actualExperiment.getDevice())
+        .setEnabled(false)
+        .setCreatedBy(getContentManager().getLogin())
+        .setActivationDate(start)
+        .setStatus(DISABLED)
+        .setCreationDate(start)
+        .build();
+    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(
+        actualExperiment,
+        getContentManager());
+    assertThat(result.getStatusCode())
+        .as("Проверка статус-кода")
+        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+    assertThat(result.asString())
+        .as("Проверка сообщения об ошибке")
+        .contains(
+            "В эксперименте не могут участвовать виджеты, общие для нескольких страниц.")
+        .contains("Отвяжите следующие виджеты: [" + widget_2.getUid() + "]");
+    EXPERIMENT_STEPS.getExistingExperiment(actualExperiment, getContentManager())
+        .checkUpdatedExperiment(expectedExperiment);
   }
 
   //TODO:

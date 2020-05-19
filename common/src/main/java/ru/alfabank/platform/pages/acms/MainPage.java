@@ -66,6 +66,7 @@ public class MainPage extends BasePage {
 
   /**
    * Open an accordingly named widget's sidebar.
+   *
    * @param widgetName widget name
    * @return WidgetSidebarPage
    */
@@ -76,6 +77,7 @@ public class MainPage extends BasePage {
 
   /**
    * Open an accordingly named widget's sidebar.
+   *
    * @param widgetName widget name
    * @return PropertyAndPropertyValuePage
    */
@@ -86,6 +88,7 @@ public class MainPage extends BasePage {
 
   /**
    * Open an accordingly named widget's sidebar.
+   *
    * @param widgetName widget name
    */
   private void opnWidgetSidebar(String widgetName) {
@@ -95,8 +98,9 @@ public class MainPage extends BasePage {
 
   /**
    * Copy an accordingly named widget to a specified page.
+   *
    * @param widgetName widget name
-   * @param pageName target page name
+   * @param pageName   target page name
    * @return target page instance
    */
   public MainPage copyWidgetOnPage(String widgetName, String pageName) {
@@ -114,6 +118,7 @@ public class MainPage extends BasePage {
 
   /**
    * Open widget sidebar.
+   *
    * @param widgetName widget name
    */
   private WebElement findWidget(String widgetName) {
@@ -127,6 +132,7 @@ public class MainPage extends BasePage {
 
   /**
    * Check if 'changed' marker is present.
+   *
    * @param widgetName widget name
    * @return this
    */
@@ -141,6 +147,7 @@ public class MainPage extends BasePage {
 
   /**
    * Check if notice about draft existence is present.
+   *
    * @return this
    */
   public MainPage checkIfNoticeAboutDraftExistenceIsPresent() {
@@ -152,6 +159,7 @@ public class MainPage extends BasePage {
 
   /**
    * Check if notice about draft existence is not present.
+   *
    * @return this
    */
   public MainPage checkIfNoticeAboutDraftExistenceIsNotPresent() {
@@ -163,6 +171,7 @@ public class MainPage extends BasePage {
 
   /**
    * Save draft.
+   *
    * @return this
    */
   public MainPage saveDraft() {
@@ -174,6 +183,7 @@ public class MainPage extends BasePage {
 
   /**
    * Publish draft.
+   *
    * @return this
    */
   public MainPage publishDraft() {
@@ -186,6 +196,7 @@ public class MainPage extends BasePage {
 
   /**
    * Delete a root and non shared Widget.
+   *
    * @return this
    */
   public MainPage deleteNonSharedWidgetHasChildren() {
@@ -208,6 +219,7 @@ public class MainPage extends BasePage {
 
   /**
    * Delete a child and non shared Widget.
+   *
    * @return this
    */
 
@@ -231,6 +243,7 @@ public class MainPage extends BasePage {
 
   /**
    * Checking for a found entity marking.
+   *
    * @param widgetName entity name
    */
   public MainPage checkIfWidgetIsMarkedAsFound(String widgetName) {
@@ -266,6 +279,7 @@ public class MainPage extends BasePage {
 
   /**
    * Check if page with pagePath is opened.
+   *
    * @param pagePath pagePath
    * @return MainPage instance
    */
@@ -278,6 +292,7 @@ public class MainPage extends BasePage {
 
   /**
    * Check if widget is present.
+   *
    * @param widgetName widgetName
    * @return this
    */
@@ -289,6 +304,7 @@ public class MainPage extends BasePage {
 
   /**
    * Navigate to AlfaSite.
+   *
    * @return AlfaSitePage instance
    */
   public AlfaSitePage navigateToAlfaSite() {
@@ -311,6 +327,7 @@ public class MainPage extends BasePage {
 
   /**
    * Copy all widgets from a {@code sourcePage} to a {@code targetPage}.
+   *
    * @param sourcePage sourcePage
    * @param targetPage targetPage
    */
@@ -326,9 +343,10 @@ public class MainPage extends BasePage {
 
   /**
    * Copies or shares all of one page's widgets towards another.
+   *
    * @param sourcePageUri source page
    * @param targetPageUri target page
-   * @param isSharing the flag if action is sharing
+   * @param isSharing     the flag if action is sharing
    */
   private void copyOrShareWidgets(String sourcePageUri, String targetPageUri, boolean isSharing) {
     int widgetsCount = widgetsList.size();
@@ -360,6 +378,7 @@ public class MainPage extends BasePage {
 
   /**
    * Create new widget.
+   *
    * @param widgetName widget name
    * @return WidgetSidebarPage
    */
@@ -370,6 +389,7 @@ public class MainPage extends BasePage {
 
   /**
    * Create new widget.
+   *
    * @param widgetName widget name
    * @return WidgetSidebarPage
    */
@@ -394,6 +414,7 @@ public class MainPage extends BasePage {
 
   /**
    * Copy page.
+   *
    * @param copyMethod copy method
    * @return page creation page
    */

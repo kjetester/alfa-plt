@@ -1,4 +1,4 @@
-package ru.alfabank.platform;
+package ru.alfabank.platform.medacoll;
 
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 
@@ -23,7 +23,7 @@ import ru.alfabank.platform.pages.alfasite.AlfaSitePage;
 import ru.alfabank.platform.utils.DifferenceListener;
 
 @Listeners(DifferenceListener.class)
-public class MeDaCollTest extends BaseTest {
+public class MeDaCollTest extends MedacollBaseTest {
 
   private static final Logger LOGGER = LogManager.getLogger(MeDaCollTest.class);
 
@@ -48,6 +48,7 @@ public class MeDaCollTest extends BaseTest {
 
   /**
    * Test data provider.
+   *
    * @return test data
    * @throws IOException IOException
    */

@@ -41,6 +41,7 @@ public class NewPageCreationPage extends BasePage {
 
   /**
    * Filling and submitting the creation new Page form.
+   *
    * @param page new Page instance with id
    */
   public Page fillAndSubmitCreationForm(Page page) {
@@ -93,6 +94,7 @@ public class NewPageCreationPage extends BasePage {
 
   /**
    * Check pre filled fields on the Page Creation form.
+   *
    * @param page page
    * @return this
    */
@@ -118,6 +120,7 @@ public class NewPageCreationPage extends BasePage {
   /**
    * Сабмит формы создания страницы.
    * Дополнение возвращаемого объекта старницы актуальными ID и URI.
+   *
    * @param page page
    * @return page
    */

@@ -47,6 +47,7 @@ public class DlqQueueTest extends BaseTest {
 
   /**
    * Set up.
+   *
    * @param vhost environment
    */
   @Parameters({"env"})
@@ -120,18 +121,20 @@ public class DlqQueueTest extends BaseTest {
       description = "Позитивный тест со статусами OK & ERROR",
       dataProvider = "status")
   public void positiveTest(
-      @ParameterKey("status")
-      final String status) throws InterruptedException {
+      @ParameterKey("status") final String status) throws InterruptedException {
     LOGGER.info(String.format("Условие: статус '%s'", status));
     Body modifiedBody;
     switch (status.toLowerCase()) {
-      case "error": modifiedBody = new Body.BodyBuilder().using(defaultBody).setStatus(status)
-          .setFeedBackData(feedBackData).build();
+      case "error":
+        modifiedBody = new Body.BodyBuilder().using(defaultBody).setStatus(status)
+            .setFeedBackData(feedBackData).build();
         break;
-      case "ok": modifiedBody = new Body.BodyBuilder().using(defaultBody).setStatus(status)
-          .setFeedBackData(null).build();
+      case "ok":
+        modifiedBody = new Body.BodyBuilder().using(defaultBody).setStatus(status)
+            .setFeedBackData(null).build();
         break;
-      default: throw new TestNGException("Что-то пошло не так");
+      default:
+        throw new TestNGException("Что-то пошло не так");
     }
     Response writeRes = given().spec(writeSpec).body(new RabbitBody(modifiedBody)).when().post();
     LOGGER.info(writeRes.asString());
@@ -182,28 +185,36 @@ public class DlqQueueTest extends BaseTest {
     LOGGER.info(String.format("Условие: '%s' -> '%s'", param, value));
     Body modifiedBody;
     switch (param) {
-      case "businessUid":   modifiedBody = new Body.BodyBuilder().using(defaultBody)
-          .setBusinessUid(value).setStatus("ok").build();
+      case "businessUid":
+        modifiedBody = new Body.BodyBuilder().using(defaultBody)
+            .setBusinessUid(value).setStatus("ok").build();
         break;
-      case "clientDate":    modifiedBody = new Body.BodyBuilder().using(defaultBody)
-          .setClientDate(value).setStatus("ok").build();
+      case "clientDate":
+        modifiedBody = new Body.BodyBuilder().using(defaultBody)
+            .setClientDate(value).setStatus("ok").build();
         break;
-      case "referer":       modifiedBody = new Body.BodyBuilder().using(defaultBody)
-          .setReferer(value).setStatus("ok").build();
+      case "referer":
+        modifiedBody = new Body.BodyBuilder().using(defaultBody)
+            .setReferer(value).setStatus("ok").build();
         break;
-      case "recipient":     modifiedBody = new Body.BodyBuilder().using(defaultBody)
-          .setRecipient(value).setStatus("ok").build();
+      case "recipient":
+        modifiedBody = new Body.BodyBuilder().using(defaultBody)
+            .setRecipient(value).setStatus("ok").build();
         break;
-      case "feedBackData":  modifiedBody = new Body.BodyBuilder().using(defaultBody)
-          .setFeedBackData(value).setStatus("error").build();
+      case "feedBackData":
+        modifiedBody = new Body.BodyBuilder().using(defaultBody)
+            .setFeedBackData(value).setStatus("error").build();
         break;
-      case "clientData":    modifiedBody = new Body.BodyBuilder().using(defaultBody)
-          .setClientData(value).setStatus("ok").build();
+      case "clientData":
+        modifiedBody = new Body.BodyBuilder().using(defaultBody)
+            .setClientData(value).setStatus("ok").build();
         break;
-      case "data":          modifiedBody = new Body.BodyBuilder().using(defaultBody)
-          .setData(value).setStatus("ok").build();
+      case "data":
+        modifiedBody = new Body.BodyBuilder().using(defaultBody)
+            .setData(value).setStatus("ok").build();
         break;
-      default:              throw new TestNGException("Что-то пошло не так");
+      default:
+        throw new TestNGException("Что-то пошло не так");
     }
     Response writeRes = given().spec(writeSpec).body(new RabbitBody(modifiedBody)).when().post();
     LOGGER.info(String.format("Получен ответ: \n%s", writeRes.asString()));
@@ -221,6 +232,7 @@ public class DlqQueueTest extends BaseTest {
 
   /**
    * Data provider.
+   *
    * @return Object[][]
    */
   @DataProvider(name = "status")
@@ -235,6 +247,7 @@ public class DlqQueueTest extends BaseTest {
 
   /**
    * DataProvider.
+   *
    * @return Object[][]
    */
   @DataProvider(name = "empty fields")

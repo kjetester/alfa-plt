@@ -13,9 +13,9 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
 
-@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonInclude (JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties ("default")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties("default")
 public class Option extends AbstractBusinessObject {
 
   @JsonIgnore
@@ -90,6 +90,7 @@ public class Option extends AbstractBusinessObject {
 
   /**
    * Check option properties.
+   *
    * @param expected expected option
    */
   public void equals(@NonNull final Option expected) {
@@ -170,6 +171,7 @@ public class Option extends AbstractBusinessObject {
 
     /**
      * Reusing option instance.
+     *
      * @param option option
      * @return this
      */

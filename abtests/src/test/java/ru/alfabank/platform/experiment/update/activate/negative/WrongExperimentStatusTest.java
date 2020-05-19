@@ -6,6 +6,7 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
@@ -18,99 +19,177 @@ import ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest;
 
 public class WrongExperimentStatusTest extends BaseTest {
 
-  @Test (description = "Тест активации эксперимента с негативным условием:"
+  @Test(description = "Тест активации эксперимента с негативным условием:"
       + "\n\t1. Эксперимент имеет статус 'RUNNING'")
-  public void experimentRunningTest() {
-    final var experimentEndDate = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true, getContentManager());
-    final var pageId = page.getId();
-    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null, getContentManager());
-    createWidget(createdPages.get(pageId), null, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
-    final var widget1 = page.getWidgetList().get(0);
-    final var widget2 = page.getWidgetList().get(1);
-    final var device = widget1.getDevice();
-    final var trafficRate = .5D;
-    var actualExperiment =
-        createExperiment(device, pageId, getRandomProductType(), experimentEndDate, trafficRate, getContentManager());
-    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
-    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
+  public void runningExperimentUpdateNegativeTest() {
+    final var experimentEndDate = getValidEndDate();
+    final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    final var default_widget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
+        null,
+        desktop,
+        true,
+        DEFAULT,
+        true,
+        null,
+        null,
+        getContentManager());
+    final var abTest_widget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
+        null,
+        desktop,
+        false,
+        FOR_AB_TEST,
+        false,
+        null,
+        null,
+        getContentManager());
+    final var device = default_widget.getDevice();
+    final var traffic_rate = .5D;
+    var actualExperiment = EXPERIMENT_STEPS.createExperiment(
+        device,
+        page_id,
+        getRandomProductType(),
+        experimentEndDate,
+        traffic_rate,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        true,
+        List.of(default_widget.getUid()),
+        actualExperiment.getUuid(),
+        traffic_rate,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        false,
+        List.of(abTest_widget.getUid()),
+        actualExperiment.getUuid(),
+        traffic_rate,
+        getContentManager());
     // TEST //
-    actualExperiment = runExperimentAssumingSuccess(actualExperiment, getContentManager());
-    final var result = runExperimentAssumingFail(actualExperiment, getContentManager());
+    actualExperiment = EXPERIMENT_STEPS.runExperimentAssumingSuccess(
+        actualExperiment,
+        getContentManager());
+    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(
+        actualExperiment,
+        getContentManager());
     assertThat(result.getStatusCode())
         .as("Проверка статус-кода")
-        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
+        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
         .contains("Невозможно изменить активный эксперимент " + actualExperiment.getUuid());
-    getExperiment(actualExperiment, getContentManager()).checkActivatedExperiment(new Experiment.Builder()
-        .setUuid(actualExperiment.getUuid())
-        .setCookieValue(actualExperiment.getCookieValue())
-        .setDescription(actualExperiment.getDescription())
-        .setPageId(actualExperiment.getPageId())
-        .setProductTypeKey(actualExperiment.getProductTypeKey())
-        .setEndDate(actualExperiment.getEndDate())
-        .setTrafficRate(actualExperiment.getTrafficRate())
-        .setDevice(actualExperiment.getDevice())
-        .setEnabled(actualExperiment.getEnabled())
-        .setCreatedBy(actualExperiment.getCreatedBy())
-        .setActivationDate(getCurrentDateTime().toString())
-        .setActivatedBy(getContentManager().getLogin())
-        .setStatus(actualExperiment.getStatus())
-        .setCreationDate(actualExperiment.getCreationDate())
-        .build());
+    EXPERIMENT_STEPS.getExistingExperiment(
+        actualExperiment,
+        getContentManager())
+        .checkActivatedExperiment(
+            new Experiment.Builder()
+                .setUuid(actualExperiment.getUuid())
+                .setCookieValue(actualExperiment.getCookieValue())
+                .setDescription(actualExperiment.getDescription())
+                .setPageId(actualExperiment.getPageId())
+                .setProductTypeKey(actualExperiment.getProductTypeKey())
+                .setEndDate(actualExperiment.getEndDate())
+                .setTrafficRate(actualExperiment.getTrafficRate())
+                .setDevice(actualExperiment.getDevice())
+                .setEnabled(actualExperiment.getEnabled())
+                .setCreatedBy(actualExperiment.getCreatedBy())
+                .setActivationDate(getCurrentDateTime().toString())
+                .setActivatedBy(getContentManager().getLogin())
+                .setStatus(actualExperiment.getStatus())
+                .setCreationDate(actualExperiment.getCreationDate())
+                .build());
   }
 
-  @Test (description = "Тест активации эксперимента с негативным условием:"
+  @Test(description = "Тест активации эксперимента с негативным условием:"
       + "\n\t1. Эксперимент имеет статус 'CANCELED'")
-  public void experimentCanceledTest() {
-    final var experimentEndDate = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true, getContentManager());
-    final var pageId = page.getId();
-    createWidget(createdPages.get(pageId), null, desktop, true, DEFAULT, true, null, null, getContentManager());
-    createWidget(createdPages.get(pageId), null, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
-    final var widget1 = page.getWidgetList().get(0);
-    final var widget2 = page.getWidgetList().get(1);
-    final var device = widget1.getDevice();
-    final var trafficRate = .5D;
+  public void canceledExperimentUpdateNegativeTest() {
+    final var experimentEndDate = getValidEndDate();
+    final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    final var default_widget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
+        null,
+        desktop,
+        true,
+        DEFAULT,
+        true,
+        null,
+        null,
+        getContentManager());
+    final var abTest_widget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_id),
+        null,
+        desktop,
+        false,
+        FOR_AB_TEST,
+        false,
+        null,
+        null,
+        getContentManager());
+    final var device = default_widget.getDevice();
+    final var traffic_rate = .5D;
     // TEST //
-    var actualExperiment =
-        createExperiment(device, pageId, getRandomProductType(), experimentEndDate, trafficRate, getContentManager());
-    createOption(true, List.of(widget1.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
-    createOption(false, List.of(widget2.getUid()), actualExperiment.getUuid(), trafficRate, getContentManager());
-    actualExperiment = runExperimentAssumingSuccess(actualExperiment, getContentManager());
-    actualExperiment = stopExperimentAssumingSuccess(actualExperiment, getContentManager());
-    final var result = runExperimentAssumingFail(actualExperiment, getContentManager());
+    var actualExperiment = EXPERIMENT_STEPS.createExperiment(
+        device,
+        page_id,
+        getRandomProductType(),
+        experimentEndDate,
+        traffic_rate,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        true,
+        List.of(default_widget.getUid()),
+        actualExperiment.getUuid(),
+        traffic_rate,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        false,
+        List.of(abTest_widget.getUid()),
+        actualExperiment.getUuid(),
+        traffic_rate,
+        getContentManager());
+    actualExperiment = EXPERIMENT_STEPS.runExperimentAssumingSuccess(
+        actualExperiment,
+        getContentManager());
+    actualExperiment = EXPERIMENT_STEPS.stopExperimentAssumingSuccess(
+        actualExperiment,
+        getContentManager());
+    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(
+        actualExperiment,
+        getContentManager());
     assertThat(result.getStatusCode())
         .as("Проверка статус-кода")
-        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
+        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
     assertThat(result.asString())
         .as("Проверка сообщения об ошибке")
         .contains("Невозможно активировать эксперимент '" + actualExperiment.getUuid()
             + "' со статусом 'CANCELLED'");
-    getExperiment(actualExperiment, getContentManager()).checkActivatedExperiment(new Experiment.Builder()
-        .setUuid(actualExperiment.getUuid())
-        .setCookieValue(actualExperiment.getCookieValue())
-        .setDescription(actualExperiment.getDescription())
-        .setPageId(actualExperiment.getPageId())
-        .setProductTypeKey(actualExperiment.getProductTypeKey())
-        .setEndDate(actualExperiment.getEndDate())
-        .setTrafficRate(actualExperiment.getTrafficRate())
-        .setDevice(actualExperiment.getDevice())
-        .setEnabled(actualExperiment.getEnabled())
-        .setCreationDate(actualExperiment.getCreationDate())
-        .setCreatedBy(actualExperiment.getCreatedBy())
-        .setActivationDate(actualExperiment.getActivationDate())
-        .setActivatedBy(actualExperiment.getActivatedBy())
-        .setDeactivationDate(getCurrentDateTime().toString())
-        .setDeactivatedBy(getContentManager().getLogin())
-        .setStatus(actualExperiment.getStatus())
-        .build());
+    EXPERIMENT_STEPS.getExistingExperiment(
+        actualExperiment,
+        getContentManager())
+        .checkActivatedExperiment(
+            new Experiment.Builder()
+                .setUuid(actualExperiment.getUuid())
+                .setCookieValue(actualExperiment.getCookieValue())
+                .setDescription(actualExperiment.getDescription())
+                .setPageId(actualExperiment.getPageId())
+                .setProductTypeKey(actualExperiment.getProductTypeKey())
+                .setEndDate(actualExperiment.getEndDate())
+                .setTrafficRate(actualExperiment.getTrafficRate())
+                .setDevice(actualExperiment.getDevice())
+                .setEnabled(actualExperiment.getEnabled())
+                .setCreationDate(actualExperiment.getCreationDate())
+                .setCreatedBy(actualExperiment.getCreatedBy())
+                .setActivationDate(actualExperiment.getActivationDate())
+                .setActivatedBy(actualExperiment.getActivatedBy())
+                .setDeactivationDate(getCurrentDateTime().toString())
+                .setDeactivatedBy(getContentManager().getLogin())
+                .setStatus(actualExperiment.getStatus())
+                .build());
   }
 
-  @Test (description = "Тест активации эксперимента с негативным условием:"
+  @Test(description = "Тест активации эксперимента с негативным условием:"
       + "\n\t1. Эксперимент имеет статус 'EXPIRED'")
-  public void experimentExpiredTest() {
+  public void expiredExperimentUpdateNegativeTest() {
     LogManager.getLogger(InvolvementsTest.class).warn("Manual Testing Needed");
     throw new SkipException("Manual Testing Needed");
   }

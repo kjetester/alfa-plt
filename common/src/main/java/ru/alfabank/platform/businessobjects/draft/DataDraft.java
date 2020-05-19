@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import ru.alfabank.platform.businessobjects.enums.Device;
 
-@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonInclude (JsonInclude.Include.NON_NULL)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public final class DataDraft {
 
   private Boolean enable;

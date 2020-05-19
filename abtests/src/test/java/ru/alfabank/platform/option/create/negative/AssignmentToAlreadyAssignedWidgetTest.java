@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
@@ -13,21 +14,44 @@ import ru.alfabank.platform.option.OptionBaseTest;
 
 public class AssignmentToAlreadyAssignedWidgetTest extends OptionBaseTest {
 
-  @Test (description = "Тест создания варианта с ассоциацией с виджетом, который уже ассоциирован "
-          + "с другим вариантом")
-  public void assignmentToAlreadyAssignedWidgetTest() {
-    final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true, getContentManager());
-    final var pageId = page.getId();
-    page = createdPages.get(pageId);
-    final var widget = createWidget(
-            page, null, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
-    final var experiment = createExperiment(
-            widget.getDevice(), pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
-    createOption(
-            false, List.of(widget.getUid()), experiment.getUuid(), .5D, getContentManager());
-    final var response = createOptionAssumingFail(
-            false, List.of(widget.getUid()), experiment.getUuid(), .5D, getContentManager());
+  @Test(description = "Тест создания варианта с ассоциацией с виджетом, который уже ассоциирован "
+      + "с другим вариантом")
+  public void assignmentToAlreadyAssignedWidgetNegativeTest() {
+    final var pageId =
+        PAGES_STEPS.createPage(
+            null,
+            null,
+            true,
+            getContentManager());
+    final var widget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(pageId),
+        null,
+        desktop,
+        false,
+        FOR_AB_TEST,
+        false,
+        null,
+        null,
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
+        widget.getDevice(),
+        pageId,
+        getRandomProductType(),
+        getValidEndDate(),
+        .5D,
+        getContentManager());
+    OPTION_STEPS.createOption(
+        false,
+        List.of(widget.getUid()),
+        experiment.getUuid(),
+        .5D,
+        getContentManager());
+    final var response = OPTION_STEPS.createOptionAssumingFail(
+        false,
+        List.of(widget.getUid()),
+        experiment.getUuid(),
+        .5D,
+        getContentManager());
     assertThat(response.getStatusCode())
         .as("Проверка статус-кода")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);

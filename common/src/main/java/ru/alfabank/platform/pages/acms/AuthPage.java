@@ -21,6 +21,7 @@ public class AuthPage extends BasePage {
 
   /**
    * Authorization.
+   *
    * @param username username
    * @param password password
    * @return new instance of the MainSliderPage class

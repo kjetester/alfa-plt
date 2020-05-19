@@ -3,34 +3,18 @@ package ru.alfabank.platform.helpers;
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_OK;
-import static ru.alfabank.platform.users.CommonUser.getCommonUser;
-import static ru.alfabank.platform.users.CreditCardUser.getCreditCardUser;
-import static ru.alfabank.platform.users.DebitCardUser.getDebitCardUser;
-import static ru.alfabank.platform.users.InvestUser.getInvestUser;
-import static ru.alfabank.platform.users.MortgageUser.getMortgageUser;
-import static ru.alfabank.platform.users.PilUser.getPilUser;
-import static ru.alfabank.platform.users.SmeUser.getSmeUser;
-import static ru.alfabank.platform.users.UnclaimedUser.getUnclaimedUser;
+import static ru.alfabank.platform.steps.BaseSteps.LOGGED_IN_USERS;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import io.restassured.http.ContentType;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.Instant;
 import java.util.Map;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
 import ru.alfabank.platform.businessobjects.AccessToken;
 import ru.alfabank.platform.users.AccessibleUser;
-import ru.alfabank.platform.users.CommonUser;
-import ru.alfabank.platform.users.CreditCardUser;
-import ru.alfabank.platform.users.DebitCardUser;
-import ru.alfabank.platform.users.InvestUser;
-import ru.alfabank.platform.users.MortgageUser;
-import ru.alfabank.platform.users.PilUser;
-import ru.alfabank.platform.users.SmeUser;
-import ru.alfabank.platform.users.UnclaimedUser;
 
 /**
  * Keycloak helper.
@@ -48,12 +32,13 @@ public class KeycloakHelper extends AbstractBusinessObject {
 
   /**
    * Refresh access token.
+   *
    * @param user user
    * @return actual valid token
    */
   public static AccessToken getToken(final AccessibleUser user) {
     if (tokensSet == null
-        || LocalDateTime.now().isAfter(tokensSet.getExpireRefreshTokenTime())
+        || Instant.now().isAfter(tokensSet.getExpireRefreshTokenTime())
         || !decode(tokensSet.getAccessToken()).equals(user.getLogin())) {
       LOGGER.info("Выполняю запрос токена авторизации");
       Map<String, String> formParams = Map.of(
@@ -62,12 +47,12 @@ public class KeycloakHelper extends AbstractBusinessObject {
           "password", user.getPassword(),
           "grant_type", "password");
       tokensSet = given().relaxedHTTPSValidation().baseUri(KEYCLOAK_BASE_URL)
-              .basePath(KEYCLOAK_BASE_URI + TOKEN_RESOURCE).contentType(ContentType.URLENC)
-              .formParams(formParams).log().all().when().post().then().log()
-              .ifError().statusCode(SC_OK).extract().body().as(AccessToken.class);
+          .basePath(KEYCLOAK_BASE_URI + TOKEN_RESOURCE).contentType(ContentType.URLENC)
+          .formParams(formParams).log().all().when().post().then().log()
+          .ifError().statusCode(SC_OK).extract().body().as(AccessToken.class);
       LOGGER.info("Получен ответ\n" + describeBusinessObject(tokensSet));
       return tokensSet;
-    } else if (LocalDateTime.now().isAfter(tokensSet.getExpireAccessTokenTime())) {
+    } else if (Instant.now().isAfter(tokensSet.getExpireAccessTokenTime())) {
       LOGGER.info("Выполняю запрос обновления токена авторизации");
       Map<String, String> formParams = Map.of(
           "client_id", "acms",
@@ -83,6 +68,7 @@ public class KeycloakHelper extends AbstractBusinessObject {
 
   /**
    * Decode JWT.
+   *
    * @param accessToken accessToken
    * @return login
    */
@@ -100,27 +86,37 @@ public class KeycloakHelper extends AbstractBusinessObject {
   }
 
   /**
-   * Log out.
+   * Log out all logged in users.
    */
   public static void logoutAllUsers() {
-    final var users = List.of(
-        getCreditCardUser(),
-        getDebitCardUser(),
-        getInvestUser(),
-        getMortgageUser(),
-        getPilUser(),
-        getSmeUser(),
-        getCommonUser(),
-        getUnclaimedUser());
-    for (AccessibleUser user : users) {
-      LOGGER.info("Выполняю разлогин");
+    LOGGED_IN_USERS.entrySet().parallelStream().forEach((entry) -> {
+      final var user = entry.getKey();
+      final var accessToken = entry.getValue();
+      LOGGER.info("Выполняю разлогин пользователя '" + user.getLogin() + "'");
       Map<String, String> formParams = Map.of(
           "client_id", "acms",
-          "refresh_token", user.getJwt().getRefreshToken());
-      given().relaxedHTTPSValidation().baseUri(KEYCLOAK_BASE_URL)
-          .basePath(KEYCLOAK_BASE_URI + LOGOUT_RESOURCE).contentType(ContentType.URLENC)
-          .formParams(formParams).log().all().when().post().then().log().ifError()
-          .statusCode(SC_NO_CONTENT);
+          "refresh_token", accessToken.getRefreshToken());
+      final var response =
+          given()
+              .relaxedHTTPSValidation()
+              .baseUri(KEYCLOAK_BASE_URL)
+              .basePath(KEYCLOAK_BASE_URI + LOGOUT_RESOURCE)
+              .contentType(ContentType.URLENC)
+              .formParams(formParams)
+              .when().post();
+      if (response.getStatusCode() == SC_NO_CONTENT) {
+        LOGGER.info(String.format("Пользователь '%s' разлогинен", user.getLogin()));
+        LOGGED_IN_USERS.remove(user);
+      } else {
+        LOGGER.warn(String.format(
+            "Не удалось разлогинить пользователя '%s'\n%s",
+            user.getLogin(),
+            response.prettyPrint()));
+      }
+    });
+    if (!LOGGED_IN_USERS.isEmpty()) {
+      LOGGER.warn("Неразлогиненные пользователи\n");
+      LOGGED_IN_USERS.forEach((user, accessTokens) -> LOGGER.warn(user.getLogin()));
     }
   }
 }

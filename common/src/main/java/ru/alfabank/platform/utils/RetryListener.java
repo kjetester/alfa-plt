@@ -9,10 +9,11 @@ public class RetryListener implements IAnnotationTransformer {
 
   /**
    * Listener method.
-   * @param annotation annotation
-   * @param testClass testClass
+   *
+   * @param annotation      annotation
+   * @param testClass       testClass
    * @param testConstructor testConstructor
-   * @param testMethod testMethod
+   * @param testMethod      testMethod
    */
   public void transform(final ITestAnnotation annotation,
                         final Class testClass,

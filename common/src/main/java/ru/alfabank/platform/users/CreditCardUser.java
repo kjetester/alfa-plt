@@ -2,7 +2,7 @@ package ru.alfabank.platform.users;
 
 import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import ru.alfabank.platform.businessobjects.AccessToken;
 import ru.alfabank.platform.businessobjects.enums.Team;
@@ -40,6 +40,7 @@ public class CreditCardUser extends User implements AccessibleUser {
 
   /**
    * Get user.
+   *
    * @return user
    */
   public static CreditCardUser getCreditCardUser() {
@@ -47,7 +48,7 @@ public class CreditCardUser extends User implements AccessibleUser {
       user = new CreditCardUser();
     }
     if (user.jwt == null
-        || LocalDateTime.now().isAfter(user.jwt.getExpireAccessTokenTime())) {
+        || Instant.now().isAfter(user.jwt.getExpireAccessTokenTime())) {
       getAccessToken(user);
     }
     return user;

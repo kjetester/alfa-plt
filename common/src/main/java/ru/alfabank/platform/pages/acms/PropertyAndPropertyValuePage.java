@@ -38,9 +38,10 @@ public class PropertyAndPropertyValuePage extends BasePage {
 
   /**
    * Modifying property value.
+   *
    * @param propertyName property name
-   * @param value property value
-   * @param geos geos
+   * @param value        property value
+   * @param geos         geos
    * @return this
    */
   public PropertyAndPropertyValuePage modifyValueContinueWithPropertyPage(
@@ -53,9 +54,10 @@ public class PropertyAndPropertyValuePage extends BasePage {
 
   /**
    * Modifying property value.
+   *
    * @param propertyName property name
-   * @param value property value
-   * @param geos geos
+   * @param value        property value
+   * @param geos         geos
    * @return WidgetSidebarPage
    */
   public WidgetSidebarPage modifyValueAndContinueWithWidgetSidebarPage(String propertyName,
@@ -67,9 +69,10 @@ public class PropertyAndPropertyValuePage extends BasePage {
 
   /**
    * Modifying existing property value.
+   *
    * @param propertyName property name
-   * @param value property value
-   * @param geoList geos
+   * @param value        property value
+   * @param geoList      geos
    */
   private void modifyVal(String propertyName,
                          String value,
@@ -86,9 +89,10 @@ public class PropertyAndPropertyValuePage extends BasePage {
 
   /**
    * Adding a new property value.
+   *
    * @param propertyName property name
-   * @param value property value
-   * @param geos geos
+   * @param value        property value
+   * @param geos         geos
    * @return WidgetSidebarPage
    */
   public WidgetSidebarPage createValue(String propertyName,
@@ -113,7 +117,8 @@ public class PropertyAndPropertyValuePage extends BasePage {
 
   /**
    * Setting up geo-groups.
-   * @param input input
+   *
+   * @param input   input
    * @param geoList geos
    */
   public void setGeoGroups(WebElement input, List<Geo> geoList) {
@@ -123,9 +128,10 @@ public class PropertyAndPropertyValuePage extends BasePage {
 
   /**
    * Restoring the property and its value.
+   *
    * @param propertyName property name
-   * @param value value
-   * @param geos geos
+   * @param value        value
+   * @param geos         geos
    * @return WidgetSidebarPage
    */
   public WidgetSidebarPage restorePropertyAndValues(String propertyName,
@@ -157,6 +163,7 @@ public class PropertyAndPropertyValuePage extends BasePage {
 
   /**
    * Checking for a found entity marking.
+   *
    * @param propertyName property name
    */
   public void checkPropertyMarking(String propertyName) {
@@ -172,6 +179,7 @@ public class PropertyAndPropertyValuePage extends BasePage {
 
   /**
    * Read property value at {@code propertyName} property.
+   *
    * @param propertyName propertyName
    * @return property value
    */
@@ -200,6 +208,7 @@ public class PropertyAndPropertyValuePage extends BasePage {
 
   /**
    * Create property.
+   *
    * @param title property title
    * @return this
    */

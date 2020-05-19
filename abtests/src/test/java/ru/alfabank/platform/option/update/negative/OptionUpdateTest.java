@@ -9,13 +9,12 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
-import org.apache.log4j.LogManager;
 import org.assertj.core.api.SoftAssertions;
-import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -23,7 +22,6 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.Widget;
-import ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionUpdateTest extends OptionBaseTest {
@@ -54,13 +52,11 @@ public class OptionUpdateTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
-    final var experimentEnd = getCurrentDateTime().plusDays(5).toString();
-    var page1 = createPage(null, null, true, getContentManager());
-    final var page2 = createPage(null, null, true, getContentManager());
-    final var pageId1 = page1.getId();
-    final var pageId2 = page2.getId();
-    defaultWidget = createWidget(
-        page1,
+    final var experiment_end = getValidEndDatePlusWeek();
+    final var page_1_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    final var page_2_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    defaultWidget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         null,
         desktop,
         true,
@@ -69,9 +65,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    page1 = createdPages.get(pageId1);
-    defaultWidget1 = createWidget(
-        page1,
+    defaultWidget1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         null,
         desktop,
         true,
@@ -80,7 +75,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    widget1 = createWidget(page1,
+    widget1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         defaultWidget1,
         desktop,
         false,
@@ -89,9 +85,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    page1 = createdPages.get(pageId1);
-    defaultWidget2 = createWidget(
-        page1,
+    defaultWidget2 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         null,
         desktop,
         true,
@@ -100,39 +95,38 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    widget2 = createWidget(
-        page1,
+    widget2 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         defaultWidget2,
         desktop,
- false,
+        false,
         FOR_AB_TEST,
         false,
         null,
         null,
         getContentManager());
-    page1 = createdPages.get(pageId1);
-    abTestWidget = createWidget(
-        page1,
+    abTestWidget = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         null,
         desktop,
-  false,
+        false,
         FOR_AB_TEST,
         false,
         null,
         null,
         getContentManager());
-    abTestWidget1 = createWidget(
-        page1,
+    abTestWidget1 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         null,
         desktop,
-  false,
+        false,
         FOR_AB_TEST,
         false,
         null,
         null,
         getContentManager());
-    widget4 = createWidget(
-        page1,
+    widget4 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         abTestWidget1,
         desktop,
         false,
@@ -141,30 +135,28 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    page1 = createdPages.get(pageId1);
-    abTestWidget2 = createWidget(
-        page1,
+    abTestWidget2 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         null,
         desktop,
-    false,
+        false,
         FOR_AB_TEST,
         false,
         null,
         null,
         getContentManager());
-    widget5 = createWidget(
-        page1,
+    widget5 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         abTestWidget2,
         desktop,
-    true,
+        true,
         DEFAULT,
         true,
         null,
         null,
         getContentManager());
-    page1 = createdPages.get(pageId1);
-    final var widget6 = createWidget(
-        page1,
+    final var widget6 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         null,
         desktop,
         false,
@@ -173,8 +165,8 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    abTestWidget3 = createWidget(
-        page1,
+    abTestWidget3 = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_id),
         widget6,
         desktop,
         false,
@@ -183,24 +175,176 @@ public class OptionUpdateTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    experiment1 = createExperiment(
+    experiment1 = EXPERIMENT_STEPS.createExperiment(
         defaultWidget.getDevice(),
-        pageId1,
+        page_1_id,
         getRandomProductType(),
-        experimentEnd,
+        experiment_end,
         .5D,
         getContentManager());
-    experiment2 = createExperiment(
+    experiment2 = EXPERIMENT_STEPS.createExperiment(
         defaultWidget.getDevice(),
-        pageId2,
+        page_2_id,
         getRandomProductType(),
-        experimentEnd,
+        experiment_end,
         .5D,
         getContentManager());
   }
 
+  @Test(description = "Негативный тест апдейта вариантов",
+      dataProvider = "optionUpdateTestDataProvider",
+      groups = "1")
+  public void optionUpdateNegativeTest(
+      @ParameterKey("Тест-кейс") final String testCase,
+      @ParameterKey("Существующий вариант") final Option existingOption,
+      @ParameterKey("Изменить на") final Option optionModification) {
+    createdOption = OPTION_STEPS.createOption(existingOption, getContentManager());
+    final var response = OPTION_STEPS.modifyOptionAssumingFail(
+        createdOption,
+        optionModification,
+        getContentManager());
+    final var softly = new SoftAssertions();
+    switch (Integer.parseInt(testCase.replaceAll("[\\D]", ""))) {
+      case 1:
+      case 2: {
+        softly.assertThat(response.getStatusCode())
+            .as(STATUS_CODE_CHECK)
+            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+        softly.assertThat(response.getBody().asString())
+            .as(MESSAGE_CHECK)
+            .contains("Длина названия варианта должна быть в интервале от 1 до 32 символов");
+        break;
+      }
+      case 3:
+      case 4: {
+        softly.assertThat(response.getStatusCode())
+            .as(STATUS_CODE_CHECK)
+            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+        softly.assertThat(response.getBody().asString())
+            .as(MESSAGE_CHECK)
+            .contains("Длина описания варианта должна быть в интервале от 1 до 1000 символов");
+        break;
+      }
+      case 5: {
+        softly.assertThat(response.getStatusCode())
+            .as(STATUS_CODE_CHECK)
+            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+        softly.assertThat(response.getBody().asString())
+            .as(MESSAGE_CHECK)
+            .contains("Доля траффика должна быть меньше единицы");
+        break;
+      }
+      case 6: {
+        softly.assertThat(response.getStatusCode())
+            .as(STATUS_CODE_CHECK)
+            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+        softly.assertThat(response.getBody().asString())
+            .as(MESSAGE_CHECK)
+            .contains("Доля траффика должна быть больше нуля");
+        break;
+      }
+      case 7: {
+        softly.assertThat(response.getStatusCode())
+            .as(STATUS_CODE_CHECK)
+            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+        softly.assertThat(response.getBody().asString())
+            .as(MESSAGE_CHECK)
+            .contains("Для варианта по умолчанию '" + createdOption.getName() + "' виджеты '"
+                + optionModification.getWidgetUids()
+                + "' должны быть с дефолтным названием варианта, быть включенными и быть виджетами"
+                + " по умолчанию");
+        break;
+      }
+      case 8: {
+        softly.assertThat(response.getStatusCode())
+            .as(STATUS_CODE_CHECK)
+            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+        softly.assertThat(response.getBody().asString())
+            .as(MESSAGE_CHECK)
+            .contains("Для варианта по умолчанию '" + createdOption.getName() + "' виджеты '["
+                + widget1.getUid()
+                + "]' должны быть с дефолтным названием варианта, быть включенными и быть виджетами"
+                + " по умолчанию");
+        break;
+      }
+      case 9: {
+        softly.assertThat(response.getStatusCode())
+            .as(STATUS_CODE_CHECK)
+            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+        softly.assertThat(response.getBody().asString())
+            .as(MESSAGE_CHECK)
+            .contains("Для варианта по умолчанию '" + createdOption.getName() + "' виджеты '["
+                + widget2.getUid()
+                + "]' должны быть с дефолтным названием варианта, быть включенными и быть виджетами"
+                + " по умолчанию");
+        break;
+      }
+      case 10: {
+        softly.assertThat(response.getStatusCode())
+            .as(STATUS_CODE_CHECK)
+            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+        softly.assertThat(response.getBody().asString())
+            .as(MESSAGE_CHECK)
+            .contains("Для варианта '" + createdOption.getName() + "' виджеты '"
+                + optionModification.getWidgetUids()
+                + "' должны быть помечены как 'forABtest', быть выключенными и не должны быть "
+                + "виджетами по умолчанию");
+        break;
+      }
+      case 11: {
+        softly.assertThat(response.getStatusCode())
+            .as(STATUS_CODE_CHECK)
+            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+        softly.assertThat(response.getBody().asString())
+            .as(MESSAGE_CHECK)
+            .contains("Для варианта '" + createdOption.getName() + "' виджеты '["
+                + widget4.getUid()
+                + "]' должны быть помечены как 'forABtest', быть выключенными и не должны быть "
+                + "виджетами по умолчанию");
+        break;
+      }
+      case 12: {
+        softly.assertThat(response.getStatusCode())
+            .as(STATUS_CODE_CHECK)
+            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+        softly.assertThat(response.getBody()
+            .asString()).as(MESSAGE_CHECK)
+            .contains("Для варианта '" + createdOption.getName() + "' виджеты '["
+                + widget5.getUid()
+                + "]' должны быть помечены как 'forABtest', быть выключенными и не должны быть "
+                + "виджетами по умолчанию");
+        break;
+      }
+      case 13: {
+        softly.assertThat(response.getStatusCode())
+            .as(STATUS_CODE_CHECK)
+            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+        softly.assertThat(response.getBody()
+            .asString()).as(MESSAGE_CHECK)
+            .contains(
+                optionModification.getWidgetUids().get(0),
+                "' не должен иметь верхнеуровневых родителей с флагом 'forABtest'");
+        break;
+      }
+      case 14: {
+        assertThat(response.getStatusCode()).as(STATUS_CODE_CHECK).isEqualTo(SC_OK);
+        break;
+      }
+      default: {
+        throw new IllegalArgumentException("Неучтенный тест-кейс");
+      }
+    }
+    OPTION_STEPS.getOption(createdOption, getContentManager())
+        .equals(new Option.Builder()
+            .using(createdOption)
+            .build());
+    softly.assertAll();
+  }
+
+
   /**
    * Data Provider.
+   *
    * @return Data
    */
   @DataProvider
@@ -480,282 +624,13 @@ public class OptionUpdateTest extends OptionBaseTest {
     };
   }
 
-  @Test(description = "Негативный тест апдейта вариантов",
-      dataProvider = "optionUpdateTestDataProvider",
-      groups = "1")
-  public void optionUpdateTest(@ParameterKey("Тест-кейс") final String testCase,
-                               @ParameterKey("Существующий вариант") final Option existingOption,
-                               @ParameterKey("Изменить на") final Option optionModification) {
-    createdOption = createOption(existingOption, getContentManager());
-    final var response = modifyOptionAssumingFail(createdOption, optionModification, getContentManager());
-    final var softly = new SoftAssertions();
-    switch (Integer.parseInt(testCase.replaceAll("[\\D]", ""))) {
-      case 1:
-      case 2: {
-        softly.assertThat(response.getStatusCode())
-            .as(STATUS_CODE_CHECK)
-            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
-        softly.assertThat(response.getBody().asString())
-            .as(MESSAGE_CHECK)
-            .contains("Длина названия варианта должна быть в интервале от 1 до 32 символов");
-        break;
-      }
-      case 3:
-      case 4: {
-        softly.assertThat(response.getStatusCode())
-            .as(STATUS_CODE_CHECK)
-            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
-        softly.assertThat(response.getBody().asString())
-            .as(MESSAGE_CHECK)
-            .contains("Длина описания варианта должна быть в интервале от 1 до 1000 символов");
-        break;
-      }
-      case 5: {
-        softly.assertThat(response.getStatusCode())
-            .as(STATUS_CODE_CHECK)
-            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
-        softly.assertThat(response.getBody().asString())
-            .as(MESSAGE_CHECK)
-            .contains("Доля траффика должна быть меньше единицы");
-        break;
-      }
-      case 6: {
-        softly.assertThat(response.getStatusCode())
-            .as(STATUS_CODE_CHECK)
-            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
-        softly.assertThat(response.getBody().asString())
-            .as(MESSAGE_CHECK)
-            .contains("Доля траффика должна быть больше нуля");
-        break;
-      }
-      case 7: {
-        softly.assertThat(response.getStatusCode())
-            .as(STATUS_CODE_CHECK)
-            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
-        softly.assertThat(response.getBody().asString())
-            .as(MESSAGE_CHECK)
-            .contains("Для варианта по умолчанию '" + createdOption.getName() + "' виджеты '"
-                + optionModification.getWidgetUids()
-                + "' должны быть с дефолтным названием варианта, быть включенными и быть виджетами"
-                + " по умолчанию");
-        break;
-      }
-      case 8: {
-        softly.assertThat(response.getStatusCode())
-            .as(STATUS_CODE_CHECK)
-            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
-        softly.assertThat(response.getBody().asString())
-            .as(MESSAGE_CHECK)
-            .contains("Для варианта по умолчанию '" + createdOption.getName() + "' виджеты '["
-                + widget1.getUid()
-                + "]' должны быть с дефолтным названием варианта, быть включенными и быть виджетами"
-                + " по умолчанию");
-        break;
-      }
-      case 9: {
-        softly.assertThat(response.getStatusCode())
-            .as(STATUS_CODE_CHECK)
-            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
-        softly.assertThat(response.getBody().asString())
-            .as(MESSAGE_CHECK)
-            .contains("Для варианта по умолчанию '" + createdOption.getName() + "' виджеты '["
-                + widget2.getUid()
-                + "]' должны быть с дефолтным названием варианта, быть включенными и быть виджетами"
-                + " по умолчанию");
-        break;
-      }
-      case 10: {
-        softly.assertThat(response.getStatusCode())
-            .as(STATUS_CODE_CHECK)
-            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
-        softly.assertThat(response.getBody().asString())
-            .as(MESSAGE_CHECK)
-            .contains("Для варианта '" + createdOption.getName() + "' виджеты '"
-                + optionModification.getWidgetUids()
-                + "' должны быть помечены как 'forABtest', быть выключенными и не должны быть "
-                + "виджетами по умолчанию");
-        break;
-      }
-      case 11: {
-        softly.assertThat(response.getStatusCode())
-            .as(STATUS_CODE_CHECK)
-            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
-        softly.assertThat(response.getBody().asString())
-            .as(MESSAGE_CHECK)
-            .contains("Для варианта '" + createdOption.getName() + "' виджеты '["
-                + widget4.getUid()
-                + "]' должны быть помечены как 'forABtest', быть выключенными и не должны быть "
-                + "виджетами по умолчанию");
-        break;
-      }
-      case 12: {
-        softly.assertThat(response.getStatusCode())
-            .as(STATUS_CODE_CHECK)
-            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
-        softly.assertThat(response.getBody()
-            .asString()).as(MESSAGE_CHECK)
-            .contains("Для варианта '" + createdOption.getName() + "' виджеты '["
-                + widget5.getUid()
-                + "]' должны быть помечены как 'forABtest', быть выключенными и не должны быть "
-                + "виджетами по умолчанию");
-        break;
-      }
-      case 13: {
-        softly.assertThat(response.getStatusCode())
-            .as(STATUS_CODE_CHECK)
-            .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
-        softly.assertThat(response.getBody()
-            .asString()).as(MESSAGE_CHECK)
-            .contains(
-                optionModification.getWidgetUids().get(0),
-                "' не должен иметь верхнеуровневых родителей с флагом 'forABtest'");
-        break;
-      }
-      case 14: {
-        assertThat(response.getStatusCode()).as(STATUS_CODE_CHECK).isEqualTo(SC_OK);
-        break;
-      }
-      default: {
-        throw new IllegalArgumentException("Неучтенный тест-кейс");
-      }
-    }
-    getOption(createdOption, getContentManager())
-        .equals(new Option.Builder()
-            .using(createdOption)
-            .build());
-    softly.assertAll();
-  }
-
-  /**
-   * Data Provider.
-   * @return Data
-   */
-  @DataProvider
-  public Object[][] experimentStatusOptionUpdateTestDataProvider() {
-    return new Object[][]{
-        {
-            "1. Изменение варианта для эксперимента со статусом RUNNING",
-            new Option.Builder()
-            .setDefault(false)
-            .setName(NAME + "1")
-            .setDescription(DESCRIPTION + "1")
-            .setWidgetUids(List.of(abTestWidget.getUid()))
-            .setExperimentUuid(experiment1.getUuid())
-            .setTrafficRate(.5D)
-            .build(),
-            new Option.Builder()
-            .setDefault(true)
-            .setName(NAME + "2")
-            .setDescription(DESCRIPTION + "2")
-            .setWidgetUids(List.of(defaultWidget.getUid()))
-            .setExperimentUuid(experiment1.getUuid())
-            .setTrafficRate(.5D)
-            .build()
-        },
-        {
-            "2. Изменение варианта для эксперимента со статусом CANCELLED",
-            new Option.Builder()
-                .setDefault(false)
-                .setName(NAME + "1")
-                .setDescription(DESCRIPTION + "1")
-                .setWidgetUids(List.of(abTestWidget.getUid()))
-                .setExperimentUuid(experiment1.getUuid())
-                .setTrafficRate(.5D)
-                .build(),
-            new Option.Builder()
-                .setDefault(true)
-                .setName(NAME + "2")
-                .setDescription(DESCRIPTION + "2")
-                .setWidgetUids(List.of(defaultWidget.getUid()))
-                .setExperimentUuid(experiment1.getUuid())
-                .setTrafficRate(.5D)
-                .build()
-        },
-        {
-            "3. Изменение варианта для эксперимента со статусом EXPIRED",
-            null,
-            null
-        }
-    };
-  }
-
-  @Test(description = "Негативный тест апдейта вариантов - статус эксперимента",
-      dataProvider = "experimentStatusOptionUpdateTestDataProvider",
-      groups = "1")
-  public void wrongExperimentStatusOptionUpdateTest(
-      @ParameterKey("Тест-кейс") final String testCase,
-      @ParameterKey("Вариант АБ-теста") final Option abTestOption,
-      @ParameterKey("Вариант по-умолчанию") final Option defaultOption) {
-    Option createdAbTestOption = createOption(abTestOption, getContentManager());
-    Option abTestOptionModification = new Option.Builder()
-        .setDefault(false)
-        .setName(NAME + "1")
-        .setDescription(DESCRIPTION)
-        .setWidgetUids(List.of(abTestWidget.getUid()))
-        .setExperimentUuid(experiment1.getUuid())
-        .setTrafficRate(.5D)
-        .build();
-    Option createdDefaultOption = createOption(defaultOption, getContentManager());
-    Option defaultOptionModification = new Option.Builder()
-        .setDefault(false)
-        .setName(NAME + "2")
-        .setDescription(DESCRIPTION)
-        .setWidgetUids(List.of(abTestWidget.getUid()))
-        .setExperimentUuid(experiment1.getUuid())
-        .setTrafficRate(.5D)
-        .build();
-    final var softly = new SoftAssertions();
-    switch (Integer.parseInt(testCase.replaceAll("[\\D]", ""))) {
-      case 1: {
-        runExperimentAssumingSuccess(experiment1, getContentManager());
-        final var response1 =
-            modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification, getContentManager());
-        final var response2 =
-            modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification, getContentManager());
-        softly.assertThat(response1.asString())
-            .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
-        softly.assertThat(response2.asString())
-            .contains("Невозможно изменить вариант '" + createdDefaultOption.getUuid());
-        break;
-      }
-      case 2: {
-        stopExperimentAssumingSuccess(experiment1, getContentManager());
-        final var response1 =
-            modifyOptionAssumingFail(createdAbTestOption, abTestOptionModification, getContentManager());
-        final var response2 =
-            modifyOptionAssumingFail(createdDefaultOption, defaultOptionModification, getContentManager());
-        softly.assertThat(response1.asString())
-            .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
-        softly.assertThat(response2.asString())
-            .contains("Невозможно изменить вариант '" + createdDefaultOption.getUuid());
-        break;
-      }
-      case 3: {
-        LogManager.getLogger(InvolvementsTest.class).warn("Manual Testing Needed");
-        throw new SkipException("Manual Testing Needed");
-      }
-      default: {
-        throw new IllegalArgumentException("Неучтенный тест-кейс");
-      }
-    }
-    getOption(createdAbTestOption, getContentManager())
-        .equals(new Option.Builder()
-            .using(createdAbTestOption)
-            .build());
-    getOption(createdDefaultOption, getContentManager())
-        .equals(new Option.Builder()
-            .using(createdDefaultOption)
-            .build());
-    softly.assertAll();
-  }
-
   /**
    * After method.
    */
   @AfterMethod(onlyForGroups = "1")
   public void afterMethod() {
     if (createdOption != null) {
-      deleteOption(createdOption, getContentManager());
+      OPTION_STEPS.deleteOption(createdOption, getContentManager());
       createdOption = null;
     }
   }

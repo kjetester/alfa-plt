@@ -11,7 +11,8 @@ public class FileComparator {
 
   /**
    * File comparator.
-   * @param actual actual
+   *
+   * @param actual   actual
    * @param expected expected
    * @throws IOException IOException
    */

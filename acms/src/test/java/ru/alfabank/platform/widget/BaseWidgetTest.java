@@ -20,6 +20,7 @@ public class BaseWidgetTest extends BasePageTest {
 
   /**
    * Getting AlfaSite page source at given path.
+   *
    * @param path path
    * @return page source
    */
@@ -30,6 +31,7 @@ public class BaseWidgetTest extends BasePageTest {
 
   /**
    * Check if HTML source one page is equal to another.
+   *
    * @param page page
    */
   protected void compareSourceHtmlAgainst(Page page) {

@@ -1,12 +1,10 @@
 package ru.alfabank.platform.experiment.create;
 
-import static io.restassured.RestAssured.given;
-import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.describeBusinessObject;
 import static ru.alfabank.platform.businessobjects.enums.Device.all;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
@@ -19,16 +17,18 @@ import static ru.alfabank.platform.businessobjects.enums.ProductType.MG;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.SME;
 import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
-import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import io.restassured.response.Response;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
+import org.testng.TestNGException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
@@ -43,7 +43,7 @@ public class CreateExperimentTest extends BaseTest {
   @Test(
       description = "Позитивный тест создания нового эксперимента",
       dataProvider = "Positive data provider")
-  public void positiveNewExperimentCreationTest(
+  public void experimentCreationPositiveTest(
       @ParameterKey("Experiment 1 device") final Device experiment1device,
       @ParameterKey("Experiment 1 cookieValue") final String experiment1cookieValue,
       @ParameterKey("Experiment 1 description") final String experiment1description,
@@ -58,7 +58,7 @@ public class CreateExperimentTest extends BaseTest {
       @ParameterKey("Experiment 2 productType") final ProductType experiment2productType,
       @ParameterKey("Experiment 2 endDate") final String experiment2endDate,
       @ParameterKey("Experiment 2 trafficRate") final Double experiment2trafficRate) {
-    final var experiment1ToCreate = new Experiment.Builder()
+    final var experiment_1_body = new Experiment.Builder()
         .setDescription(experiment1description)
         .setCookieValue(experiment1cookieValue)
         .setPageId(experiment1pageId)
@@ -67,32 +67,18 @@ public class CreateExperimentTest extends BaseTest {
         .setEndDate(experiment1endDate)
         .setTrafficRate(experiment1trafficRate)
         .build();
-    LOGGER.info("Выполняю запрос на создание эксперимента №1:\n"
-        + describeBusinessObject(experiment1ToCreate));
-    Response experiment1creationResponse =
-        given()
-            .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getContentManager().getJwt().getAccessToken())
-            .body(experiment1ToCreate)
-        .when().post()
-        .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        experiment1creationResponse.getStatusCode(),
-        experiment1creationResponse.prettyPrint()));
-    assertThat(experiment1creationResponse.statusCode())
-        .as("Проверка статус-кода ответа")
-        .isEqualTo(SC_CREATED);
-    final var createdExperiment1 = experiment1creationResponse.as(Experiment.class);
-    createdExperiments.put(createdExperiment1.getUuid(), createdExperiment1);
-    createdExperiment1.checkCreatedExperiment(
+    final var created_experiment_1 = EXPERIMENT_STEPS.createExperiment(
+        experiment_1_body,
+        getContentManager());
+    created_experiment_1.checkCreatedExperiment(
         new Experiment.Builder()
-            .using(experiment1ToCreate)
+            .using(experiment_1_body)
             .setEnabled(false)
             .setCreatedBy(getContentManager().getLogin())
             .setStatus(DISABLED)
             .setCreationDate(LocalDateTime.now(ZoneOffset.UTC).toString())
             .build());
-    final var experiment2ToCreate = new Experiment.Builder()
+    final var experiment_2_body = new Experiment.Builder()
         .setDescription(experiment2description)
         .setCookieValue(experiment2cookieValue)
         .setPageId(experiment2pageId)
@@ -101,26 +87,12 @@ public class CreateExperimentTest extends BaseTest {
         .setEndDate(experiment2endDate)
         .setTrafficRate(experiment2trafficRate)
         .build();
-    LOGGER.info("Выполняю запрос на создание эксперимента №2:\n"
-        + describeBusinessObject(experiment2ToCreate));
-    Response experiment2creationResponse =
-        given()
-            .spec(getAllOrCreateExperimentSpec)
-            .auth().oauth2(getContentManager().getJwt().getAccessToken())
-            .body(experiment2ToCreate)
-            .when().post()
-            .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        experiment2creationResponse.getStatusCode(),
-        experiment2creationResponse.prettyPrint()));
-    assertThat(experiment2creationResponse.statusCode())
-        .as("Проверка статус-кода ответа")
-        .isEqualTo(SC_CREATED);
-    final var createdExperiment2 = experiment2creationResponse.as(Experiment.class);
-    createdExperiments.put(createdExperiment2.getUuid(), createdExperiment2);
-    createdExperiment2.checkCreatedExperiment(
+    final var created_experiment_2 = EXPERIMENT_STEPS.createExperiment(
+        experiment_2_body,
+        getContentManager());
+    created_experiment_2.checkCreatedExperiment(
         new Experiment.Builder()
-            .using(experiment2ToCreate)
+            .using(experiment_2_body)
             .setEnabled(false)
             .setCreatedBy(getContentManager().getLogin())
             .setStatus(DISABLED)
@@ -253,7 +225,7 @@ public class CreateExperimentTest extends BaseTest {
   @Test(
       description = "Негативный тест создания нового эксперимента",
       dataProvider = "Negative data provider")
-  public void negativeNewExperimentCreationTest(
+  public void experimentCreationNegativeTest(
       @ParameterKey("testCase") final String testCase,
       @ParameterKey("device") final Device device,
       @ParameterKey("cookieValue") final String cookieValue,
@@ -262,76 +234,22 @@ public class CreateExperimentTest extends BaseTest {
       @ParameterKey("productType") final ProductType productType,
       @ParameterKey("endDate") final String endDate,
       @ParameterKey("trafficRate") final Double trafficRate) {
-    LOGGER.info("Test case:" + testCase);
-    final Response response = createExperimentAssumingFail(
-        description, cookieValue, device, pageId, productType, endDate, trafficRate, getContentManager());
+    LOGGER.info("Test case: " + testCase);
+    final Response response = EXPERIMENT_STEPS.createExperimentAssumingFail(
+        description,
+        cookieValue,
+        device,
+        pageId,
+        productType,
+        endDate,
+        trafficRate,
+        getContentManager());
     final var softly = new SoftAssertions();
     softly.assertThat(response.statusCode()).isGreaterThanOrEqualTo(SC_BAD_REQUEST);
     final var fieldViolations = response.getBody().jsonPath().getList("fieldViolations");
     final var globalErrors = response.getBody().jsonPath().getList("globalErrors");
-    if (device != null && device.equals(all)) {
-      assertThat(globalErrors)
-          .as("Проверка отсутствия ошибок в 'globalErrors'")
-          .isNullOrEmpty();
-      assertThat(fieldViolations)
-          .as("Проверка присутствия ошибок в 'fieldViolations'")
-          .isNotNull();
-      assertThat(fieldViolations.size())
-          .as("Проверка количества ошибок в 'fieldViolations'")
-          .isEqualTo(1);
-      softly
-          .assertThat(fieldViolations.get(0).toString())
-          .as("Проверка обрабоки некоррекнтого значения 'device'")
-          .contains("Поле может иметь только одно из возможных значений: [DESKTOP, MOBILE]. "
-              + "Чувствительность к регистру - false");
-    }
-    if (device == null) {
-      assertThat(globalErrors)
-          .as("Проверка отсутствия ошибок в 'globalErrors'")
-          .isNullOrEmpty();
-      assertThat(fieldViolations)
-          .as("Проверка присутствия ошибок в 'fieldViolations'")
-          .isNotNull();
-      assertThat(fieldViolations.size())
-          .as("Проверка количества ошибок в 'fieldViolations'")
-          .isEqualTo(1);
-      softly
-          .assertThat(fieldViolations.get(0).toString())
-          .as("Проверка обрабоки отсутсвия значения 'device'")
-          .contains("device", "Необходимо указать тип устройства");
-    }
-    if (cookieValue == null || cookieValue.length() < 1) {
-      assertThat(globalErrors)
-          .as("Проверка отсутствия ошибок в 'globalErrors'")
-          .isNullOrEmpty();
-      assertThat(fieldViolations)
-          .as("Проверка присутствия ошибок в 'fieldViolations'")
-          .isNotNull();
-      assertThat(fieldViolations.size())
-          .as("Проверка количества ошибок в 'fieldViolations'")
-          .isEqualTo(1);
-      softly
-          .assertThat(fieldViolations.get(0).toString())
-          .as("Проверка обрабоки некоррекнтого значения 'cookieValue'")
-          .contains("cookieValue", "Должно быть указана составная часть формировании кук");
-    }
-    if (description == null || description.length() < 1) {
-      assertThat(globalErrors)
-          .as("Проверка отсутствия ошибок в 'globalErrors'")
-          .isNullOrEmpty();
-      assertThat(fieldViolations)
-          .as("Проверка присутствия ошибок в 'fieldViolations'")
-          .isNotNull();
-      assertThat(fieldViolations.size())
-          .as("Проверка количества ошибок в 'fieldViolations'")
-          .isEqualTo(1);
-      softly
-          .assertThat(fieldViolations.get(0).toString())
-          .as("Проверка обрабоки некоррекнтого значения 'description'")
-          .contains("description", "Должно быть указано описание эксперимента");
-    }
-    if (pageId == null || pageId > 999) {
-      if (pageId == null) {
+    switch (StringUtils.substringBetween(testCase, "'")) {
+      case "device": {
         assertThat(globalErrors)
             .as("Проверка отсутствия ошибок в 'globalErrors'")
             .isNullOrEmpty();
@@ -341,66 +259,175 @@ public class CreateExperimentTest extends BaseTest {
         assertThat(fieldViolations.size())
             .as("Проверка количества ошибок в 'fieldViolations'")
             .isEqualTo(1);
+        if (device == null) {
+          softly
+              .assertThat(fieldViolations.get(0).toString())
+              .as("Проверка обрабоки отсутсвия значения 'device'")
+              .contains("device", "Необходимо указать тип устройства");
+        } else {
+          softly
+              .assertThat(fieldViolations.get(0).toString())
+              .as("Проверка обрабоки некоррекнтого значения 'device'")
+              .contains("Поле может иметь только одно из возможных значений: [DESKTOP, MOBILE]. "
+                  + "Чувствительность к регистру - false");
+        }
+        break;
+      }
+      case "cookieValue": {
         softly
-            .assertThat(fieldViolations.get(0).toString())
-            .as("Проверка обрабоки отсутствующего значения 'pageId'")
-            .contains("pageId", "Необходимо указать адрес страницы");
-      } else {
-        assertThat(fieldViolations)
-            .as("Проверка отсутствия ошибок в 'fieldViolations'")
+            .assertThat(globalErrors)
+            .as("Проверка отсутствия ошибок в 'globalErrors'")
             .isNullOrEmpty();
-        assertThat(globalErrors)
-            .as("Проверка присутствия ошибок в 'globalErrors'")
+        softly
+            .assertThat(fieldViolations)
+            .as("Проверка присутствия ошибок в 'fieldViolations'")
             .isNotNull();
-        assertThat(globalErrors.size())
-            .as("Проверка количества ошибок в 'globalErrors'")
+        softly
+            .assertThat(fieldViolations.size())
+            .as("Проверка количества ошибок в 'fieldViolations'")
+            .isEqualTo(1);
+        if (cookieValue == null) {
+          softly
+              .assertThat(fieldViolations.get(0).toString())
+              .as("Проверка обрабоки некоррекнтого значения 'cookieValue'")
+              .contains("cookieValue", "Должно быть указана составная часть формировании кук");
+        } else {
+          softly
+              .assertThat(fieldViolations.get(0).toString())
+              .as("Проверка обрабоки некоррекнтого значения 'cookieValue'")
+              .contains("cookieValue", cookieValue.length() > 255
+                  ? "length must be between 0 and 255"
+                  : "Должно быть указана составная часть формировании кук");
+        }
+        break;
+      }
+      case "description": {
+        softly
+            .assertThat(globalErrors)
+            .as("Проверка отсутствия ошибок в 'globalErrors'")
+            .isNullOrEmpty();
+        softly
+            .assertThat(fieldViolations)
+            .as("Проверка присутствия ошибок в 'fieldViolations'")
+            .isNotNull();
+        softly
+            .assertThat(fieldViolations.size())
+            .as("Проверка количества ошибок в 'fieldViolations'")
+            .isEqualTo(1);
+        if (description == null) {
+          softly
+              .assertThat(fieldViolations.get(0).toString())
+              .as("Проверка обрабоки некоррекнтого значения 'description'")
+              .contains("description", "Должно быть указано описание эксперимента");
+        } else {
+          softly
+              .assertThat(fieldViolations.get(0).toString())
+              .as("Проверка обрабоки некоррекнтого значения 'description'")
+              .contains("description", description.length() > 1000
+                  ? "length must be between 0 and 1000"
+                  : "Должно быть указано описание эксперимента");
+        }
+        break;
+      }
+      case "pageId": {
+        if (pageId == null) {
+          softly
+              .assertThat(globalErrors)
+              .as("Проверка отсутствия ошибок в 'globalErrors'")
+              .isNullOrEmpty();
+          softly
+              .assertThat(fieldViolations)
+              .as("Проверка присутствия ошибок в 'fieldViolations'")
+              .isNotNull();
+          softly
+              .assertThat(fieldViolations.size())
+              .as("Проверка количества ошибок в 'fieldViolations'")
+              .isEqualTo(1);
+          softly
+              .assertThat(fieldViolations.get(0).toString())
+              .as("Проверка обрабоки отсутствующего значения 'pageId'")
+              .contains("pageId", "Необходимо указать адрес страницы");
+        } else {
+          assertThat(fieldViolations)
+              .as("Проверка отсутствия ошибок в 'fieldViolations'")
+              .isNullOrEmpty();
+          assertThat(globalErrors)
+              .as("Проверка присутствия ошибок в 'globalErrors'")
+              .isNotNull();
+          assertThat(globalErrors.size())
+              .as("Проверка количества ошибок в 'globalErrors'")
+              .isEqualTo(1);
+          softly
+              .assertThat(globalErrors.get(0).toString())
+              .as("Проверка обрабоки некоррекнтого значения 'pageId'")
+              .containsIgnoringCase("Не найдено страницы с комбинацией pageId = "
+                  + pageId + " и device = " + device);
+        }
+        break;
+      }
+      case "productType": {
+        if (productType != null && productType.equals(ERR)) {
+          softly
+              .assertThat(response.getBody().asString())
+              .as("роверка обрабоки некоррекнтого значения 'productType'")
+              .contains("Тип продукта '" + productType + "' не существует");
+        } else {
+          softly
+              .assertThat(globalErrors)
+              .as("Проверка отсутствия ошибок в 'globalErrors'")
+              .isNullOrEmpty();
+          softly
+              .assertThat(fieldViolations)
+              .as("Проверка присутствия ошибок в 'fieldViolations'")
+              .isNotNull();
+          softly
+              .assertThat(fieldViolations.size())
+              .as("Проверка количества ошибок в 'fieldViolations'")
+              .isEqualTo(1);
+          softly
+              .assertThat(fieldViolations.get(0).toString())
+              .as("Проверка обрабоки отсутсвия значения 'productType'")
+              .contains("Необходимо указать ключ типа продукта");
+        }
+        break;
+      }
+      case "endDate": {
+        softly
+            .assertThat(globalErrors)
+            .as("Проверка отсутствия ошибок в 'globalErrors'")
+            .isNullOrEmpty();
+        softly
+            .assertThat(fieldViolations)
+            .as("Проверка присутствия ошибок в 'fieldViolations'")
+            .isNotNull();
+        softly
+            .assertThat(fieldViolations.size())
+            .as("Проверка количества ошибок в 'fieldViolations'")
             .isEqualTo(1);
         softly
-            .assertThat(globalErrors.get(0).toString())
-            .as("Проверка обрабоки некоррекнтого значения 'pageId'")
-            .containsIgnoringCase("Не найдено страницы с комбинацией pageId = "
-                + pageId + " и device = " + device);
+            .assertThat(response.getBody().asString())
+            .as("Проверка обрабоки некоррекнтого значения 'endDate'")
+            .contains(endDate == null
+                ? "Необходимо указать дату окончания эксперимента"
+                : "Минимально допустимая продолжительность эксперимента составляет: 1 день");
+        break;
       }
-    }
-    if (productType != null && productType.equals(ERR)) {
-      assertThat(response.getBody().asString())
-          .as("роверка обрабоки некоррекнтого значения 'productType'")
-          .contains("Тип продукта '" + productType + "' не существует");
-    }
-    if (productType == null) {
-      assertThat(globalErrors)
-          .as("Проверка отсутствия ошибок в 'globalErrors'")
-          .isNullOrEmpty();
-      assertThat(fieldViolations)
-          .as("Проверка присутствия ошибок в 'fieldViolations'")
-          .isNotNull();
-      assertThat(fieldViolations.size())
-          .as("Проверка количества ошибок в 'fieldViolations'")
-          .isEqualTo(1);
-      softly
-          .assertThat(fieldViolations.get(0).toString())
-          .as("Проверка обрабоки отсутсвия значения 'productType'")
-          .contains("Необходимо указать ключ типа продукта");
-    }
-    if (endDate == null || LocalDateTime.parse(endDate, ISO_OFFSET_DATE_TIME)
-        .isBefore(LocalDateTime.now().plusHours(21).minusMinutes(1))) {
-      softly
-          .assertThat(response.getBody().asString())
-          .as("Проверка обрабоки некоррекнтого значения 'endDate'")
-          .contains(endDate == null
-              ? "Необходимо указать дату окончания эксперимента"
-              : "Минимально допустимая продолжительность эксперимента составляет: 1 день");
-    }
-    if (trafficRate == null || trafficRate < 0.01D || trafficRate > 1D) {
-      var stringAssert = softly.assertThat(response.getBody().asString())
-          .as("Проверка обрабоки некоррекнтого значения 'trafficRate'");
-      stringAssert.contains("trafficRate");
-      if (trafficRate == null) {
-        stringAssert.contains("Должна быть указана доля от трафика участвующая в эксперименте");
-      } else if (trafficRate < 0.01D) {
-        stringAssert.contains("Доля трафика должна быть больше");
-      } else if (trafficRate > 1D) {
-        stringAssert.contains("Доля трафика не может превышать единицу");
+      case "trafficRate": {
+        var stringAssert = softly.assertThat(response.getBody().asString())
+            .as("Проверка обрабоки некоррекнтого значения 'trafficRate'");
+        stringAssert.contains("trafficRate");
+        if (trafficRate == null) {
+          stringAssert.contains("Должна быть указана доля от трафика участвующая в эксперименте");
+        } else if (trafficRate < 0.01D) {
+          stringAssert.contains("Доля трафика должна быть больше");
+        } else if (trafficRate > 1D) {
+          stringAssert.contains("Доля трафика не может превышать единицу");
+          break;
+        }
+        break;
+      }
+      default: {
+        throw new TestNGException("Неописанный кейс");
       }
     }
     softly.assertAll();
@@ -409,6 +436,7 @@ public class CreateExperimentTest extends BaseTest {
 
   /**
    * Data provider.
+   *
    * @return test data
    */
   @DataProvider(name = "Negative data provider")

@@ -33,7 +33,7 @@ public class TranBiLogTest extends BaseTest {
    */
   @Parameters({"env"})
   @BeforeClass
-  public void setUp(@Optional("develop") @ParameterKey ("environment") String env) {
+  public void setUp(@Optional("develop") @ParameterKey("environment") String env) {
     String baseUrl = "http://" + env + ".ci.k8s.alfa.link/api/v1/tranbilog";
     minReqSpec = new RequestSpecBuilder()
         .setBaseUri(baseUrl)

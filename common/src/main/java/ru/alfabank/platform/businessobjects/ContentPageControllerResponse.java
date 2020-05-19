@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
 import ru.alfabank.platform.businessobjects.enums.CopyMethod;
 
-@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonInclude (JsonInclude.Include.NON_NULL)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ContentPageControllerResponse {
 
   private static final Logger LOGGER =
@@ -101,6 +101,7 @@ public class ContentPageControllerResponse {
 
     /**
      * Compare widgets.
+     *
      * @param widget comparing widget
      * @param method copying method
      */

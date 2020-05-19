@@ -24,8 +24,9 @@ public class Property implements Comparable<Property> {
 
   /**
    * Class constructor.
-   * @param uid uid
-   * @param name name
+   *
+   * @param uid    uid
+   * @param name   name
    * @param device device
    * @param values values
    */
@@ -87,8 +88,9 @@ public class Property implements Comparable<Property> {
 
   /**
    * Compare property.
+   *
    * @param property comparing property
-   * @param method copying method
+   * @param method   copying method
    */
   public void equals(
       @NotNull final Property property,

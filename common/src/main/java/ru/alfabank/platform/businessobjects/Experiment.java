@@ -22,8 +22,8 @@ import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
 import ru.alfabank.platform.businessobjects.enums.Status;
 
-@JsonAutoDetect (fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@JsonInclude (JsonInclude.Include.NON_NULL)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Experiment extends AbstractBusinessObject {
 
   @JsonIgnore
@@ -133,6 +133,7 @@ public class Experiment extends AbstractBusinessObject {
 
   /**
    * Check if created experiments is correct.
+   *
    * @param expected actual experiment
    */
   public void checkCreatedExperiment(final Experiment expected) {
@@ -193,6 +194,7 @@ public class Experiment extends AbstractBusinessObject {
 
   /**
    * Check if created experiments is correct.
+   *
    * @param expected actual experiment
    */
   public void checkUpdatedExperiment(final Experiment expected) {
@@ -253,6 +255,7 @@ public class Experiment extends AbstractBusinessObject {
 
   /**
    * Check if created experiments is correct.
+   *
    * @param expected actual experiment
    */
   public void checkActivatedExperiment(final Experiment expected) {
@@ -299,10 +302,10 @@ public class Experiment extends AbstractBusinessObject {
         .as("Проверка соответствия Автора деактивации")
         .isEqualTo(expected.getDeactivatedBy());
     softly.assertThat(LocalDateTime.parse(actual.getActivationDate(), ISO_OFFSET_DATE_TIME))
-          .as("Проверка соответствия Даты деактивации")
-          .isCloseTo(
-              LocalDateTime.parse(expected.getActivationDate(), ISO_OFFSET_DATE_TIME),
-              within(3, MINUTES));
+        .as("Проверка соответствия Даты деактивации")
+        .isCloseTo(
+            LocalDateTime.parse(expected.getActivationDate(), ISO_OFFSET_DATE_TIME),
+            within(3, MINUTES));
     softly.assertThat(actual.getStatus())
         .as("Проверка соответствия Статуса")
         .isEqualTo(expected.getStatus());
@@ -316,6 +319,7 @@ public class Experiment extends AbstractBusinessObject {
 
   /**
    * Check experiments properties.
+   *
    * @param expected expected Experiment
    */
   public void equals(@NonNull final Experiment expected) {
@@ -496,6 +500,7 @@ public class Experiment extends AbstractBusinessObject {
 
     /**
      * Reuse experiment.
+     *
      * @param experiment experiment
      * @return this
      */

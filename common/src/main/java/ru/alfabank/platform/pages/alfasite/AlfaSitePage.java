@@ -27,6 +27,7 @@ public class AlfaSitePage {
 
   /**
    * Open AlfaSite page.
+   *
    * @param testPage test page URI
    * @return this
    */
@@ -39,6 +40,7 @@ public class AlfaSitePage {
 
   /**
    * Assertion page title while widget is inactive.
+   *
    * @param geos cities
    * @return this
    */
@@ -53,9 +55,10 @@ public class AlfaSitePage {
 
   /**
    * Assertion page titles according to time and geo-group.
-   * @param deadline deadline when to start assertion
+   *
+   * @param deadline      deadline when to start assertion
    * @param expectedTitle title to expect
-   * @param geos city where to expect
+   * @param geos          city where to expect
    * @return this
    * @throws InterruptedException InterruptedException
    */
@@ -88,6 +91,7 @@ public class AlfaSitePage {
 
   /**
    * Wait until deadline.
+   *
    * @param deadline deadline
    */
   public void wait(final LocalDateTime deadline) {
@@ -104,6 +108,7 @@ public class AlfaSitePage {
 
   /**
    * Check page url.
+   *
    * @param path page path
    * @return this
    */

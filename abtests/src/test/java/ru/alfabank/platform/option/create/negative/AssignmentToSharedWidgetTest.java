@@ -6,6 +6,7 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
@@ -17,122 +18,271 @@ import ru.alfabank.platform.option.OptionBaseTest;
 
 public class AssignmentToSharedWidgetTest extends OptionBaseTest {
 
-  @Test (description = "Тест создания (не)дефолтного варианта с привязкой к шаренному виджету",
+  @Test(description = "Тест создания (не)дефолтного варианта с привязкой к шаренному виджету",
       dataProvider = "dataProvider")
-  public void assignmentToSharedWidgetTest(
+  public void assignmentToSharedWidgetNegativeTest(
       @ParameterKey("Дефолтный вариант") final Boolean isDefaultOption) {
-    final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true, getContentManager());
-    final var pageId = page.getId();
-    page = createdPages.get(pageId);
+    final var page_1_id = PAGES_STEPS.createPage(null, null, true, getContentManager());
     Widget widget;
     if (isDefaultOption) {
-      widget = createWidget(page, null, desktop, true, DEFAULT, true, null, null, getContentManager());
+      widget = DRAFT_STEPS.createWidget(
+          CREATED_PAGES.get(page_1_id),
+          null,
+          desktop,
+          true,
+          DEFAULT,
+          true,
+          null,
+          null,
+          getContentManager());
     } else {
-      widget = createWidget(page, null, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
+      widget = DRAFT_STEPS.createWidget(
+          CREATED_PAGES.get(page_1_id),
+          null,
+          desktop,
+          false,
+          FOR_AB_TEST,
+          false,
+          null,
+          null,
+          getContentManager());
     }
-    final var page2 = createPage(null, null, true, getContentManager());
-    shareWidgetToAnotherPage(widget, page2, getContentManager());
-    final var experiment = createExperiment(
-            widget.getDevice(), pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
+    final var page_2_id = PAGES_STEPS.createPage(
+        null,
+        null,
+        true,
+        getContentManager());
+    DRAFT_STEPS.shareWidgetToAnotherPage(
+        widget,
+        CREATED_PAGES.get(page_2_id),
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
+        widget.getDevice(),
+        page_1_id,
+        getRandomProductType(),
+        getValidEndDate(),
+        .5D,
+        getContentManager());
     Response response;
     if (isDefaultOption) {
-      response = createOptionAssumingFail(
-              true, List.of(widget.getUid()), experiment.getUuid(), .5D, getContentManager());
+      response = OPTION_STEPS.createOptionAssumingFail(
+          true,
+          List.of(widget.getUid()),
+          experiment.getUuid(),
+          .5D,
+          getContentManager());
     } else {
-      response = createOptionAssumingFail(
-              false, List.of(widget.getUid()), experiment.getUuid(), .5D, getContentManager());
+      response = OPTION_STEPS.createOptionAssumingFail(
+          false,
+          List.of(widget.getUid()),
+          experiment.getUuid(),
+          .5D,
+          getContentManager());
     }
     assertThat(response.getStatusCode())
         .as("Проверка статус-кода")
-        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
+        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
     assertThat(response.getBody().asString())
         .as("Проверка сообщения")
         .contains("В эксперименте не могут участвовать виджеты, общие для нескольких страниц."
             + " Отвяжите следующие виджеты:", widget.getUid());
   }
 
-  @Test (description = "Тест создания (не)дефолтного варианта с привязкой к виджету,"
+  @Test(description = "Тест создания (не)дефолтного варианта с привязкой к виджету,"
       + " имеющего шаренного предка", dataProvider = "dataProvider")
-  public void assignmentToWidgetWhichHasSharedAncestorTest(
+  public void assignmentToWidgetWhichHasSharedAncestorNegativeTest(
       @ParameterKey("Дефолтный вариант") final Boolean isDefaultOption) {
-    final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true, getContentManager());
-    final var pageId = page.getId();
-    page = createdPages.get(pageId);
-    final var sharedAncestor = createWidget(
-            page, null, desktop, true, DEFAULT, true, null, null, getContentManager());
-    final var ancestor = createWidget(
-            page, sharedAncestor, desktop, true, DEFAULT, true, null, null, getContentManager());
+    final var page_1_Id = PAGES_STEPS.createPage(
+        null,
+        null,
+        true,
+        getContentManager());
+    final var sharedAncestor = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_Id),
+        null,
+        desktop,
+        true,
+        DEFAULT,
+        true,
+        null,
+        null,
+        getContentManager());
+    final var ancestor = DRAFT_STEPS.createWidget(
+        CREATED_PAGES.get(page_1_Id),
+        sharedAncestor,
+        desktop,
+        true,
+        DEFAULT,
+        true,
+        null,
+        null,
+        getContentManager());
     Widget widget;
     if (isDefaultOption) {
-      widget = createWidget(
-              page, ancestor, desktop, true, DEFAULT, true, null, null, getContentManager());
+      widget = DRAFT_STEPS.createWidget(
+          CREATED_PAGES.get(page_1_Id),
+          ancestor,
+          desktop,
+          true,
+          DEFAULT,
+          true,
+          null,
+          null,
+          getContentManager());
     } else {
-      widget = createWidget(
-              page, ancestor, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
+      widget = DRAFT_STEPS.createWidget(
+          CREATED_PAGES.get(page_1_Id),
+          ancestor,
+          desktop,
+          false,
+          FOR_AB_TEST,
+          false,
+          null,
+          null,
+          getContentManager());
     }
-    final var page2 = createPage(null, null, true, getContentManager());
-    shareWidgetToAnotherPage(sharedAncestor, page2, getContentManager());
-    final var experiment = createExperiment(
-            widget.getDevice(), pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
+    final var page_2_id = PAGES_STEPS.createPage(
+        null,
+        null,
+        true,
+        getContentManager());
+    DRAFT_STEPS.shareWidgetToAnotherPage(
+        sharedAncestor,
+        CREATED_PAGES.get(page_2_id),
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
+        widget.getDevice(),
+        page_1_Id,
+        getRandomProductType(),
+        getValidEndDate(),
+        .5D,
+        getContentManager());
     Response response;
     if (isDefaultOption) {
-      response = createOptionAssumingFail(
-              true, List.of(widget.getUid()), experiment.getUuid(), .5D, getContentManager());
+      response = OPTION_STEPS.createOptionAssumingFail(
+          true,
+          List.of(widget.getUid()),
+          experiment.getUuid(),
+          .5D,
+          getContentManager());
     } else {
-      response = createOptionAssumingFail(
-              false, List.of(widget.getUid()), experiment.getUuid(), .5D, getContentManager());
+      response = OPTION_STEPS.createOptionAssumingFail(
+          false,
+          List.of(widget.getUid()),
+          experiment.getUuid(),
+          .5D,
+          getContentManager());
     }
     assertThat(response.getStatusCode())
         .as("Проверка статус-кода")
-        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
+        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
     assertThat(response.getBody().asString())
         .as("Проверка сообщения")
         .contains("В эксперименте не могут участвовать виджеты, общие для нескольких страниц."
             + " Отвяжите следующие виджеты:");
   }
 
-  @Test (description = "Тест создания (не)дефолтного варианта с привязкой к виджету,"
+  @Test(description = "Тест создания (не)дефолтного варианта с привязкой к виджету,"
       + " имеющего шаренного потомка", dataProvider = "dataProvider")
-  public void assignmentToWidgetWhichHasSharedDescendantTest(
+  public void assignmentToWidgetWhichHasSharedDescendantNegativeTest(
       @ParameterKey("Дефолтный вариант") final Boolean isDefaultOption) {
-    final var experimentEnd = getCurrentDateTime().plusDays(1).plusMinutes(5).toString();
-    var page = createPage(null, null, true, getContentManager());
-    final var pageId = page.getId();
-    page = createdPages.get(pageId);
+    final var page_1_id = PAGES_STEPS.createEnabledPage(getContentManager());
     Widget widget;
     Widget sharedDescendant;
     if (isDefaultOption) {
-      widget = createWidget(
-              page, null, desktop, true, DEFAULT, true, null, null, getContentManager());
-      final var descendant = createWidget(
-              page, widget, desktop, true, DEFAULT, true, null, null, getContentManager());
-      sharedDescendant = createWidget(
-              page, descendant, desktop, true, DEFAULT, true, null, null, getContentManager());
+      widget = DRAFT_STEPS.createWidget(
+          CREATED_PAGES.get(page_1_id),
+          null,
+          desktop,
+          true,
+          DEFAULT,
+          true,
+          null,
+          null,
+          getContentManager());
+      final var descendant = DRAFT_STEPS.createWidget(
+          CREATED_PAGES.get(page_1_id),
+          widget,
+          desktop,
+          true,
+          DEFAULT,
+          true,
+          null,
+          null,
+          getContentManager());
+      sharedDescendant = DRAFT_STEPS.createWidget(
+          CREATED_PAGES.get(page_1_id),
+          descendant,
+          desktop,
+          true,
+          DEFAULT,
+          true,
+          null,
+          null,
+          getContentManager());
     } else {
-      widget = createWidget(
-              page, null, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
-      final var descendant = createWidget(
-              page, widget, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
-      sharedDescendant = createWidget(
-              page, descendant, desktop, false, FOR_AB_TEST, false, null, null, getContentManager());
+      widget = DRAFT_STEPS.createWidget(
+          CREATED_PAGES.get(page_1_id),
+          null,
+          desktop,
+          false,
+          FOR_AB_TEST,
+          false,
+          null,
+          null,
+          getContentManager());
+      final var descendant = DRAFT_STEPS.createWidget(
+          CREATED_PAGES.get(page_1_id),
+          widget,
+          desktop,
+          false,
+          FOR_AB_TEST,
+          false,
+          null,
+          null,
+          getContentManager());
+      sharedDescendant = DRAFT_STEPS.createWidget(
+          CREATED_PAGES.get(page_1_id),
+          descendant,
+          desktop,
+          false,
+          FOR_AB_TEST,
+          false,
+          null,
+          null,
+          getContentManager());
     }
-    final var page2 = createPage(null, null, true, getContentManager());
-    shareWidgetToAnotherPage(sharedDescendant, page2, getContentManager());
-    final var experiment = createExperiment(
-            widget.getDevice(), pageId, getRandomProductType(), experimentEnd, .5D, getContentManager());
+    final var page_2_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    DRAFT_STEPS.shareWidgetToAnotherPage(
+        sharedDescendant,
+        CREATED_PAGES.get(page_2_id),
+        getContentManager());
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
+        widget.getDevice(),
+        page_1_id,
+        getRandomProductType(),
+        getValidEndDate(),
+        .5D,
+        getContentManager());
     Response response;
     if (isDefaultOption) {
-      response = createOptionAssumingFail(
-              true, List.of(widget.getUid()), experiment.getUuid(), .5D, getContentManager());
+      response = OPTION_STEPS.createOptionAssumingFail(
+          true,
+          List.of(widget.getUid()),
+          experiment.getUuid(),
+          .5D,
+          getContentManager());
     } else {
-      response = createOptionAssumingFail(
-              false, List.of(widget.getUid()), experiment.getUuid(), .5D, getContentManager());
+      response = OPTION_STEPS.createOptionAssumingFail(
+          false,
+              List.of(widget.getUid()),
+          experiment.getUuid(),
+          .5D,
+          getContentManager());
     }
     assertThat(response.getStatusCode())
         .as("Проверка статус-кода")
-        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);;
+        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
     assertThat(response.getBody().asString())
         .as("Проверка сообщения")
         .contains("В эксперименте не могут участвовать виджеты, общие для нескольких страниц."
