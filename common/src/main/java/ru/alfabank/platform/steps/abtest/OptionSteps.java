@@ -54,9 +54,7 @@ public class OptionSteps extends ExperimentSteps {
             .body(option)
             .when().post()
             .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response;
   }
 
@@ -79,9 +77,7 @@ public class OptionSteps extends ExperimentSteps {
         .body(option)
         .when().post()
         .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     response.then().statusCode(SC_CREATED);
     return response.as(Option.class);
   }
@@ -108,9 +104,7 @@ public class OptionSteps extends ExperimentSteps {
             .body(modification)
             .when().patch()
             .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     assertThat(response.statusCode())
         .as("Проверка статус-кода")
         .isEqualTo(SC_OK);
@@ -139,9 +133,7 @@ public class OptionSteps extends ExperimentSteps {
             .body(modification)
             .when().patch()
             .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response;
   }
 
@@ -162,9 +154,7 @@ public class OptionSteps extends ExperimentSteps {
             .pathParam("optionUuid", option2beDeleted.getUuid())
             .when().delete()
             .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     assertThat(response.statusCode())
         .as("Проверка статус-кода")
         .isEqualTo(SC_NO_CONTENT);
@@ -188,9 +178,7 @@ public class OptionSteps extends ExperimentSteps {
             .pathParam("optionUuid", option2beDeleted.getUuid())
             .when().delete()
             .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response;
   }
 }

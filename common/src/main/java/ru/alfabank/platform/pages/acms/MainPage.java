@@ -56,13 +56,13 @@ public class MainPage extends BasePage {
   private WebElement copyRadio;
   @FindBy(css = "label:nth-child(3) > span:nth-child(2)")
   private WebElement asIsRadio;
-  private By widgetsTitleLSelector = By.cssSelector("span > span");
-  private By treeExpandButtonSelector = By.cssSelector("[aria-label = 'Expand']");
-  private By treeCollapseButtonSelector = By.cssSelector("[aria-label = 'Collapse']");
-  private By sharedMarkerSelector = By.cssSelector("i[class ^= 'anticon anticon-share-alt']");
-  private By deleteButtonSelector = By.cssSelector("button[type='button']:not([aria-label])");
-  private By copyButtonSelector = By.cssSelector("button [class $= 'copy']");
-  private By widgetSelector = By.cssSelector(".rst__rowTitle  > div");
+  private final By widgetsTitleLSelector = By.cssSelector("span > span");
+  private final By treeExpandButtonSelector = By.cssSelector("[aria-label = 'Expand']");
+  private final By treeCollapseButtonSelector = By.cssSelector("[aria-label = 'Collapse']");
+  private final By sharedMarkerSelector = By.cssSelector("i[class ^= 'anticon anticon-share-alt']");
+  private final By deleteButtonSelector = By.cssSelector("button[type='button']:not([aria-label])");
+  private final By copyButtonSelector = By.cssSelector("button [class $= 'copy']");
+  private final By widgetSelector = By.cssSelector(".rst__rowTitle  > div");
 
   /**
    * Open an accordingly named widget's sidebar.

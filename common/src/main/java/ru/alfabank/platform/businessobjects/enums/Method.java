@@ -6,7 +6,7 @@ public enum Method {
   CHANGE_LINKS("changeLinks"),
   DELETE("delete");
 
-  private String method;
+  private final String method;
 
   Method(String method) {
     this.method = method;

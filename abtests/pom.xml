@@ -136,7 +136,6 @@
                     <target>${maven.compiler.source}</target>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 

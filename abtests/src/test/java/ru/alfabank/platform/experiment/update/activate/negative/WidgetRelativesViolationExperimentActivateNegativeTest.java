@@ -5,17 +5,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
-import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Experiment;
 
-public class WidgetRelativesViolationTest extends BaseTest {
+public class WidgetRelativesViolationExperimentActivateNegativeTest extends BaseTest {
 
   @Test(description = "Тест создания дефлотного варианта с привязкой к виджету:"
       + "\n\t* enable=true"
@@ -30,78 +29,80 @@ public class WidgetRelativesViolationTest extends BaseTest {
       + "\n\t\t\t* enable=false"
       + "\n\t\t\t* experimentOptionName=forABtest"
       + "\n\t\t\t* defaultWidget=false")
-  public void defaultWidgetHasInvalidRelativesExperimentUpdateNegativeTest() {
-    final var start = getValidEndDatePlus10Seconds();
+  public void defaultWidgetHasInvalidRelativesExperimentActivateNegativeTest() {
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
-    final var widget_1 = DRAFT_STEPS.createWidget(
+    final var default_widget_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
-    final var widget1_1 = DRAFT_STEPS.createWidget(
+    final var default_widget_1_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
-        widget_1,
+        default_widget_1,
         desktop,
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
-    final var widget1_2 = DRAFT_STEPS.createWidget(
+    final var default_widget_1_2 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
-        widget_1,
+        default_widget_1,
         desktop,
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
-    final var widget2 = DRAFT_STEPS.createWidget(
+    final var abTest_widget_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
         null,
         desktop,
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
-    final var device = widget_1.getDevice();
     final var actualExperiment = EXPERIMENT_STEPS.createExperiment(
-        device,
+        desktop,
         page_id,
         getRandomProductType(),
-        getValidEndDate(),
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     OPTION_STEPS.createOption(
         true,
-        List.of(widget_1.getUid()),
+        List.of(default_widget_1.getUid()),
         actualExperiment.getUuid(),
         .5D,
         getContentManager());
     OPTION_STEPS.createOption(
         false,
-        List.of(widget2.getUid()),
+        List.of(abTest_widget_1.getUid()),
         actualExperiment.getUuid(),
         .5D,
         getContentManager());
     DRAFT_STEPS.changeWidgetABtestProps(
-        widget1_1,
+        default_widget_1_1,
         page_id,
         false,
         DEFAULT,
         true,
         getContentManager());
     DRAFT_STEPS.changeWidgetABtestProps(
-        widget1_2,
+        default_widget_1_2,
         page_id,
         false,
         FOR_AB_TEST,
@@ -111,31 +112,15 @@ public class WidgetRelativesViolationTest extends BaseTest {
     final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(
         actualExperiment,
         getContentManager());
-    assertThat(result.getStatusCode())
-        .as("Проверка статус-кода")
+    assertThat(result.getStatusCode()).as("Проверка статус-кода")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
-    assertThat(result.asString())
-        .as("Проверка сообщения об ошибке")
-        .contains("Для варианта по умолчанию ", widget1_1.getUid(), widget1_2.getUid(),
+    assertThat(result.asString()).as("Проверка сообщения об ошибке")
+        .contains("Для варианта по умолчанию ",
+            default_widget_1_1.getUid(), default_widget_1_2.getUid(),
             "' должны быть с дефолтным названием варианта, быть включенными и быть виджетами по "
                 + "умолчанию");
-    EXPERIMENT_STEPS.getExistingExperiment(
-        actualExperiment,
-        getContentManager())
-        .equals(new Experiment.Builder()
-            .setUuid(actualExperiment.getUuid())
-            .setCookieValue(actualExperiment.getCookieValue())
-            .setDescription(actualExperiment.getDescription())
-            .setPageId(actualExperiment.getPageId())
-            .setProductTypeKey(actualExperiment.getProductTypeKey())
-            .setEndDate(actualExperiment.getEndDate())
-            .setTrafficRate(actualExperiment.getTrafficRate())
-            .setDevice(actualExperiment.getDevice())
-            .setCreatedBy(getContentManager().getLogin())
-            .setStatus(DISABLED)
-            .setEnabled(false)
-            .setCreationDate(start)
-            .build());
+    EXPERIMENT_STEPS.getExistingExperiment(actualExperiment, getContentManager())
+        .equals(actualExperiment);
   }
 
   @Test(description = "Тест создания недефлотного варианта с привязкой к виджету:"
@@ -147,9 +132,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
       + "\n\t\t\t* enable=false"
       + "\n\t\t\t* experimentOptionName=forABtest"
       + "\n\t\t\t* defaultWidget=false")
-  public void nonDefaultWidgetHasInvalidAncestorExperimentUpdateNegativeTest() {
-    final var start = getValidEndDatePlus10Seconds();
-    final var experiment_end = getValidEndDate();
+  public void nonDefaultWidgetHasInvalidAncestorExperimentActivateNegativeTest() {
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
     final var widget_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
@@ -158,6 +141,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -168,6 +152,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -178,6 +163,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -188,6 +174,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -196,7 +183,7 @@ public class WidgetRelativesViolationTest extends BaseTest {
         device,
         page_id,
         getRandomProductType(),
-        experiment_end,
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     OPTION_STEPS.createOption(
@@ -222,30 +209,13 @@ public class WidgetRelativesViolationTest extends BaseTest {
     final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(
         actualExperiment,
         getContentManager());
-    assertThat(result.getStatusCode())
-        .as("Проверка статус-кода")
+    assertThat(result.getStatusCode()).as("Проверка статус-кода")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
-    assertThat(result.asString())
-        .as("Проверка сообщения об ошибке")
+    assertThat(result.asString()).as("Проверка сообщения об ошибке")
         .contains("Виджет '" + widget_2_1_1.getUid()
             + "' не должен иметь верхнеуровневых родителей с флагом 'forABtest'");
-    EXPERIMENT_STEPS.getExistingExperiment(
-        actualExperiment,
-        getContentManager())
-        .equals(new Experiment.Builder()
-            .setUuid(actualExperiment.getUuid())
-            .setCookieValue(actualExperiment.getCookieValue())
-            .setDescription(actualExperiment.getDescription())
-            .setPageId(actualExperiment.getPageId())
-            .setProductTypeKey(actualExperiment.getProductTypeKey())
-            .setEndDate(actualExperiment.getEndDate())
-            .setTrafficRate(actualExperiment.getTrafficRate())
-            .setDevice(actualExperiment.getDevice())
-            .setCreatedBy(getContentManager().getLogin())
-            .setStatus(DISABLED)
-            .setEnabled(false)
-            .setCreationDate(start)
-            .build());
+    EXPERIMENT_STEPS.getExistingExperiment(actualExperiment, getContentManager())
+        .equals(actualExperiment);
   }
 
   @Test(description = "Тест создания недефлотного варианта с привязкой к виджету:"
@@ -257,95 +227,75 @@ public class WidgetRelativesViolationTest extends BaseTest {
       + "\n\t\t\t* enable=false"
       + "\n\t\t\t* experimentOptionName=forABtest"
       + "\n\t\t\t* defaultWidget=false")
-  public void nonDefaultWidgetHasInvalidFatherExperimentUpdateNegativeTest() {
-    final var start = getValidEndDatePlus10Seconds();
-    final var experiment_end = getValidEndDate();
+  public void nonDefaultWidgetHasInvalidFatherExperimentActivateNegativeTest() {
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
-    final var widget_1 = DRAFT_STEPS.createWidget(
+    final var default_widget_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
-    final var widget_2 = DRAFT_STEPS.createWidget(
+    final var default_widget_2 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
-    final var widget_2_1 = DRAFT_STEPS.createWidget(
+    final var abTest_widget_2_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
-        widget_2,
+        default_widget_2,
         desktop,
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
-    final var device = widget_1.getDevice();
-    final var actualExperiment = EXPERIMENT_STEPS.createExperiment(
-        device,
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
+        desktop,
         page_id,
         getRandomProductType(),
-        experiment_end,
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     OPTION_STEPS.createOption(
         true,
-        List.of(widget_1.getUid()),
-        actualExperiment.getUuid(),
+        List.of(default_widget_1.getUid()),
+        experiment.getUuid(),
         .5D,
         getContentManager());
     OPTION_STEPS.createOption(
         false,
-        List.of(widget_2_1.getUid()),
-        actualExperiment.getUuid(),
+        List.of(abTest_widget_2_1.getUid()),
+        experiment.getUuid(),
         .5D,
         getContentManager());
     DRAFT_STEPS.changeWidgetABtestProps(
-        widget_2,
+        default_widget_2,
         page_id,
         false,
         FOR_AB_TEST,
         false,
         getContentManager());
     // TEST //
-    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(
-        actualExperiment,
-        getContentManager());
-    assertThat(result.getStatusCode())
-        .as("Проверка статус-кода")
+    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(experiment, getContentManager());
+    assertThat(result.getStatusCode()).as("Проверка статус-кода")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
-    assertThat(result.asString())
-        .as("Проверка сообщения об ошибке")
-        .contains("Виджет '" + widget_2_1.getUid()
+    assertThat(result.asString()).as("Проверка сообщения об ошибке")
+        .contains("Виджет '" + abTest_widget_2_1.getUid()
             + "' не должен иметь верхнеуровневых родителей с флагом 'forABtest'");
-    EXPERIMENT_STEPS.getExistingExperiment(
-        actualExperiment,
-        getContentManager())
-        .equals(new Experiment.Builder()
-            .setUuid(actualExperiment.getUuid())
-            .setCookieValue(actualExperiment.getCookieValue())
-            .setDescription(actualExperiment.getDescription())
-            .setPageId(actualExperiment.getPageId())
-            .setProductTypeKey(actualExperiment.getProductTypeKey())
-            .setEndDate(actualExperiment.getEndDate())
-            .setTrafficRate(actualExperiment.getTrafficRate())
-            .setDevice(actualExperiment.getDevice())
-            .setCreatedBy(getContentManager().getLogin())
-            .setStatus(DISABLED)
-            .setEnabled(false)
-            .setCreationDate(start)
-            .build());
+    EXPERIMENT_STEPS.getExistingExperiment(experiment, getContentManager()).equals(experiment);
   }
 
   @Test(description = "Тест создания недефлотного варианта с привязкой к виджету:"
@@ -357,112 +307,93 @@ public class WidgetRelativesViolationTest extends BaseTest {
       + "\n\t\t\t* enable=false"
       + "\n\t\t\t* experimentOptionName=forABtest"
       + "\n\t\t\t* defaultWidget=false")
-  public void nonDefaultWidgetHasInvalidChildrenExperimentUpdateNegativeTest() {
-    final var start = getValidEndDatePlus10Seconds();
-    final var experiment_end = getValidEndDate();
+  public void nonDefaultWidgetHasInvalidChildrenExperimentActivateNegativeTest() {
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
-    final var widget_1 = DRAFT_STEPS.createWidget(
+    final var desktop_widget_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
         null,
         desktop,
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
-    final var widget_2 = DRAFT_STEPS.createWidget(
+    final var abTest_widget_2 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
         null,
         desktop,
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
-    final var widget_2_1 = DRAFT_STEPS.createWidget(
+    final var abTest_widget_2_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
-        widget_2,
+        abTest_widget_2,
         desktop,
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
-    final var widget_2_2 = DRAFT_STEPS.createWidget(
+    final var abTest_widget_2_2 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
-        widget_2,
+        abTest_widget_2,
         desktop,
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
-    final var device = widget_1.getDevice();
-    final var actualExperiment = EXPERIMENT_STEPS.createExperiment(
-        device,
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
+        desktop,
         page_id,
         getRandomProductType(),
-        experiment_end,
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     OPTION_STEPS.createOption(
         true,
-        List.of(widget_1.getUid()),
-        actualExperiment.getUuid(),
+        List.of(desktop_widget_1.getUid()),
+        experiment.getUuid(),
         .5D,
         getContentManager());
     OPTION_STEPS.createOption(
         false,
-        List.of(widget_2.getUid()),
-        actualExperiment.getUuid(),
+        List.of(abTest_widget_2.getUid()),
+        experiment.getUuid(),
         .5D,
         getContentManager());
     DRAFT_STEPS.changeWidgetABtestProps(
-        widget_2_1,
+        abTest_widget_2_1,
         page_id,
         true,
         DEFAULT,
         true,
         getContentManager());
     DRAFT_STEPS.changeWidgetABtestProps(
-        widget_2_2,
+        abTest_widget_2_2,
         page_id,
         false,
         DEFAULT,
         true,
         getContentManager());
     // TEST //
-    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(
-        actualExperiment,
-        getContentManager());
-    assertThat(result.getStatusCode())
-        .as("Проверка статус-кода")
+    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(experiment, getContentManager());
+    assertThat(result.getStatusCode()).as("Проверка статус-кода")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
-    assertThat(result.asString())
-        .as("Проверка сообщения об ошибке")
-        .contains("Для варианта '", widget_2_1.getUid(), widget_2_2.getUid(),
+    assertThat(result.asString()).as("Проверка сообщения об ошибке")
+        .contains("Для варианта '", abTest_widget_2_1.getUid(), abTest_widget_2_2.getUid(),
             "' должны быть помечены как 'forABtest',"
                 + " быть выключенными и не должны быть виджетами по умолчанию");
-    EXPERIMENT_STEPS.getExistingExperiment(
-        actualExperiment,
-        getContentManager())
-        .equals(new Experiment.Builder()
-            .setUuid(actualExperiment.getUuid())
-            .setCookieValue(actualExperiment.getCookieValue())
-            .setDescription(actualExperiment.getDescription())
-            .setPageId(actualExperiment.getPageId())
-            .setProductTypeKey(actualExperiment.getProductTypeKey())
-            .setEndDate(actualExperiment.getEndDate())
-            .setTrafficRate(actualExperiment.getTrafficRate())
-            .setDevice(actualExperiment.getDevice())
-            .setCreatedBy(getContentManager().getLogin())
-            .setStatus(DISABLED)
-            .setEnabled(false)
-            .setCreationDate(start)
-            .build());
+    EXPERIMENT_STEPS.getExistingExperiment(experiment, getContentManager()).equals(experiment);
   }
 }

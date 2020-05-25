@@ -28,14 +28,12 @@ public class UpdateInactiveExperimentTest extends BaseTest {
   @BeforeMethod(description = "Создание неактивного эксперимента "
       + "для позитивного теста изменения неактивного эксперимента")
   public void beforeMethod() {
-    final var start = getValidEndDatePlus10Seconds();
-    final var end = getValidEndDate();
-    final var page_id = PAGES_STEPS.createPage(start, end, true, getContentManager());
+    final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
     experiment = EXPERIMENT_STEPS.createExperiment(
         mobile,
         page_id,
         getRandomProductType(),
-        end,
+        getValidExperimentEndDate(),
         .05,
         getContentManager());
   }
@@ -107,8 +105,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
       }
     }
     EXPERIMENT_STEPS
-        .modifyExperiment(experiment, changeSetBody, getContentManager())
-        .checkUpdatedExperiment(expected);
+        .modifyExperiment(experiment, changeSetBody, getContentManager()).equals(expected);
   }
 
   /**
@@ -119,14 +116,34 @@ public class UpdateInactiveExperimentTest extends BaseTest {
   @DataProvider(name = "Positive data provider")
   public Object[][] positiveDataProvider() {
     return new Object[][]{
-        {"Минимальная длина значения 'cookieValue'", randomAlphanumeric(1)},
-        {"Максимальная длина значения 'cookieValue'", randomAlphanumeric(255)},
-        {"Минимальная длина значения 'description'", randomAlphanumeric(1)},
-        {"Максимальная длина значения 'description'", randomAlphanumeric(1000)},
-        {"Изменение 'productTypeKey'", getRandomProductType()},
-        {"Минимальное значение 'trafficRate'", 0.01D},
-        {"Максимальное значение 'trafficRate'", 1.00D},
-        {"Изменение 'endDate'", getValidEndDatePlusWeek()}
+        {
+            "Минимальная длина значения 'cookieValue'",
+            randomAlphanumeric(1)},
+        {
+            "Максимальная длина значения 'cookieValue'",
+            randomAlphanumeric(255)},
+        {
+            "Минимальная длина значения 'description'",
+            randomAlphanumeric(1)},
+        {
+            "Максимальная длина значения 'description'",
+            randomAlphanumeric(1000)},
+        {
+            "Изменение 'productTypeKey'",
+            getRandomProductType()
+        },
+        {
+            "Минимальное значение 'trafficRate'",
+            0.01D
+        },
+        {
+            "Максимальное значение 'trafficRate'",
+            1.00D
+        },
+        {
+            "Изменение 'endDate'",
+            getValidExperimentEndDatePlusWeek()
+        }
     };
   }
 }

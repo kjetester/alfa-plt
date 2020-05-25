@@ -14,6 +14,7 @@ import io.reactivex.annotations.NonNull;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -21,39 +22,36 @@ import org.assertj.core.api.SoftAssertions;
 import org.jetbrains.annotations.NotNull;
 import ru.alfabank.platform.businessobjects.enums.CopyMethod;
 import ru.alfabank.platform.businessobjects.enums.Device;
+import ru.alfabank.platform.businessobjects.enums.Geo;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Widget implements Comparable<Widget> {
+public class Widget extends AbstractBusinessObject implements Comparable<Widget> {
 
   @JsonIgnore
   private static final Logger LOGGER = LogManager.getLogger(Widget.class);
 
-  private String uid;
-  private String name;
+  private final String uid;
+  private final String name;
   @JsonProperty("enable")
-  private Boolean isEnabled;
-  private String localization;
-  private Device device;
-  private String version;
-  private String experimentOptionName;
+  private final Boolean isEnabled;
+  private final String localization;
+  private final Device device;
+  private final String version;
+  private final String experimentOptionName;
   @JsonProperty("defaultWidget")
-  private Boolean isDefaultWidget;
-  private String dateFrom;
-  private String dateTo;
+  private final Boolean isDefaultWidget;
+  private final String dateFrom;
+  private final String dateTo;
   @JsonProperty("widgetGeo")
-  private List<String> geo;
-  private Integer orderNumber;
+  private final List<String> geo;
+  private final Integer orderNumber;
   private List<String> childUids;
-  private List<Property> properties;
+  private final List<Property> properties;
   @JsonProperty("reused")
-  private Boolean isReused;
+  private final Boolean isReused;
   @JsonProperty("children")
-  private List<Widget> childrenWidgetsList;
-  @JsonIgnore
-  private LocalDateTime localDateTimeFrom;
-  @JsonIgnore
-  private LocalDateTime localDateTimeTo;
+  private final List<Widget> childrenWidgetsList;
 
   /**
    * Class constructor.
@@ -67,12 +65,12 @@ public class Widget implements Comparable<Widget> {
     if (builder.dateFrom == null) {
       this.dateFrom = null;
     } else {
-      this.dateFrom = builder.dateFrom.toString();
+      this.dateFrom = builder.dateFrom;
     }
     if (builder.dateTo == null) {
       this.dateTo = null;
     } else {
-      this.dateTo = builder.dateTo.toString();
+      this.dateTo = builder.dateTo;
     }
     this.device = builder.device;
     this.version = builder.version;
@@ -85,7 +83,6 @@ public class Widget implements Comparable<Widget> {
     this.childUids = builder.childUids;
     this.properties = builder.properties;
     this.isReused = builder.isReused;
-    LOGGER.info(this.toString());
   }
 
   @JsonCreator
@@ -135,18 +132,8 @@ public class Widget implements Comparable<Widget> {
     return orderNumber;
   }
 
-  @JsonIgnore
-  public LocalDateTime getLocalDateTimeFrom() {
-    return localDateTimeFrom;
-  }
-
   public String getDateFrom() {
     return dateFrom;
-  }
-
-  @JsonIgnore
-  public LocalDateTime getLocalDateTimeTo() {
-    return localDateTimeTo;
   }
 
   public String getDateTo() {
@@ -197,25 +184,95 @@ public class Widget implements Comparable<Widget> {
     return isReused;
   }
 
-  @Override
-  @JsonIgnore
-  public String toString() {
-    return String.format("Widget{uid='%s', name='%s', isEnabled='%s', localization='%s',"
-            + " device='%s', version= '%s', dateFrom='%s', dateTo='%s', geo='%s',"
-            + " orderNumber='%s', childUids='%s', properties='%s', isReused='%s',}",
-        uid,
-        name,
-        isEnabled,
-        localization,
-        device,
-        version,
-        dateFrom,
-        dateTo,
-        geo,
-        orderNumber,
-        childUids,
-        properties,
-        isReused);
+  /**
+   * Compare widgets.
+   *
+   * @param widget widget
+   */
+  public void equals(@NonNull final Widget widget) {
+    logComparingObjects(LOGGER, this, widget);
+    final var softly = new SoftAssertions();
+    final var expectedPropertiesCount = this.getProperties().size();
+    final var expectedChildrenCount = this.getChildrenWidgetsList().size();
+    softly
+        .assertThat(widget.getUid())
+        .as("Проверка UID")
+        .isEqualTo(this.getUid());
+    softly
+        .assertThat(widget.getName())
+        .as("Проверка наименований")
+        .isEqualTo(this.getName());
+    softly
+        .assertThat(widget.getProperties().size())
+        .as("Проверка количества свойств")
+        .isEqualTo(expectedPropertiesCount);
+    softly
+        .assertThat(widget.getChildrenWidgetsList().size())
+        .as("Проверка количества дочерних виджетов")
+        .isEqualTo(expectedChildrenCount);
+    softly
+        .assertThat(widget.getOrderNumber())
+        .as("Проверка очередности")
+        .isEqualTo(this.getOrderNumber());
+    if (this.getDateFrom() == null) {
+      softly
+          .assertThat(widget.getDateFrom())
+          .as("Проверка даты начала действия")
+          .isNullOrEmpty();
+    } else {
+      softly
+          .assertThat(LocalDateTime.parse(widget.getDateFrom()))
+          .as("Проверка даты начала действия")
+          .isEqualTo(LocalDateTime.parse(this.getDateFrom()));
+    }
+    if (this.getDateTo() == null) {
+      softly
+          .assertThat(widget.getDateTo())
+          .as("Проверка даты окончания действия")
+          .isNullOrEmpty();
+    } else {
+      softly
+          .assertThat(LocalDateTime.parse(widget.getDateTo()))
+          .as("Проверка даты окончания действия")
+          .isEqualTo(LocalDateTime.parse(this.getDateTo()));
+    }
+    softly
+        .assertThat(widget.getDevice())
+        .as("Проверка девайса")
+        .isEqualTo(this.getDevice());
+    softly
+        .assertThat(widget.getVersion())
+        .as("Проверка версии")
+        .isEqualTo(this.getVersion());
+    softly
+        .assertThat(widget.getExperimentOptionName())
+        .as("Проверка наименования эксперимента")
+        .isEqualTo(this.getExperimentOptionName());
+    softly
+        .assertThat(widget.isDefaultWidget())
+        .as("Проверка признака использования по-умолчанию")
+        .isEqualTo(this.isDefaultWidget());
+    softly
+        .assertThat(widget.isEnabled())
+        .as("Проверка признака видимости")
+        .isEqualTo(this.isEnabled());
+    softly
+        .assertThat(widget.getLocalization())
+        .as("Проверка локали")
+        .isEqualTo(this.getLocalization());
+    softly
+        .assertThat(widget.getGeo())
+        .as("Проверка гео")
+        .isEqualTo(this.getGeo());
+    softly.assertThat(widget.isReused())
+        .as("Проверка признака переиспользования")
+        .isEqualTo(this.isReused());
+    softly.assertAll();
+    IntStream.range(0, expectedChildrenCount).forEach(i -> this.getChildrenWidgetsList().get(i)
+        .equals(widget.getChildrenWidgetsList().get(i)));
+    IntStream.range(0, expectedPropertiesCount).forEach(i -> this.getProperties().get(i)
+        .equals(widget.getProperties().get(i)));
+    logComparingResult(LOGGER, this.getUid());
   }
 
   /**
@@ -226,10 +283,7 @@ public class Widget implements Comparable<Widget> {
    */
   @JsonIgnore
   public void equals(@NonNull final Widget widget, final CopyMethod method) {
-    LOGGER.debug(String.format(
-        "Сравнение WIDGETS:\nACTUAL.\t\t%s\nEXPECTED.\t%s",
-        widget.toString(),
-        this.toString()));
+    logComparingObjects(LOGGER, this, widget);
     final var softly = new SoftAssertions();
     final var expectedPropertiesCount = this.getProperties().size();
     final var expectedChildrenCount = this.getChildrenWidgetsList().size();
@@ -311,6 +365,7 @@ public class Widget implements Comparable<Widget> {
         .equals(widget.getChildrenWidgetsList().get(i), method));
     IntStream.range(0, expectedPropertiesCount).forEach(i -> this.getProperties().get(i)
         .equals(widget.getProperties().get(i), method, this.isReused()));
+    logComparingResult(LOGGER, this.getUid());
   }
 
   @Override
@@ -393,8 +448,8 @@ public class Widget implements Comparable<Widget> {
       return this;
     }
 
-    public Builder setGeo(List<String> geo) {
-      this.geo = geo;
+    public Builder setGeo(List<Geo> geo) {
+      this.geo = geo.stream().map(Geo::getGeo).collect(Collectors.toList());
       return this;
     }
 
@@ -422,30 +477,25 @@ public class Widget implements Comparable<Widget> {
      * Reusing widget.
      *
      * @param widget widget
-     * @return this
+     * @return builder
      */
-    public Builder using(Widget widget) {
-      this.uid = widget.uid;
-      this.name = widget.name;
-      this.orderNumber = widget.orderNumber;
-      if (widget.dateFrom == null) {
-        this.dateFrom = null;
-      } else {
-        this.dateFrom = widget.dateFrom;
-      }
-      if (widget.dateTo == null) {
-        this.dateTo = null;
-      } else {
-        this.dateTo = widget.dateTo;
-      }
-      this.device = widget.device;
-      this.isEnabled = widget.isEnabled;
-      this.localization = widget.localization;
-      this.geo = widget.geo;
-      this.children = widget.childrenWidgetsList;
-      this.childUids = widget.childUids;
-      this.properties = widget.properties;
-      this.isReused = widget.isReused;
+    public Builder using(final Widget widget) {
+      this.uid = widget.getUid();
+      this.name = widget.getName();
+      this.orderNumber = widget.getOrderNumber();
+      this.dateFrom = widget.getDateFrom();
+      this.dateTo = widget.getDateTo();
+      this.device = widget.getDevice();
+      this.isEnabled = widget.isEnabled();
+      this.localization = widget.getLocalization();
+      this.version = widget.getVersion();
+      this.experimentOptionName = widget.getExperimentOptionName();
+      this.defaultWidget = widget.isDefaultWidget();
+      this.geo = widget.getGeo();
+      this.children = widget.getChildrenWidgetsList();
+      this.childUids = widget.getChildUids();
+      this.properties = widget.getProperties();
+      this.isReused = widget.isReused();
       return this;
     }
 

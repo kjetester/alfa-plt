@@ -3,12 +3,15 @@ package ru.alfabank.platform.steps.cs;
 import static io.restassured.RestAssured.given;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.describeBusinessObject;
 import static ru.alfabank.platform.businessobjects.enums.Entity.PAGE;
 import static ru.alfabank.platform.businessobjects.enums.Entity.WIDGET;
+import static ru.alfabank.platform.businessobjects.enums.Localization.RU;
 import static ru.alfabank.platform.businessobjects.enums.Method.CHANGE;
 import static ru.alfabank.platform.businessobjects.enums.Method.CHANGE_LINKS;
 import static ru.alfabank.platform.businessobjects.enums.Method.CREATE;
+import static ru.alfabank.platform.businessobjects.enums.Version.V_1_0_0;
 import static ru.alfabank.platform.helpers.UuidHelper.getNewUuid;
 
 import io.restassured.response.Response;
@@ -18,12 +21,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import ru.alfabank.platform.businessobjects.Page;
 import ru.alfabank.platform.businessobjects.Widget;
 import ru.alfabank.platform.businessobjects.draft.DataDraft;
 import ru.alfabank.platform.businessobjects.draft.WrapperDraft;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ExperimentOptionName;
+import ru.alfabank.platform.businessobjects.enums.Geo;
 import ru.alfabank.platform.steps.BaseSteps;
 import ru.alfabank.platform.users.AccessibleUser;
 
@@ -40,31 +45,35 @@ public class DraftSteps extends BaseSteps {
    * @param enabled              is enabled
    * @param experimentOptionName experiment option name
    * @param defaultWidget        is default widget
+   * @param geos                 geos
    * @param start                start date
    * @param end                  end date
    * @param user                 user
    * @return widget
    */
-  public Widget createWidget(final Page page,
+  public Widget createWidget(@NotNull final Page page,
                              final Widget parentWidget,
-                             final Device device,
-                             final Boolean enabled,
-                             final ExperimentOptionName experimentOptionName,
-                             final Boolean defaultWidget,
+                             @NotNull final Device device,
+                             @NotNull final Boolean enabled,
+                             @NotNull final ExperimentOptionName experimentOptionName,
+                             @NotNull final Boolean defaultWidget,
+                             @NotNull final List<Geo> geos,
                              final String start,
                              final String end,
-                             final AccessibleUser user) {
+                             @NotNull final AccessibleUser user) {
     final var widget = new Widget.Builder()
         .setUid(getNewUuid())
         .setName(randomAlphanumeric(10))
         .setDateFrom(start)
         .setDateTo(end)
         .setDevice(device)
-        .setLocalization("ru")
+        .setLocalization(RU.getLocalization())
         .isEnabled(enabled)
         .setChildren(new ArrayList<>())
         .setChildUids(new ArrayList<>())
-        .setVersion("v_1.0.0")
+        .setProperties(new ArrayList<>())
+        .setGeo(geos)
+        .setVersion(V_1_0_0.getVersion())
         .setExperimentOptionName(experimentOptionName.toString())
         .isDefaultWidget(defaultWidget)
         .build();
@@ -77,14 +86,14 @@ public class DraftSteps extends BaseSteps {
             .setVersion(widget.getVersion())
             .setExperimentOptionName(widget.getExperimentOptionName())
             .isDefaultWidget(widget.isDefaultWidget())
-            .setCityGroups(Collections.singletonList("ru"))
+            .setCityGroups(List.of("ru"))
             .setDateFrom(widget.getDateFrom())
             .setDateTo(widget.getDateTo())
             .build(),
         WIDGET.toString(),
         CREATE.toString(),
         widget.getUid());
-    WrapperDraft.OperationDraft widgetPlacementOperation;
+    WrapperDraft.OperationDraft widgetPlacementOperation = null;
     if (parentWidget == null) {
       final var widgetsList = page.getWidgetList()
           .stream()
@@ -110,25 +119,19 @@ public class DraftSteps extends BaseSteps {
           CHANGE_LINKS.toString(),
           parentWidget.getUid());
     }
-    var draft = new WrapperDraft(
-        List.of(
-            widgetCreationOperation,
-            widgetPlacementOperation),
+    final var draft = new WrapperDraft(
+        List.of(widgetCreationOperation, widgetPlacementOperation),
         widget.getDevice());
-    LOGGER.info(String.format("Выполняю запрос сохранения черновика\n%s",
-        describeBusinessObject(draft)));
-    var response =
+    LOGGER.info("Выполняю запрос сохранения черновика\n" + describeBusinessObject(draft));
+    final var response =
         given()
             .spec(getDraftSpec())
             .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("pageId", page.getId())
             .body(draft)
-            .when().put()
-            .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
-    response.then().statusCode(SC_OK);
+            .put();
+    describeResponse(LOGGER, response);
+    assertThat(response.getStatusCode()).isEqualTo(SC_OK);
     publishDraft(page.getId(), device, user);
     if (parentWidget == null) {
       CREATED_PAGES.get(page.getId()).getWidgetList().add(widget);
@@ -172,8 +175,7 @@ public class DraftSteps extends BaseSteps {
         CHANGE.toString(),
         changedWidget.getUid());
     var draft = new WrapperDraft(List.of(widgetChangingOperation), widget.getDevice());
-    LOGGER.info(String.format("Выполняю запрос сохранения черновика\n%s",
-        describeBusinessObject(draft)));
+    LOGGER.info("Выполняю запрос сохранения черновика\n" + describeBusinessObject(draft));
     var response =
         given()
             .spec(getDraftSpec())
@@ -182,10 +184,8 @@ public class DraftSteps extends BaseSteps {
             .body(draft)
             .when().put()
             .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
-    response.then().statusCode(SC_OK);
+    describeResponse(LOGGER, response);
+    assertThat(response.getStatusCode()).isEqualTo(SC_OK);
     publishDraft(pageId, widget.getDevice(), user);
   }
 
@@ -230,8 +230,7 @@ public class DraftSteps extends BaseSteps {
     var draft = new WrapperDraft(
         List.of(widgetChangingOperation),
         widget.getDevice());
-    LOGGER.info(String.format("Выполняю запрос сохранения черновика\n%s",
-        describeBusinessObject(draft)));
+    LOGGER.info("Выполняю запрос сохранения черновика\n" + describeBusinessObject(draft));
     var response =
         given()
             .spec(getDraftSpec())
@@ -240,10 +239,8 @@ public class DraftSteps extends BaseSteps {
             .body(draft)
             .when().put()
             .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
-    response.then().statusCode(SC_OK);
+    describeResponse(LOGGER, response);
+    assertThat(response.getStatusCode()).isEqualTo(SC_OK);
     publishDraft(pageId, widget.getDevice(), user);
   }
 
@@ -266,10 +263,8 @@ public class DraftSteps extends BaseSteps {
             .queryParams("device", device)
             .when().post()
             .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
-    response.then().statusCode(SC_OK);
+    describeResponse(LOGGER, response);
+    assertThat(response.getStatusCode()).isEqualTo(SC_OK);
   }
 
   /**
@@ -298,8 +293,7 @@ public class DraftSteps extends BaseSteps {
     var draft = new WrapperDraft(
         List.of(widgetPlacementOperation),
         widget.getDevice());
-    LOGGER.info(String.format("Выполняю запрос сохранения черновика шаринга\n%s",
-        describeBusinessObject(draft)));
+    LOGGER.info("Выполняю запрос сохранения черновика шаринга\n" + describeBusinessObject(draft));
     response =
         given()
             .spec(getDraftSpec())
@@ -308,10 +302,8 @@ public class DraftSteps extends BaseSteps {
             .body(draft)
             .when().put()
             .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
-    response.then().statusCode(SC_OK);
+    describeResponse(LOGGER, response);
+    assertThat(response.getStatusCode()).isEqualTo(SC_OK);
     publishDraft(page.getId(), widget.getDevice(), user);
     CREATED_PAGES.get(page.getId()).getWidgetList().add(widget);
   }

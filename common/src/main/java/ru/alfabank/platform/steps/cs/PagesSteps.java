@@ -7,9 +7,8 @@ import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.descri
 import static ru.alfabank.platform.helpers.UuidHelper.getShortRandUuid;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
-import io.restassured.response.Response;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import ru.alfabank.platform.businessobjects.Page;
@@ -89,8 +88,7 @@ public class PagesSteps extends BaseSteps {
    */
   private Integer createPage(Page page,
                              final AccessibleUser user) {
-    LOGGER.info(String.format("Выполняю запрос создания страницы\n%s",
-        describeBusinessObject(page)));
+    LOGGER.info("Выполняю запрос создания страницы\n" + describeBusinessObject(page));
     var response =
         given()
             .spec(getPageSpec())
@@ -98,9 +96,7 @@ public class PagesSteps extends BaseSteps {
             .body(page)
             .when().post()
             .then().extract().response();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     response.then().statusCode(SC_OK);
     page = new Page.Builder()
         .using(page)
@@ -124,19 +120,16 @@ public class PagesSteps extends BaseSteps {
     LOGGER.info(String.format(
         "Запрос страницы '%s' в '/metaInfoContentPageController'",
         pageId));
-    Response response =
+    final var response =
         given()
             .spec(getMetaInfoContentPageSpec())
             .auth().oauth2(user.getJwt().getAccessToken())
             .queryParam("device", device)
             .queryParam("pageId", pageId)
             .get();
-    assertThat(response.statusCode()).isEqualTo(SC_OK);
-    LOGGER.info(String.format(
-        "Получен ответ:\n%s\n%s,",
-        response.getStatusLine(),
-        response.prettyPrint()));
-    return Arrays.asList(response.as(Widget[].class));
+    assertThat(response.getStatusCode()).isEqualTo(SC_OK);
+    describeResponse(LOGGER, response);
+    return List.of(response.as(Widget[].class));
   }
 
   /**
@@ -146,7 +139,8 @@ public class PagesSteps extends BaseSteps {
     final var pagesCount = CREATED_PAGES.size();
     LOGGER.info(String.format("Страниц к удалению: %d", pagesCount));
     if (pagesCount > 0) {
-      CREATED_PAGES.entrySet().parallelStream().forEach(entry -> {
+      ConcurrentHashMap<Integer, Page> createdPagesMap = new ConcurrentHashMap<>(CREATED_PAGES);
+      createdPagesMap.entrySet().parallelStream().forEach(entry -> {
         LOGGER.info(String.format("Начинаю процесс удаления страницы '%s'",
             entry.getValue().getUri()));
         final var response = given().spec(getPageIdSpec())
@@ -155,6 +149,7 @@ public class PagesSteps extends BaseSteps {
             .when().delete();
         if (response.getStatusCode() == SC_OK) {
           LOGGER.info(String.format("Страница '%s' удалена", entry.getValue().getUri()));
+          createdPagesMap.remove(entry.getKey());
         } else {
           LOGGER.warn(String.format(
               "Не удалось удалить страницу '%s'\n%s",

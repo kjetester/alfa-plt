@@ -28,13 +28,14 @@ public class PropertyAndPropertyValuePage extends BasePage {
   private WebElement newPropAddSubmitButton;
   @FindBy(xpath = "//*[@class = 'ant-btn ant-btn-default']")
   private WebElement addPropertyValueButton;
-  private By propertyValuesSelector = By.cssSelector("[data-test-type = 'value']");
-  private By propertyValueDeleteButtonSelector = By.cssSelector("button[mode = 'button']");
-  private By propertyValueGeoInputSelector = By.cssSelector(".ant-select-selection__rendered");
-  private By propertyValueSelectedGeoGroups = By.cssSelector("li[title]");
-  private By propertyValueInputSelector = By.cssSelector("div[class = 'view-line']");
-  private By propertyValueSpansSelector = By.cssSelector("span > span");
-  private String propertySelectorXpath = "//span[text() = '%s']/../..";
+  private final By propertyValuesSelector = By.cssSelector("[data-test-type = 'value']");
+  private final By propertyValueDeleteButtonSelector = By.cssSelector("button[mode = 'button']");
+  private final By propertyValueGeoInputSelector =
+      By.cssSelector(".ant-select-selection__rendered");
+  private final By propertyValueSelectedGeoGroups = By.cssSelector("li[title]");
+  private final By propertyValueInputSelector = By.cssSelector("div[class = 'view-line']");
+  private final By propertyValueSpansSelector = By.cssSelector("span > span");
+  private final String propertySelectorXpath = "//span[text() = '%s']/../..";
 
   /**
    * Modifying property value.

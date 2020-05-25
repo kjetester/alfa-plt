@@ -12,7 +12,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.jetbrains.annotations.NotNull;
 import ru.alfabank.platform.businessobjects.enums.CopyMethod;
 
-public class Property implements Comparable<Property> {
+public class Property extends AbstractBusinessObject implements Comparable<Property> {
 
   @JsonIgnore
   private static final Logger LOGGER = LogManager.getLogger(Property.class);
@@ -75,59 +75,75 @@ public class Property implements Comparable<Property> {
     this.values = values;
   }
 
-  @Override
-  @JsonIgnore
-  public String toString() {
-    return String.format(
-        "Property{uid='%s', name='%s', device='%s', values='%s',}",
-        uid,
-        name,
-        device,
-        values);
+  /**
+   * Compare property.
+   *
+   * @param expected comparing property
+   */
+  public void equals(@NotNull final Property expected) {
+    logComparingObjects(LOGGER, this, expected);
+    final var softly = new SoftAssertions();
+    final var expectedValuesCount = this.getValues().size();
+    softly
+        .assertThat(expected.getValues().size())
+        .as("Проверка количества значений")
+        .isEqualTo(expectedValuesCount);
+    softly
+        .assertThat(expected.getName())
+        .as("Проверка наименований")
+        .isEqualTo(this.getName());
+    softly
+        .assertThat(expected.getDevice())
+        .as("Проверка девайса")
+        .isEqualTo(this.getDevice());
+    softly
+        .assertThat(expected.getUid())
+        .as("Проверка UID при 'SHARE' или 'CURRENT' и признаке переиспользования")
+        .isEqualTo(this.getUid());
+    softly.assertAll();
+    IntStream.range(0, expectedValuesCount).forEach(i -> values.get(i)
+        .equals(expected.getValues().get(i)));
+    logComparingResult(LOGGER, this.getUid());
   }
 
   /**
    * Compare property.
    *
-   * @param property comparing property
+   * @param expected comparing property
    * @param method   copying method
    */
-  public void equals(
-      @NotNull final Property property,
-      final CopyMethod method,
-      final boolean isReused) {
-    LOGGER.debug(String.format(
-        "Сравнение PROPERTIES:\nACTUAL.\t\t%s\nEXPECTED.\t%s",
-        property.toString(),
-        this.toString()));
+  public void equals(@NotNull final Property expected,
+                     @NotNull final CopyMethod method,
+                     final boolean isReused) {
+    logComparingObjects(LOGGER, this, expected);
     final var softly = new SoftAssertions();
     final var expectedValuesCount = this.getValues().size();
     softly
-        .assertThat(property.getValues().size())
+        .assertThat(expected.getValues().size())
         .as("Проверка количества значений")
         .isEqualTo(expectedValuesCount);
     softly
-        .assertThat(property.getName())
+        .assertThat(expected.getName())
         .as("Проверка наименований")
         .isEqualTo(this.getName());
     softly
-        .assertThat(property.getDevice())
+        .assertThat(expected.getDevice())
         .as("Проверка девайса")
         .isEqualTo(this.getDevice());
     if (method.equals(CopyMethod.SHARE) || (method.equals(CopyMethod.CURRENT) && isReused)) {
       softly
-          .assertThat(property.getUid())
+          .assertThat(expected.getUid())
           .as("Проверка UID при 'SHARE' или 'CURRENT' и признаке переиспользования")
           .isEqualTo(this.getUid());
     } else {
       softly
-          .assertThat(property.getUid())
+          .assertThat(expected.getUid())
           .as("Проверка UID при 'COPY'")
           .isNotEqualTo(this.getUid());
     }
     softly.assertAll();
     IntStream.range(0, expectedValuesCount).forEach(i -> values.get(i)
-        .equals(property.getValues().get(i), method, isReused));
+        .equals(expected.getValues().get(i), method, isReused));
   }
 
   @Override

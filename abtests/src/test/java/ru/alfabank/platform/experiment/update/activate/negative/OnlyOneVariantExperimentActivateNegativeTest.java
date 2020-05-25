@@ -1,4 +1,4 @@
-package ru.alfabank.platform.option.create.negative;
+package ru.alfabank.platform.experiment.update.activate.negative;
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,14 +11,16 @@ import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.option.OptionBaseTest;
+import ru.alfabank.platform.BaseTest;
 
-public class DefaultOptionLimitViolationTest extends OptionBaseTest {
 
-  @Test(description = "Тест создания более одного дефолтного варианта одного эксперимента")
-  public void defaultOptionLimitViolationNegativeTest() {
+public class OnlyOneVariantExperimentActivateNegativeTest extends BaseTest {
+
+  @Test(description = "Тест активации эксперимента с негативным условием:"
+      + "\n\tЕсть только 1 вариант")
+  public void onlyOneVariantExperimentActivateNegativeTest() {
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
-    final var widget1 = DRAFT_STEPS.createWidget(
+    final var widget = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
         null,
         desktop,
@@ -29,20 +31,8 @@ public class DefaultOptionLimitViolationTest extends OptionBaseTest {
         null,
         null,
         getContentManager());
-    final var widget2 = DRAFT_STEPS.createWidget(
-        CREATED_PAGES.get(page_id),
-        null,
-        desktop,
-        true,
-        DEFAULT,
-        true,
-        List.of(RU),
-        null,
-        null,
-        getContentManager());
-    final var device = widget1.getDevice();
     final var experiment = EXPERIMENT_STEPS.createExperiment(
-        device,
+        desktop,
         page_id,
         getRandomProductType(),
         getValidExperimentEndDate(),
@@ -50,22 +40,18 @@ public class DefaultOptionLimitViolationTest extends OptionBaseTest {
         getContentManager());
     OPTION_STEPS.createOption(
         true,
-        List.of(widget1.getUid()),
+        List.of(widget.getUid()),
         experiment.getUuid(),
         .5D,
         getContentManager());
-    final var result = OPTION_STEPS.createOptionAssumingFail(
-        true,
-        List.of(widget2.getUid()),
-        experiment.getUuid(),
-        .5D,
+    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(experiment,
         getContentManager());
-    assertThat(result.getStatusCode())
-        .as("Проверка статус-кода")
+    assertThat(result.getStatusCode()).as("Проверка статус-кода")
         .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
-    assertThat(result.asString())
-        .as("Проверка сообщения об ошибке")
-        .contains("Для эксперимента '" + experiment.getUuid()
-            + "' уже существует дефолтный вариант");
+    assertThat(result.asString()).as("Проверка сообщения об ошибке")
+        .containsIgnoringCase("У эксперимента '"
+            + experiment.getUuid() + "' должно быть минимум 2 вариаций");
+    EXPERIMENT_STEPS.getExistingExperiment(experiment, getContentManager()).equals(experiment);
   }
+
 }

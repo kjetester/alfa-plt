@@ -4,10 +4,14 @@ public enum Localization {
 
   RU("RU");
 
-  private String localization;
+  private final String localization;
 
   Localization(String localization) {
     this.localization = localization;
+  }
+
+  public String getLocalization() {
+    return localization;
   }
 
   @Override

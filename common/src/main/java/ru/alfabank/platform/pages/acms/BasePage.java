@@ -42,8 +42,8 @@ public class BasePage {
   private WebElement modalWindowSubmitButton;
   @FindBy(xpath = "//i[@aria-label=\"icon: setting\"]/..")
   protected WebElement widgetSettings;
-  private By deleteValueButtonSelector = By.cssSelector("[aria-label = 'close']");
-  private By errorIconSelector = By.cssSelector("[class $= 'icon-error']");
+  private final By deleteValueButtonSelector = By.cssSelector("[aria-label = 'close']");
+  private final By errorIconSelector = By.cssSelector("[class $= 'icon-error']");
 
   /**
    * Open acms page.

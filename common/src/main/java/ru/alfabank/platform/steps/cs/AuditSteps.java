@@ -12,7 +12,7 @@ import ru.alfabank.platform.users.AccessibleUser;
 
 public class AuditSteps extends BaseSteps {
 
-  private static final Logger LOGGER = LogManager.getLogger(AuditSteps.class);
+  private static final Logger LOGGER = LogManager.getLogger(PagesSteps.class);
 
   /**
    * Get the list of unfiltered transactions.
@@ -25,9 +25,7 @@ public class AuditSteps extends BaseSteps {
         .spec(getAuditTransactionsSpec())
         .auth().oauth2(user.getJwt().getAccessToken())
         .get();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response;
   }
 
@@ -43,9 +41,7 @@ public class AuditSteps extends BaseSteps {
         .pathParam("transactionUid", getFirstTransactionId())
         .auth().oauth2(user.getJwt().getAccessToken())
         .post();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response;
   }
 
@@ -61,9 +57,7 @@ public class AuditSteps extends BaseSteps {
         .pathParam("uid", getFirstTransactionId())
         .auth().oauth2(user.getJwt().getAccessToken())
         .get();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response;
   }
 

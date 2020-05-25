@@ -18,14 +18,14 @@ import ru.alfabank.platform.businessobjects.enums.CopyMethod;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ContentPageControllerResponse {
+public class ContentPageControllerResponse extends AbstractBusinessObject {
 
   private static final Logger LOGGER =
       LogManager.getLogger(ContentPageControllerResponse.class);
 
-  private String title;
-  private String description;
-  private List<Widget> widgets;
+  private final String title;
+  private final String description;
+  private final List<Widget> widgets;
 
   @JsonCreator
   private ContentPageControllerResponse(
@@ -51,12 +51,12 @@ public class ContentPageControllerResponse {
 
   public static class Widget {
 
-    private String uid;
-    private String name;
-    private String version;
+    private final String uid;
+    private final String name;
+    private final String version;
     @JsonRawValue
-    private Map<String, JsonNode> properties;
-    private List<Widget> childrenWidgetsList;
+    private final Map<String, JsonNode> properties;
+    private final List<Widget> childrenWidgetsList;
 
     @JsonCreator
     private Widget(
@@ -90,13 +90,6 @@ public class ContentPageControllerResponse {
 
     private List<Widget> getChildrenWidgetsList() {
       return childrenWidgetsList;
-    }
-
-    @Override
-    @JsonIgnore
-    public String toString() {
-      return String.format("Widget{uid='%s', name='%s', version='%s', properties='%s'}",
-          uid, name, version, properties);
     }
 
     /**

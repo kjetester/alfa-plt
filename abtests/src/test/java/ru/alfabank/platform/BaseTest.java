@@ -1,9 +1,11 @@
 package ru.alfabank.platform;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static ru.alfabank.platform.helpers.KeycloakHelper.logoutAllUsers;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
 import ru.alfabank.platform.steps.abtest.ExperimentSteps;
@@ -39,43 +41,33 @@ public class BaseTest {
     return Instant.now();
   }
 
-  protected String getInvalidEndDate() {
+  protected String getValidExperimentEndDate() {
     return getCurrentDateTime()
-        .plus(1, ChronoUnit.DAYS)
-        .minus(1, ChronoUnit.MINUTES)
+        .plus(1, DAYS)
+        .plus(3, MINUTES)
         .toString();
   }
 
-  protected String getValidEndDate() {
+  protected String getValidExperimentEndDatePlusWeek() {
     return getCurrentDateTime()
-        .plus(1, ChronoUnit.DAYS)
-        .plus(2, ChronoUnit.MINUTES)
+        .plus(7, DAYS)
         .toString();
   }
 
-  protected Instant getDeadLine() {
+  protected String getInvalidExperimentEndDate() {
     return getCurrentDateTime()
-        .plus(1, ChronoUnit.DAYS)
-        .plus(2, ChronoUnit.MINUTES)
-        .minus(21, ChronoUnit.HOURS);
-  }
-
-  protected String getValidEndDatePlus10Minutes() {
-    return getCurrentDateTime()
-        .plus(1, ChronoUnit.DAYS)
-        .plus(10, ChronoUnit.MINUTES)
+        .plus(1, DAYS)
+        .minus(1, MINUTES)
         .toString();
   }
 
-  protected String getValidEndDatePlusWeek() {
-    return getCurrentDateTime()
-        .plus(7, ChronoUnit.DAYS)
-        .toString();
+  protected String getValidWidgetDateFrom() {
+    return getCurrentDateTime().plus(3, HOURS).toString()
+        .replaceAll("\\d{3}Z", "");
   }
 
-  protected String getValidEndDatePlus10Seconds() {
-    return getCurrentDateTime()
-        .plusSeconds(10)
-        .toString();
+  protected String getValidWidgetDateTo() {
+    return getCurrentDateTime().plus(27, HOURS).plus(15, MINUTES).toString()
+        .replaceAll("\\d{3}Z", "");
   }
 }

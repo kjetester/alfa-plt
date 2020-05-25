@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -37,6 +38,7 @@ public class DefaultWidgetHasInvalidRelativesTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -47,6 +49,7 @@ public class DefaultWidgetHasInvalidRelativesTest extends OptionBaseTest {
         false,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -57,6 +60,7 @@ public class DefaultWidgetHasInvalidRelativesTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -65,7 +69,7 @@ public class DefaultWidgetHasInvalidRelativesTest extends OptionBaseTest {
         device,
         page_id,
         getRandomProductType(),
-        getValidEndDate(),
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     final var result = OPTION_STEPS.createOptionAssumingFail(

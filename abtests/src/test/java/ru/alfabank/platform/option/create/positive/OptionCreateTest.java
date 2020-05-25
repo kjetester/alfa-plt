@@ -3,6 +3,7 @@ package ru.alfabank.platform.option.create.positive;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -18,7 +19,7 @@ public class OptionCreateTest extends OptionBaseTest {
 
   @Test(description = "Позитивный тест создания вариантов", dataProvider = "dataProvider")
   public void optionCreatePositiveTest(final Boolean isDefaultNotAssignedWidget) {
-    final var experimentEnd = getValidEndDatePlusWeek();
+    final var experimentEnd = getValidExperimentEndDatePlusWeek();
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
     Widget widget;
     if (isDefaultNotAssignedWidget) {
@@ -29,6 +30,7 @@ public class OptionCreateTest extends OptionBaseTest {
           false,
           FOR_AB_TEST,
           false,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -40,6 +42,7 @@ public class OptionCreateTest extends OptionBaseTest {
           true,
           DEFAULT,
           true,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -50,6 +53,7 @@ public class OptionCreateTest extends OptionBaseTest {
           false,
           FOR_AB_TEST,
           false,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -60,6 +64,7 @@ public class OptionCreateTest extends OptionBaseTest {
           true,
           DEFAULT,
           true,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -70,6 +75,7 @@ public class OptionCreateTest extends OptionBaseTest {
           true,
           DEFAULT,
           true,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -80,6 +86,7 @@ public class OptionCreateTest extends OptionBaseTest {
           true,
           DEFAULT,
           true,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -91,6 +98,7 @@ public class OptionCreateTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -101,6 +109,7 @@ public class OptionCreateTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -111,6 +120,7 @@ public class OptionCreateTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -121,6 +131,7 @@ public class OptionCreateTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -129,7 +140,7 @@ public class OptionCreateTest extends OptionBaseTest {
         device,
         page_id,
         getRandomProductType(),
-        getValidEndDate(),
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     Option defaultOption;

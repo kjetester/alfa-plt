@@ -1,5 +1,6 @@
-package ru.alfabank.platform.experiment.delete.negative;
+package ru.alfabank.platform.experiment.update.activate.negative;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
@@ -10,29 +11,18 @@ import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomPr
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
+import java.time.Instant;
 import java.util.List;
-import org.testng.annotations.BeforeMethod;
+import java.util.concurrent.TimeUnit;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Experiment;
 
-public class ExperimentDeletionTest extends BaseTest {
+public class ExpiredExperimentEndDateTimeExperimentActivateNegativeTest extends BaseTest {
 
-  private Experiment experiment;
-  private Experiment expectedExperiment;
-
-  /**
-   * Before method.
-   */
-  @BeforeMethod(description = "Выполнение предусловий:\n"
-      + "\t1. Создание страницы"
-      + "\t2. Создание корневого виджета по-умолчанию"
-      + "\t3. Создание корневого виджета для АБ-теста"
-      + "\t4. Создание эксперимента"
-      + "\t5. Создание варианта по-умолчанию"
-      + "\t6. Создание варианта АБ-теста"
-      + "\t7. Запуск эксперимента")
-  public void beforeMethod() {
+  @Test(description = "Тест активации эксперимента с негативным условием:"
+      + "\n\tДата окончания эксперимента менее, чем +1 день")
+  public void expiredExperimentEndDateTimeExperimentActivateNegativeTest()
+      throws InterruptedException {
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
     final var default_widget = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
@@ -56,11 +46,11 @@ public class ExperimentDeletionTest extends BaseTest {
         null,
         null,
         getContentManager());
-    experiment = EXPERIMENT_STEPS.createExperiment(
+    final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
         page_id,
         getRandomProductType(),
-        getValidExperimentEndDatePlusWeek(),
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     OPTION_STEPS.createOption(
@@ -75,15 +65,15 @@ public class ExperimentDeletionTest extends BaseTest {
         experiment.getUuid(),
         .5D,
         getContentManager());
-    expectedExperiment =
-        EXPERIMENT_STEPS.runExperimentAssumingSuccess(experiment, getContentManager());
-  }
-
-  @Test(description = "Негативный тест удаления эксперимента со статусом 'RUNNING'")
-  public void runningExperimentDeletionNegativeTest() {
-    assertThat(EXPERIMENT_STEPS.deleteExperiment(experiment, getContentManager()).getStatusCode())
-        .as("Проверка статус-кода").isGreaterThanOrEqualTo(SC_BAD_REQUEST);
-    EXPERIMENT_STEPS.getExistingExperiment(experiment, getContentManager())
-        .equals(expectedExperiment);
+    while (Instant.now().isBefore(Instant.parse(experiment.getEndDate()).minus(1, DAYS))) {
+      TimeUnit.SECONDS.sleep(10);
+    }
+    final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(experiment, getContentManager());
+    assertThat(result.getStatusCode()).as("Проверка статус-кода")
+        .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+    assertThat(result.asString()).as("Проверка сообщения об ошибке")
+        .containsIgnoringCase("Минимально допустимая продолжительность эксперимента "
+            + experiment.getUuid() + " составляет: 1 день");
+    EXPERIMENT_STEPS.getExistingExperiment(experiment, getContentManager()).equals(experiment);
   }
 }

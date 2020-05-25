@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -32,7 +33,7 @@ public class OptionDeleteTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
-    final var experimentEnd = getValidEndDatePlusWeek();
+    final var experimentEnd = getValidExperimentEndDatePlusWeek();
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
     defaultWidget = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
@@ -41,6 +42,7 @@ public class OptionDeleteTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -51,6 +53,7 @@ public class OptionDeleteTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -58,7 +61,7 @@ public class OptionDeleteTest extends OptionBaseTest {
         defaultWidget.getDevice(),
         page_id,
         getRandomProductType(),
-        getValidEndDate(),
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
   }

@@ -10,18 +10,18 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public final class Body {
 
-  private Object businessUid;
-  private Object clientDate;
-  private Object recipient;
-  private Object referer;
-  private String status;
-  private String pageUri;
-  private String userAgent;
-  private String ip;
+  private final Object businessUid;
+  private final Object clientDate;
+  private final Object recipient;
+  private final Object referer;
+  private final String status;
+  private final String pageUri;
+  private final String userAgent;
+  private final String ip;
   private final String serverTime;
-  private Object feedBackData;
-  private Object clientData;
-  private Object data;
+  private final Object feedBackData;
+  private final Object clientData;
+  private final Object data;
 
   /**
    * Class constructor.
@@ -153,8 +153,8 @@ public final class Body {
   @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class FeedBackData {
 
-    private String statusCode;
-    private String message;
+    private final String statusCode;
+    private final String message;
 
     @JsonCreator
     public FeedBackData(final FeedBackDataBuilder builder) {
@@ -194,8 +194,8 @@ public final class Body {
 
   @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class ClientData {
-    private String platformId;
-    private String bannerId;
+    private final String platformId;
+    private final String bannerId;
 
     @JsonCreator
     public ClientData(final ClientDataBuilder builder) {
@@ -234,20 +234,20 @@ public final class Body {
 
   @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public static class Data {
-    private String product;
-    private String productType;
-    private String lastName;
-    private String firstName;
-    private String middleName;
-    private String gender;
-    private String phone;
-    private String email;
-    private String region;
-    private String lendingAmount;
-    private String creditTerm;
-    private String cardID;
-    private String packetID;
-    private String prefilContractId;
+    private final String product;
+    private final String productType;
+    private final String lastName;
+    private final String firstName;
+    private final String middleName;
+    private final String gender;
+    private final String phone;
+    private final String email;
+    private final String region;
+    private final String lendingAmount;
+    private final String creditTerm;
+    private final String cardID;
+    private final String packetID;
+    private final String prefilContractId;
 
     /**
      * Class constructor.

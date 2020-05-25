@@ -5,6 +5,7 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -13,6 +14,7 @@ import com.epam.reportportal.annotations.ParameterKey;
 import io.restassured.response.Response;
 import java.util.List;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
@@ -21,10 +23,11 @@ import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Option;
 import ru.alfabank.platform.businessobjects.Widget;
-import ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionDeleteTest extends OptionBaseTest {
+
+  private static final Logger LOGGER = LogManager.getLogger(OptionDeleteTest.class);
 
   private Widget defaultWidget;
   private Widget abTestWidget;
@@ -45,6 +48,7 @@ public class OptionDeleteTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -55,6 +59,7 @@ public class OptionDeleteTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -62,7 +67,7 @@ public class OptionDeleteTest extends OptionBaseTest {
         defaultWidget.getDevice(),
         page_id,
         getRandomProductType(),
-        getValidEndDatePlusWeek(),
+        getValidExperimentEndDatePlusWeek(),
         .5D,
         getContentManager());
   }
@@ -169,8 +174,7 @@ public class OptionDeleteTest extends OptionBaseTest {
         break;
       }
       case 3: {
-        LogManager.getLogger(InvolvementsTest.class)
-            .warn("Manual Testing Needed.");
+        LOGGER.warn("Manual Testing Needed");
         throw new SkipException("Manual Testing Needed");
       }
       default: {

@@ -2,6 +2,7 @@ package ru.alfabank.platform.rolemodel;
 
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.CC;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.COM;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.DC;
@@ -49,7 +50,7 @@ public class PositiveRoleModelTest extends OptionBaseTest {
   private static final CommonUser COMMON_USER = getCommonUser();
   private static final UnclaimedUser UNCLAIMED_USER = getUnclaimedUser();
 
-  private final String experimentEndDate = getValidEndDatePlusWeek();
+  private final String experimentEndDate = getValidExperimentEndDatePlusWeek();
 
   @Test(description = "Позитивный тест создания экспермента",
       dataProvider = "positiveDataProvider")
@@ -148,6 +149,7 @@ public class PositiveRoleModelTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -191,6 +193,7 @@ public class PositiveRoleModelTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());

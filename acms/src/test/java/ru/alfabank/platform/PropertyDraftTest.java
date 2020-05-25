@@ -14,8 +14,8 @@ import ru.alfabank.platform.utils.TestFailureListener;
 @Listeners({TestFailureListener.class})
 public class PropertyDraftTest extends BaseTest {
 
-  private String widgetName = "MetaTitle";
-  private String propName = "newPropName";
+  private final String widgetName = "MetaTitle";
+  private final String propName = "newPropName";
 
   /**
    * Opening acms.

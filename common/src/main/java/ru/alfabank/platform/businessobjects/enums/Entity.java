@@ -7,7 +7,7 @@ public enum Entity {
   PROPERTY("property"),
   PROPERTY_VALUE("propertyValue");
 
-  private String entity;
+  private final String entity;
 
   Entity(String entity) {
     this.entity = entity;

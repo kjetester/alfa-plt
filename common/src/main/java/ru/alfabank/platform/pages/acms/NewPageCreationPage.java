@@ -37,7 +37,7 @@ public class NewPageCreationPage extends BasePage {
   private WebElement teamsInput;
   @FindBy(css = ".ant-select-selection-item")
   private List<WebElement> selectedTeams;
-  private By calClearButton = By.xpath("..//*[@aria-label = 'close-circle']");
+  private final By calClearButton = By.xpath("..//*[@aria-label = 'close-circle']");
 
   /**
    * Filling and submitting the creation new Page form.

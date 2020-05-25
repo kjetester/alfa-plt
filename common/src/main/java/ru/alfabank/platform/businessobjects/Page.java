@@ -85,7 +85,6 @@ public class Page extends AbstractBusinessObject {
     this.enable = builder.enable;
     this.childUids = builder.childUids;
     this.widgetList = Objects.requireNonNullElseGet(builder.widgets, ArrayList::new);
-    LOGGER.info(String.format("Создан (обновлен) объект 'страница':\n\t%s", this.toString()));
   }
 
   public Page(String uri) {
@@ -151,57 +150,48 @@ public class Page extends AbstractBusinessObject {
     return childUids;
   }
 
-  @Override
-  public String toString() {
-    return String.format("Page{id='%s', uri='%s', title='%s', description='%s', "
-            + "dateFrom='%s', dateTo='%s', enable='%s', widgetList= '%s'}",
-        id, uri, title, description, dateFrom, dateTo, enable, widgetList);
-  }
-
   /**
    * Compare this page against any page.
    *
-   * @param page a page
+   * @param expected a page
    */
   @JsonIgnore
-  public void equals(@NonNull final Page page) {
+  public void equals(@NonNull final Page expected) {
     final SoftAssertions softly = new SoftAssertions();
-    LOGGER.debug(String.format(
-        "Сравнение PAGES:\nACTUAL.\t\t%s\nEXPECTED.\t%s",
-        page.toString(),
-        this.toString()));
+    logComparingObjects(LOGGER, this, expected);
     softly
         .assertThat(this.getId())
         .as("Проверка ID страницы")
-        .isEqualTo(page.getId());
+        .isEqualTo(expected.getId());
     softly
         .assertThat(this.getUri())
         .as("Проверка URI страницы")
-        .isEqualTo(page.getUri());
+        .isEqualTo(expected.getUri());
     softly
         .assertThat(this.getTitle())
         .as("Проверка Title страницы")
-        .isEqualTo(page.getTitle());
+        .isEqualTo(expected.getTitle());
     softly
         .assertThat(this.getDescription())
         .as("Проверка Description страницы")
-        .isEqualTo(page.getDescription());
+        .isEqualTo(expected.getDescription());
     softly
         .assertThat(this.isEnable())
         .as("Проверка isEnable страницы")
-        .isEqualTo(page.isEnable());
+        .isEqualTo(expected.isEnable());
     softly
         .assertThat(this.getDateFrom())
         .as("Проверка DateFrom страницы")
-        .isEqualTo(page.getDateFrom());
+        .isEqualTo(expected.getDateFrom());
     softly
         .assertThat(this.getDateTo())
         .as("Проверка DateTo страницы")
-        .isEqualTo(page.getDateTo());
+        .isEqualTo(expected.getDateTo());
     softly
         .assertThat(this.getTeams())
         .as("Проверка Teams страницы")
-        .isEqualTo(page.getTeams());
+        .isEqualTo(expected.getTeams());
+    logComparingResult(LOGGER, String.valueOf(this.getId()));
   }
 
   @JsonIgnoreType

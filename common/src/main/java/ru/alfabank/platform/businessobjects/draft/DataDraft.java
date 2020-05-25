@@ -12,24 +12,24 @@ import ru.alfabank.platform.businessobjects.enums.Device;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public final class DataDraft {
 
-  private Boolean enable;
-  private String dateFrom;
-  private String dateTo;
-  private Device device;
-  private String localization;
-  private String state;
-  private String name;
-  private String propertyUid;
-  private String widgetUid;
-  private List<String> cityGroups;
-  private Object value;
-  private List<String> childUids;
-  private String entity;
-  private String method;
-  private String version;
-  private String experimentOptionName;
+  private final Boolean enable;
+  private final String dateFrom;
+  private final String dateTo;
+  private final Device device;
+  private final String localization;
+  private final String state;
+  private final String name;
+  private final String propertyUid;
+  private final String widgetUid;
+  private final List<String> cityGroups;
+  private final Object value;
+  private final List<String> childUids;
+  private final String entity;
+  private final String method;
+  private final String version;
+  private final String experimentOptionName;
   @JsonProperty("defaultWidget")
-  private Boolean isDefaultWidget;
+  private final Boolean isDefaultWidget;
 
   @JsonCreator
   private DataDraft(final Builder builder) {

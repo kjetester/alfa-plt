@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.log4j.Logger;
 
 public abstract class AbstractBusinessObject {
 
@@ -23,5 +24,24 @@ public abstract class AbstractBusinessObject {
       e.printStackTrace();
     }
     return null;
+  }
+
+  /**
+   * Log comparing objects.
+   *
+   * @param logger         logger
+   * @param actualObject   actualObject
+   * @param expectedObject expectedObject
+   */
+  protected void logComparingObjects(final Logger logger,
+                                     final Object actualObject,
+                                     final Object expectedObject) {
+    logger.debug(String.format("Сравнение объектов:\nACTUAL.\t\t%s\nEXPECTED.\t%s",
+        describeBusinessObject(actualObject),
+        describeBusinessObject(expectedObject)));
+  }
+
+  protected void logComparingResult(final Logger logger, final String value) {
+    logger.info(String.format("Объект с uuid'%s' корректен", value));
   }
 }

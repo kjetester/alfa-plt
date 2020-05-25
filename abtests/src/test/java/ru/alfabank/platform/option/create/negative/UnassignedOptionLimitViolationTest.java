@@ -23,7 +23,7 @@ public class UnassignedOptionLimitViolationTest extends OptionBaseTest {
         desktop,
         page_id,
         getRandomProductType(),
-        getValidEndDate(),
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     final Response result;

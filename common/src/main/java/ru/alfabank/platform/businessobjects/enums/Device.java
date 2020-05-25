@@ -10,7 +10,7 @@ public enum Device {
   mobile("mobile"),
   all("all");
 
-  private String device;
+  private final String device;
 
   Device(String device) {
     this.device = device;

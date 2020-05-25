@@ -1,7 +1,5 @@
 package ru.alfabank.platform.experiment.create;
 
-import static java.time.temporal.ChronoUnit.HOURS;
-import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,25 +18,18 @@ import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
-import io.restassured.response.Response;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.TestNGException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.Experiment.Builder;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
 
 public class CreateExperimentTest extends BaseTest {
-
-  private static final Logger LOGGER = LogManager.getLogger(CreateExperimentTest.class);
 
   @Test(
       description = "Позитивный тест создания нового эксперимента",
@@ -70,13 +61,14 @@ public class CreateExperimentTest extends BaseTest {
     final var created_experiment_1 = EXPERIMENT_STEPS.createExperiment(
         experiment_1_body,
         getContentManager());
-    created_experiment_1.checkCreatedExperiment(
+    created_experiment_1.equals(
         new Experiment.Builder()
             .using(experiment_1_body)
+            .setUuid(created_experiment_1.getUuid())
             .setEnabled(false)
             .setCreatedBy(getContentManager().getLogin())
             .setStatus(DISABLED)
-            .setCreationDate(LocalDateTime.now(ZoneOffset.UTC).toString())
+            .setCreationDate(getCurrentDateTime().toString())
             .build());
     final var experiment_2_body = new Experiment.Builder()
         .setDescription(experiment2description)
@@ -90,18 +82,20 @@ public class CreateExperimentTest extends BaseTest {
     final var created_experiment_2 = EXPERIMENT_STEPS.createExperiment(
         experiment_2_body,
         getContentManager());
-    created_experiment_2.checkCreatedExperiment(
+    created_experiment_2.equals(
         new Experiment.Builder()
             .using(experiment_2_body)
+            .setUuid(created_experiment_2.getUuid())
             .setEnabled(false)
             .setCreatedBy(getContentManager().getLogin())
             .setStatus(DISABLED)
-            .setCreationDate(LocalDateTime.now(ZoneOffset.UTC).toString())
+            .setCreationDate(getCurrentDateTime().toString())
             .build());
   }
 
   /**
    * Data provider.
+   *
    * @return test data
    */
   @DataProvider(name = "Positive data provider")
@@ -113,14 +107,14 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             10,
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D,
             mobile,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             10,
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -129,14 +123,14 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             10,
             PIL,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             1.00D,
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             10,
             PIL,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             1.00D
         },
         {
@@ -145,14 +139,14 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1000),
             10,
             DC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.11D,
             mobile,
             randomAlphanumeric(255),
             randomAlphanumeric(1000),
             10,
             DC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.11D
         },
         {
@@ -161,14 +155,14 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(50),
             10,
             MG,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.11D,
             desktop,
             randomAlphanumeric(50),
             randomAlphanumeric(50),
             10,
             MG,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.11D
         },
         {
@@ -177,14 +171,14 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(50),
             10,
             SME,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.11D,
             mobile,
             randomAlphanumeric(50),
             randomAlphanumeric(50),
             10,
             SME,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.11D
         },
         {
@@ -193,14 +187,14 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(11),
             10,
             INV,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.11D,
             desktop,
             randomAlphanumeric(11),
             randomAlphanumeric(11),
             10,
             INV,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.11D
         },
         {
@@ -209,14 +203,14 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(10),
             10,
             COM,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.11D,
             mobile,
             randomAlphanumeric(10),
             randomAlphanumeric(10),
             10,
             COM,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.11D
         }
     };
@@ -234,20 +228,22 @@ public class CreateExperimentTest extends BaseTest {
       @ParameterKey("productType") final ProductType productType,
       @ParameterKey("endDate") final String endDate,
       @ParameterKey("trafficRate") final Double trafficRate) {
-    LOGGER.info("Test case: " + testCase);
-    final Response response = EXPERIMENT_STEPS.createExperimentAssumingFail(
-        description,
-        cookieValue,
-        device,
-        pageId,
-        productType,
-        endDate,
-        trafficRate,
+    final var experiment = new Builder()
+        .setDescription(description)
+        .setCookieValue(cookieValue)
+        .setPageId(pageId)
+        .setDevice(device)
+        .setProductTypeKey(productType)
+        .setEndDate(endDate)
+        .setTrafficRate(trafficRate)
+        .build();
+    final var createResponse = EXPERIMENT_STEPS.createExperimentAssumingFail(
+        experiment,
         getContentManager());
     final var softly = new SoftAssertions();
-    softly.assertThat(response.statusCode()).isGreaterThanOrEqualTo(SC_BAD_REQUEST);
-    final var fieldViolations = response.getBody().jsonPath().getList("fieldViolations");
-    final var globalErrors = response.getBody().jsonPath().getList("globalErrors");
+    softly.assertThat(createResponse.statusCode()).isGreaterThanOrEqualTo(SC_BAD_REQUEST);
+    final var fieldViolations = createResponse.getBody().jsonPath().getList("fieldViolations");
+    final var globalErrors = createResponse.getBody().jsonPath().getList("globalErrors");
     switch (StringUtils.substringBetween(testCase, "'")) {
       case "device": {
         assertThat(globalErrors)
@@ -368,7 +364,7 @@ public class CreateExperimentTest extends BaseTest {
       case "productType": {
         if (productType != null && productType.equals(ERR)) {
           softly
-              .assertThat(response.getBody().asString())
+              .assertThat(createResponse.getBody().asString())
               .as("роверка обрабоки некоррекнтого значения 'productType'")
               .contains("Тип продукта '" + productType + "' не существует");
         } else {
@@ -405,7 +401,7 @@ public class CreateExperimentTest extends BaseTest {
             .as("Проверка количества ошибок в 'fieldViolations'")
             .isEqualTo(1);
         softly
-            .assertThat(response.getBody().asString())
+            .assertThat(createResponse.getBody().asString())
             .as("Проверка обрабоки некоррекнтого значения 'endDate'")
             .contains(endDate == null
                 ? "Необходимо указать дату окончания эксперимента"
@@ -413,7 +409,7 @@ public class CreateExperimentTest extends BaseTest {
         break;
       }
       case "trafficRate": {
-        var stringAssert = softly.assertThat(response.getBody().asString())
+        var stringAssert = softly.assertThat(createResponse.getBody().asString())
             .as("Проверка обрабоки некоррекнтого значения 'trafficRate'");
         stringAssert.contains("trafficRate");
         if (trafficRate == null) {
@@ -429,6 +425,11 @@ public class CreateExperimentTest extends BaseTest {
       default: {
         throw new TestNGException("Неописанный кейс");
       }
+    }
+    if (experiment.getPageId() != null) {
+      final var readResponse =
+          EXPERIMENT_STEPS.getAbsentExperimentByPageId(experiment.getPageId(), getContentManager());
+      softly.assertThat(readResponse.jsonPath().getInt("numberOfElements")).isEqualTo(0);
     }
     softly.assertAll();
   }
@@ -447,9 +448,9 @@ public class CreateExperimentTest extends BaseTest {
             null,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -457,9 +458,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             null,
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -467,9 +468,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             null,
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -479,7 +480,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             null,
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -487,9 +488,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             null,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -497,7 +498,7 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
             null,
             0.01D
@@ -507,9 +508,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             null
         },
         {
@@ -517,9 +518,9 @@ public class CreateExperimentTest extends BaseTest {
             all,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -527,9 +528,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(0),
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -537,9 +538,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(256),
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -547,9 +548,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(0),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -557,9 +558,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(10001),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -567,9 +568,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10000,
+            0,
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -577,9 +578,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             ERR,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.01D
         },
         {
@@ -587,9 +588,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getInvalidEndDate(),
+            getInvalidExperimentEndDate(),
             0.01D
         },
         {
@@ -597,9 +598,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             0.00D
         },
         {
@@ -607,9 +608,9 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
+            PAGES_STEPS.createEnabledPage(getContentManager()),
             CC,
-            getValidEndDate(),
+            getValidExperimentEndDate(),
             1.01D
         }
     };

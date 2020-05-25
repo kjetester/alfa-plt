@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.CC;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.COM;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.DC;
@@ -58,7 +59,7 @@ public class NegativeRoleModelTest extends OptionBaseTest {
   private static final CommonUser COMMON_USER = getCommonUser();
   private static final UnclaimedUser UNCLAIMED_USER = getUnclaimedUser();
 
-  private final String experimentEndDate = getValidEndDatePlusWeek();
+  private final String experimentEndDate = getValidExperimentEndDatePlusWeek();
 
   @Test(description = "Негативный тест создания экспермента",
       dataProvider = "negativeDataProvider")
@@ -150,6 +151,7 @@ public class NegativeRoleModelTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -192,6 +194,7 @@ public class NegativeRoleModelTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -322,6 +325,7 @@ public class NegativeRoleModelTest extends OptionBaseTest {
 
   /**
    * Data provider.
+   *
    * @return test data
    */
   @DataProvider

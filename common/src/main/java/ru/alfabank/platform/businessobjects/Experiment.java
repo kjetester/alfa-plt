@@ -1,9 +1,7 @@
 package ru.alfabank.platform.businessobjects;
 
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 import static java.time.temporal.ChronoUnit.MINUTES;
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.within;
 import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 import static ru.alfabank.platform.businessobjects.enums.Status.RUNNING;
@@ -64,7 +62,6 @@ public class Experiment extends AbstractBusinessObject {
     this.deactivationDate = builder.deactivationDate;
     this.status = builder.status;
     this.creationDate = builder.creationDate;
-    LOGGER.debug("Создан / обновлен экземпляр эксперимента:\n" + describeBusinessObject(this));
   }
 
   public String getUuid() {
@@ -132,201 +129,12 @@ public class Experiment extends AbstractBusinessObject {
   }
 
   /**
-   * Check if created experiments is correct.
-   *
-   * @param expected actual experiment
-   */
-  public void checkCreatedExperiment(final Experiment expected) {
-    final var softly = new SoftAssertions();
-    final var actual = this;
-    softly.assertThat(actual.getUuid())
-        .as("Проверка наличия UUID")
-        .isNotNull();
-    softly.assertThat(actual.getDescription())
-        .as("Проверка соответствия Описания")
-        .isEqualTo(expected.getDescription());
-    softly.assertThat(actual.getCookieValue())
-        .as("Проверка соответствия Куки")
-        .isEqualTo(expected.getCookieValue());
-    softly.assertThat(actual.getPageId())
-        .as("Проверка соответствия ID страницы")
-        .isEqualTo(expected.getPageId());
-    softly.assertThat(actual.getDevice())
-        .as("Проверка соответствия Устройства")
-        .isEqualTo(expected.getDevice());
-    softly.assertThat(actual.getProductTypeKey())
-        .as("Проверка соответствия Ключа типа продукта")
-        .isEqualTo(expected.getProductTypeKey());
-    softly.assertThat(LocalDateTime.parse(actual.getEndDate(), ISO_OFFSET_DATE_TIME))
-        .as("Проверка соответствия Даты окончания")
-        .isEqualTo(LocalDateTime.parse(expected.getEndDate(), ISO_OFFSET_DATE_TIME));
-    softly.assertThat(actual.getTrafficRate())
-        .as("Проверка соответствия Уровня трафика")
-        .isEqualTo(expected.getTrafficRate());
-    softly.assertThat(actual.getEnabled())
-        .as("Проверка соответствия Признака активности")
-        .isEqualTo(expected.getEnabled());
-    softly.assertThat(actual.getCreatedBy())
-        .as("Проверка соответствия Автора создания")
-        .isEqualTo(expected.getCreatedBy());
-    softly.assertThat(actual.getActivatedBy())
-        .as("Проверка соответствия Автора активации")
-        .isEqualTo(expected.getActivatedBy());
-    softly.assertThat(actual.getActivationDate())
-        .as("Проверка соответствия Даты активации")
-        .isNull();
-    softly.assertThat(actual.getDeactivatedBy())
-        .as("Проверка соответствия Автора деактивации")
-        .isNull();
-    softly.assertThat(actual.getDeactivationDate())
-        .as("Проверка соответствия Даты деактивации")
-        .isNull();
-    softly.assertThat(actual.getStatus())
-        .as("Проверка соответствия Статуса")
-        .isEqualTo(expected.getStatus());
-    softly.assertThat(LocalDateTime.parse(actual.getCreationDate(), ISO_OFFSET_DATE_TIME))
-        .as("Проверка соответствия Даты создания")
-        .isCloseTo(
-            LocalDateTime.parse(expected.getCreationDate(), ISO_LOCAL_DATE_TIME),
-            within(5, SECONDS));
-    softly.assertAll();
-  }
-
-  /**
-   * Check if created experiments is correct.
-   *
-   * @param expected actual experiment
-   */
-  public void checkUpdatedExperiment(final Experiment expected) {
-    final var softly = new SoftAssertions();
-    final var actual = this;
-    softly.assertThat(actual.getUuid())
-        .as("Проверка наличия UUID")
-        .isNotNull();
-    softly.assertThat(actual.getDescription())
-        .as("Проверка соответствия Описания")
-        .isEqualTo(expected.getDescription());
-    softly.assertThat(actual.getCookieValue())
-        .as("Проверка соответствия Куки")
-        .isEqualTo(expected.getCookieValue());
-    softly.assertThat(actual.getPageId())
-        .as("Проверка соответствия ID страницы")
-        .isEqualTo(expected.getPageId());
-    softly.assertThat(actual.getDevice())
-        .as("Проверка соответствия Устройства")
-        .isEqualTo(expected.getDevice());
-    softly.assertThat(actual.getProductTypeKey())
-        .as("Проверка соответствия Ключа типа продукта")
-        .isEqualTo(expected.getProductTypeKey());
-    softly.assertThat(LocalDateTime.parse(actual.getEndDate(), ISO_OFFSET_DATE_TIME))
-        .as("Проверка соответствия Даты окончания")
-        .isEqualTo(LocalDateTime.parse(expected.getEndDate(), ISO_OFFSET_DATE_TIME));
-    softly.assertThat(actual.getTrafficRate())
-        .as("Проверка соответствия Уровня трафика")
-        .isEqualTo(expected.getTrafficRate());
-    softly.assertThat(actual.getEnabled())
-        .as("Проверка соответствия Признака активности")
-        .isEqualTo(expected.getEnabled());
-    softly.assertThat(actual.getCreatedBy())
-        .as("Проверка соответствия Автора создания")
-        .isEqualTo(expected.getCreatedBy());
-    softly.assertThat(actual.getActivatedBy())
-        .as("Проверка соответствия Автора активации")
-        .isEqualTo(expected.getActivatedBy());
-    softly.assertThat(actual.getActivationDate())
-        .as("Проверка соответствия Даты активации")
-        .isNull();
-    softly.assertThat(actual.getDeactivatedBy())
-        .as("Проверка соответствия Автора деактивации")
-        .isNull();
-    softly.assertThat(actual.getDeactivationDate())
-        .as("Проверка соответствия Даты деактивации")
-        .isNull();
-    softly.assertThat(actual.getStatus())
-        .as("Проверка соответствия Статуса")
-        .isEqualTo(expected.getStatus());
-    softly.assertThat(LocalDateTime.parse(actual.getCreationDate(), ISO_OFFSET_DATE_TIME))
-        .as("Проверка соответствия Даты создания")
-        .isCloseTo(
-            LocalDateTime.parse(expected.getCreationDate(), ISO_OFFSET_DATE_TIME),
-            within(3, MINUTES));
-    softly.assertAll();
-  }
-
-  /**
-   * Check if created experiments is correct.
-   *
-   * @param expected actual experiment
-   */
-  public void checkActivatedExperiment(final Experiment expected) {
-    final var softly = new SoftAssertions();
-    final var actual = this;
-    softly.assertThat(actual.getUuid())
-        .as("Проверка соответствия UUID")
-        .isEqualTo(expected.getUuid());
-    softly.assertThat(actual.getDescription())
-        .as("Проверка соответствия Описания")
-        .isEqualTo(expected.getDescription());
-    softly.assertThat(actual.getCookieValue())
-        .as("Проверка соответствия Куки")
-        .isEqualTo(expected.getCookieValue());
-    softly.assertThat(actual.getPageId())
-        .as("Проверка соответствия ID страницы")
-        .isEqualTo(expected.getPageId());
-    softly.assertThat(actual.getDevice())
-        .as("Проверка соответствия Устройства")
-        .isEqualTo(expected.getDevice());
-    softly.assertThat(actual.getProductTypeKey())
-        .as("Проверка соответствия Ключа типа продукта")
-        .isEqualTo(expected.getProductTypeKey());
-    softly.assertThat(LocalDateTime.parse(actual.getEndDate(), ISO_OFFSET_DATE_TIME))
-        .as("Проверка соответствия Даты окончания")
-        .isEqualTo(LocalDateTime.parse(expected.getEndDate(), ISO_OFFSET_DATE_TIME));
-    softly.assertThat(actual.getTrafficRate())
-        .as("Проверка соответствия Уровня трафика")
-        .isEqualTo(expected.getTrafficRate());
-    softly.assertThat(actual.getEnabled())
-        .as("Проверка соответствия Признака активности")
-        .isEqualTo(expected.getEnabled());
-    softly.assertThat(actual.getCreatedBy())
-        .as("Проверка соответствия Автора создания")
-        .isEqualTo(expected.getCreatedBy());
-    softly.assertThat(actual.getActivatedBy())
-        .as("Проверка соответствия Автора активации")
-        .isEqualTo(expected.getActivatedBy());
-    softly.assertThat(LocalDateTime.parse(actual.getActivationDate(), ISO_OFFSET_DATE_TIME))
-        .as("Проверка соответствия Даты активации")
-        .isCloseTo(LocalDateTime.parse(expected.getActivationDate(), ISO_OFFSET_DATE_TIME),
-            within(10, MINUTES));
-    softly.assertThat(actual.getDeactivatedBy())
-        .as("Проверка соответствия Автора деактивации")
-        .isEqualTo(expected.getDeactivatedBy());
-    softly.assertThat(LocalDateTime.parse(actual.getActivationDate(), ISO_OFFSET_DATE_TIME))
-        .as("Проверка соответствия Даты деактивации")
-        .isCloseTo(
-            LocalDateTime.parse(expected.getActivationDate(), ISO_OFFSET_DATE_TIME),
-            within(3, MINUTES));
-    softly.assertThat(actual.getStatus())
-        .as("Проверка соответствия Статуса")
-        .isEqualTo(expected.getStatus());
-    softly.assertThat(LocalDateTime.parse(actual.getCreationDate(), ISO_OFFSET_DATE_TIME))
-        .as("Проверка соответствия Даты создания")
-        .isCloseTo(
-            LocalDateTime.parse(expected.getCreationDate(), ISO_OFFSET_DATE_TIME),
-            within(3, MINUTES));
-    softly.assertAll();
-  }
-
-  /**
    * Check experiments properties.
    *
    * @param expected expected Experiment
    */
   public void equals(@NonNull final Experiment expected) {
-    LOGGER.info(String.format(
-        "Сравнение экспериментов:\nACTUAL:\n%s\n\nEXPECTED:\n%s",
-        describeBusinessObject(this),
-        describeBusinessObject(expected)));
+    logComparingObjects(LOGGER, this, expected);
     final var softly = new SoftAssertions();
     softly.assertThat(this.getUuid())
         .as("Проверка соответствия UUID")
@@ -366,7 +174,7 @@ public class Experiment extends AbstractBusinessObject {
           .as("Проверка соответствия Даты активации")
           .isCloseTo(
               LocalDateTime.parse(expected.getActivationDate(), ISO_OFFSET_DATE_TIME),
-              within(10, MINUTES));
+              within(1, MINUTES));
     } else {
       softly.assertThat(this.getActivationDate())
           .as("Проверка соответствия Даты активации")
@@ -380,7 +188,7 @@ public class Experiment extends AbstractBusinessObject {
           .as("Проверка соответствия Даты деактивации")
           .isCloseTo(
               LocalDateTime.parse(expected.getDeactivationDate(), ISO_OFFSET_DATE_TIME),
-              within(6, MINUTES));
+              within(1, MINUTES));
     } else {
       softly.assertThat(this.getDeactivationDate())
           .as("Проверка соответствия Даты деактивации")
@@ -393,9 +201,9 @@ public class Experiment extends AbstractBusinessObject {
         .as("Проверка соответствия Даты создания")
         .isCloseTo(
             LocalDateTime.parse(expected.getCreationDate(), ISO_OFFSET_DATE_TIME),
-            within(6, MINUTES));
+            within(1, MINUTES));
     softly.assertAll();
-    LOGGER.info(String.format("Эксперимент с UUID '%s' корректен", this.getUuid()));
+    logComparingResult(LOGGER, this.getUuid());
   }
 
   @JsonIgnoreType

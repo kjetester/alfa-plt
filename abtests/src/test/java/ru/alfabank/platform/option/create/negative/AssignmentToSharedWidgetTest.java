@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -32,6 +33,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
           true,
           DEFAULT,
           true,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -43,6 +45,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
           false,
           FOR_AB_TEST,
           false,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -60,7 +63,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
         widget.getDevice(),
         page_1_id,
         getRandomProductType(),
-        getValidEndDate(),
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     Response response;
@@ -104,6 +107,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -114,6 +118,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -126,6 +131,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
           true,
           DEFAULT,
           true,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -137,6 +143,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
           false,
           FOR_AB_TEST,
           false,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -154,7 +161,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
         widget.getDevice(),
         page_1_Id,
         getRandomProductType(),
-        getValidEndDate(),
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     Response response;
@@ -197,6 +204,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
           true,
           DEFAULT,
           true,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -207,6 +215,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
           true,
           DEFAULT,
           true,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -217,6 +226,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
           true,
           DEFAULT,
           true,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -228,6 +238,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
           false,
           FOR_AB_TEST,
           false,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -238,6 +249,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
           false,
           FOR_AB_TEST,
           false,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -248,6 +260,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
           false,
           FOR_AB_TEST,
           false,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -261,7 +274,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
         widget.getDevice(),
         page_1_id,
         getRandomProductType(),
-        getValidEndDate(),
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     Response response;
@@ -275,7 +288,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
     } else {
       response = OPTION_STEPS.createOptionAssumingFail(
           false,
-              List.of(widget.getUid()),
+          List.of(widget.getUid()),
           experiment.getUuid(),
           .5D,
           getContentManager());

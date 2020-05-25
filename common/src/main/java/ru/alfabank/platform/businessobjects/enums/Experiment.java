@@ -5,7 +5,7 @@ public enum Experiment {
   DEFAULT("default"),
   AB("forABtest");
 
-  private String experiment;
+  private final String experiment;
 
   Experiment(String experiment) {
     this.experiment = experiment;

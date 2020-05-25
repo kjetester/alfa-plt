@@ -7,7 +7,11 @@ public enum Geo {
   RU("ru"),
   VLADIMIR("vladimir");
 
-  private String geo;
+  private final String geo;
+
+  public String getGeo() {
+    return geo;
+  }
 
   Geo(String geo) {
     this.geo = geo;

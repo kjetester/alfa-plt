@@ -91,7 +91,12 @@ public class OptionPropertiesViolationTest extends OptionBaseTest {
   public Object[][] valuesProvider() {
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
     final var experiment = EXPERIMENT_STEPS.createExperiment(
-        desktop, page_id, getRandomProductType(), getValidEndDate(), .5D, getContentManager());
+        desktop,
+        page_id,
+        getRandomProductType(),
+        getValidExperimentEndDate(),
+        .5D,
+        getContentManager());
     return new Object[][]{
         {1, true, List.of("absentWidgetUUID"), experiment.getUuid(), .1D},
         {2, true, List.of(), UUID.randomUUID().toString(), .1D},

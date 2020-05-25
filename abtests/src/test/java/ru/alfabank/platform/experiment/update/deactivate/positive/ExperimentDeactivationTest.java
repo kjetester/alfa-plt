@@ -1,9 +1,9 @@
 package ru.alfabank.platform.experiment.update.deactivate.positive;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.CANCELLED;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
@@ -20,7 +20,7 @@ public class ExperimentDeactivationTest extends BaseTest {
 
   @Test(description = "Позитивный тест деактивации эксперимента")
   public void experimentDeactivationPositiveTest() {
-    final var experimentEndDate = getValidEndDatePlusWeek();
+    final var experimentEndDate = getValidExperimentEndDatePlusWeek();
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
     final var default_widget_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
@@ -29,6 +29,7 @@ public class ExperimentDeactivationTest extends BaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -39,6 +40,7 @@ public class ExperimentDeactivationTest extends BaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -49,6 +51,7 @@ public class ExperimentDeactivationTest extends BaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -59,6 +62,7 @@ public class ExperimentDeactivationTest extends BaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -125,6 +129,6 @@ public class ExperimentDeactivationTest extends BaseTest {
             .build());
     final var actualWidgetsList = PAGES_STEPS.getWidgetsList(page_id, device, getContentManager());
     IntStream.range(0, expectedWidgetsList.size()).forEach(i ->
-        assertThat(actualWidgetsList.get(i)).isEqualTo(expectedWidgetsList.get(i)));
+        actualWidgetsList.get(i).equals(expectedWidgetsList.get(i)));
   }
 }

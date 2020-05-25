@@ -2,12 +2,16 @@ package ru.alfabank.platform.businessobjects.enums;
 
 public enum Version {
 
-  V_1_0_0("1.0.0");
+  V_1_0_0("v_1.0.0");
 
-  private String version;
+  private final String version;
 
   Version(String version) {
     this.version = version;
+  }
+
+  public String getVersion() {
+    return version;
   }
 
   @Override

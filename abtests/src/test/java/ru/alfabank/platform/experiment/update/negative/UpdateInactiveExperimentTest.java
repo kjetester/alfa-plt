@@ -36,14 +36,14 @@ public class UpdateInactiveExperimentTest extends BaseTest {
   @BeforeMethod(description = "Создание неактивного эксперимента "
       + "для негативного теста изменения неактивного эксперимента")
   public void beforeMethod() {
-    final var start = getValidEndDatePlus10Seconds();
-    final var end = getValidEndDate();
-    final var page_id = PAGES_STEPS.createPage(start, end, true, getContentManager());
+    final var dateFrom = getValidWidgetDateFrom();
+    final var dateTo = getValidExperimentEndDate();
+    final var page_id = PAGES_STEPS.createPage(dateFrom, dateTo, true, getContentManager());
     experiment = EXPERIMENT_STEPS.createExperiment(
         mobile,
         page_id,
         getRandomProductType(),
-        end,
+        dateTo,
         .05,
         getContentManager());
   }
@@ -117,7 +117,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
       case "enabled/endDate": {
         changeSetBody = new Experiment.Builder()
             .setEnabled((Boolean) newValue)
-            .setEndDate(getValidEndDate())
+            .setEndDate(getValidExperimentEndDate())
             .build();
         break;
       }
@@ -134,7 +134,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
             .setCookieValue(randomAlphanumeric(100))
             .setDescription(randomAlphanumeric(100))
             .setProductTypeKey(CC)
-            .setEndDate(getValidEndDate())
+            .setEndDate(getValidExperimentEndDate())
             .setTrafficRate(0.23D)
             .build();
         break;
@@ -208,7 +208,9 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         changeSetBody,
         getContentManager());
     // CHECKS //
-    final var actual = EXPERIMENT_STEPS.getExistingExperiment(experiment, getContentManager());
+    final var experiment = EXPERIMENT_STEPS.getExistingExperiment(
+        this.experiment,
+        getContentManager());
     final var fieldViolations = response.getBody().jsonPath().getList("fieldViolations");
     final var globalErrors = response.getBody().jsonPath().getList("globalErrors");
     switch (field2bChanged) {
@@ -307,7 +309,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         break;
       }
     }
-    actual.checkUpdatedExperiment(experiment);
+    experiment.equals(this.experiment);
   }
 
   /**
@@ -318,32 +320,110 @@ public class UpdateInactiveExperimentTest extends BaseTest {
   @DataProvider(name = "inactiveWidgetNegativeDataProvider")
   public Object[][] inactiveWidgetNegativeDataProvider() {
     return new Object[][]{
-        {"Пустое 'body'", null},
-        {"Длина значения поля 'cookieValue' < min", ""},
-        {"Длина значения поля 'cookieValue' > max", randomAlphanumeric(256)},
-        {"Длина значения поля 'description' < min", ""},
-        {"Длина значения поля 'description' > max", randomAlphanumeric(1001)},
-        {"Невалидное значение поля 'productTypeKey'", ERR},
-        {"Указан 'endDate' менее чем +1 день", getInvalidEndDate()},
-        {"значения поля 'trafficRate' < min", 0D},
-        {"Длина значения поля 'trafficRate' > max", 1.01D},
-        {"Одновременное изменение параметров и признака 'enabled'", true},
-        {"Одновременное изменение параметра и признака 'enabled/cookieValue'", true},
-        {"Одновременное изменение параметра и признака 'enabled/description'", true},
-        {"Одновременное изменение параметра и признака 'enabled/productTypeKey'", true},
-        {"Одновременное изменение параметра и признака 'enabled/endDate'", true},
-        {"Одновременное изменение параметра и признака 'enabled/trafficRate'", true},
-        {"Одновременное изменение всех параметров и признака 'enabled'", true},
-        {"Изменение поля 'uuid'", UUID.randomUUID().toString()},
-        {"Изменение поля 'pageId'", 11},
-        {"Изменение поля 'device'", mobile},
-        {"Изменение поля 'createdBy'", "random user"},
-        {"Изменение поля 'activatedBy'", "random user"},
-        {"Изменение поля 'creationDate'", getValidEndDate()},
-        {"Изменение поля 'activationDate'", getValidEndDate()},
-        {"Изменение поля 'deactivatedBy'", "random user"},
-        {"Изменение поля 'deactivationDate'", getValidEndDate()},
-        {"Изменение поля 'status'", RUNNING},
+        {
+            "Пустое 'body'",
+            null
+        },
+        {
+            "Длина значения поля 'cookieValue' < min",
+            ""
+        },
+        {
+            "Длина значения поля 'cookieValue' > max",
+            randomAlphanumeric(256)
+        },
+        {
+            "Длина значения поля 'description' < min",
+            ""
+        },
+        {
+            "Длина значения поля 'description' > max",
+            randomAlphanumeric(1001)
+        },
+        {
+            "Невалидное значение поля 'productTypeKey'",
+            ERR
+        },
+        {
+            "Указан 'endDate' менее чем +1 день",
+            getInvalidExperimentEndDate()
+        },
+        {
+            "значения поля 'trafficRate' < min",
+            0D
+        },
+        {
+            "Длина значения поля 'trafficRate' > max",
+            1.01D
+        },
+        {
+            "Одновременное изменение параметров и признака 'enabled'",
+            true
+        },
+        {
+            "Одновременное изменение параметра и признака 'enabled/cookieValue'",
+            true
+        },
+        {
+            "Одновременное изменение параметра и признака 'enabled/description'",
+            true
+        },
+        {
+            "Одновременное изменение параметра и признака 'enabled/productTypeKey'",
+            true
+        },
+        {
+            "Одновременное изменение параметра и признака 'enabled/endDate'",
+            true
+        },
+        {
+            "Одновременное изменение параметра и признака 'enabled/trafficRate'",
+            true
+        },
+        {
+            "Одновременное изменение всех параметров и признака 'enabled'",
+            true
+        },
+        {
+            "Изменение поля 'uuid'",
+            UUID.randomUUID().toString()
+        },
+        {
+            "Изменение поля 'pageId'",
+            11
+        },
+        {
+            "Изменение поля 'device'",
+            mobile
+        },
+        {
+            "Изменение поля 'createdBy'",
+            "random user"
+        },
+        {
+            "Изменение поля 'activatedBy'",
+            "random user"
+        },
+        {
+            "Изменение поля 'creationDate'",
+            getValidExperimentEndDate()
+        },
+        {
+            "Изменение поля 'activationDate'",
+            getValidExperimentEndDate()
+        },
+        {
+            "Изменение поля 'deactivatedBy'",
+            "random user"
+        },
+        {
+            "Изменение поля 'deactivationDate'",
+            getValidExperimentEndDate()
+        },
+        {
+            "Изменение поля 'status'",
+            RUNNING
+        },
     };
   }
 }

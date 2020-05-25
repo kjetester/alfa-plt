@@ -10,6 +10,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import java.util.LinkedHashMap;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +42,7 @@ public class BaseSteps {
       + "/rollback/rollbackToStateBeforeTransaction/{transactionUid}";
   private static final String GET_ALL_OR_CREATE_EXPERIMENT_PATH =
       PREFIX + "/ab-test/admin-panel/experiments";
-  private static final String GET_DELETE_PATCH_EXPERIMENT_PATH =
+  private static final String GET_DELETE_PATCH_EXPERIMENT_BY_UUID_PATH =
       GET_ALL_OR_CREATE_EXPERIMENT_PATH + "/{uuid}";
   private static final String GET_ALL_OR_CREATE_OPTION_PATH =
       GET_ALL_OR_CREATE_EXPERIMENT_PATH + "/{experimentUuid}/options";
@@ -59,7 +60,7 @@ public class BaseSteps {
   private static final RequestSpecification AUDIT_TRANSACTION_SPEC;
   private static final RequestSpecification AUDIT_ROLLBACK_TRANSACTIONS_SPEC;
   private static final RequestSpecification GET_ALL_OR_CREATE_EXPERIMENT_SPEC;
-  private static final RequestSpecification GET_DELETE_PATCH_EXPERIMENT_SPEC;
+  private static final RequestSpecification GET_DELETE_PATCH_EXPERIMENT_BY_UUID_SPEC;
   private static final RequestSpecification INVOLVEMENTS_SPEC;
   private static final RequestSpecification GET_ALL_OR_DELETE_OPTION_SPEC;
   private static final RequestSpecification GET_DELETE_PATCH_OPTION_SPEC;
@@ -120,7 +121,6 @@ public class BaseSteps {
     META_INFO_CONTENT_PAGE_SPEC = new RequestSpecBuilder()
         .addRequestSpecification(BASE_SPEC)
         .setBasePath(META_INFO_CONTENT_PAGE_BASE_PATH)
-        .addQueryParam("device", desktop)
         .build();
     LOGGER.info("Устанавливаю конфгурацию HTTP запросов к /page-draft-controller");
     DRAFT_SPEC = new RequestSpecBuilder()
@@ -150,9 +150,9 @@ public class BaseSteps {
         .addRequestSpecification(BASE_SPEC)
         .setBasePath(GET_ALL_OR_CREATE_EXPERIMENT_PATH)
         .build();
-    GET_DELETE_PATCH_EXPERIMENT_SPEC = new RequestSpecBuilder()
+    GET_DELETE_PATCH_EXPERIMENT_BY_UUID_SPEC = new RequestSpecBuilder()
         .addRequestSpecification(BASE_SPEC)
-        .setBasePath(GET_DELETE_PATCH_EXPERIMENT_PATH)
+        .setBasePath(GET_DELETE_PATCH_EXPERIMENT_BY_UUID_PATH)
         .build();
     INVOLVEMENTS_SPEC = new RequestSpecBuilder()
         .addRequestSpecification(BASE_SPEC)
@@ -215,8 +215,8 @@ public class BaseSteps {
     return GET_ALL_OR_CREATE_EXPERIMENT_SPEC;
   }
 
-  public static RequestSpecification getGetDeletePatchExperimentSpec() {
-    return GET_DELETE_PATCH_EXPERIMENT_SPEC;
+  public static RequestSpecification getGetDeletePatchExperimentByUuidSpec() {
+    return GET_DELETE_PATCH_EXPERIMENT_BY_UUID_SPEC;
   }
 
   public static RequestSpecification getInvolvementsSpec() {
@@ -229,5 +229,17 @@ public class BaseSteps {
 
   public static RequestSpecification getGetDeletePatchOptionSpec() {
     return GET_DELETE_PATCH_OPTION_SPEC;
+  }
+
+  /**
+   * Describe response.
+   *
+   * @param logger   Logger
+   * @param response Response
+   */
+  protected static void describeResponse(final Logger logger, final Response response) {
+    logger.info(String.format("Получен ответ: %d\n%s",
+        response.getStatusCode(),
+        response.prettyPrint()));
   }
 }

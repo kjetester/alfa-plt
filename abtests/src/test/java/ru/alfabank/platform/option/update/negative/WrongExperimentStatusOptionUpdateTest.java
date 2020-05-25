@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -12,6 +13,7 @@ import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
@@ -19,10 +21,12 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.Experiment;
 import ru.alfabank.platform.businessobjects.Option;
-import ru.alfabank.platform.experiment.involvements.negative.InvolvementsTest;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class WrongExperimentStatusOptionUpdateTest extends OptionBaseTest {
+
+  private static final Logger LOGGER = LogManager
+      .getLogger(WrongExperimentStatusOptionUpdateTest.class);
 
   private Experiment experiment1;
   private static Option createdDefaultOption;
@@ -33,7 +37,7 @@ public class WrongExperimentStatusOptionUpdateTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
-    final var experiment_end = getValidEndDatePlusWeek();
+    final var experiment_end = getValidExperimentEndDatePlusWeek();
     final var page_1_id = PAGES_STEPS.createEnabledPage(getContentManager());
     final var defaultWidget = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_1_id),
@@ -42,6 +46,7 @@ public class WrongExperimentStatusOptionUpdateTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -52,6 +57,7 @@ public class WrongExperimentStatusOptionUpdateTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -126,7 +132,7 @@ public class WrongExperimentStatusOptionUpdateTest extends OptionBaseTest {
         break;
       }
       case "EXPIRED": {
-        LogManager.getLogger(InvolvementsTest.class).warn("Manual Testing Needed");
+        LOGGER.warn("Manual Testing Needed");
         throw new SkipException("Manual Testing Needed");
       }
       default: {

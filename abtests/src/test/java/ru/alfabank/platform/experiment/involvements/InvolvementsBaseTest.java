@@ -15,10 +15,18 @@ public class InvolvementsBaseTest extends BaseTest {
 
   private static final Logger LOGGER = LogManager.getLogger(InvolvementsBaseTest.class);
 
-  protected Option option2;
-  protected Option option3;
-  protected static int option2counter;
-  protected static int option3counter;
+  protected Option defaultDesktopOption;
+  protected Option abTestDesktopOption1;
+  protected Option abTestDesktopOption2;
+  protected Option defaultMobileOption;
+  protected Option abTestMobileOption1;
+  protected Option abTestMobileOption2;
+  protected static int desktopDefaultOptionCounter;
+  protected static int abTestDesktopOption1counter;
+  protected static int abTestDesktopOption2counter;
+  protected static int mobileDefaultOptionCounter;
+  protected static int abTestMobileOption1counter;
+  protected static int abTestMobileOption2counter;
 
   /**
    * Data Provider.
@@ -30,8 +38,8 @@ public class InvolvementsBaseTest extends BaseTest {
     return new Object[][]{
         {desktop, List.of("ru")},
         {mobile, List.of("ru")},
-        {desktop, List.of("ru", "msk")},
-        {mobile, List.of("ru", "msk")}
+        {desktop, List.of("msk")},
+        {mobile, List.of("msk")}
     };
   }
 
@@ -41,8 +49,8 @@ public class InvolvementsBaseTest extends BaseTest {
   @AfterClass(description = "Посчет количества выпадений каждого из вариантов")
   public void afterClass() {
     LOGGER.info(String.format("Количество выпадений вариата '%s' - '%d'",
-        option2, option2counter));
+        abTestDesktopOption1, abTestDesktopOption1counter));
     LOGGER.info(String.format("Количество выпадений вариата '%s' - '%d'",
-        option3, option3counter));
+        abTestDesktopOption2, abTestDesktopOption2counter));
   }
 }

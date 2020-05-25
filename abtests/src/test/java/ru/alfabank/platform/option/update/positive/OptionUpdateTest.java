@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -38,7 +39,7 @@ public class OptionUpdateTest extends OptionBaseTest {
    */
   @BeforeClass
   public void beforeClass() {
-    final var experimentEnd = getValidEndDatePlusWeek();
+    final var experimentEnd = getValidExperimentEndDatePlusWeek();
     final var page_id = PAGES_STEPS.createPage(null, null, true, getContentManager());
     final var widget_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
@@ -47,6 +48,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -57,6 +59,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -67,6 +70,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -77,6 +81,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -87,6 +92,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -97,6 +103,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -107,6 +114,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -117,6 +125,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -127,6 +136,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -137,6 +147,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -147,6 +158,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -157,6 +169,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         true,
         DEFAULT,
         true,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -167,6 +180,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -177,6 +191,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         false,
         FOR_AB_TEST,
         false,
+        List.of(RU),
         null,
         null,
         getContentManager());
@@ -184,7 +199,7 @@ public class OptionUpdateTest extends OptionBaseTest {
         widget_1.getDevice(),
         page_id,
         getRandomProductType(),
-        getValidEndDate(),
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
 

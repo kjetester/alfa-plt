@@ -45,7 +45,6 @@ public class Option extends AbstractBusinessObject {
     this.name = name;
     this.trafficRate = trafficRate;
     this.widgetUids = widgetUids;
-    LOGGER.debug("Создан / обновлен экземпляр варианта:\n" + describeBusinessObject(this));
   }
 
   private Option(Builder builder) {
@@ -56,8 +55,6 @@ public class Option extends AbstractBusinessObject {
     this.name = builder.name;
     this.trafficRate = builder.trafficRate;
     this.widgetUids = builder.widgetUids;
-    LOGGER.debug("Создан / обновлен экземпляр варианта:\n"
-        + AbstractBusinessObject.describeBusinessObject(this));
   }
 
   public String getUuid() {
@@ -94,10 +91,7 @@ public class Option extends AbstractBusinessObject {
    * @param expected expected option
    */
   public void equals(@NonNull final Option expected) {
-    LOGGER.info(String.format(
-        "Сравнение вариантов:\nACTUAL:\n%s\n\nEXPECTED:\n%s",
-        describeBusinessObject(this),
-        describeBusinessObject(expected)));
+    logComparingObjects(LOGGER, this, expected);
     final var softly = new SoftAssertions();
     softly.assertThat(this.getUuid())
         .as("Проверка UUID варианта")

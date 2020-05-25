@@ -4,6 +4,7 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
+import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -33,6 +34,7 @@ public class AssignmentToWrongWidgetTypeTest extends OptionBaseTest {
           false,
           FOR_AB_TEST,
           false,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -44,6 +46,7 @@ public class AssignmentToWrongWidgetTypeTest extends OptionBaseTest {
           true,
           DEFAULT,
           true,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -54,6 +57,7 @@ public class AssignmentToWrongWidgetTypeTest extends OptionBaseTest {
           false,
           DEFAULT,
           true,
+          List.of(RU),
           null,
           null,
           getContentManager());
@@ -62,7 +66,7 @@ public class AssignmentToWrongWidgetTypeTest extends OptionBaseTest {
         widget1.getDevice(),
         page_id,
         getRandomProductType(),
-        getValidEndDate(),
+        getValidExperimentEndDate(),
         .5D,
         getContentManager());
     Response response1;
