@@ -408,7 +408,7 @@ public class ExperimentSteps extends BaseSteps {
         + describeBusinessObject(experiment));
     var response =
         given()
-            .spec(getGetAllOrCreateExperimentSpec())
+            .spec(getGetAllOrCreateExperimentSpec()).log().all()
             .auth().oauth2(user.getJwt().getAccessToken())
             .body(experiment)
             .post();

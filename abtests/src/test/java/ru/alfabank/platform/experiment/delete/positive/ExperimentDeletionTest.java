@@ -185,7 +185,7 @@ public class ExperimentDeletionTest extends BaseTest {
   }
 
   @Test(description = "Тест деактивации эксперимента с негативным условием:\n"
-      + "1. Эксперимент имеет статус 'EXPIRED'")
+                    + "\t1. Эксперимент имеет статус 'EXPIRED'")
   public void expiredExperimentDeletionNegativeTest() {
     LOGGER.warn("Manual Testing Needed");
     throw new SkipException("Manual Testing Needed");
