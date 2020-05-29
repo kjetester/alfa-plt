@@ -10,16 +10,13 @@ import ru.alfabank.platform.steps.cs.PagesSteps;
 
 public class AuditBaseTest extends BaseTest {
 
-  private static final PagesSteps PAGE_STEP = new PagesSteps();
-  protected static final AuditSteps AUDIT_STEP = new AuditSteps();
-
   @BeforeTest
   public void beforeTest() {
-    PAGE_STEP.createEnabledPage(getContentManager());
+    PAGES_STEPS.createEnabledPage(getContentManager());
   }
 
   @AfterTest
   public void afterTest() {
-    PAGE_STEP.deleteCreatedPages();
+    PAGES_STEPS.deleteCreatedPages();
   }
 }

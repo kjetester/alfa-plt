@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="MeDaColl Suite"
-       thread-count="10"
+<suite name="Content-Store Suite"
+       thread-count="1"
        configfailurepolicy="continue"
        parallel="true"
        verbose="1">
@@ -10,10 +10,16 @@
             <class name="ru.alfabank.platform.medacoll.MeDaCollTest"/>
         </classes>
     </test>
-    <test name="Audit Role Model Test" enabled="true">
+    <test name="Audit Role Model Test" enabled="false">
         <classes>
             <class name="ru.alfabank.platform.audit.rolemodel.PositiveAuditRoleModelTest"/>
             <class name="ru.alfabank.platform.audit.rolemodel.NegativeAuditRoleModelTest"/>
+        </classes>
+    </test>
+    <test name="Pages Role Model Test" enabled="true">
+        <classes>
+            <class name="ru.alfabank.platform.drafts.rolemodel.PositivePageOperationsRoleModelTest"/>
+            <class name="ru.alfabank.platform.drafts.rolemodel.NegativePageOperationsRoleModelTest"/>
         </classes>
     </test>
 </suite>

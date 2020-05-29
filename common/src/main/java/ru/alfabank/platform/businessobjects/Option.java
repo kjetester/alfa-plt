@@ -69,7 +69,7 @@ public class Option extends AbstractBusinessObject {
     return experimentUuid;
   }
 
-  public Boolean getDefault() {
+  public Boolean isDefault() {
     return isDefault;
   }
 
@@ -102,9 +102,9 @@ public class Option extends AbstractBusinessObject {
     softly.assertThat(this.getExperimentUuid())
         .as("Проверка UUID эксперимента ассоциированного с вариантом")
         .isEqualTo(expected.getExperimentUuid());
-    softly.assertThat(this.getDefault())
+    softly.assertThat(this.isDefault())
         .as("Проверка, признака варианта по-умолчанию")
-        .isEqualTo(expected.getDefault());
+        .isEqualTo(expected.isDefault());
     softly.assertThat(this.getName())
         .as("Проверка наименования варианта")
         .isEqualTo(expected.getName());

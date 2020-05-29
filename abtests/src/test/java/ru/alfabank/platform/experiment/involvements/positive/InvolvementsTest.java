@@ -148,8 +148,8 @@ public class InvolvementsTest extends InvolvementsBaseTest {
   }
 
   @Test(description = "Тест получения признака участия в эксперименте\n"
-      + "\t Статус эксперимента 'RUNNING'",
-      dataProvider = "dataProvider")
+                    + "\t1. Статус эксперимента 'RUNNING'",
+                      dataProvider = "dataProvider")
   public void involvementsRunningExperimentPositiveTest(
       @ParameterKey("Устройство пользователя") final Device clientDevice,
       @ParameterKey("Гео-метка  пользователя") final List<String> geos) {
@@ -162,23 +162,27 @@ public class InvolvementsTest extends InvolvementsBaseTest {
     boolean isInvolved;
     if (clientDevice.equals(desktop)) {
       assertThat(isInvolved = response.jsonPath().getBoolean("involved"))
-          .as("Приверка наличия признака вовлеченности")
+          .as("Проверка наличия признака вовлеченности")
           .isNotNull();
       if (isInvolved) {
         String optionName;
         softly.assertThat(optionName = response.jsonPath().getString("optionName"))
             .as("Проверка наименования варианта АБ-теста")
-            .isIn(abTestDesktopOption1.getName(), abTestDesktopOption2.getName());
+            .isIn(
+                defaultDesktopOption.getName(),
+                abTestDesktopOption1.getName(),
+                abTestDesktopOption2.getName());
         if (optionName.equals(abTestDesktopOption1.getName())) {
           abTestDesktopOption1counter++;
-        } else {
+        } else if (optionName.equals(abTestDesktopOption2.getName())) {
           abTestDesktopOption2counter++;
+        } else {
+          defaultDesktopOptionCounter++;
         }
       } else {
         softly.assertThat(response.jsonPath().getString("optionName"))
             .as("Проверка наименования дефолтного варианта")
             .isEqualTo(defaultDesktopOption.getName());
-        desktopDefaultOptionCounter++;
       }
       softly.assertThat(response.jsonPath().getString("uuid"))
           .as("Проверка UUID эксперимента")
@@ -197,17 +201,21 @@ public class InvolvementsTest extends InvolvementsBaseTest {
         String optionName;
         softly.assertThat(optionName = response.jsonPath().getString("optionName"))
             .as("Проверка наименования варианта АБ-теста")
-            .isIn(abTestMobileOption1.getName(), abTestMobileOption2.getName());
+            .isIn(
+                defaultMobileOption.getName(),
+                abTestMobileOption1.getName(),
+                abTestMobileOption2.getName());
         if (optionName.equals(abTestMobileOption1.getName())) {
           abTestMobileOption1counter++;
-        } else {
+        } else if (optionName.equals(abTestMobileOption2.getName())) {
           abTestMobileOption2counter++;
+        } else {
+          defaultMobileOptionCounter++;
         }
       } else {
         softly.assertThat(response.jsonPath().getString("optionName"))
             .as("Проверка наименования дефолтного варианта")
             .isEqualTo(defaultMobileOption.getName());
-        mobileDefaultOptionCounter++;
       }
       softly.assertThat(response.jsonPath().getString("uuid"))
           .as("Проверка UUID эксперимента")

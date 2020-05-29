@@ -21,10 +21,10 @@ public class InvolvementsBaseTest extends BaseTest {
   protected Option defaultMobileOption;
   protected Option abTestMobileOption1;
   protected Option abTestMobileOption2;
-  protected static int desktopDefaultOptionCounter;
+  protected static int defaultDesktopOptionCounter;
   protected static int abTestDesktopOption1counter;
   protected static int abTestDesktopOption2counter;
-  protected static int mobileDefaultOptionCounter;
+  protected static int defaultMobileOptionCounter;
   protected static int abTestMobileOption1counter;
   protected static int abTestMobileOption2counter;
 
@@ -48,9 +48,23 @@ public class InvolvementsBaseTest extends BaseTest {
    */
   @AfterClass(description = "Посчет количества выпадений каждого из вариантов")
   public void afterClass() {
-    LOGGER.info(String.format("Количество выпадений вариата '%s' - '%d'",
-        abTestDesktopOption1, abTestDesktopOption1counter));
-    LOGGER.info(String.format("Количество выпадений вариата '%s' - '%d'",
-        abTestDesktopOption2, abTestDesktopOption2counter));
+    LOGGER.info(String.format(
+        "Количество выпадений desktop вариата по-умолчанию - '%d'",
+        defaultDesktopOptionCounter));
+    LOGGER.info(String.format(
+        "Количество выпадений desktop вариата АБ-теста №1 - '%d'",
+        abTestDesktopOption1counter));
+    LOGGER.info(String.format(
+        "Количество выпадений desktop вариата АБ-теста №2 - '%d'",
+        abTestDesktopOption2counter));
+    LOGGER.info(String.format(
+        "Количество выпадений mobile вариата по-умолчанию - '%d'",
+        defaultMobileOptionCounter));
+    LOGGER.info(String.format(
+        "Количество выпадений mobile вариата АБ-теста №1 - '%d'",
+        abTestMobileOption1counter));
+    LOGGER.info(String.format(
+        "Количество выпадений mobile вариата АБ-теста №2 - '%d'",
+        abTestMobileOption2counter));
   }
 }

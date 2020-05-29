@@ -41,15 +41,6 @@ import ru.alfabank.platform.users.UnclaimedUser;
 
 public class PositiveRoleModelTest extends OptionBaseTest {
 
-  private static final CreditCardUser CREDIT_CARD_USER = getCreditCardUser();
-  private static final DebitCardUser DEBIT_CARD_USER = getDebitCardUser();
-  private static final InvestUser INVEST_USER = getInvestUser();
-  private static final MortgageUser MORTGAGE_USER = getMortgageUser();
-  private static final PilUser PIL_USER = getPilUser();
-  private static final SmeUser SME_USER = getSmeUser();
-  private static final CommonUser COMMON_USER = getCommonUser();
-  private static final UnclaimedUser UNCLAIMED_USER = getUnclaimedUser();
-
   private final String experimentEndDate = getValidExperimentEndDatePlusWeek();
 
   @Test(description = "Позитивный тест создания экспермента",

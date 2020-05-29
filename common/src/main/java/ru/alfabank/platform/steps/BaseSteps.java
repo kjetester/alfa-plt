@@ -34,6 +34,7 @@ public class BaseSteps {
   private static String contentStoreBasePath;
   private static String pageBasePath;
   private static String pageIdBasePath;
+  private static String pageIdCopyBasePath;
   private static String pageContentsBasePath;
   private static String metaInfoContentPageBasePath;
   private static String draftBasePath;
@@ -51,6 +52,7 @@ public class BaseSteps {
   private static final RequestSpecification BASE_CS_SPEC;
   private static final RequestSpecification PAGE_SPEC;
   private static final RequestSpecification PAGE_ID_SPEC;
+  private static final RequestSpecification PAGE_ID_COPY_SPEC;
   private static final RequestSpecification PAGE_CONTENT_SPEC;
   private static final RequestSpecification META_INFO_CONTENT_PAGE_SPEC;
   private static final RequestSpecification DRAFT_SPEC;
@@ -115,6 +117,10 @@ public class BaseSteps {
     PAGE_ID_SPEC = new RequestSpecBuilder()
         .addRequestSpecification(BASE_CS_SPEC)
         .setBasePath(pageIdBasePath)
+        .build();
+    PAGE_ID_COPY_SPEC = new RequestSpecBuilder()
+        .addRequestSpecification(BASE_CS_SPEC)
+        .setBasePath(pageIdCopyBasePath)
         .build();
     LOGGER.info("Устанавливаю конфгурацию HTTP запросов к /content-page-controller");
     PAGE_CONTENT_SPEC = new RequestSpecBuilder()
@@ -214,6 +220,7 @@ public class BaseSteps {
     final var adminPanelBasePath = contentStoreBasePath + "/admin-panel";
     pageBasePath = adminPanelBasePath + "/pages";
     pageIdBasePath = pageBasePath + "/{id}";
+    pageIdCopyBasePath = pageIdBasePath + "/copy";
     pageContentsBasePath = contentStoreBasePath + "/page-contents";
     metaInfoContentPageBasePath = adminPanelBasePath + "/meta-info-page-contents";
     draftBasePath = pageBasePath + "/{pageId}/drafts";
@@ -234,6 +241,10 @@ public class BaseSteps {
 
   public static RequestSpecification getPageIdSpec() {
     return PAGE_ID_SPEC;
+  }
+
+  public static RequestSpecification getPageIdCopySpec() {
+    return PAGE_ID_COPY_SPEC;
   }
 
   public static RequestSpecification getPageContentSpec() {

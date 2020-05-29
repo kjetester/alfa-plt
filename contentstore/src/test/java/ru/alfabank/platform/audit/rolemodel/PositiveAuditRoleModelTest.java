@@ -13,21 +13,21 @@ public class PositiveAuditRoleModelTest extends AuditBaseTest {
   @Test(description = "Позитивный тест просмотра списка транзакций")
   public void positiveReadTransactionsListTest() {
     final var response =
-        AUDIT_STEP.getTransactionList(getAuditViewUser());
+        AUDIT_STEPS.getTransactionList(getAuditViewUser());
     assertThat(response.getStatusCode()).isEqualTo(SC_OK);
   }
 
   @Test(description = "Позитивный тест просмотра транзакции", priority = 1)
   public void positiveReadTransactionTest() {
     final var response =
-        AUDIT_STEP.getTransaction(getAuditViewUser());
+        AUDIT_STEPS.getTransaction(getAuditViewUser());
     assertThat(response.getStatusCode()).isEqualTo(SC_OK);
   }
 
   @Test(description = "Позитивный тест отката транзакции", priority = 2)
   public void positiveRollbackTransactionTest() {
     final var response =
-        AUDIT_STEP.rollbackTransaction(getAuditRollbackUser());
+        AUDIT_STEPS.rollbackTransaction(getAuditRollbackUser());
     assertThat(response.getStatusCode()).isEqualTo(SC_OK);
   }
 

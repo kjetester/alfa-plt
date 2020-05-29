@@ -11,24 +11,24 @@ import ru.alfabank.platform.audit.AuditBaseTest;
 
 public class NegativeAuditRoleModelTest extends AuditBaseTest {
 
-  @Test(description = "Позитивный тест просмотра списка транзакций")
-  public void positiveReadTransactionsListTest() {
+  @Test(description = "Негативный тест просмотра списка транзакций")
+  public void negativeReadTransactionsListTest() {
     final var response =
-        AUDIT_STEP.getTransactionList(getPilUser());
+        AUDIT_STEPS.getTransactionList(getPilUser());
     assertThat(response.getStatusCode()).isEqualTo(SC_FORBIDDEN);
   }
 
-  @Test(description = "Позитивный тест просмотра транзакции", priority = 1)
-  public void positiveReadTransactionTest() {
+  @Test(description = "Негативный тест просмотра транзакции", priority = 1)
+  public void negativeReadTransactionTest() {
     final var response =
-        AUDIT_STEP.getTransaction(getSmeUser());
+        AUDIT_STEPS.getTransaction(getSmeUser());
     assertThat(response.getStatusCode()).isEqualTo(SC_FORBIDDEN);
   }
 
-  @Test(description = "Позитивный тест отката транзакции", priority = 2)
-  public void positiveRollbackTransactionTest() {
+  @Test(description = "Негативный тест отката транзакции", priority = 2)
+  public void negativeRollbackTransactionTest() {
     final var response =
-        AUDIT_STEP.rollbackTransaction(getUnclaimedUser());
+        AUDIT_STEPS.rollbackTransaction(getUnclaimedUser());
     assertThat(response.getStatusCode()).isEqualTo(SC_FORBIDDEN);
   }
 }
