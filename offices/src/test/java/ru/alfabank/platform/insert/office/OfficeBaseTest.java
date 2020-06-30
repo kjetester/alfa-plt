@@ -1,4 +1,4 @@
-package ru.alfabank.platform.office;
+package ru.alfabank.platform.insert.office;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
@@ -34,11 +34,6 @@ import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.SAFE;
 import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.SERVICE_OFFICE;
 import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.WIFI;
 
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import java.io.FileReader;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -69,9 +64,9 @@ public class OfficeBaseTest extends BaseTest {
                     new Office.Builder()
                         .using(BASE_OFFICE)
                         .setIdMasterSystem(1234567890)
-                        .setPid("1001")
-                        .setMnemonic("1001")
-                        .setPathUrl("Path_1001")
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setPathUrl(randomAlphanumeric(31))
                         .setTitle(randomAlphanumeric(65535))
                         .setDescription(randomAlphanumeric(65535))
                         .setClose(true)
@@ -195,7 +190,7 @@ public class OfficeBaseTest extends BaseTest {
                         .setIdMasterSystem(1)
                         .setPid("0101")
                         .setMnemonic("0101")
-                        .setPathUrl("Path_0101")
+                        .setPathUrl(randomAlphanumeric(1))
                         .setTitle(randomAlphanumeric(1))
                         .setDescription(randomAlphanumeric(1))
                         .setClose(true)
@@ -329,7 +324,7 @@ public class OfficeBaseTest extends BaseTest {
             List.of("pid")
         },
         {
-            "office.pid. == non degits",
+            "office.pid. == non digits",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -423,6 +418,21 @@ public class OfficeBaseTest extends BaseTest {
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
                         .setPathUrl("")
+                        .build()
+                )
+            ),
+            List.of("pathUrl")
+        },
+        {
+            "office.pathUrl.length > 31",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setPathUrl(randomAlphanumeric(32))
                         .build()
                 )
             ),

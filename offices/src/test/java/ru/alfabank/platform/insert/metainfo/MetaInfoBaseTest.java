@@ -1,11 +1,9 @@
-package ru.alfabank.platform.metainfo;
+package ru.alfabank.platform.insert.metainfo;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
-import static ru.alfabank.platform.businessobjects.offices.Operations.ERR;
 import static ru.alfabank.platform.businessobjects.offices.Operations.UPDATE;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -14,7 +12,6 @@ import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.offices.Offices;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office.MetaInfo;
-import ru.alfabank.platform.businessobjects.offices.Offices.Office.Operation;
 import ru.alfabank.platform.businessobjects.offices.Operations;
 
 public class MetaInfoBaseTest extends BaseTest {

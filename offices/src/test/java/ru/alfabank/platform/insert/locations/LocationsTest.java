@@ -1,4 +1,4 @@
-package ru.alfabank.platform.locations;
+package ru.alfabank.platform.insert.locations;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;

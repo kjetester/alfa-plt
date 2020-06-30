@@ -1,4 +1,4 @@
-package ru.alfabank.platform.listofoperations;
+package ru.alfabank.platform.insert.listofoperations;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;

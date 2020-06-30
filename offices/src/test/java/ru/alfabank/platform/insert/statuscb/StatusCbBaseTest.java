@@ -1,4 +1,4 @@
-package ru.alfabank.platform.statuscb;
+package ru.alfabank.platform.insert.statuscb;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;

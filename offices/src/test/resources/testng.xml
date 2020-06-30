@@ -10,42 +10,42 @@
     </listeners>
     <test name="Wrapper Test" enabled="true" thread-count="1">
         <classes>
-            <class name="ru.alfabank.platform.wrapper.WrapperTest"/>
+            <class name="ru.alfabank.platform.insert.wrapper.WrapperTest"/>
         </classes>
     </test>
     <test name="Offices tests" enabled="true" thread-count="1">
         <classes>
-            <class name="ru.alfabank.platform.office.OfficeTest"/>
+            <class name="ru.alfabank.platform.insert.office.OfficeTest"/>
         </classes>
     </test>
     <test name="StatusCb Test" enabled="true" thread-count="1">
         <classes>
-            <class name="ru.alfabank.platform.statuscb.StatusCbTest"/>
+            <class name="ru.alfabank.platform.insert.statuscb.StatusCbTest"/>
         </classes>
     </test>
     <test name="Kinds Test" enabled="true" thread-count="1">
         <classes>
-            <class name="ru.alfabank.platform.kinds.KindsTest"/>
+            <class name="ru.alfabank.platform.insert.kinds.KindsTest"/>
         </classes>
     </test>
     <test name="Locations Test" enabled="true" thread-count="1">
         <classes>
-            <class name="ru.alfabank.platform.locations.LocationsTest"/>
+            <class name="ru.alfabank.platform.insert.locations.LocationsTest"/>
         </classes>
     </test>
     <test name="Service Test" enabled="true" thread-count="1">
         <classes>
-            <class name="ru.alfabank.platform.service.ServiceTest"/>
+            <class name="ru.alfabank.platform.insert.service.ServiceTest"/>
         </classes>
     </test>
     <test name="List of Operations Test" enabled="true" thread-count="1">
         <classes>
-            <class name="ru.alfabank.platform.listofoperations.ListOfOperationsTest"/>
+            <class name="ru.alfabank.platform.insert.listofoperations.ListOfOperationsTest"/>
         </classes>
     </test>
     <test name="Meta Info Test" enabled="true" thread-count="1">
         <classes>
-            <class name="ru.alfabank.platform.metainfo.MetaInfoTest"/>
+            <class name="ru.alfabank.platform.insert.metainfo.MetaInfoTest"/>
         </classes>
     </test>
 </suite>

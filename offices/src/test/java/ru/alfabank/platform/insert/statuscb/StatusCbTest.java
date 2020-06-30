@@ -1,4 +1,4 @@
-package ru.alfabank.platform.statuscb;
+package ru.alfabank.platform.insert.statuscb;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;

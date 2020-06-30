@@ -1,4 +1,4 @@
-package ru.alfabank.platform.office;
+package ru.alfabank.platform.insert.office;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;

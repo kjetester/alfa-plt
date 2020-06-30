@@ -1,4 +1,4 @@
-package ru.alfabank.platform.wrapper;
+package ru.alfabank.platform.insert.wrapper;
 
 import static java.time.temporal.ChronoUnit.HOURS;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;

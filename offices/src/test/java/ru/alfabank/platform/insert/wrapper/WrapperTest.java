@@ -1,24 +1,22 @@
-package ru.alfabank.platform.service;
+package ru.alfabank.platform.insert.wrapper;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.offices.Kind.Code;
 import ru.alfabank.platform.businessobjects.offices.Offices;
-import ru.alfabank.platform.businessobjects.offices.ServiceCodeName;
 
-public class ServiceTest extends ServiceBaseTest {
+public class WrapperTest extends WrapperBaseTest {
 
-  @Test(dataProvider = "servicePositiveTestDataProvider")
-  public void servicePositiveTest(@ParameterKey("Test case")
+  @Test(dataProvider = "wrapperPositiveTestDataProvider")
+  public void wrapperPositiveTest(@ParameterKey("Test case")
                                     final String testCase,
                                   final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
-    STEP.checkServicesMapping(offices);
+    STEP.checkIfOfficesWereSaved(offices);
   }
 
-  @Test(dataProvider = "serviceNegativeTestDataProvider", priority = 1)
-  public void serviceNegativeTest(@ParameterKey("Test case")
+  @Test(dataProvider = "wrapperNegativeTestDataProvider", priority = 1)
+  public void wrapperNegativeTest(@ParameterKey("Test case")
                                     final String testCase,
                                   final Offices offices,
                                   final List<String> expectedErrorMessagesList) {

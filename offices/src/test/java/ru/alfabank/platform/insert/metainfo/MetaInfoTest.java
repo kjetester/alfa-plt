@@ -1,21 +1,21 @@
-package ru.alfabank.platform.listofoperations;
+package ru.alfabank.platform.insert.metainfo;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.offices.Offices;
 
-public class ListOfOperationsTest extends ListOfOperationsBaseTest {
+public class MetaInfoTest extends MetaInfoBaseTest {
 
-  @Test(dataProvider = "listOfOperationsPositiveTestDataProvider")
+  @Test(dataProvider = "metaInfoPositiveTestDataProvider")
   public void listOfOperationsPositiveTest(@ParameterKey("Test case")
                                              final String testCase,
                                            final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
-    STEP.checkListOfOperationsMapping(offices);
+    STEP.checkChangeDateTimeMapping(offices);
   }
 
-  @Test(dataProvider = "listOfOperationsNegativeTestDataProvider", priority = 1)
+  @Test(dataProvider = "metaInfoNegativeTestDataProvider", priority = 1)
   public void listOfOperationsNegativeTest(@ParameterKey("Test case")
                                              final String testCase,
                                            final Offices offices,

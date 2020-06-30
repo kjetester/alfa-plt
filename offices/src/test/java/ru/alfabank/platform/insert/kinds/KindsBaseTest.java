@@ -1,4 +1,4 @@
-package ru.alfabank.platform.kinds;
+package ru.alfabank.platform.insert.kinds;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
@@ -9,7 +9,6 @@ import java.util.List;
 import org.testng.annotations.DataProvider;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.offices.Kind;
-import ru.alfabank.platform.businessobjects.offices.Kind.Code;
 import ru.alfabank.platform.businessobjects.offices.Offices;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office;
 

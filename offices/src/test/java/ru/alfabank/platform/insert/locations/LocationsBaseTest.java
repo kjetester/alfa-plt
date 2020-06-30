@@ -1,18 +1,14 @@
-package ru.alfabank.platform.locations;
+package ru.alfabank.platform.insert.locations;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.HashMap;
 import java.util.List;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.cities.Cities.City;
 import ru.alfabank.platform.businessobjects.offices.Offices;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office.Location;
