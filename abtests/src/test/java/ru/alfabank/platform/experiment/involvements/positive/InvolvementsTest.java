@@ -5,8 +5,8 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -15,7 +15,7 @@ import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.experiment.involvements.InvolvementsBaseTest;
 
@@ -148,8 +148,8 @@ public class InvolvementsTest extends InvolvementsBaseTest {
   }
 
   @Test(description = "Тест получения признака участия в эксперименте\n"
-                    + "\t1. Статус эксперимента 'RUNNING'",
-                      dataProvider = "dataProvider")
+      + "\t1. Статус эксперимента 'RUNNING'",
+      dataProvider = "dataProvider")
   public void involvementsRunningExperimentPositiveTest(
       @ParameterKey("Устройство пользователя") final Device clientDevice,
       @ParameterKey("Гео-метка  пользователя") final List<String> geos) {

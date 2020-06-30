@@ -3,9 +3,9 @@ package ru.alfabank.platform.experiment.update.deactivate.positive;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.CANCELLED;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
+import ru.alfabank.platform.businessobjects.contentstore.Widget;
 
 public class ExperimentDeactivationTest extends BaseTest {
 

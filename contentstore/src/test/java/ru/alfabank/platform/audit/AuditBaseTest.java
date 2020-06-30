@@ -5,8 +5,6 @@ import static ru.alfabank.platform.users.ContentManager.getContentManager;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.steps.cs.AuditSteps;
-import ru.alfabank.platform.steps.cs.PagesSteps;
 
 public class AuditBaseTest extends BaseTest {
 

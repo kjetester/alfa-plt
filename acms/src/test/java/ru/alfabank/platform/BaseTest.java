@@ -26,7 +26,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
-import ru.alfabank.platform.businessobjects.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
 import ru.alfabank.platform.users.AccessibleUser;
 
 public class BaseTest {
@@ -65,13 +65,14 @@ public class BaseTest {
    * @param environment environment
    */
   @BeforeSuite(
-      description = "Выполенние предусловий:\n"
-          + "\t1. Установка тествой среды\n"
-          + "\t2. Создание объекта страницы-донора\n"
-          + "\t5. Настройка базовой конфигурации HTTP запросов\n"
-          + "\t6. Настройка конфигурации HTTP запросов к page-controller\n"
-          + "\t7. Настройка конфигурации HTTP запросов к content-page-controller\n"
-          + "\t8. Настройка конфигурации HTTP запросов к page-draft-controller",
+      description = """
+          Выполенние предусловий:
+          \t1. Установка тествой среды
+          \t2. Создание объекта страницы-донора
+          \t5. Настройка базовой конфигурации HTTP запросов
+          \t6. Настройка конфигурации HTTP запросов к page-controller
+          \t7. Настройка конфигурации HTTP запросов к content-page-controller
+          \t8. Настройка конфигурации HTTP запросов к page-draft-controller""",
       alwaysRun = true)
   @Parameters({"environment"})
   public void beforeSuite(
@@ -87,8 +88,10 @@ public class BaseTest {
   }
 
   @BeforeMethod(
-      description = "Выполенние предусловий:\n"
-          + "\t3. Создание базового объекта создоваемой страницы\n")
+      description = """
+          Выполенние предусловий:
+          \t3. Создание базового объекта создоваемой страницы
+          """)
   public void beforeCreationPageMethods() {
     setUpBasePage();
   }
@@ -104,23 +107,12 @@ public class BaseTest {
     LOGGER.info(String.format("Тестовая среда - '%s'", environment));
 
     switch (environment) {
-      case "develop": {
-        baseUri = String.format("http://develop%s", URL_ENDING);
-        break;
-      }
-      case "preprod": {
-        baseUri = String.format("http://preprod%s", URL_ENDING);
-        break;
-      }
-      case "feature": {
-        baseUri = String.format(
-            "http://acms-feature-alfabankru-%s.alfabankru-reviews%s", System.getProperty("feature"), URL_ENDING);
-        break;
-      }
-      default: {
-        baseUri = "http://develop" + URL_ENDING;
-        break;
-      }
+      case "develop" -> baseUri = String.format("http://develop%s", URL_ENDING);
+      case "preprod" -> baseUri = String.format("http://preprod%s", URL_ENDING);
+      case "feature" -> baseUri = String.format(
+          "http://acms-feature-alfabankru-%s.alfabankru-reviews%s",
+          System.getProperty("feature"), URL_ENDING);
+      default -> baseUri = "http://develop" + URL_ENDING;
     }
     LOGGER.info(String.format("URI '%s' установлен в качестве базового", baseUri));
   }

@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -16,15 +16,16 @@ import ru.alfabank.platform.option.OptionBaseTest;
 
 public class NonDefaultWidgetHasInvalidRelativesTest extends OptionBaseTest {
 
-  @Test(description = "Тест создания недефлотного варианта с привязкой к виджету:"
-      + "\n\t* enable=false"
-      + "\n\t* experimentOptionName=forABtest"
-      + "\n\t* defaultWidget=false"
-      + "\n\t* с негативным условием:"
-      + "\n\t\t1. Предок:"
-      + "\n\t\t\t* enable=false"
-      + "\n\t\t\t* experimentOptionName=forABtest"
-      + "\n\t\t\t* defaultWidget=false")
+  @Test(description = """
+      Тест создания недефлотного варианта с привязкой к виджету:
+      \t* enable=false
+      \t* experimentOptionName=forABtest
+      \t* defaultWidget=false
+      \t* с негативным условием:
+      \t\t1. Предок:
+      \t\t\t* enable=false
+      \t\t\t* experimentOptionName=forABtest
+      \t\t\t* defaultWidget=false""")
   public void nonDefaultWidgetHasInvalidAncestorNegativeTest() {
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
     final var widget0 = DRAFT_STEPS.createWidget(
@@ -83,15 +84,16 @@ public class NonDefaultWidgetHasInvalidRelativesTest extends OptionBaseTest {
             + "' не должен иметь верхнеуровневых родителей с флагом 'forABtest'");
   }
 
-  @Test(description = "Тест создания недефлотного варианта с привязкой к виджету:"
-      + "\n\t* enable=false"
-      + "\n\t* experimentOptionName=forABtest"
-      + "\n\t* defaultWidget=false"
-      + "\n\t* с негативным условием:"
-      + "\n\t\t1. Прямой предок:"
-      + "\n\t\t\t* enable=false"
-      + "\n\t\t\t* experimentOptionName=forABtest"
-      + "\n\t\t\t* defaultWidget=false")
+  @Test(description = """
+      Тест создания недефлотного варианта с привязкой к виджету:
+      \t* enable=false
+      \t* experimentOptionName=forABtest
+      \t* defaultWidget=false
+      \t* с негативным условием:
+      \t\t1. Прямой предок:
+      \t\t\t* enable=false
+      \t\t\t* experimentOptionName=forABtest
+      \t\t\t* defaultWidget=false""")
   public void nonDefaultWidgetHasInvalidFatherNegativeTest() {
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
     final var widget0 = DRAFT_STEPS.createWidget(
@@ -139,15 +141,16 @@ public class NonDefaultWidgetHasInvalidRelativesTest extends OptionBaseTest {
             + "' не должен иметь верхнеуровневых родителей с флагом 'forABtest'");
   }
 
-  @Test(description = "Тест создания недефлотного варианта с привязкой к виджету:"
-      + "\n\t* enable=false"
-      + "\n\t* experimentOptionName=forABtest"
-      + "\n\t* defaultWidget=false"
-      + "\n\t* с негативным условием:"
-      + "\n\t\t1. Ребенок:"
-      + "\n\t\t\t* enable=true/false"
-      + "\n\t\t\t* experimentOptionName=default"
-      + "\n\t\t\t* defaultWidget=true")
+  @Test(description = """
+      Тест создания недефлотного варианта с привязкой к виджету:
+      \t* enable=false
+      \t* experimentOptionName=forABtest
+      \t* defaultWidget=false
+      \t* с негативным условием:
+      \t\t1. Ребенок:
+      \t\t\t* enable=true/false
+      \t\t\t* experimentOptionName=default
+      \t\t\t* defaultWidget=true""")
   public void nonDefaultWidgetHasInvalidChildrenNegativeTest() {
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
     final var widget1 = DRAFT_STEPS.createWidget(

@@ -4,9 +4,9 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.RUNNING;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -15,8 +15,8 @@ import java.util.stream.IntStream;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
+import ru.alfabank.platform.businessobjects.contentstore.Widget;
 
 public class ExperimentActivationOneTest extends BaseTest {
 
@@ -33,28 +33,29 @@ public class ExperimentActivationOneTest extends BaseTest {
   /**
    * Before method.
    */
-  @BeforeMethod(description = "Выполнение предусловий:"
-      + "\n\t1. На странице нет запущенных экспериментов"
-      + "\n\t2. Даты активности страницы установлены"
-      + "\n\t3. Даты активности виджетов установлены"
-      + "\n\t4. Статус эксперимента 'DISABLED'"
-      + "\n\t5. Даты активности страницы не в диапазоне дат проведения эксперимента"
-      + "\n\t6. Даты активности виджетов не в диапазоне дат проведения эксперимента"
-      + "\n\t7. Дата окончания эксперимента более текущей даты + 1 день"
-      + "\n\t8. У эксперимента есть 2 варианта:"
-      + "\n\t\t1. Дефолтный вариант привязан к нешаренному виджету, у которого:"
-      + "\n\t\t\t* enable=true"
-      + "\n\t\t\t* experimentOptionName=default"
-      + "\n\t\t\t* defaultWidget=true"
-      + "\n\t\t\t* предок experimentOptionName=forABtest"
-      + "\n\t\t\t* родитель experimentOptionName=default"
-      + "\n\t\t\t* ребенок experimentOptionName=default"
-      + "\n\t\t2. Недефолтный вариант привязан к нешаренному виджету, у которого:"
-      + "\n\t\t\t* enable=false"
-      + "\n\t\t\t* experimentOptionName=forABtest"
-      + "\n\t\t\t* defaultWidget=false"
-      + "\n\t\t\t* родитель experimentOptionName=default"
-      + "\n\t\t\t* ребенок experimentOptionName=forABtest")
+  @BeforeMethod(description = """
+      Выполнение предусловий:
+      \t1. На странице нет запущенных экспериментов
+      \t2. Даты активности страницы установлены
+      \t3. Даты активности виджетов установлены
+      \t4. Статус эксперимента 'DISABLED'
+      \t5. Даты активности страницы не в диапазоне дат проведения эксперимента
+      \t6. Даты активности виджетов не в диапазоне дат проведения эксперимента
+      \t7. Дата окончания эксперимента более текущей даты + 1 день
+      \t8. У эксперимента есть 2 варианта:
+      \t\t1. Дефолтный вариант привязан к нешаренному виджету, у которого:
+      \t\t\t* enable=true
+      \t\t\t* experimentOptionName=default
+      \t\t\t* defaultWidget=true
+      \t\t\t* предок experimentOptionName=forABtest
+      \t\t\t* родитель experimentOptionName=default
+      \t\t\t* ребенок experimentOptionName=default
+      \t\t2. Недефолтный вариант привязан к нешаренному виджету, у которого:
+      \t\t\t* enable=false
+      \t\t\t* experimentOptionName=forABtest
+      \t\t\t* defaultWidget=false
+      \t\t\t* родитель experimentOptionName=default
+      \t\t\t* ребенок experimentOptionName=forABtest""")
   public void beforeMethod() {
     final String date_from = getValidWidgetDateFrom();
     final String date_to = getValidWidgetDateTo();

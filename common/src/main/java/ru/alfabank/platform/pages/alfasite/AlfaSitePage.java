@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import org.assertj.core.api.Assertions;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import ru.alfabank.platform.businessobjects.enums.Geo;
+import org.testng.TestNGException;
 
 public class AlfaSitePage {
 
@@ -41,12 +41,12 @@ public class AlfaSitePage {
   /**
    * Assertion page title while widget is inactive.
    *
-   * @param geos cities
+   * @param geoGroups cities
    * @return this
    */
-  public AlfaSitePage checkPageTitleBefore(Geo... geos) {
+  public AlfaSitePage checkPageTitleBefore(String... geoGroups) {
     LOGGER.info("Проверяю, что заголовок страницы пуст");
-    setCityCookieAndRefreshPage(Arrays.asList(geos));
+    setCityCookieAndRefreshPage(List.of(geoGroups));
     Assertions
         .assertThat(getDriver().getTitle())
         .isEqualTo("");
@@ -58,23 +58,23 @@ public class AlfaSitePage {
    *
    * @param deadline      deadline when to start assertion
    * @param expectedTitle title to expect
-   * @param geos          city where to expect
+   * @param geoGroups     city where to expect
    * @return this
    * @throws InterruptedException InterruptedException
    */
   public AlfaSitePage checkPageTitleAfter(LocalDateTime deadline,
                                           String expectedTitle,
-                                          Geo... geos) throws InterruptedException {
+                                          String... geoGroups) throws InterruptedException {
     LOGGER.info(String.format(
         "Проверяю, что заголовок соответствует значению '%s'", expectedTitle));
     wait(deadline);
     boolean isTitleCorrect = expectedTitle.equals(getDriver().getTitle());
     int count = 3;
     long start = Instant.now().getEpochSecond();
-    List<Geo> geoList = Arrays.asList(geos);
+    List<String> geoGroupList = Arrays.asList(geoGroups);
     while (!isTitleCorrect && count > 0) {
       TimeUnit.SECONDS.sleep(15);
-      setCityCookieAndRefreshPage(geoList);
+      setCityCookieAndRefreshPage(geoGroupList);
       String actualTitle = getDriver().getTitle();
       isTitleCorrect = expectedTitle.equals(actualTitle);
       count--;
@@ -102,6 +102,7 @@ public class AlfaSitePage {
         TimeUnit.SECONDS.sleep(1);
       } catch (InterruptedException e) {
         e.printStackTrace();
+        throw new TestNGException(e.toString());
       }
     }
   }

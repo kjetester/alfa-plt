@@ -13,13 +13,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import rp.org.apache.http.StatusLine;
-import ru.alfabank.platform.businessobjects.Page;
-import ru.alfabank.platform.businessobjects.PageCopyRequest;
-import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
+import ru.alfabank.platform.businessobjects.contentstore.PageCopyRequest;
+import ru.alfabank.platform.businessobjects.contentstore.Widget;
 import ru.alfabank.platform.businessobjects.enums.CopyMethod;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.Team;
@@ -69,10 +67,10 @@ public class PagesSteps extends BaseSteps {
    * Create new page.
    *
    * @param teams teams list
-   * @param user user
+   * @param user  user
    * @return response
    */
-  public Response createPageAndGetResponse(final List<Team>     teams,
+  public Response createPageAndGetResponse(final List<Team> teams,
                                            final AccessibleUser user) {
     String pageUri = getShortRandUuid();
     var page = new Page.Builder()
@@ -88,10 +86,10 @@ public class PagesSteps extends BaseSteps {
    * Create new page.
    *
    * @param teams teams list
-   * @param user user
+   * @param user  user
    * @return page id
    */
-  public Integer createPage(final List<Team>     teams,
+  public Integer createPage(final List<Team> teams,
                             final AccessibleUser user) {
     String pageUri = getShortRandUuid();
     var page = new Page.Builder()
@@ -112,9 +110,9 @@ public class PagesSteps extends BaseSteps {
    * @param user      user
    * @return page id
    */
-  public Integer createPage(final String         start,
-                            final String         end,
-                            final Boolean        isEnabled,
+  public Integer createPage(final String start,
+                            final String end,
+                            final Boolean isEnabled,
                             final AccessibleUser user) {
     String pageUri = getShortRandUuid();
     var page = new Page.Builder()
@@ -134,7 +132,7 @@ public class PagesSteps extends BaseSteps {
    * @param user user
    * @return response
    */
-  private Response createPage(final Page           page,
+  private Response createPage(final Page page,
                               final AccessibleUser user) {
     LOGGER.info("Выполняю запрос создания страницы\n" + describeBusinessObject(page));
     var response =
@@ -163,8 +161,8 @@ public class PagesSteps extends BaseSteps {
    * @param user   user
    * @return list of widgets
    */
-  public Response getPage(final Integer        pageId,
-                          final Device         device,
+  public Response getPage(final Integer pageId,
+                          final Device device,
                           final AccessibleUser user) {
     LOGGER.info(String.format(
         "Запрос страницы '%s' в '/metaInfoContentPageController'",
@@ -188,8 +186,8 @@ public class PagesSteps extends BaseSteps {
    * @param user   user
    * @return list of widgets
    */
-  public List<Widget> getWidgetsList(final Integer        pageId,
-                                     final Device         device,
+  public List<Widget> getWidgetsList(final Integer pageId,
+                                     final Device device,
                                      final AccessibleUser user) {
     final var response = getPage(pageId, device, user);
     assertThat(response.getStatusCode()).isEqualTo(SC_OK);
@@ -198,13 +196,14 @@ public class PagesSteps extends BaseSteps {
 
   /**
    * Modify Page.
-   * @param pageId page ID
+   *
+   * @param pageId           page ID
    * @param pageModification page modification
-   * @param user user
+   * @param user             user
    * @return response
    */
-  public Response modifyPage(final Integer        pageId,
-                             final Page           pageModification,
+  public Response modifyPage(final Integer pageId,
+                             final Page pageModification,
                              final AccessibleUser user) {
     LOGGER.info(String.format(
         "Запрос в '/pageController' на изменение страницы '%s':\n%s",
@@ -224,12 +223,13 @@ public class PagesSteps extends BaseSteps {
 
   /**
    * Copy page.
+   *
    * @param pageId page ID
-   * @param user user
+   * @param user   user
    * @return response
    */
-  public Response copyPage(final Integer        pageId,
-                           final CopyMethod     copyMethod,
+  public Response copyPage(final Integer pageId,
+                           final CopyMethod copyMethod,
                            final AccessibleUser user) {
     final var page = CREATED_PAGES.get(pageId);
     final var body = new PageCopyRequest.Builder()
@@ -260,11 +260,12 @@ public class PagesSteps extends BaseSteps {
 
   /**
    * Delete page.
+   *
    * @param pageId page ID
-   * @param user user
+   * @param user   user
    * @return response
    */
-  public Response deletePage(final Integer        pageId,
+  public Response deletePage(final Integer pageId,
                              final AccessibleUser user) {
     LOGGER.info(String.format(
         "Запрос в '/pageController' на удаление страницы '%s':\n%s",

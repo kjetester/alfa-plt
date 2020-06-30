@@ -7,9 +7,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.MG;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -22,7 +22,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
 import ru.alfabank.platform.experiment.update.positive.UpdateInactiveExperimentTest;
@@ -90,81 +90,58 @@ public class UpdateActiveExperimentTest extends BaseTest {
     final String endDate = experiment.getEndDate();
     final Double trafficRate = experiment.getTrafficRate();
     switch (field2bChanged) {
-      case "cookieValue": {
-        changeSetBody = new Experiment.Builder()
-            .setCookieValue((String) newValue)
-            .setDescription(description)
-            .setProductTypeKey(productType)
-            .setEndDate(endDate)
-            .setTrafficRate(trafficRate)
-            .build();
-        break;
-      }
-      case "description": {
-        changeSetBody = new Experiment.Builder()
-            .setCookieValue(cookieValue)
-            .setDescription((String) newValue)
-            .setProductTypeKey(productType)
-            .setEndDate(endDate)
-            .setTrafficRate(trafficRate)
-            .build();
-        break;
-      }
-      case "productTypeKey": {
-        changeSetBody = new Experiment.Builder()
-            .setCookieValue(cookieValue)
-            .setDescription(description)
-            .setProductTypeKey((ProductType) newValue)
-            .setEndDate(endDate)
-            .setTrafficRate(trafficRate)
-            .build();
-        break;
-      }
-      case "endDate": {
-        changeSetBody = new Experiment.Builder()
-            .setCookieValue(cookieValue)
-            .setDescription(description)
-            .setProductTypeKey(productType)
-            .setEndDate((String) newValue)
-            .setTrafficRate(trafficRate)
-            .build();
-        break;
-      }
-      case "trafficRate": {
-        changeSetBody = new Experiment.Builder()
-            .setCookieValue(cookieValue)
-            .setDescription(description)
-            .setProductTypeKey(productType)
-            .setEndDate(endDate)
-            .setTrafficRate((Double) newValue)
-            .build();
-        break;
-      }
-      case "pageId": {
-        changeSetBody = new Experiment.Builder()
-            .setPageId((Integer) newValue)
-            .setCookieValue(cookieValue)
-            .setDescription(description)
-            .setProductTypeKey(productType)
-            .setEndDate(endDate)
-            .setTrafficRate(trafficRate)
-            .build();
-        break;
-      }
-      case "device": {
-        changeSetBody = new Experiment.Builder()
-            .setDevice((Device) newValue)
-            .setCookieValue(cookieValue)
-            .setDescription(description)
-            .setProductTypeKey(productType)
-            .setEndDate(endDate)
-            .setTrafficRate(trafficRate)
-            .build();
-        break;
-      }
-      default: {
-        throw new IllegalArgumentException();
-      }
+      case "cookieValue" -> changeSetBody = new Experiment.Builder()
+          .setCookieValue((String) newValue)
+          .setDescription(description)
+          .setProductTypeKey(productType)
+          .setEndDate(endDate)
+          .setTrafficRate(trafficRate)
+          .build();
+      case "description" -> changeSetBody = new Experiment.Builder()
+          .setCookieValue(cookieValue)
+          .setDescription((String) newValue)
+          .setProductTypeKey(productType)
+          .setEndDate(endDate)
+          .setTrafficRate(trafficRate)
+          .build();
+      case "productTypeKey" -> changeSetBody = new Experiment.Builder()
+          .setCookieValue(cookieValue)
+          .setDescription(description)
+          .setProductTypeKey((ProductType) newValue)
+          .setEndDate(endDate)
+          .setTrafficRate(trafficRate)
+          .build();
+      case "endDate" -> changeSetBody = new Experiment.Builder()
+          .setCookieValue(cookieValue)
+          .setDescription(description)
+          .setProductTypeKey(productType)
+          .setEndDate((String) newValue)
+          .setTrafficRate(trafficRate)
+          .build();
+      case "trafficRate" -> changeSetBody = new Experiment.Builder()
+          .setCookieValue(cookieValue)
+          .setDescription(description)
+          .setProductTypeKey(productType)
+          .setEndDate(endDate)
+          .setTrafficRate((Double) newValue)
+          .build();
+      case "pageId" -> changeSetBody = new Experiment.Builder()
+          .setPageId((Integer) newValue)
+          .setCookieValue(cookieValue)
+          .setDescription(description)
+          .setProductTypeKey(productType)
+          .setEndDate(endDate)
+          .setTrafficRate(trafficRate)
+          .build();
+      case "device" -> changeSetBody = new Experiment.Builder()
+          .setDevice((Device) newValue)
+          .setCookieValue(cookieValue)
+          .setDescription(description)
+          .setProductTypeKey(productType)
+          .setEndDate(endDate)
+          .setTrafficRate(trafficRate)
+          .build();
+      default -> throw new IllegalArgumentException();
     }
     final var response = EXPERIMENT_STEPS.modifyExperimentAssumingFail(
         experiment,

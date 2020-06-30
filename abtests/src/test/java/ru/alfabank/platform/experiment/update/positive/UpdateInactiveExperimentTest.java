@@ -13,7 +13,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
 
 public class UpdateInactiveExperimentTest extends BaseTest {
@@ -49,7 +49,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
     Experiment expected;
     Experiment changeSetBody;
     switch (field2bChanged) {
-      case "cookieValue": {
+      case "cookieValue" -> {
         expected = new Experiment.Builder()
             .using(experiment)
             .setCookieValue((String) newValue)
@@ -57,9 +57,8 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         changeSetBody = new Experiment.Builder()
             .setCookieValue((String) newValue)
             .build();
-        break;
       }
-      case "description": {
+      case "description" -> {
         expected = new Experiment.Builder()
             .using(experiment)
             .setDescription((String) newValue)
@@ -67,9 +66,8 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         changeSetBody = new Experiment.Builder()
             .setDescription((String) newValue)
             .build();
-        break;
       }
-      case "productTypeKey": {
+      case "productTypeKey" -> {
         expected = new Experiment.Builder()
             .using(experiment)
             .setProductTypeKey((ProductType) newValue)
@@ -77,9 +75,8 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         changeSetBody = new Experiment.Builder()
             .setProductTypeKey((ProductType) newValue)
             .build();
-        break;
       }
-      case "trafficRate": {
+      case "trafficRate" -> {
         expected = new Experiment.Builder()
             .using(experiment)
             .setTrafficRate((Double) newValue)
@@ -87,9 +84,8 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         changeSetBody = new Experiment.Builder()
             .setTrafficRate((Double) newValue)
             .build();
-        break;
       }
-      case "endDate": {
+      case "endDate" -> {
         expected =
             new Experiment.Builder()
                 .using(experiment)
@@ -98,11 +94,8 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         changeSetBody = new Experiment.Builder()
             .setEndDate((String) newValue)
             .build();
-        break;
       }
-      default: {
-        throw new IllegalArgumentException();
-      }
+      default -> throw new IllegalArgumentException();
     }
     EXPERIMENT_STEPS
         .modifyExperiment(experiment, changeSetBody, getContentManager()).equals(expected);

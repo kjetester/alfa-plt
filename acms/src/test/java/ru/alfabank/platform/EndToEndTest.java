@@ -1,11 +1,11 @@
 package ru.alfabank.platform;
 
-import static ru.alfabank.platform.businessobjects.enums.Geo.BEZ_MSK_MO;
-import static ru.alfabank.platform.businessobjects.enums.Geo.MSK_MO;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
-import static ru.alfabank.platform.businessobjects.enums.Geo.VLADIMIR;
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 import static ru.alfabank.platform.helpers.DriverHelper.killDriver;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.BEZ_MSK_MO;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.MSK_MO;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.VLADIMIR;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -93,8 +93,8 @@ public class EndToEndTest extends BaseTest {
         .publishDraft()
         .navigateToAlfaSite()
         .compareUrl(basePage.getUri())
-        .checkPageTitleAfter(dateFrom, MSK_MO.toString())
-        .checkPageTitleAfter(dateTo, BEZ_MSK_MO.toString(), VLADIMIR);
+        .checkPageTitleAfter(dateFrom, MSK_MO)
+        .checkPageTitleAfter(dateTo, BEZ_MSK_MO, VLADIMIR);
     killDriver();
   }
 
@@ -120,7 +120,7 @@ public class EndToEndTest extends BaseTest {
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
         .open(baseUri + basePage.getUri())
-        .checkPageTitleAfter(dateFrom, MSK_MO.toString())
+        .checkPageTitleAfter(dateFrom, MSK_MO)
         .checkPageTitleAfter(dateFrom, "", VLADIMIR);
     killDriver();
   }
@@ -189,8 +189,8 @@ public class EndToEndTest extends BaseTest {
     killDriver();
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
         .open(baseUri + basePage.getUri())
-        .checkPageTitleAfter(dateFrom, RU.toString())
-        .checkPageTitleAfter(dateFrom, RU.toString(), VLADIMIR);
+        .checkPageTitleAfter(dateFrom, RU)
+        .checkPageTitleAfter(dateFrom, RU, VLADIMIR);
     killDriver();
   }
 
@@ -219,8 +219,8 @@ public class EndToEndTest extends BaseTest {
     PageFactory.initElements(getDriver(), AlfaSitePage.class)
         .open(baseUri + basePage.getUri())
         .checkPageTitleBefore()
-        .checkPageTitleAfter(startActiveTime, MSK_MO.toString())
-        .checkPageTitleAfter(startActiveTime, BEZ_MSK_MO.toString(), VLADIMIR)
+        .checkPageTitleAfter(startActiveTime, MSK_MO)
+        .checkPageTitleAfter(startActiveTime, BEZ_MSK_MO, VLADIMIR)
         .checkPageTitleAfter(endActiveTime, "")
         .checkPageTitleAfter(endActiveTime, "", VLADIMIR);
     killDriver();

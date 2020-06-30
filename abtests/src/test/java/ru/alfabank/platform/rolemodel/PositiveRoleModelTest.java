@@ -2,7 +2,6 @@ package ru.alfabank.platform.rolemodel;
 
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.CC;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.COM;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.DC;
@@ -10,34 +9,19 @@ import static ru.alfabank.platform.businessobjects.enums.ProductType.INV;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.MG;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.SME;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
-import static ru.alfabank.platform.users.CommonUser.getCommonUser;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
-import static ru.alfabank.platform.users.CreditCardUser.getCreditCardUser;
-import static ru.alfabank.platform.users.DebitCardUser.getDebitCardUser;
-import static ru.alfabank.platform.users.InvestUser.getInvestUser;
-import static ru.alfabank.platform.users.MortgageUser.getMortgageUser;
-import static ru.alfabank.platform.users.PilUser.getPilUser;
-import static ru.alfabank.platform.users.SmeUser.getSmeUser;
-import static ru.alfabank.platform.users.UnclaimedUser.getUnclaimedUser;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.Option.Builder;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
+import ru.alfabank.platform.businessobjects.abtests.Option.Builder;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
 import ru.alfabank.platform.option.OptionBaseTest;
 import ru.alfabank.platform.users.AccessibleUser;
-import ru.alfabank.platform.users.CommonUser;
-import ru.alfabank.platform.users.CreditCardUser;
-import ru.alfabank.platform.users.DebitCardUser;
-import ru.alfabank.platform.users.InvestUser;
-import ru.alfabank.platform.users.MortgageUser;
-import ru.alfabank.platform.users.PilUser;
-import ru.alfabank.platform.users.SmeUser;
-import ru.alfabank.platform.users.UnclaimedUser;
 
 public class PositiveRoleModelTest extends OptionBaseTest {
 

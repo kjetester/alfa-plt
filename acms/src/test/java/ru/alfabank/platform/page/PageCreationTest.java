@@ -4,7 +4,6 @@ import static io.restassured.RestAssured.given;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Entity.PAGE;
 import static ru.alfabank.platform.businessobjects.enums.Entity.WIDGET;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.Method.CHANGE_LINKS;
 import static ru.alfabank.platform.businessobjects.enums.Method.CREATE;
 import static ru.alfabank.platform.businessobjects.enums.Team.COMMON;
@@ -16,6 +15,7 @@ import static ru.alfabank.platform.businessobjects.enums.Team.PIL;
 import static ru.alfabank.platform.businessobjects.enums.Team.SME;
 import static ru.alfabank.platform.businessobjects.enums.Version.V_1_0_0;
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.helpers.KeycloakHelper.getToken;
 import static ru.alfabank.platform.helpers.UuidHelper.getNewUuid;
 
@@ -30,12 +30,11 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Page;
-import ru.alfabank.platform.businessobjects.Widget;
-import ru.alfabank.platform.businessobjects.draft.DataDraft;
-import ru.alfabank.platform.businessobjects.draft.WrapperDraft;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Widget;
+import ru.alfabank.platform.businessobjects.contentstore.draft.DataDraft;
+import ru.alfabank.platform.businessobjects.contentstore.draft.WrapperDraft;
 import ru.alfabank.platform.businessobjects.enums.Experiment;
-import ru.alfabank.platform.businessobjects.enums.Geo;
 import ru.alfabank.platform.pages.acms.MainPage;
 import ru.alfabank.platform.utils.TestFailureListener;
 
@@ -45,11 +44,12 @@ public class PageCreationTest extends BasePageTest {
   private static final Logger LOGGER = LogManager.getLogger(PageCreationTest.class);
 
   @Test(
-      description = "Тест создания страницы:\n"
-          + "\t1. В корне\n"
-          + "\t2. Все поля заполнены\n"
-          + "\t3. Активна\n"
-          + "\t4. Виджетов нет",
+      description = """
+          Тест создания страницы:
+          \t1. В корне
+          \t2. Все поля заполнены
+          \t3. Активна
+          \t4. Виджетов нет""",
       groups = {"page", "creationPage"})
   public void activePageWithNoWidgetsCreationTest() {
     // STEPS //
@@ -79,11 +79,12 @@ public class PageCreationTest extends BasePageTest {
   }
 
   @Test(
-      description = "Тест создания страницы:\n"
-          + "\t1. В корне страницы '/qr/'\n"
-          + "\t2. Все поля заполнены\n"
-          + "\t3. Неактивна\n"
-          + "\t4. Виджетов нет",
+      description = """
+          Тест создания страницы:
+          \t1. В корне страницы '/qr/'
+          \t2. Все поля заполнены
+          \t3. Неактивна
+          \t4. Виджетов нет""",
       groups = {"page", "creationPage"},
       priority = 1)
   public void inactivePageWithNoWidgetsCreationTest() {
@@ -107,11 +108,12 @@ public class PageCreationTest extends BasePageTest {
   }
 
   @Test(
-      description = "Тест создания страницы:\n"
-          + "\t1. В корне\n"
-          + "\t2. Все поля заполнены\n"
-          + "\t3. Активна\n"
-          + "\t4. Виджеты есть",
+      description = """
+          Тест создания страницы:
+          \t1. В корне
+          \t2. Все поля заполнены
+          \t3. Активна
+          \t4. Виджеты есть""",
       groups = {"page", "creationPage"},
       priority = 2)
   public void activePageWithWidgetsCreationTest() throws JsonProcessingException {
@@ -133,7 +135,7 @@ public class PageCreationTest extends BasePageTest {
         .setUid(getNewUuid())
         .setName("MetaTitle")
         .setDevice(desktop)
-        .setLocalization(RU.toString())
+        .setLocalization(RU)
         .isEnabled(true)
         .setVersion(V_1_0_0.toString())
         .setExperimentOptionName(Experiment.DEFAULT.toString())
@@ -148,7 +150,7 @@ public class PageCreationTest extends BasePageTest {
             .setVersion(widgetA.getVersion())
             .setExperimentOptionName(widgetA.getExperimentOptionName())
             .isDefaultWidget(widgetA.isDefaultWidget())
-            .setCityGroups(Collections.singletonList(Geo.RU.toString()))
+            .setCityGroups(List.of(RU))
             .build(),
         WIDGET.toString(), CREATE.toString(), widgetA.getUid());
     WrapperDraft.OperationDraft widgetPlacementOperation = new WrapperDraft.OperationDraft(
@@ -200,11 +202,12 @@ public class PageCreationTest extends BasePageTest {
   }
 
   @Test(
-      description = "Тест создания страницы:\n"
-          + "\t1. В корне\n"
-          + "\t2. Все поля заполнены\n"
-          + "\t3. Неактивна\n"
-          + "\t4. Виджеты есть",
+      description = """
+          Тест создания страницы:
+          \t1. В корне
+          \t2. Все поля заполнены
+          \t3. Неактивна
+          \t4. Виджеты есть""",
       groups = {"page", "creationPage"},
       priority = 3)
   public void inactivePageWithWidgetsCreationTest() throws JsonProcessingException {
@@ -228,7 +231,7 @@ public class PageCreationTest extends BasePageTest {
         .setUid(getNewUuid())
         .setName("MetaTitle")
         .setDevice(desktop)
-        .setLocalization(RU.toString())
+        .setLocalization(RU)
         .isEnabled(true)
         .setVersion(V_1_0_0.toString())
         .setExperimentOptionName(Experiment.DEFAULT.toString())
@@ -243,7 +246,7 @@ public class PageCreationTest extends BasePageTest {
             .setVersion(widgetA.getVersion())
             .setExperimentOptionName(widgetA.getExperimentOptionName())
             .isDefaultWidget(widgetA.isDefaultWidget())
-            .setCityGroups(Collections.singletonList(Geo.RU.toString()))
+            .setCityGroups(Collections.singletonList(RU))
             .build(),
         WIDGET.toString(), CREATE.toString(), widgetA.getUid());
     WrapperDraft.OperationDraft widgetPlacementOperation = new WrapperDraft.OperationDraft(

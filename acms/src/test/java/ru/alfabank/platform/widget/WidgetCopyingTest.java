@@ -8,7 +8,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
 import ru.alfabank.platform.pages.acms.MainPage;
 import ru.alfabank.platform.utils.TestFailureListener;
 
@@ -31,10 +31,12 @@ public class WidgetCopyingTest extends ru.alfabank.platform.widget.BaseWidgetTes
   }
 
   @Test(
-      description = "Тест копирования виджета:\n"
-          + "\t1. На корневую страницу\n"
-          + "\t2. С детьми\n"
-          + "\t3. С пропсами\n",
+      description = """
+          Тест копирования виджета:
+          \t1. На корневую страницу
+          \t2. С детьми
+          \t3. С пропсами
+          """,
       groups = {"widget", "copyingWidget"})
   public void widgetCopyingTest() throws InterruptedException {
     // STEPS //

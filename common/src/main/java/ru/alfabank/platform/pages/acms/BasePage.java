@@ -97,6 +97,7 @@ public class BasePage {
       TimeUnit.SECONDS.sleep(1);
     } catch (InterruptedException e) {
       e.printStackTrace();
+      throw new TestNGException(e.toString());
     }
     return element;
   }

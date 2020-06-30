@@ -3,16 +3,16 @@ package ru.alfabank.platform.option.create.positive;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Option;
-import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.abtests.Option;
+import ru.alfabank.platform.businessobjects.contentstore.Widget;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionCreateTest extends OptionBaseTest {

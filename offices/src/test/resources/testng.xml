@@ -1,0 +1,51 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="Offices suite"
+       thread-count="1"
+       configfailurepolicy="continue"
+       parallel="true"
+       verbose="5">
+    <listeners>
+        <listener class-name="ru.alfabank.platform.utils.RetryListener"/>
+    </listeners>
+    <test name="Wrapper Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.wrapper.WrapperTest"/>
+        </classes>
+    </test>
+    <test name="Offices tests" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.office.OfficeTest"/>
+        </classes>
+    </test>
+    <test name="StatusCb Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.statuscb.StatusCbTest"/>
+        </classes>
+    </test>
+    <test name="Kinds Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.kinds.KindsTest"/>
+        </classes>
+    </test>
+    <test name="Locations Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.locations.LocationsTest"/>
+        </classes>
+    </test>
+    <test name="Service Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.service.ServiceTest"/>
+        </classes>
+    </test>
+    <test name="List of Operations Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.listofoperations.ListOfOperationsTest"/>
+        </classes>
+    </test>
+    <test name="Meta Info Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.metainfo.MetaInfoTest"/>
+        </classes>
+    </test>
+</suite>

@@ -19,7 +19,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
 import ru.alfabank.platform.businessobjects.enums.Status;
@@ -58,150 +58,51 @@ public class UpdateInactiveExperimentTest extends BaseTest {
     var field2bChanged = StringUtils.substringBetween(testCase, "'");
     Experiment changeSetBody;
     switch (field2bChanged) {
-      case "body": {
-        changeSetBody = new Experiment.Builder()
-            .build();
-        break;
-      }
-      case "cookieValue": {
-        changeSetBody = new Experiment.Builder()
-            .setCookieValue((String) newValue)
-            .build();
-        break;
-      }
-      case "description": {
-        changeSetBody = new Experiment.Builder()
-            .setDescription((String) newValue)
-            .build();
-        break;
-      }
-      case "productTypeKey": {
-        changeSetBody = new Experiment.Builder()
-            .setProductTypeKey((ProductType) newValue)
-            .build();
-        break;
-      }
-      case "endDate": {
-        changeSetBody = new Experiment.Builder()
-            .setEndDate((String) newValue)
-            .build();
-        break;
-      }
-      case "trafficRate": {
-        changeSetBody = new Experiment.Builder()
-            .setTrafficRate((Double) newValue)
-            .build();
-        break;
-      }
-      case "enabled/cookieValue": {
-        changeSetBody = new Experiment.Builder()
-            .setEnabled((Boolean) newValue)
-            .setCookieValue(randomAlphanumeric(100))
-            .build();
-        break;
-      }
-      case "enabled/description": {
-        changeSetBody = new Experiment.Builder()
-            .setEnabled((Boolean) newValue)
-            .setDescription(randomAlphanumeric(100))
-            .build();
-        break;
-      }
-      case "enabled/productTypeKey": {
-        changeSetBody = new Experiment.Builder()
-            .setEnabled((Boolean) newValue)
-            .setProductTypeKey(CC)
-            .build();
-        break;
-      }
-      case "enabled/endDate": {
-        changeSetBody = new Experiment.Builder()
-            .setEnabled((Boolean) newValue)
-            .setEndDate(getValidExperimentEndDate())
-            .build();
-        break;
-      }
-      case "enabled/trafficRate": {
-        changeSetBody = new Experiment.Builder()
-            .setEnabled((Boolean) newValue)
-            .setTrafficRate(0.23D)
-            .build();
-        break;
-      }
-      case "enabled": {
-        changeSetBody = new Experiment.Builder()
-            .setEnabled((Boolean) newValue)
-            .setCookieValue(randomAlphanumeric(100))
-            .setDescription(randomAlphanumeric(100))
-            .setProductTypeKey(CC)
-            .setEndDate(getValidExperimentEndDate())
-            .setTrafficRate(0.23D)
-            .build();
-        break;
-      }
-      case "pageId": {
-        changeSetBody = new Experiment.Builder()
-            .setPageId((Integer) newValue)
-            .build();
-        break;
-      }
-      case "uuid": {
-        changeSetBody = new Experiment.Builder()
-            .setUuid((String) newValue)
-            .build();
-        break;
-      }
-      case "device": {
-        changeSetBody = new Experiment.Builder()
-            .setDevice((Device) newValue)
-            .build();
-        break;
-      }
-      case "createdBy": {
-        changeSetBody = new Experiment.Builder()
-            .setCreatedBy((String) newValue)
-            .build();
-        break;
-      }
-      case "activatedBy": {
-        changeSetBody = new Experiment.Builder()
-            .setActivatedBy((String) newValue)
-            .build();
-        break;
-      }
-      case "creationDate": {
-        changeSetBody = new Experiment.Builder()
-            .setCreationDate((String) newValue)
-            .build();
-        break;
-      }
-      case "activationDate": {
-        changeSetBody = new Experiment.Builder()
-            .setActivationDate((String) newValue)
-            .build();
-        break;
-      }
-      case "deactivatedBy": {
-        changeSetBody = new Experiment.Builder()
-            .setActivatedBy((String) newValue)
-            .build();
-        break;
-      }
-      case "deactivationDate": {
-        changeSetBody = new Experiment.Builder()
-            .setDeactivationDate((String) newValue)
-            .build();
-        break;
-      }
-      case "status": {
-        changeSetBody = new Experiment.Builder()
-            .setStatus((Status) newValue)
-            .build();
-        break;
-      }
-      default: {
-        throw new IllegalArgumentException();
-      }
+      case "body" -> changeSetBody = new Experiment.Builder().build();
+      case "cookieValue" -> changeSetBody = new Experiment.Builder()
+          .setCookieValue((String) newValue).build();
+      case "description" -> changeSetBody = new Experiment.Builder()
+          .setDescription((String) newValue).build();
+      case "productTypeKey" -> changeSetBody = new Experiment.Builder()
+          .setProductTypeKey((ProductType) newValue).build();
+      case "endDate" -> changeSetBody = new Experiment.Builder()
+          .setEndDate((String) newValue).build();
+      case "trafficRate" -> changeSetBody = new Experiment.Builder()
+          .setTrafficRate((Double) newValue).build();
+      case "enabled/cookieValue" -> changeSetBody = new Experiment.Builder()
+          .setEnabled((Boolean) newValue).setCookieValue(randomAlphanumeric(100)).build();
+      case "enabled/description" -> changeSetBody = new Experiment.Builder()
+          .setEnabled((Boolean) newValue).setDescription(randomAlphanumeric(100)).build();
+      case "enabled/productTypeKey" -> changeSetBody = new Experiment.Builder()
+          .setEnabled((Boolean) newValue).setProductTypeKey(CC).build();
+      case "enabled/endDate" -> changeSetBody = new Experiment.Builder()
+          .setEnabled((Boolean) newValue).setEndDate(getValidExperimentEndDate()).build();
+      case "enabled/trafficRate" -> changeSetBody = new Experiment.Builder()
+          .setEnabled((Boolean) newValue).setTrafficRate(0.23D).build();
+      case "enabled" -> changeSetBody = new Experiment.Builder().setEnabled((Boolean) newValue)
+          .setCookieValue(randomAlphanumeric(100)).setDescription(randomAlphanumeric(100))
+          .setProductTypeKey(CC).setEndDate(getValidExperimentEndDate()).setTrafficRate(0.23D)
+          .build();
+      case "pageId" -> changeSetBody = new Experiment.Builder().setPageId((Integer) newValue)
+          .build();
+      case "uuid" -> changeSetBody = new Experiment.Builder().setUuid((String) newValue).build();
+      case "device" -> changeSetBody = new Experiment.Builder().setDevice((Device) newValue)
+          .build();
+      case "createdBy" -> changeSetBody = new Experiment.Builder().setCreatedBy((String) newValue)
+          .build();
+      case "activatedBy" -> changeSetBody = new Experiment.Builder()
+          .setActivatedBy((String) newValue).build();
+      case "creationDate" -> changeSetBody = new Experiment.Builder()
+          .setCreationDate((String) newValue).build();
+      case "activationDate" -> changeSetBody = new Experiment.Builder()
+          .setActivationDate((String) newValue).build();
+      case "deactivatedBy" -> changeSetBody = new Experiment.Builder()
+          .setActivatedBy((String) newValue).build();
+      case "deactivationDate" -> changeSetBody = new Experiment.Builder()
+          .setDeactivationDate((String) newValue).build();
+      case "status" -> changeSetBody = new Experiment.Builder().setStatus((Status) newValue)
+          .build();
+      default -> throw new IllegalArgumentException();
     }
     final var response = EXPERIMENT_STEPS.modifyExperimentAssumingFail(
         experiment,
@@ -214,7 +115,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
     final var fieldViolations = response.getBody().jsonPath().getList("fieldViolations");
     final var globalErrors = response.getBody().jsonPath().getList("globalErrors");
     switch (field2bChanged) {
-      case "cookieValue": {
+      case "cookieValue" -> {
         response.then().statusCode(SC_BAD_REQUEST);
         assertThat(globalErrors)
             .as("Проверка отсутствия ошибок в 'globalErrors'")
@@ -229,9 +130,8 @@ public class UpdateInactiveExperimentTest extends BaseTest {
             .as("Проверка обрабоки некоррекнтого " + field2bChanged)
             .contains(field2bChanged, "Длина составной части для формирования кук должна быть в"
                 + " интервале от 1 до 255 символов");
-        break;
       }
-      case "description": {
+      case "description" -> {
         response.then().statusCode(SC_BAD_REQUEST);
         assertThat(globalErrors)
             .as("Проверка отсутствия ошибок в 'globalErrors'")
@@ -246,16 +146,14 @@ public class UpdateInactiveExperimentTest extends BaseTest {
             .as("Проверка обрабоки некоррекнтого " + field2bChanged)
             .contains(field2bChanged, "Длина описания эксперимента должна быть в интервале от 1 до "
                 + "1000 символов");
-        break;
       }
-      case "productTypeKey": {
+      case "productTypeKey" -> {
         response.then().statusCode(SC_BAD_REQUEST);
         assertThat(response.getBody().jsonPath().getString("message"))
             .as("Проверка обрабоки некоррекнтого 'productTypeKey'")
             .contains("Тип продукта '" + ERR + "' не существует");
-        break;
       }
-      case "endDate": {
+      case "endDate" -> {
         response.then().statusCode(SC_BAD_REQUEST);
         assertThat(globalErrors)
             .as("Проверка отсутствия ошибок в 'globalErrors'")
@@ -268,9 +166,8 @@ public class UpdateInactiveExperimentTest extends BaseTest {
             .as("Проверка обрабоки некоррекнтого " + field2bChanged)
             .contains(field2bChanged, "Минимально допустимая продолжительность эксперимента "
                 + "составляет: 1 день");
-        break;
       }
-      case "trafficRate": {
+      case "trafficRate" -> {
         response.then().statusCode(SC_BAD_REQUEST);
         assertThat(globalErrors)
             .as("Проверка отсутствия ошибок в 'globalErrors'")
@@ -290,9 +187,8 @@ public class UpdateInactiveExperimentTest extends BaseTest {
               .as("Проверка обрабоки некоррекнтого " + field2bChanged)
               .contains(field2bChanged, "Доля трафика не может превышать единицу");
         }
-        break;
       }
-      default: {
+      default -> {
         assertThat(fieldViolations)
             .as("Проверка отсутствия ошибок в 'fieldViolations'")
             .isNullOrEmpty();
@@ -306,7 +202,6 @@ public class UpdateInactiveExperimentTest extends BaseTest {
             .as("Проверка обрабоки некоррекнтого " + field2bChanged)
             .contains(
                 "[[enabled], [description, cookieValue, endDate, trafficRate, productTypeKey]]");
-        break;
       }
     }
     experiment.equals(this.experiment);

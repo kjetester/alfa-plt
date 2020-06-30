@@ -1,11 +1,20 @@
 package ru.alfabank.platform.businessobjects;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.log4j.Logger;
+import org.testng.TestNGException;
 
+@JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public abstract class AbstractBusinessObject {
 
   /**
@@ -22,8 +31,8 @@ public abstract class AbstractBusinessObject {
           .writerWithDefaultPrettyPrinter().writeValueAsString(o);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
+      throw new TestNGException(e.toString());
     }
-    return null;
   }
 
   /**

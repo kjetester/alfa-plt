@@ -7,7 +7,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.support.PageFactory;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
 import ru.alfabank.platform.page.BasePageTest;
 import ru.alfabank.platform.pages.alfasite.AlfaSitePage;
 

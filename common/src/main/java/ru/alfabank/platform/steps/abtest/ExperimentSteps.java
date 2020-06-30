@@ -16,9 +16,9 @@ import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.Experiment.Builder;
-import ru.alfabank.platform.businessobjects.Option;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
+import ru.alfabank.platform.businessobjects.abtests.Experiment.Builder;
+import ru.alfabank.platform.businessobjects.abtests.Option;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
 import ru.alfabank.platform.steps.BaseSteps;
@@ -62,7 +62,6 @@ public class ExperimentSteps extends BaseSteps {
                   .delete();
               if (deletingResponse.getStatusCode() == SC_OK) {
                 LOGGER.info(String.format("Эксперимент '%s' удалён", experiment.getUuid()));
-                CREATED_EXPERIMENTS.remove(key);
               } else {
                 LOGGER.warn(String.format(
                     "Экспиремент не был удалён:\n'%s'\n%s",
@@ -100,9 +99,7 @@ public class ExperimentSteps extends BaseSteps {
             .pathParam("uuid", experiment.getUuid())
             .body(runningExperiment)
             .patch();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     assertThat(response.statusCode())
         .as("Проверка статус-кода")
         .isEqualTo(SC_OK);
@@ -133,9 +130,7 @@ public class ExperimentSteps extends BaseSteps {
             .pathParam("uuid", experiment.getUuid())
             .body(body)
             .patch();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response;
   }
 
@@ -158,9 +153,7 @@ public class ExperimentSteps extends BaseSteps {
             .pathParam("uuid", experiment.getUuid())
             .body(experiment2beStopped)
             .patch();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     assertThat(response.statusCode())
         .as("Проверка статус-кода")
         .isEqualTo(SC_OK);
@@ -191,9 +184,7 @@ public class ExperimentSteps extends BaseSteps {
             .pathParam("uuid", experiment.getUuid())
             .body(experiment2beStopped)
             .patch();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response;
   }
 
@@ -214,9 +205,7 @@ public class ExperimentSteps extends BaseSteps {
             .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("uuid", experiment.getUuid())
             .delete();
-    LOGGER.info(String.format("Получен ответ: %s\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response;
   }
 
@@ -236,9 +225,7 @@ public class ExperimentSteps extends BaseSteps {
             .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("uuid", experiment.getUuid())
             .get();
-    LOGGER.info(String.format("Получен ответ: %d\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response.as(Experiment.class);
   }
 
@@ -257,9 +244,7 @@ public class ExperimentSteps extends BaseSteps {
         .auth().oauth2(user.getJwt().getAccessToken())
         .pathParams("uuid", experimentUuid)
         .get();
-    LOGGER.info(String.format("Получен ответ: %d\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response;
   }
 
@@ -278,9 +263,7 @@ public class ExperimentSteps extends BaseSteps {
         .auth().oauth2(user.getJwt().getAccessToken())
         .queryParams("pageId.equals", String.valueOf(pageId))
         .get();
-    LOGGER.info(String.format("Получен ответ: %d\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     return response;
   }
 
@@ -300,9 +283,7 @@ public class ExperimentSteps extends BaseSteps {
             .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("optionUuid", option.getUuid())
             .get();
-    LOGGER.info(String.format("Получен ответ: %d\n%s",
-        response.getStatusCode(),
-        response.prettyPrint()));
+    describeResponse(LOGGER, response);
     assertThat(response.getStatusCode()).isEqualTo(SC_OK);
     return response.as(Option.class);
   }

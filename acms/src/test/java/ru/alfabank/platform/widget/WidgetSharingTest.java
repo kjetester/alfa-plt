@@ -7,17 +7,19 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
 import ru.alfabank.platform.pages.acms.MainPage;
 import ru.alfabank.platform.utils.TestFailureListener;
 
 @Listeners({TestFailureListener.class})
 public class WidgetSharingTest extends ru.alfabank.platform.widget.BaseWidgetTest {
 
-  @Test(description = "Тест шаринга виджета:\n"
-      + "\t1. На корневую страницу\n"
-      + "\t2. С детьми\n"
-      + "\t3. С пропсами\n",
+  @Test(description = """
+      Тест шаринга виджета:
+      \t1. На корневую страницу
+      \t2. С детьми
+      \t3. С пропсами
+      """,
       groups = {"widget", "sharingWidget"})
   public void widgetSharingWithChildren() throws InterruptedException {
     // PRECONDITIONS

@@ -6,7 +6,7 @@ import static ru.alfabank.platform.users.ContentManager.getContentManager;
 import io.restassured.response.Response;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import ru.alfabank.platform.businessobjects.AuditTransactionList;
+import ru.alfabank.platform.businessobjects.contentstore.AuditTransactionList;
 import ru.alfabank.platform.steps.BaseSteps;
 import ru.alfabank.platform.users.AccessibleUser;
 

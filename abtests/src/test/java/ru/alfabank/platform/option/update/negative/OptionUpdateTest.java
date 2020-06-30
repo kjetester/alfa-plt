@@ -8,8 +8,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -20,9 +20,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.Option;
-import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
+import ru.alfabank.platform.businessobjects.abtests.Option;
+import ru.alfabank.platform.businessobjects.contentstore.Widget;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class OptionUpdateTest extends OptionBaseTest {
@@ -218,45 +218,39 @@ public class OptionUpdateTest extends OptionBaseTest {
         getContentManager());
     final var softly = new SoftAssertions();
     switch (Integer.parseInt(testCase.replaceAll("[\\D]", ""))) {
-      case 1:
-      case 2: {
+      case 1, 2 -> {
         softly.assertThat(response.getStatusCode())
             .as(STATUS_CODE_CHECK)
             .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
         softly.assertThat(response.getBody().asString())
             .as(MESSAGE_CHECK)
             .contains("Длина названия варианта должна быть в интервале от 1 до 32 символов");
-        break;
       }
-      case 3:
-      case 4: {
+      case 3, 4 -> {
         softly.assertThat(response.getStatusCode())
             .as(STATUS_CODE_CHECK)
             .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
         softly.assertThat(response.getBody().asString())
             .as(MESSAGE_CHECK)
             .contains("Длина описания варианта должна быть в интервале от 1 до 1000 символов");
-        break;
       }
-      case 5: {
+      case 5 -> {
         softly.assertThat(response.getStatusCode())
             .as(STATUS_CODE_CHECK)
             .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
         softly.assertThat(response.getBody().asString())
             .as(MESSAGE_CHECK)
             .contains("Доля траффика должна быть меньше единицы");
-        break;
       }
-      case 6: {
+      case 6 -> {
         softly.assertThat(response.getStatusCode())
             .as(STATUS_CODE_CHECK)
             .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
         softly.assertThat(response.getBody().asString())
             .as(MESSAGE_CHECK)
             .contains("Доля траффика должна быть больше нуля");
-        break;
       }
-      case 7: {
+      case 7 -> {
         softly.assertThat(response.getStatusCode())
             .as(STATUS_CODE_CHECK)
             .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
@@ -266,9 +260,8 @@ public class OptionUpdateTest extends OptionBaseTest {
                 + optionModification.getWidgetUids()
                 + "' должны быть с дефолтным названием варианта, быть включенными и быть виджетами"
                 + " по умолчанию");
-        break;
       }
-      case 8: {
+      case 8 -> {
         softly.assertThat(response.getStatusCode())
             .as(STATUS_CODE_CHECK)
             .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
@@ -278,9 +271,8 @@ public class OptionUpdateTest extends OptionBaseTest {
                 + widget1.getUid()
                 + "]' должны быть с дефолтным названием варианта, быть включенными и быть виджетами"
                 + " по умолчанию");
-        break;
       }
-      case 9: {
+      case 9 -> {
         softly.assertThat(response.getStatusCode())
             .as(STATUS_CODE_CHECK)
             .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
@@ -290,9 +282,8 @@ public class OptionUpdateTest extends OptionBaseTest {
                 + widget2.getUid()
                 + "]' должны быть с дефолтным названием варианта, быть включенными и быть виджетами"
                 + " по умолчанию");
-        break;
       }
-      case 10: {
+      case 10 -> {
         softly.assertThat(response.getStatusCode())
             .as(STATUS_CODE_CHECK)
             .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
@@ -302,9 +293,8 @@ public class OptionUpdateTest extends OptionBaseTest {
                 + optionModification.getWidgetUids()
                 + "' должны быть помечены как 'forABtest', быть выключенными и не должны быть "
                 + "виджетами по умолчанию");
-        break;
       }
-      case 11: {
+      case 11 -> {
         softly.assertThat(response.getStatusCode())
             .as(STATUS_CODE_CHECK)
             .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
@@ -314,9 +304,8 @@ public class OptionUpdateTest extends OptionBaseTest {
                 + widget4.getUid()
                 + "]' должны быть помечены как 'forABtest', быть выключенными и не должны быть "
                 + "виджетами по умолчанию");
-        break;
       }
-      case 12: {
+      case 12 -> {
         softly.assertThat(response.getStatusCode())
             .as(STATUS_CODE_CHECK)
             .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
@@ -326,9 +315,8 @@ public class OptionUpdateTest extends OptionBaseTest {
                 + widget5.getUid()
                 + "]' должны быть помечены как 'forABtest', быть выключенными и не должны быть "
                 + "виджетами по умолчанию");
-        break;
       }
-      case 13: {
+      case 13 -> {
         softly.assertThat(response.getStatusCode())
             .as(STATUS_CODE_CHECK)
             .isGreaterThanOrEqualTo(SC_BAD_REQUEST);
@@ -337,15 +325,9 @@ public class OptionUpdateTest extends OptionBaseTest {
             .contains(
                 optionModification.getWidgetUids().get(0),
                 "' не должен иметь верхнеуровневых родителей с флагом 'forABtest'");
-        break;
       }
-      case 14: {
-        assertThat(response.getStatusCode()).as(STATUS_CODE_CHECK).isEqualTo(SC_OK);
-        break;
-      }
-      default: {
-        throw new IllegalArgumentException("Неучтенный тест-кейс");
-      }
+      case 14 -> assertThat(response.getStatusCode()).as(STATUS_CODE_CHECK).isEqualTo(SC_OK);
+      default -> throw new IllegalArgumentException("Неучтенный тест-кейс");
     }
     OPTION_STEPS.getOption(createdOption, getContentManager())
         .equals(new Option.Builder()

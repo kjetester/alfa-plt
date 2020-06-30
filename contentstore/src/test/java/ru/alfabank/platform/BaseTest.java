@@ -13,9 +13,16 @@ import static ru.alfabank.platform.users.PilUser.getPilUser;
 import static ru.alfabank.platform.users.SmeUser.getSmeUser;
 import static ru.alfabank.platform.users.UnclaimedUser.getUnclaimedUser;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.testng.annotations.AfterSuite;
-import ru.alfabank.platform.steps.abtest.ExperimentSteps;
-import ru.alfabank.platform.steps.abtest.OptionSteps;
+import org.testng.annotations.DataProvider;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
 import ru.alfabank.platform.steps.cs.AuditSteps;
 import ru.alfabank.platform.steps.cs.DraftSteps;
 import ru.alfabank.platform.steps.cs.PagesSteps;
@@ -48,6 +55,36 @@ public class BaseTest {
   protected static final UnclaimedUser UNCLAIMED_USER = getUnclaimedUser();
   protected static final AuditViewUser AUDIT_VIEW_USER = getAuditViewUser();
   protected static final AuditRollbackUser AUDIT_ROLLBACK_USER = getAuditRollbackUser();
+
+  /**
+   * Test data provider.
+   *
+   * @return content-store pages URIs
+   * @throws IOException IOException
+   */
+  @DataProvider(name = "contentStorePagesUris")
+  public Object[][] contentStorePagesUris() throws IOException {
+    Object[][] arr = new Object[resourcesList().size()][1];
+    for (int i = 0; i < resourcesList().size(); i++) {
+      arr[i][0] = resourcesList().get(i);
+    }
+    return arr;
+  }
+
+  private List<Page> resourcesList() throws IOException {
+    String fileName = "urls.csv";
+    List<Page> pagesList = new ArrayList<>();
+    BufferedReader reader =
+        new BufferedReader(
+            new InputStreamReader(
+                this.getClass().getResourceAsStream("/" + fileName)));
+    Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(reader);
+    for (CSVRecord record : records) {
+      Page resource = new Page(record.get(0));
+      pagesList.add(resource);
+    }
+    return pagesList;
+  }
 
   /**
    * Clean up.

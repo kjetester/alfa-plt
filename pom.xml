@@ -14,6 +14,10 @@
         <module>contentstore</module>
         <module>tranbilog</module>
         <module>acms</module>
+        <module>geofacade</module>
+        <module>feedback</module>
+        <module>cities</module>
+        <module>offices</module>
     </modules>
 
     <properties>
@@ -21,7 +25,7 @@
         <maven.compiler.target>13</maven.compiler.target>
         <maven.compiler.source>13</maven.compiler.source>
         <testng.version>7.1.0</testng.version>
-        <rest-assured.version>4.1.2</rest-assured.version>
+        <rest-assured.version>4.3.0</rest-assured.version>
         <selenium.version>4.0.0-alpha-5</selenium.version>
         <webdrivermanager.version>3.7.1</webdrivermanager.version>
         <assertj.version>3.14.0</assertj.version>
@@ -107,12 +111,6 @@
                 <version>${apache-commons-text.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.17</version>
@@ -171,6 +169,16 @@
                 <groupId>com.auth0</groupId>
                 <artifactId>java-jwt</artifactId>
                 <version>3.10.3</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-csv</artifactId>
+                <version>2.11.0</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.20</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -6,8 +6,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -18,9 +18,10 @@ import ru.alfabank.platform.BaseTest;
 public class WidgetActiveDatesCrossingExperimentDatesExperimentActivateNegativeTest
     extends BaseTest {
 
-  @Test(description = "Тест активации эксперимента с негативным условием:"
-      + "\n\t1. Дата начала отображения виджета больше даты начала эксперимента"
-      + "\n\t2. Дата окончания отображения виджета меньше даты окончания эксперимента")
+  @Test(description = """
+      Тест активации эксперимента с негативным условием:
+      \t1. Дата начала отображения виджета больше даты начала эксперимента
+      \t2. Дата окончания отображения виджета меньше даты окончания эксперимента""")
   public void widgetActiveDatesCrossingExperimentActiveDatesExperimentActivateNegativeTest() {
     final var date_from = getCurrentDateTime().plus(6, HOURS).toString();
     final var date_to = getCurrentDateTime().plus(12, HOURS).toString();

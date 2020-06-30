@@ -4,8 +4,8 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -19,8 +19,8 @@ import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.Option;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
+import ru.alfabank.platform.businessobjects.abtests.Option;
 import ru.alfabank.platform.option.OptionBaseTest;
 
 public class WrongExperimentStatusOptionUpdateTest extends OptionBaseTest {
@@ -99,7 +99,7 @@ public class WrongExperimentStatusOptionUpdateTest extends OptionBaseTest {
       @ParameterKey("Вариант АБ-теста") final Option abTestOptionChangeSet) {
     final var softly = new SoftAssertions();
     switch (StringUtils.substringBetween(testCase, "'")) {
-      case "RUNNING": {
+      case "RUNNING" -> {
         EXPERIMENT_STEPS.runExperimentAssumingSuccess(experiment1, getContentManager());
         final var defaultOptionModificationResponse = OPTION_STEPS.modifyOptionAssumingFail(
             createdDefaultOption,
@@ -113,9 +113,8 @@ public class WrongExperimentStatusOptionUpdateTest extends OptionBaseTest {
             .contains("Невозможно изменить вариант '" + createdDefaultOption.getUuid());
         softly.assertThat(abTestOptionModificationResponse.asString())
             .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
-        break;
       }
-      case "CANCELLED": {
+      case "CANCELLED" -> {
         EXPERIMENT_STEPS.stopExperimentAssumingSuccess(experiment1, getContentManager());
         final var defaultOptionModificationResponse = OPTION_STEPS.modifyOptionAssumingFail(
             createdDefaultOption,
@@ -129,15 +128,12 @@ public class WrongExperimentStatusOptionUpdateTest extends OptionBaseTest {
             .contains("Невозможно изменить вариант '" + createdDefaultOption.getUuid());
         softly.assertThat(abTestOptionModificationResponse.asString())
             .contains("Невозможно изменить вариант '" + createdAbTestOption.getUuid());
-        break;
       }
-      case "EXPIRED": {
+      case "EXPIRED" -> {
         LOGGER.warn("Manual Testing Needed");
         throw new SkipException("Manual Testing Needed");
       }
-      default: {
-        throw new IllegalArgumentException("Неучтенный тест-кейс");
-      }
+      default -> throw new IllegalArgumentException("Неучтенный тест-кейс");
     }
     OPTION_STEPS.getOption(createdDefaultOption, getContentManager())
         .equals(new Option.Builder().using(createdDefaultOption).build());

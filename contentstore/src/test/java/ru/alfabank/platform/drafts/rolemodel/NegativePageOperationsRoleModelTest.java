@@ -20,7 +20,7 @@ import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
 import ru.alfabank.platform.businessobjects.enums.Team;
 import ru.alfabank.platform.steps.cs.PagesSteps;
 import ru.alfabank.platform.users.AccessibleUser;
@@ -65,6 +65,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   /**
    * Data provider.
+   *
    * @return user
    */
   @DataProvider(name = "negativeReadPageDataProvider")
@@ -77,7 +78,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   @Test(description = "Негативный тест создания страницы в CS",
       dataProvider = "negativeCreatePageDataProvider")
-  public void negativeCreatePageRoleModelTest(final List<Team>     team,
+  public void negativeCreatePageRoleModelTest(final List<Team> team,
                                               final AccessibleUser user) {
     assertThat(PAGES_STEPS.createPageAndGetResponse(team, user).getStatusCode())
         .isEqualTo(SC_FORBIDDEN);
@@ -85,6 +86,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   /**
    * Data provider.
+   *
    * @return user
    */
   @DataProvider(name = "negativeCreatePageDataProvider")
@@ -161,8 +163,8 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   @Test(description = "Негативный тест изменения страницы в CS",
       dataProvider = "negativeModifyPageDataProvider")
-  public void negativeModifyPageRoleModelTest(final Integer        pageId,
-                                              final Page           pageModification,
+  public void negativeModifyPageRoleModelTest(final Integer pageId,
+                                              final Page pageModification,
                                               final AccessibleUser user) {
     assertThat(PAGES_STEPS.modifyPage(pageId, pageModification, user).getStatusCode())
         .isEqualTo(SC_FORBIDDEN);
@@ -170,6 +172,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   /**
    * Data provider.
+   *
    * @return user
    */
   @DataProvider(name = "negativeModifyPageDataProvider")
@@ -183,10 +186,10 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CREDIT_CARD_USER
         }, {
-            CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
-            CREDIT_CARD_USER
+        CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(CREDIT_CARD)).build(),
+        CREDIT_CARD_USER
         }, {
             DEBIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
@@ -258,11 +261,11 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
             new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
                 .setTeamsList(List.of(CREDIT_CARD)).build(),
             DEBIT_CARD_USER
-        },  {
-            CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD, INVEST)).build(),
-            DEBIT_CARD_USER
+        }, {
+        CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(DEBIT_CARD, INVEST)).build(),
+        DEBIT_CARD_USER
         }, {
             CREDIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
@@ -814,86 +817,87 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   /**
    * Data provider.
+   *
    * @return user
    */
   @DataProvider(name = "negativeCopyPageDataProvider")
   public static Object[][] negativeCopyPageDataProvider() {
     return new Object[][]{
         // CREDIT_CARD_USER
-        {CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID,  CREDIT_CARD_USER},
-        {DEBIT_CARD_PAGE_ID,                  CREDIT_CARD_USER},
-        {DEBIT_CARD_PAGE_ID,                  CREDIT_CARD_USER},
-        {INVEST_PAGE_ID,                      CREDIT_CARD_USER},
-        {MORTGAGE_PAGE_ID,                    CREDIT_CARD_USER},
-        {PIL_PAGE_ID,                         CREDIT_CARD_USER},
-        {SME_PAGE_ID,                         CREDIT_CARD_USER},
-        {COMMON_PAGE_ID,                      CREDIT_CARD_USER},
-        {UNCLAIMED_PAGE_ID,                   CREDIT_CARD_USER},
+        {CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID, CREDIT_CARD_USER},
+        {DEBIT_CARD_PAGE_ID, CREDIT_CARD_USER},
+        {DEBIT_CARD_PAGE_ID, CREDIT_CARD_USER},
+        {INVEST_PAGE_ID, CREDIT_CARD_USER},
+        {MORTGAGE_PAGE_ID, CREDIT_CARD_USER},
+        {PIL_PAGE_ID, CREDIT_CARD_USER},
+        {SME_PAGE_ID, CREDIT_CARD_USER},
+        {COMMON_PAGE_ID, CREDIT_CARD_USER},
+        {UNCLAIMED_PAGE_ID, CREDIT_CARD_USER},
         // DEBIT_CARD_USER
-        {CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID,  DEBIT_CARD_USER},
-        {CREDIT_CARD_PAGE_ID,                 DEBIT_CARD_USER},
-        {INVEST_PAGE_ID,                      DEBIT_CARD_USER},
-        {MORTGAGE_PAGE_ID,                    DEBIT_CARD_USER},
-        {PIL_PAGE_ID,                         DEBIT_CARD_USER},
-        {SME_PAGE_ID,                         DEBIT_CARD_USER},
-        {COMMON_PAGE_ID,                      DEBIT_CARD_USER},
-        {UNCLAIMED_PAGE_ID,                   DEBIT_CARD_USER},
+        {CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID, DEBIT_CARD_USER},
+        {CREDIT_CARD_PAGE_ID, DEBIT_CARD_USER},
+        {INVEST_PAGE_ID, DEBIT_CARD_USER},
+        {MORTGAGE_PAGE_ID, DEBIT_CARD_USER},
+        {PIL_PAGE_ID, DEBIT_CARD_USER},
+        {SME_PAGE_ID, DEBIT_CARD_USER},
+        {COMMON_PAGE_ID, DEBIT_CARD_USER},
+        {UNCLAIMED_PAGE_ID, DEBIT_CARD_USER},
         // INVEST_USER
         {INVEST_AND_MORTGAGE_PAGE_ID, INVEST_USER},
-        {CREDIT_CARD_PAGE_ID,         INVEST_USER},
-        {DEBIT_CARD_PAGE_ID,          INVEST_USER},
-        {MORTGAGE_PAGE_ID,            INVEST_USER},
-        {PIL_PAGE_ID,                 INVEST_USER},
-        {SME_PAGE_ID,                 INVEST_USER},
-        {COMMON_PAGE_ID,              INVEST_USER},
-        {UNCLAIMED_PAGE_ID,           INVEST_USER},
+        {CREDIT_CARD_PAGE_ID, INVEST_USER},
+        {DEBIT_CARD_PAGE_ID, INVEST_USER},
+        {MORTGAGE_PAGE_ID, INVEST_USER},
+        {PIL_PAGE_ID, INVEST_USER},
+        {SME_PAGE_ID, INVEST_USER},
+        {COMMON_PAGE_ID, INVEST_USER},
+        {UNCLAIMED_PAGE_ID, INVEST_USER},
         // MORTGAGE_USER
         {INVEST_AND_MORTGAGE_PAGE_ID, MORTGAGE_USER},
-        {CREDIT_CARD_PAGE_ID,         MORTGAGE_USER},
-        {DEBIT_CARD_PAGE_ID,          MORTGAGE_USER},
-        {INVEST_PAGE_ID,              MORTGAGE_USER},
-        {PIL_PAGE_ID,                 MORTGAGE_USER},
-        {SME_PAGE_ID,                 MORTGAGE_USER},
-        {COMMON_PAGE_ID,              MORTGAGE_USER},
-        {UNCLAIMED_PAGE_ID,           MORTGAGE_USER},
+        {CREDIT_CARD_PAGE_ID, MORTGAGE_USER},
+        {DEBIT_CARD_PAGE_ID, MORTGAGE_USER},
+        {INVEST_PAGE_ID, MORTGAGE_USER},
+        {PIL_PAGE_ID, MORTGAGE_USER},
+        {SME_PAGE_ID, MORTGAGE_USER},
+        {COMMON_PAGE_ID, MORTGAGE_USER},
+        {UNCLAIMED_PAGE_ID, MORTGAGE_USER},
         // PIL_USER
         {PIL_AND_SME_PAGE_ID, PIL_USER},
         {CREDIT_CARD_PAGE_ID, PIL_USER},
-        {DEBIT_CARD_PAGE_ID,  PIL_USER},
-        {INVEST_PAGE_ID,      PIL_USER},
-        {MORTGAGE_PAGE_ID,    PIL_USER},
-        {SME_PAGE_ID,         PIL_USER},
-        {COMMON_PAGE_ID,      PIL_USER},
-        {UNCLAIMED_PAGE_ID,   PIL_USER},
+        {DEBIT_CARD_PAGE_ID, PIL_USER},
+        {INVEST_PAGE_ID, PIL_USER},
+        {MORTGAGE_PAGE_ID, PIL_USER},
+        {SME_PAGE_ID, PIL_USER},
+        {COMMON_PAGE_ID, PIL_USER},
+        {UNCLAIMED_PAGE_ID, PIL_USER},
         // SME_USER
         {PIL_AND_SME_PAGE_ID, SME_USER},
         {CREDIT_CARD_PAGE_ID, SME_USER},
-        {DEBIT_CARD_PAGE_ID,  SME_USER},
-        {INVEST_PAGE_ID,      SME_USER},
-        {MORTGAGE_PAGE_ID,    SME_USER},
-        {PIL_PAGE_ID,         SME_USER},
-        {COMMON_PAGE_ID,      SME_USER},
-        {UNCLAIMED_PAGE_ID,   SME_USER},
+        {DEBIT_CARD_PAGE_ID, SME_USER},
+        {INVEST_PAGE_ID, SME_USER},
+        {MORTGAGE_PAGE_ID, SME_USER},
+        {PIL_PAGE_ID, SME_USER},
+        {COMMON_PAGE_ID, SME_USER},
+        {UNCLAIMED_PAGE_ID, SME_USER},
         // COMMON_USER
         {CREDIT_CARD_AND_COMMON_PAGE_ID, COMMON_USER},
-        {CREDIT_CARD_PAGE_ID,            COMMON_USER},
-        {DEBIT_CARD_PAGE_ID,             COMMON_USER},
-        {INVEST_PAGE_ID,                 COMMON_USER},
-        {MORTGAGE_PAGE_ID,               COMMON_USER},
-        {PIL_PAGE_ID,                    COMMON_USER},
-        {SME_PAGE_ID,                    COMMON_USER},
-        {UNCLAIMED_PAGE_ID,              COMMON_USER},
+        {CREDIT_CARD_PAGE_ID, COMMON_USER},
+        {DEBIT_CARD_PAGE_ID, COMMON_USER},
+        {INVEST_PAGE_ID, COMMON_USER},
+        {MORTGAGE_PAGE_ID, COMMON_USER},
+        {PIL_PAGE_ID, COMMON_USER},
+        {SME_PAGE_ID, COMMON_USER},
+        {UNCLAIMED_PAGE_ID, COMMON_USER},
         // UNCLAIMED_USER
         {CREDIT_CARD_PAGE_ID, UNCLAIMED_USER},
-        {DEBIT_CARD_PAGE_ID,  UNCLAIMED_USER},
-        {INVEST_PAGE_ID,      UNCLAIMED_USER},
-        {MORTGAGE_PAGE_ID,    UNCLAIMED_USER},
-        {PIL_PAGE_ID,         UNCLAIMED_USER},
-        {SME_PAGE_ID,         UNCLAIMED_USER},
-        {COMMON_PAGE_ID,      UNCLAIMED_USER}
+        {DEBIT_CARD_PAGE_ID, UNCLAIMED_USER},
+        {INVEST_PAGE_ID, UNCLAIMED_USER},
+        {MORTGAGE_PAGE_ID, UNCLAIMED_USER},
+        {PIL_PAGE_ID, UNCLAIMED_USER},
+        {SME_PAGE_ID, UNCLAIMED_USER},
+        {COMMON_PAGE_ID, UNCLAIMED_USER}
     };
   }
-  
+
   @Test(description = "Негативный тест удаления страницы в CS",
       dataProvider = "negativeDeletePageDataProvider")
   public void negativeDeletePageRoleModelTest(final Integer pageId,
@@ -903,76 +907,77 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   /**
    * Data provider.
+   *
    * @return user
    */
   @DataProvider(name = "negativeDeletePageDataProvider")
   public static Object[][] negativeDeletePageDataProvider() {
     return new Object[][]{
         // CREDIT_CARD_USER
-        {DEBIT_CARD_PAGE_ID,  CREDIT_CARD_USER},
-        {DEBIT_CARD_PAGE_ID,  CREDIT_CARD_USER},
-        {INVEST_PAGE_ID,      CREDIT_CARD_USER},
-        {MORTGAGE_PAGE_ID,    CREDIT_CARD_USER},
-        {PIL_PAGE_ID,         CREDIT_CARD_USER},
-        {SME_PAGE_ID,         CREDIT_CARD_USER},
-        {COMMON_PAGE_ID,      CREDIT_CARD_USER},
-        {UNCLAIMED_PAGE_ID,   CREDIT_CARD_USER},
+        {DEBIT_CARD_PAGE_ID, CREDIT_CARD_USER},
+        {DEBIT_CARD_PAGE_ID, CREDIT_CARD_USER},
+        {INVEST_PAGE_ID, CREDIT_CARD_USER},
+        {MORTGAGE_PAGE_ID, CREDIT_CARD_USER},
+        {PIL_PAGE_ID, CREDIT_CARD_USER},
+        {SME_PAGE_ID, CREDIT_CARD_USER},
+        {COMMON_PAGE_ID, CREDIT_CARD_USER},
+        {UNCLAIMED_PAGE_ID, CREDIT_CARD_USER},
         // DEBIT_CARD_USER
         {CREDIT_CARD_PAGE_ID, DEBIT_CARD_USER},
-        {INVEST_PAGE_ID,      DEBIT_CARD_USER},
-        {MORTGAGE_PAGE_ID,    DEBIT_CARD_USER},
-        {PIL_PAGE_ID,         DEBIT_CARD_USER},
-        {SME_PAGE_ID,         DEBIT_CARD_USER},
-        {COMMON_PAGE_ID,      DEBIT_CARD_USER},
-        {UNCLAIMED_PAGE_ID,   DEBIT_CARD_USER},
+        {INVEST_PAGE_ID, DEBIT_CARD_USER},
+        {MORTGAGE_PAGE_ID, DEBIT_CARD_USER},
+        {PIL_PAGE_ID, DEBIT_CARD_USER},
+        {SME_PAGE_ID, DEBIT_CARD_USER},
+        {COMMON_PAGE_ID, DEBIT_CARD_USER},
+        {UNCLAIMED_PAGE_ID, DEBIT_CARD_USER},
         // INVEST_USER
         {CREDIT_CARD_PAGE_ID, INVEST_USER},
-        {DEBIT_CARD_PAGE_ID,  INVEST_USER},
-        {MORTGAGE_PAGE_ID,    INVEST_USER},
-        {PIL_PAGE_ID,         INVEST_USER},
-        {SME_PAGE_ID,         INVEST_USER},
-        {COMMON_PAGE_ID,      INVEST_USER},
-        {UNCLAIMED_PAGE_ID,   INVEST_USER},
+        {DEBIT_CARD_PAGE_ID, INVEST_USER},
+        {MORTGAGE_PAGE_ID, INVEST_USER},
+        {PIL_PAGE_ID, INVEST_USER},
+        {SME_PAGE_ID, INVEST_USER},
+        {COMMON_PAGE_ID, INVEST_USER},
+        {UNCLAIMED_PAGE_ID, INVEST_USER},
         // MORTGAGE_USER
         {CREDIT_CARD_PAGE_ID, MORTGAGE_USER},
-        {DEBIT_CARD_PAGE_ID,  MORTGAGE_USER},
-        {INVEST_PAGE_ID,      MORTGAGE_USER},
-        {PIL_PAGE_ID,         MORTGAGE_USER},
-        {SME_PAGE_ID,         MORTGAGE_USER},
-        {COMMON_PAGE_ID,      MORTGAGE_USER},
-        {UNCLAIMED_PAGE_ID,   MORTGAGE_USER},
+        {DEBIT_CARD_PAGE_ID, MORTGAGE_USER},
+        {INVEST_PAGE_ID, MORTGAGE_USER},
+        {PIL_PAGE_ID, MORTGAGE_USER},
+        {SME_PAGE_ID, MORTGAGE_USER},
+        {COMMON_PAGE_ID, MORTGAGE_USER},
+        {UNCLAIMED_PAGE_ID, MORTGAGE_USER},
         // PIL_USER
         {CREDIT_CARD_PAGE_ID, PIL_USER},
-        {DEBIT_CARD_PAGE_ID,  PIL_USER},
-        {INVEST_PAGE_ID,      PIL_USER},
-        {MORTGAGE_PAGE_ID,    PIL_USER},
-        {SME_PAGE_ID,         PIL_USER},
-        {COMMON_PAGE_ID,      PIL_USER},
-        {UNCLAIMED_PAGE_ID,   PIL_USER},
+        {DEBIT_CARD_PAGE_ID, PIL_USER},
+        {INVEST_PAGE_ID, PIL_USER},
+        {MORTGAGE_PAGE_ID, PIL_USER},
+        {SME_PAGE_ID, PIL_USER},
+        {COMMON_PAGE_ID, PIL_USER},
+        {UNCLAIMED_PAGE_ID, PIL_USER},
         // SME_USER
         {CREDIT_CARD_PAGE_ID, SME_USER},
-        {DEBIT_CARD_PAGE_ID,  SME_USER},
-        {INVEST_PAGE_ID,      SME_USER},
-        {MORTGAGE_PAGE_ID,    SME_USER},
-        {PIL_PAGE_ID,         SME_USER},
-        {COMMON_PAGE_ID,      SME_USER},
-        {UNCLAIMED_PAGE_ID,   SME_USER},
+        {DEBIT_CARD_PAGE_ID, SME_USER},
+        {INVEST_PAGE_ID, SME_USER},
+        {MORTGAGE_PAGE_ID, SME_USER},
+        {PIL_PAGE_ID, SME_USER},
+        {COMMON_PAGE_ID, SME_USER},
+        {UNCLAIMED_PAGE_ID, SME_USER},
         // COMMON_USER
         {CREDIT_CARD_PAGE_ID, COMMON_USER},
-        {DEBIT_CARD_PAGE_ID,  COMMON_USER},
-        {INVEST_PAGE_ID,      COMMON_USER},
-        {MORTGAGE_PAGE_ID,    COMMON_USER},
-        {PIL_PAGE_ID,         COMMON_USER},
-        {SME_PAGE_ID,         COMMON_USER},
-        {UNCLAIMED_PAGE_ID,   COMMON_USER},
+        {DEBIT_CARD_PAGE_ID, COMMON_USER},
+        {INVEST_PAGE_ID, COMMON_USER},
+        {MORTGAGE_PAGE_ID, COMMON_USER},
+        {PIL_PAGE_ID, COMMON_USER},
+        {SME_PAGE_ID, COMMON_USER},
+        {UNCLAIMED_PAGE_ID, COMMON_USER},
         // UNCLAIMED_USER
         {CREDIT_CARD_PAGE_ID, UNCLAIMED_USER},
-        {DEBIT_CARD_PAGE_ID,  UNCLAIMED_USER},
-        {INVEST_PAGE_ID,      UNCLAIMED_USER},
-        {MORTGAGE_PAGE_ID,    UNCLAIMED_USER},
-        {PIL_PAGE_ID,         UNCLAIMED_USER},
-        {SME_PAGE_ID,         UNCLAIMED_USER},
-        {COMMON_PAGE_ID,      UNCLAIMED_USER}
+        {DEBIT_CARD_PAGE_ID, UNCLAIMED_USER},
+        {INVEST_PAGE_ID, UNCLAIMED_USER},
+        {MORTGAGE_PAGE_ID, UNCLAIMED_USER},
+        {PIL_PAGE_ID, UNCLAIMED_USER},
+        {SME_PAGE_ID, UNCLAIMED_USER},
+        {COMMON_PAGE_ID, UNCLAIMED_USER}
     };
   }
 }

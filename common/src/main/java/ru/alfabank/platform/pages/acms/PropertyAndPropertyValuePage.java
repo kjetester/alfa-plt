@@ -14,7 +14,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import ru.alfabank.platform.businessobjects.enums.Geo;
 
 public class PropertyAndPropertyValuePage extends BasePage {
 
@@ -42,14 +41,14 @@ public class PropertyAndPropertyValuePage extends BasePage {
    *
    * @param propertyName property name
    * @param value        property value
-   * @param geos         geos
+   * @param geoGroups    geos
    * @return this
    */
   public PropertyAndPropertyValuePage modifyValueContinueWithPropertyPage(
       String propertyName,
       String value,
-      Geo... geos) {
-    modifyVal(propertyName, value, Arrays.asList(geos));
+      String... geoGroups) {
+    modifyVal(propertyName, value, Arrays.asList(geoGroups));
     return this;
   }
 
@@ -58,13 +57,13 @@ public class PropertyAndPropertyValuePage extends BasePage {
    *
    * @param propertyName property name
    * @param value        property value
-   * @param geos         geos
+   * @param geoGroups    geos
    * @return WidgetSidebarPage
    */
   public WidgetSidebarPage modifyValueAndContinueWithWidgetSidebarPage(String propertyName,
                                                                        String value,
-                                                                       Geo... geos) {
-    modifyVal(propertyName, value, Arrays.asList(geos));
+                                                                       String... geoGroups) {
+    modifyVal(propertyName, value, Arrays.asList(geoGroups));
     return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
   }
 
@@ -73,11 +72,11 @@ public class PropertyAndPropertyValuePage extends BasePage {
    *
    * @param propertyName property name
    * @param value        property value
-   * @param geoList      geos
+   * @param geoGroupList geos
    */
   private void modifyVal(String propertyName,
                          String value,
-                         List<Geo> geoList) {
+                         List<String> geoGroupList) {
     By propertySelector = By.xpath(String.format(propertySelectorXpath, propertyName));
     WebElement property = getDriver().findElement(propertySelector);
     List<WebElement> propertyValuesList = property.findElements(propertyValuesSelector);
@@ -93,12 +92,12 @@ public class PropertyAndPropertyValuePage extends BasePage {
    *
    * @param propertyName property name
    * @param value        property value
-   * @param geos         geos
+   * @param geoGroups    geos
    * @return WidgetSidebarPage
    */
   public WidgetSidebarPage createValue(String propertyName,
                                        String value,
-                                       Geo... geos) {
+                                       String... geoGroups) {
     LOGGER.info(String.format("Creating a new value '%s' for property '%s'", value, propertyName));
     addPropertyValueButton.click();
     String newPropertyValueSelectorXpath =
@@ -110,21 +109,21 @@ public class PropertyAndPropertyValuePage extends BasePage {
     WebElement textArea =
         newPropertyValue.findElement(propertyValueInputSelector);
     setValueToMonacoTextArea(value, textArea);
-    List<Geo> geoList = Arrays.asList(geos);
-    LOGGER.info(String.format("Устанавливаю гео-групп(ы) '%s'", geoList));
-    setGeoGroups(newPropertyValue, geoList);
+    List<String> geoGroupList = Arrays.asList(geoGroups);
+    LOGGER.info(String.format("Устанавливаю гео-групп(ы) '%s'", geoGroupList));
+    setGeoGroups(newPropertyValue, geoGroupList);
     return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);
   }
 
   /**
    * Setting up geo-groups.
    *
-   * @param input   input
-   * @param geoList geos
+   * @param input        input
+   * @param geoGroupList geos
    */
-  public void setGeoGroups(WebElement input, List<Geo> geoList) {
+  public void setGeoGroups(WebElement input, List<String> geoGroupList) {
     List<WebElement> selectedGeoList = input.findElements(propertyValueSelectedGeoGroups);
-    setValuesToCombobox(selectedGeoList, input, geoList);
+    setValuesToCombobox(selectedGeoList, input, geoGroupList);
   }
 
   /**
@@ -132,12 +131,12 @@ public class PropertyAndPropertyValuePage extends BasePage {
    *
    * @param propertyName property name
    * @param value        value
-   * @param geos         geos
+   * @param geoGroups    geos
    * @return WidgetSidebarPage
    */
   public WidgetSidebarPage restorePropertyAndValues(String propertyName,
                                                     String value,
-                                                    Geo... geos) {
+                                                    String... geoGroups) {
     By propertySelector = By.xpath(String.format(propertySelectorXpath, propertyName));
     if (isPresent(propertySelector)) {
       WebElement property = getDriver().findElement(propertySelector);
@@ -152,11 +151,11 @@ public class PropertyAndPropertyValuePage extends BasePage {
         modifyValueContinueWithPropertyPage(
             propertyName,
             value,
-            geos);
+            geoGroups);
       } else {
         PageFactory.initElements(getDriver(), WidgetSidebarPage.class)
             .createNewPropertyToWorkWith(propertyName)
-            .createValue(propertyName, value, geos);
+            .createValue(propertyName, value, geoGroups);
       }
     }
     return PageFactory.initElements(getDriver(), WidgetSidebarPage.class);

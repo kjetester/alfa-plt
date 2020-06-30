@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
 
 public class MedacollBaseTest extends BaseTest {
 
@@ -34,8 +34,10 @@ public class MedacollBaseTest extends BaseTest {
     setUpSourcePage();
   }
 
-  @BeforeMethod(description = "Выполенние предусловий:\n"
-      + "\t1. Создание базового объекта создоваемой страницы\n")
+  @BeforeMethod(description = """
+      Выполенние предусловий:
+      \t1. Создание базового объекта создоваемой страницы
+      """)
   public void beforeCreationPageMethods() {
     setUpBasePage();
   }

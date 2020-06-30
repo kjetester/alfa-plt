@@ -10,7 +10,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
 import ru.alfabank.platform.pages.acms.MainPage;
 import ru.alfabank.platform.utils.TestFailureListener;
 
@@ -20,8 +20,10 @@ public class PageCopyingTest extends BasePageTest {
   private Page copiedPage;
 
   @Test(
-      description = "Тест копирования страницы:\n"
-          + "\t1. Метод - CURRENT\n",
+      description = """
+          Тест копирования страницы:
+          \t1. Метод - CURRENT
+          """,
       groups = {"page", "copyingPage"})
   public void pageCopyingByCurrentTest() throws InterruptedException {
     // STEPS //
@@ -41,8 +43,10 @@ public class PageCopyingTest extends BasePageTest {
   }
 
   @Test(
-      description = "Тест копирования страницы:\n"
-          + "\t1. Метод - COPY\n",
+      description = """
+          Тест копирования страницы:
+          \t1. Метод - COPY
+          """,
       groups = {"page", "copyingPage"})
   public void pageCopyingByCopyTest() throws InterruptedException {
     // STEPS //
@@ -63,8 +67,10 @@ public class PageCopyingTest extends BasePageTest {
   }
 
   @Test(
-      description = "Тест копирования страницы:\n"
-          + "\t1. Метод - SHARE\n",
+      description = """
+          Тест копирования страницы:
+          \t1. Метод - SHARE
+          """,
       groups = {"page", "copyingPage"})
   public void pageCopyingByShareTest() throws InterruptedException {
     // STEPS //

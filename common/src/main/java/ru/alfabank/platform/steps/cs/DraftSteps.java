@@ -22,13 +22,12 @@ import java.util.stream.Collectors;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import ru.alfabank.platform.businessobjects.Page;
-import ru.alfabank.platform.businessobjects.Widget;
-import ru.alfabank.platform.businessobjects.draft.DataDraft;
-import ru.alfabank.platform.businessobjects.draft.WrapperDraft;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Widget;
+import ru.alfabank.platform.businessobjects.contentstore.draft.DataDraft;
+import ru.alfabank.platform.businessobjects.contentstore.draft.WrapperDraft;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ExperimentOptionName;
-import ru.alfabank.platform.businessobjects.enums.Geo;
 import ru.alfabank.platform.steps.BaseSteps;
 import ru.alfabank.platform.users.AccessibleUser;
 
@@ -45,7 +44,7 @@ public class DraftSteps extends BaseSteps {
    * @param enabled              is enabled
    * @param experimentOptionName experiment option name
    * @param defaultWidget        is default widget
-   * @param geos                 geos
+   * @param geoGroups            geos
    * @param start                start date
    * @param end                  end date
    * @param user                 user
@@ -57,7 +56,7 @@ public class DraftSteps extends BaseSteps {
                              @NotNull final Boolean enabled,
                              @NotNull final ExperimentOptionName experimentOptionName,
                              @NotNull final Boolean defaultWidget,
-                             @NotNull final List<Geo> geos,
+                             @NotNull final List<String> geoGroups,
                              final String start,
                              final String end,
                              @NotNull final AccessibleUser user) {
@@ -72,7 +71,7 @@ public class DraftSteps extends BaseSteps {
         .setChildren(new ArrayList<>())
         .setChildUids(new ArrayList<>())
         .setProperties(new ArrayList<>())
-        .setGeo(geos)
+        .setGeo(geoGroups)
         .setVersion(V_1_0_0.getVersion())
         .setExperimentOptionName(experimentOptionName.toString())
         .isDefaultWidget(defaultWidget)
@@ -93,7 +92,7 @@ public class DraftSteps extends BaseSteps {
         WIDGET.toString(),
         CREATE.toString(),
         widget.getUid());
-    WrapperDraft.OperationDraft widgetPlacementOperation = null;
+    WrapperDraft.OperationDraft widgetPlacementOperation;
     if (parentWidget == null) {
       final var widgetsList = page.getWidgetList()
           .stream()

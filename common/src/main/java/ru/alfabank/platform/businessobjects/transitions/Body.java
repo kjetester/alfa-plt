@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import java.time.LocalDateTime;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public final class Body {
+public final class Body extends AbstractBusinessObject {
 
   private final Object businessUid;
   private final Object clientDate;

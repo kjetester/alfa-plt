@@ -24,8 +24,8 @@ import org.testng.TestNGException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.Experiment.Builder;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
+import ru.alfabank.platform.businessobjects.abtests.Experiment.Builder;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
 
@@ -245,7 +245,7 @@ public class CreateExperimentTest extends BaseTest {
     final var fieldViolations = createResponse.getBody().jsonPath().getList("fieldViolations");
     final var globalErrors = createResponse.getBody().jsonPath().getList("globalErrors");
     switch (StringUtils.substringBetween(testCase, "'")) {
-      case "device": {
+      case "device" -> {
         assertThat(globalErrors)
             .as("Проверка отсутствия ошибок в 'globalErrors'")
             .isNullOrEmpty();
@@ -267,9 +267,8 @@ public class CreateExperimentTest extends BaseTest {
               .contains("Поле может иметь только одно из возможных значений: [DESKTOP, MOBILE]. "
                   + "Чувствительность к регистру - false");
         }
-        break;
       }
-      case "cookieValue": {
+      case "cookieValue" -> {
         softly
             .assertThat(globalErrors)
             .as("Проверка отсутствия ошибок в 'globalErrors'")
@@ -295,9 +294,8 @@ public class CreateExperimentTest extends BaseTest {
                   ? "length must be between 0 and 255"
                   : "Должно быть указана составная часть формировании кук");
         }
-        break;
       }
-      case "description": {
+      case "description" -> {
         softly
             .assertThat(globalErrors)
             .as("Проверка отсутствия ошибок в 'globalErrors'")
@@ -323,9 +321,8 @@ public class CreateExperimentTest extends BaseTest {
                   ? "length must be between 0 and 1000"
                   : "Должно быть указано описание эксперимента");
         }
-        break;
       }
-      case "pageId": {
+      case "pageId" -> {
         if (pageId == null) {
           softly
               .assertThat(globalErrors)
@@ -359,9 +356,8 @@ public class CreateExperimentTest extends BaseTest {
               .containsIgnoringCase("Не найдено страницы с комбинацией pageId = "
                   + pageId + " и device = " + device);
         }
-        break;
       }
-      case "productType": {
+      case "productType" -> {
         if (productType != null && productType.equals(ERR)) {
           softly
               .assertThat(createResponse.getBody().asString())
@@ -385,9 +381,8 @@ public class CreateExperimentTest extends BaseTest {
               .as("Проверка обрабоки отсутсвия значения 'productType'")
               .contains("Необходимо указать ключ типа продукта");
         }
-        break;
       }
-      case "endDate": {
+      case "endDate" -> {
         softly
             .assertThat(globalErrors)
             .as("Проверка отсутствия ошибок в 'globalErrors'")
@@ -406,9 +401,8 @@ public class CreateExperimentTest extends BaseTest {
             .contains(endDate == null
                 ? "Необходимо указать дату окончания эксперимента"
                 : "Минимально допустимая продолжительность эксперимента составляет: 1 день");
-        break;
       }
-      case "trafficRate": {
+      case "trafficRate" -> {
         var stringAssert = softly.assertThat(createResponse.getBody().asString())
             .as("Проверка обрабоки некоррекнтого значения 'trafficRate'");
         stringAssert.contains("trafficRate");
@@ -418,13 +412,9 @@ public class CreateExperimentTest extends BaseTest {
           stringAssert.contains("Доля трафика должна быть больше");
         } else if (trafficRate > 1D) {
           stringAssert.contains("Доля трафика не может превышать единицу");
-          break;
         }
-        break;
       }
-      default: {
-        throw new TestNGException("Неописанный кейс");
-      }
+      default -> throw new TestNGException("Неописанный кейс");
     }
     if (experiment.getPageId() != null) {
       final var readResponse =

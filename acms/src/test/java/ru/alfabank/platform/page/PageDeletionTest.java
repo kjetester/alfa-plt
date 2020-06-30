@@ -12,7 +12,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
 import ru.alfabank.platform.pages.acms.MainPage;
 import ru.alfabank.platform.utils.TestFailureListener;
 
@@ -22,9 +22,10 @@ public class PageDeletionTest extends BasePageTest {
   private static final Logger LOGGER = LogManager.getLogger(PageDeletionTest.class);
   private static final SoftAssertions SOFTLY = new SoftAssertions();
 
-  @Test(description = "Тест удаления страницы:\n"
-      + "\t1. Потомков нет\n"
-      + "\t2. Виджетов нет",
+  @Test(description = """
+      Тест удаления страницы:
+      \t1. Потомков нет
+      \t2. Виджетов нет""",
       groups = {"page", "deletionPage"})
   public void singleEmptyPageDeletionTest() {
     // PRECONDITIONS //

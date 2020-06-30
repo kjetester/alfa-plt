@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
+import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public final class RabbitBody {
+public final class RabbitBody extends AbstractBusinessObject {
 
   @JsonProperty("properties")
   private Properties properties;

@@ -16,7 +16,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.TestException;
 import org.testng.TestNGException;
-import ru.alfabank.platform.businessobjects.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
 import ru.alfabank.platform.businessobjects.enums.CopyMethod;
 import ru.alfabank.platform.pages.alfasite.AlfaSitePage;
 
@@ -421,18 +421,9 @@ public class MainPage extends BasePage {
   public NewPageCreationPage copyPage(final CopyMethod copyMethod) {
     waitForElementBecomesClickable(copyPageButton).click();
     switch (copyMethod) {
-      case COPY: {
-        waitForElementBecomesClickable(copyRadio).click();
-        break;
-      }
-      case SHARE: {
-        waitForElementBecomesClickable(shareRadio).click();
-        break;
-      }
-      default: {
-        waitForElementBecomesClickable(asIsRadio).click();
-        break;
-      }
+      case COPY -> waitForElementBecomesClickable(copyRadio).click();
+      case SHARE -> waitForElementBecomesClickable(shareRadio).click();
+      default -> waitForElementBecomesClickable(asIsRadio).click();
     }
     submitDialog();
     return PageFactory.initElements(getDriver(), NewPageCreationPage.class);

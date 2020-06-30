@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -17,9 +17,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Experiment;
-import ru.alfabank.platform.businessobjects.Option;
-import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
+import ru.alfabank.platform.businessobjects.abtests.Option;
+import ru.alfabank.platform.businessobjects.contentstore.Widget;
 import ru.alfabank.platform.businessobjects.enums.ExperimentOptionName;
 
 public class DefaultOptionAssignedToInvalidWidgetExperimentActivateNegativeTest extends BaseTest {
@@ -34,21 +34,22 @@ public class DefaultOptionAssignedToInvalidWidgetExperimentActivateNegativeTest 
   /**
    * Before method.
    */
-  @BeforeMethod(description = "Выполнение предусловий:"
-      + "\n\t1. На странице нет запущенных экспериментов"
-      + "\n\t2. Даты активности страницы не установлены"
-      + "\n\t3. Даты активности виджетов не установлены"
-      + "\n\t4. Статус эксперимента 'DISABLED'"
-      + "\n\t5. Дата окончания эксперимента более текущей даты + 1 день"
-      + "\n\t6. У эксперимента есть 2 варианта:"
-      + "\n\t\t1. Дефолтный вариант привязан к нешаренному виджету, у которого:"
-      + "\n\t\t\t* enable=true"
-      + "\n\t\t\t* experimentOptionName=default"
-      + "\n\t\t\t* defaultWidget=true"
-      + "\n\t\t2. Недефолтный вариант привязан к нешаренному виджету, у которого:"
-      + "\n\t\t\t* enable=false"
-      + "\n\t\t\t* experimentOptionName=forABtest"
-      + "\n\t\t\t* defaultWidget=false",
+  @BeforeMethod(description = """
+      Выполнение предусловий:
+      \t1. На странице нет запущенных экспериментов
+      \t2. Даты активности страницы не установлены
+      \t3. Даты активности виджетов не установлены
+      \t4. Статус эксперимента 'DISABLED'
+      \t5. Дата окончания эксперимента более текущей даты + 1 день
+      \t6. У эксперимента есть 2 варианта:
+      \t\t1. Дефолтный вариант привязан к нешаренному виджету, у которого:
+      \t\t\t* enable=true
+      \t\t\t* experimentOptionName=default
+      \t\t\t* defaultWidget=true
+      \t\t2. Недефолтный вариант привязан к нешаренному виджету, у которого:
+      \t\t\t* enable=false
+      \t\t\t* experimentOptionName=forABtest
+      \t\t\t* defaultWidget=false""",
       alwaysRun = true)
   public void beforeMethod() {
     pageId = PAGES_STEPS.createEnabledPage(getContentManager());
@@ -99,7 +100,8 @@ public class DefaultOptionAssignedToInvalidWidgetExperimentActivateNegativeTest 
   public void defaultOptionAssignedToInvalidWidgetExperimentActivateNegativeTest(
       @ParameterKey("Test Case")
       final String testCase,
-      @ParameterKey("Is Widget for default option enabled") final Boolean isDefaultWidgeEnabled,
+      @ParameterKey("Is Widget for default option enabled")
+      final Boolean isDefaultWidgeEnabled,
       @ParameterKey("Widget ExperimentOptionName for default option")
       final ExperimentOptionName defaultOptionName,
       @ParameterKey("Is Widget for default option default")

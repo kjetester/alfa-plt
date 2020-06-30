@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="Geo Facade suite"
+       configfailurepolicy="continue"
+       parallel="true"
+       verbose="5">
+    <listeners>
+        <listener class-name="ru.alfabank.platform.utils.RetryListener"/>
+    </listeners>
+    <test name="Geo group creation test" enabled="true">
+        <classes>
+            <class name="ru.alfabank.platform.geogroups.creation.GeoGroupCreationTest"/>
+        </classes>
+    </test>
+</suite>

@@ -3,9 +3,9 @@ package ru.alfabank.platform.experiment.update.activate.positive;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.Geo.RU;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.RUNNING;
+import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.Experiment;
+import ru.alfabank.platform.businessobjects.abtests.Experiment;
 
 public class ExperimentActivationTwoTest extends BaseTest {
 
@@ -26,22 +26,23 @@ public class ExperimentActivationTwoTest extends BaseTest {
   /**
    * Before method.
    */
-  @BeforeMethod(description = "Выполнение предусловий:"
-      + "\n\t1. На странице нет запущенных экспериментов"
-      + "\n\t2. Даты активности страницы НЕ установлены"
-      + "\n\t3. Даты активности виджетов НЕ установлены"
-      + "\n\t4. Статус эксперимента 'DISABLED'"
-      + "\n\t5. Дата окончания эксперимента более текущей даты + 1 день"
-      + "\n\t6. У эксперимента есть 3 варианта:"
-      + "\n\t\t1. Дефолтный вариант привязан к нешаренному виджету, у которого:"
-      + "\n\t\t\t* enable=true"
-      + "\n\t\t\t* experimentOptionName=default"
-      + "\n\t\t\t* defaultWidget=true"
-      + "\n\t\t2. Недефолтный вариант привязан к нешаренному виджету, у которого:"
-      + "\n\t\t\t* enable=false"
-      + "\n\t\t\t* experimentOptionName=forABtest"
-      + "\n\t\t\t* defaultWidget=false"
-      + "\n\t\t3. Недефолтный вариант не привязан виджету")
+  @BeforeMethod(description = """
+      Выполнение предусловий:
+      \t1. На странице нет запущенных экспериментов
+      \t2. Даты активности страницы НЕ установлены
+      \t3. Даты активности виджетов НЕ установлены
+      \t4. Статус эксперимента 'DISABLED'
+      \t5. Дата окончания эксперимента более текущей даты + 1 день
+      \t6. У эксперимента есть 3 варианта:
+      \t\t1. Дефолтный вариант привязан к нешаренному виджету, у которого:
+      \t\t\t* enable=true
+      \t\t\t* experimentOptionName=default
+      \t\t\t* defaultWidget=true
+      \t\t2. Недефолтный вариант привязан к нешаренному виджету, у которого:
+      \t\t\t* enable=false
+      \t\t\t* experimentOptionName=forABtest
+      \t\t\t* defaultWidget=false
+      \t\t3. Недефолтный вариант не привязан виджету""")
   public void beforeMethod() {
     LOGGER.error("ERROR");
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());

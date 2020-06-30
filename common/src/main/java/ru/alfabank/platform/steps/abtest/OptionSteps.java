@@ -13,7 +13,7 @@ import io.restassured.response.Response;
 import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import ru.alfabank.platform.businessobjects.Option;
+import ru.alfabank.platform.businessobjects.abtests.Option;
 import ru.alfabank.platform.users.AccessibleUser;
 
 public class OptionSteps extends ExperimentSteps {

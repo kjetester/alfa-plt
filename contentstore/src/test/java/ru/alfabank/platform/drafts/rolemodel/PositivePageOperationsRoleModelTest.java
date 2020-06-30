@@ -20,8 +20,7 @@ import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.businessobjects.Page;
-import ru.alfabank.platform.businessobjects.enums.CopyMethod;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
 import ru.alfabank.platform.businessobjects.enums.Team;
 import ru.alfabank.platform.steps.cs.PagesSteps;
 import ru.alfabank.platform.users.AccessibleUser;
@@ -44,6 +43,7 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   /**
    * Data provider.
+   *
    * @return user
    */
   @DataProvider(name = "positiveReadPageDataProvider")
@@ -69,6 +69,7 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   /**
    * Data provider.
+   *
    * @return user
    */
   @DataProvider(name = "positiveCreatePageDataProvider")
@@ -97,6 +98,7 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   /**
    * Data provider.
+   *
    * @return user
    */
   @DataProvider(name = "positiveModifyPageDataProvider")
@@ -121,8 +123,9 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
             ccPageId,
             new Page.Builder().using(CREATED_PAGES.get(ccPageId)).setEnable(false).build(),
             CREDIT_CARD_USER
-        }, {
-        ccDcPageId,
+        },
+        {
+            ccDcPageId,
             new Page.Builder().using(CREATED_PAGES.get(ccDcPageId)).setEnable(false).build(),
             CREDIT_CARD_USER
         },
@@ -131,7 +134,8 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
             dcPageId,
             new Page.Builder().using(CREATED_PAGES.get(dcPageId)).setEnable(false).build(),
             DEBIT_CARD_USER
-        }, {
+        },
+            {
             ccDcPageId,
             new Page.Builder().using(CREATED_PAGES.get(ccDcPageId)).setEnable(false).build(),
             DEBIT_CARD_USER
@@ -141,8 +145,9 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
             invPageId,
             new Page.Builder().using(CREATED_PAGES.get(invPageId)).setEnable(false).build(),
             INVEST_USER
-        }, {
-        invMrtPageId,
+        },
+        {
+            invMrtPageId,
             new Page.Builder().using(CREATED_PAGES.get(invMrtPageId)).setEnable(false).build(),
             INVEST_USER
         },
@@ -151,7 +156,8 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
             mrtPageId,
             new Page.Builder().using(CREATED_PAGES.get(mrtPageId)).setEnable(false).build(),
             MORTGAGE_USER
-        }, {
+        },
+            {
             invMrtPageId,
             new Page.Builder().using(CREATED_PAGES.get(invMrtPageId)).setEnable(false).build(),
             MORTGAGE_USER
@@ -161,7 +167,8 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
             pilPageId,
             new Page.Builder().using(CREATED_PAGES.get(pilPageId)).setEnable(false).build(),
             PIL_USER
-        }, {
+        },
+        {
             pilSmePageId,
             new Page.Builder().using(CREATED_PAGES.get(pilSmePageId)).setEnable(false).build(),
             PIL_USER
@@ -171,8 +178,9 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
             smePageId,
             new Page.Builder().using(CREATED_PAGES.get(smePageId)).setEnable(false).build(),
             SME_USER
-        }, {
-        pilSmePageId,
+        },
+        {
+            pilSmePageId,
             new Page.Builder().using(CREATED_PAGES.get(pilSmePageId)).setEnable(false).build(),
             SME_USER
         },
@@ -181,7 +189,8 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
             comPageId,
             new Page.Builder().using(CREATED_PAGES.get(comPageId)).setEnable(false).build(),
             COMMON_USER
-        }, {
+        },
+        {
             ccComPageId,
             new Page.Builder().using(CREATED_PAGES.get(ccComPageId)).setEnable(false).build(),
             COMMON_USER
@@ -198,57 +207,68 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
             new Page.Builder().using(CREATED_PAGES.get(ccPageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             dcPageId,
             new Page.Builder().using(CREATED_PAGES.get(dcPageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CONTENT_MANAGER
-        }, {
-        ccDcPageId,
+        },
+        {
+            ccDcPageId,
             new Page.Builder().using(CREATED_PAGES.get(ccDcPageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             invPageId,
             new Page.Builder().using(CREATED_PAGES.get(invPageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             mrtPageId,
             new Page.Builder().using(CREATED_PAGES.get(mrtPageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             invMrtPageId,
             new Page.Builder().using(CREATED_PAGES.get(invMrtPageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             pilPageId,
             new Page.Builder().using(CREATED_PAGES.get(pilPageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             smePageId,
             new Page.Builder().using(CREATED_PAGES.get(smePageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             pilSmePageId,
             new Page.Builder().using(CREATED_PAGES.get(pilSmePageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             comPageId,
             new Page.Builder().using(CREATED_PAGES.get(comPageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             ccComPageId,
             new Page.Builder().using(CREATED_PAGES.get(ccComPageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             unPageId,
             new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false)
                 .setTeamsList(List.of(DEBIT_CARD)).build(),
@@ -266,6 +286,7 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   /**
    * Data provider.
+   *
    * @return user
    */
   @DataProvider(name = "positiveCopyPageDataProvider")
@@ -315,37 +336,48 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
         {
             PAGES_STEPS.createPage(List.of(CREDIT_CARD), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(DEBIT_CARD), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(CREDIT_CARD, DEBIT_CARD), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(INVEST), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(MORTGAGE), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(INVEST, MORTGAGE), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(PIL), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(SME), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(PIL, SME), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(COMMON), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(CREDIT_CARD, COMMON), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+            },
+        {
             PAGES_STEPS.createPage(null, CONTENT_MANAGER),
             CONTENT_MANAGER
         }
@@ -361,6 +393,7 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   /**
    * Data provider.
+   *
    * @return user
    */
   @DataProvider(name = "positiveDeletePageDataProvider")
@@ -438,37 +471,48 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
         {
             PAGES_STEPS.createPage(List.of(CREDIT_CARD), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(DEBIT_CARD), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(CREDIT_CARD, DEBIT_CARD), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(INVEST), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(MORTGAGE), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(INVEST, MORTGAGE), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(PIL), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(SME), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(PIL, SME), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(COMMON), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(List.of(CREDIT_CARD, COMMON), CONTENT_MANAGER),
             CONTENT_MANAGER
-        }, {
+        },
+        {
             PAGES_STEPS.createPage(null, CONTENT_MANAGER),
             CONTENT_MANAGER
         }

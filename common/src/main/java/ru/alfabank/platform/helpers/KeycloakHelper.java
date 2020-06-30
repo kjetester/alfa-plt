@@ -50,7 +50,7 @@ public class KeycloakHelper extends AbstractBusinessObject {
           .basePath(KEYCLOAK_BASE_URI + TOKEN_RESOURCE).contentType(ContentType.URLENC)
           .formParams(formParams).log().all().when().post().then().log()
           .ifError().statusCode(SC_OK).extract().body().as(AccessToken.class);
-      LOGGER.info("Получен ответ\n" + describeBusinessObject(tokensSet));
+      LOGGER.debug("Получен ответ\n" + describeBusinessObject(tokensSet));
       return tokensSet;
     } else if (Instant.now().isAfter(tokensSet.getExpireAccessTokenTime())) {
       LOGGER.info("Выполняю запрос обновления токена авторизации");

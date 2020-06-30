@@ -39,7 +39,7 @@ public class User {
           .basePath(KEYCLOAK_BASE_URI + TOKEN_RESOURCE).contentType(ContentType.URLENC)
           .formParams(formParams).when().post().then().statusCode(SC_OK).extract()
           .body().as(AccessToken.class));
-      LOGGER.info("Получен ответ\n" + describeBusinessObject(user.getJwt()));
+      LOGGER.debug("Получен ответ\n" + describeBusinessObject(user.getJwt()));
       if (LOGGED_IN_USERS.containsKey(user)) {
         LOGGED_IN_USERS.replace(user, user.getJwt());
       } else {

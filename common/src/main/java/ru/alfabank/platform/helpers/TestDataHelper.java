@@ -13,8 +13,8 @@ import java.util.Properties;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.testng.TestNGException;
-import ru.alfabank.platform.businessobjects.Page;
-import ru.alfabank.platform.businessobjects.Widget;
+import ru.alfabank.platform.businessobjects.contentstore.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Widget;
 import ru.alfabank.platform.users.AccessibleUser;
 
 public class TestDataHelper {
@@ -68,8 +68,9 @@ public class TestDataHelper {
       Properties props = new Properties();
       props.load(input);
       this.props = props;
-    } catch (IOException ex) {
-      LOGGER.error(ex.getMessage());
+    } catch (IOException e) {
+      LOGGER.error(e.getMessage());
+      throw new TestNGException(e.toString());
     }
   }
 
