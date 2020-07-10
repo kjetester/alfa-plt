@@ -3,7 +3,6 @@ package ru.alfabank.platform.experiment.update.deactivate.positive;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.CANCELLED;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
@@ -71,7 +70,7 @@ public class ExperimentDeactivationTest extends BaseTest {
     var actualExperiment = EXPERIMENT_STEPS.createExperiment(
         device,
         page_id,
-        getRandomProductType(),
+        null,
         experimentEndDate,
         trafficRate,
         getContentManager());
@@ -116,14 +115,26 @@ public class ExperimentDeactivationTest extends BaseTest {
     final var expectedWidgetsList = List.of(
         new Widget.Builder()
             .using(default_widget_1)
-            .setChildren(List.of(default_widget_1_1))
+            .setReused(false)
+            .setOrderNumber(1)
+            .setChildren(List.of(
+                new Widget.Builder()
+                    .using(default_widget_1_1)
+                    .setReused(false)
+                    .setOrderNumber(1)
+                    .setExperimentOptionName(DEFAULT.toString())
+                    .build()))
             .build(),
         new Widget.Builder()
             .using(abTest_widget_1)
             .setExperimentOptionName(DEFAULT.toString())
-            .setChildren(
-                List.of(new Widget.Builder()
+            .setReused(false)
+            .setOrderNumber(2)
+            .setChildren(List.of(
+                new Widget.Builder()
                     .using(abTest_widget_1_1)
+                    .setReused(false)
+                    .setOrderNumber(1)
                     .setExperimentOptionName(DEFAULT.toString())
                     .build()))
             .build());

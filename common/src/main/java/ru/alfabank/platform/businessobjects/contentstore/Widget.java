@@ -182,91 +182,91 @@ public class Widget extends AbstractBusinessObject implements Comparable<Widget>
   /**
    * Compare widgets.
    *
-   * @param widget widget
+   * @param expectedWidget widget
    */
-  public void equals(@NonNull final Widget widget) {
-    logComparingObjects(LOGGER, this, widget);
+  public void equals(@NonNull final Widget expectedWidget) {
+    logComparingObjects(LOGGER, this, expectedWidget);
     final var softly = new SoftAssertions();
-    final var expectedPropertiesCount = this.getProperties().size();
-    final var expectedChildrenCount = this.getChildrenWidgetsList().size();
+    final var expectedPropertiesCount = expectedWidget.getProperties().size();
+    final var expectedChildrenCount = expectedWidget.getChildrenWidgetsList().size();
     softly
-        .assertThat(widget.getUid())
+        .assertThat(this.getUid())
         .as("Проверка UID")
-        .isEqualTo(this.getUid());
+        .isEqualTo(expectedWidget.getUid());
     softly
-        .assertThat(widget.getName())
+        .assertThat(this.getName())
         .as("Проверка наименований")
-        .isEqualTo(this.getName());
+        .isEqualTo(expectedWidget.getName());
     softly
-        .assertThat(widget.getProperties().size())
+        .assertThat(this.getProperties().size())
         .as("Проверка количества свойств")
         .isEqualTo(expectedPropertiesCount);
     softly
-        .assertThat(widget.getChildrenWidgetsList().size())
+        .assertThat(this.getChildrenWidgetsList().size())
         .as("Проверка количества дочерних виджетов")
         .isEqualTo(expectedChildrenCount);
     softly
-        .assertThat(widget.getOrderNumber())
+        .assertThat(this.getOrderNumber())
         .as("Проверка очередности")
-        .isEqualTo(this.getOrderNumber());
-    if (this.getDateFrom() == null) {
+        .isEqualTo(expectedWidget.getOrderNumber());
+    if (expectedWidget.getDateFrom() == null) {
       softly
-          .assertThat(widget.getDateFrom())
+          .assertThat(this.getDateFrom())
           .as("Проверка даты начала действия")
           .isNullOrEmpty();
     } else {
       softly
-          .assertThat(LocalDateTime.parse(widget.getDateFrom()))
+          .assertThat(LocalDateTime.parse(this.getDateFrom()))
           .as("Проверка даты начала действия")
-          .isEqualTo(LocalDateTime.parse(this.getDateFrom()));
+          .isEqualTo(LocalDateTime.parse(expectedWidget.getDateFrom()));
     }
-    if (this.getDateTo() == null) {
+    if (expectedWidget.getDateTo() == null) {
       softly
-          .assertThat(widget.getDateTo())
+          .assertThat(this.getDateTo())
           .as("Проверка даты окончания действия")
           .isNullOrEmpty();
     } else {
       softly
-          .assertThat(LocalDateTime.parse(widget.getDateTo()))
+          .assertThat(LocalDateTime.parse(this.getDateTo()))
           .as("Проверка даты окончания действия")
-          .isEqualTo(LocalDateTime.parse(this.getDateTo()));
+          .isEqualTo(LocalDateTime.parse(expectedWidget.getDateTo()));
     }
     softly
-        .assertThat(widget.getDevice())
+        .assertThat(this.getDevice())
         .as("Проверка девайса")
-        .isEqualTo(this.getDevice());
+        .isEqualTo(expectedWidget.getDevice());
     softly
-        .assertThat(widget.getVersion())
+        .assertThat(this.getVersion())
         .as("Проверка версии")
-        .isEqualTo(this.getVersion());
+        .isEqualTo(expectedWidget.getVersion());
     softly
-        .assertThat(widget.getExperimentOptionName())
+        .assertThat(this.getExperimentOptionName())
         .as("Проверка наименования эксперимента")
-        .isEqualTo(this.getExperimentOptionName());
+        .isEqualTo(expectedWidget.getExperimentOptionName());
     softly
-        .assertThat(widget.isDefaultWidget())
+        .assertThat(this.isDefaultWidget())
         .as("Проверка признака использования по-умолчанию")
-        .isEqualTo(this.isDefaultWidget());
+        .isEqualTo(expectedWidget.isDefaultWidget());
     softly
-        .assertThat(widget.isEnabled())
+        .assertThat(this.isEnabled())
         .as("Проверка признака видимости")
-        .isEqualTo(this.isEnabled());
+        .isEqualTo(expectedWidget.isEnabled());
     softly
-        .assertThat(widget.getLocalization())
+        .assertThat(this.getLocalization())
         .as("Проверка локали")
-        .isEqualTo(this.getLocalization());
+        .isEqualTo(expectedWidget.getLocalization());
     softly
-        .assertThat(widget.getGeo())
+        .assertThat(this.getGeo())
         .as("Проверка гео")
-        .isEqualTo(this.getGeo());
-    softly.assertThat(widget.isReused())
+        .isEqualTo(expectedWidget.getGeo());
+    softly.assertThat(this.isReused())
         .as("Проверка признака переиспользования")
-        .isEqualTo(this.isReused());
+        .isEqualTo(expectedWidget.isReused());
     softly.assertAll();
     IntStream.range(0, expectedChildrenCount).forEach(i -> this.getChildrenWidgetsList().get(i)
-        .equals(widget.getChildrenWidgetsList().get(i)));
+        .equals(expectedWidget.getChildrenWidgetsList().get(i)));
     IntStream.range(0, expectedPropertiesCount).forEach(i -> this.getProperties().get(i)
-        .equals(widget.getProperties().get(i)));
+        .equals(expectedWidget.getProperties().get(i)));
     logComparingResult(LOGGER, this.getUid());
   }
 

@@ -63,7 +63,7 @@ public class OfficeBaseTest extends BaseTest {
                 List.of(
                     new Office.Builder()
                         .using(BASE_OFFICE)
-                        .setIdMasterSystem(1234567890)
+                        .setIdMasterSystem(Integer.valueOf(randomNumeric(9)))
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
                         .setPathUrl(randomAlphanumeric(31))
@@ -175,7 +175,7 @@ public class OfficeBaseTest extends BaseTest {
                             new Service(CC.getCode(), CC.getName()),
                             new Service(PIL.getCode(), PIL.getName())
                         ))
-                        .setListOfOperations(operationsList)
+                        .setListOfOperations(ALL_OF_OPERATIONS_LIST)
                         .build()
                 )
             )
@@ -187,9 +187,9 @@ public class OfficeBaseTest extends BaseTest {
                 List.of(
                     new Office.Builder()
                         .using(BASE_OFFICE)
-                        .setIdMasterSystem(1)
-                        .setPid("0101")
-                        .setMnemonic("0101")
+                        .setIdMasterSystem(Integer.valueOf(randomNumeric(1)))
+                        .setPid("0000")
+                        .setMnemonic("aa00")
                         .setPathUrl(randomAlphanumeric(1))
                         .setTitle(randomAlphanumeric(1))
                         .setDescription(randomAlphanumeric(1))

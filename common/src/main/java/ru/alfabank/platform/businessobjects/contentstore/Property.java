@@ -79,31 +79,31 @@ public class Property extends AbstractBusinessObject implements Comparable<Prope
   /**
    * Compare property.
    *
-   * @param expected comparing property
+   * @param expectedPropery comparing property
    */
-  public void equals(@NotNull final Property expected) {
-    logComparingObjects(LOGGER, this, expected);
+  public void equals(@NotNull final Property expectedPropery) {
+    logComparingObjects(LOGGER, this, expectedPropery);
     final var softly = new SoftAssertions();
-    final var expectedValuesCount = this.getValues().size();
+    final var expectedValuesCount = expectedPropery.getValues().size();
     softly
-        .assertThat(expected.getValues().size())
+        .assertThat(this.getValues().size())
         .as("Проверка количества значений")
         .isEqualTo(expectedValuesCount);
     softly
-        .assertThat(expected.getName())
+        .assertThat(this.getName())
         .as("Проверка наименований")
-        .isEqualTo(this.getName());
+        .isEqualTo(expectedPropery.getName());
     softly
-        .assertThat(expected.getDevice())
+        .assertThat(this.getDevice())
         .as("Проверка девайса")
-        .isEqualTo(this.getDevice());
+        .isEqualTo(expectedPropery.getDevice());
     softly
-        .assertThat(expected.getUid())
+        .assertThat(this.getUid())
         .as("Проверка UID при 'SHARE' или 'CURRENT' и признаке переиспользования")
-        .isEqualTo(this.getUid());
+        .isEqualTo(expectedPropery.getUid());
     softly.assertAll();
     IntStream.range(0, expectedValuesCount).forEach(i -> values.get(i)
-        .equals(expected.getValues().get(i)));
+        .equals(expectedPropery.getValues().get(i)));
     logComparingResult(LOGGER, this.getUid());
   }
 

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.Team.UNCLAIMED_TEAM;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -23,7 +23,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
       dataProvider = "dataProvider")
   public void assignmentToSharedWidgetNegativeTest(
       @ParameterKey("Дефолтный вариант") final Boolean isDefaultOption) {
-    final var page_1_id = PAGES_STEPS.createPage(null, null, true, getContentManager());
+    final var page_1_id = PAGES_STEPS.createPage(null, null, true, null, getContentManager());
     Widget widget;
     if (isDefaultOption) {
       widget = DRAFT_STEPS.createWidget(
@@ -54,6 +54,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
         null,
         null,
         true,
+        null,
         getContentManager());
     DRAFT_STEPS.shareWidgetToAnotherPage(
         widget,
@@ -62,7 +63,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
     final var experiment = EXPERIMENT_STEPS.createExperiment(
         widget.getDevice(),
         page_1_id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());
@@ -99,6 +100,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
         null,
         null,
         true,
+        null,
         getContentManager());
     final var sharedAncestor = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_1_Id),
@@ -152,6 +154,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
         null,
         null,
         true,
+        null,
         getContentManager());
     DRAFT_STEPS.shareWidgetToAnotherPage(
         sharedAncestor,
@@ -160,7 +163,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
     final var experiment = EXPERIMENT_STEPS.createExperiment(
         widget.getDevice(),
         page_1_Id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());
@@ -273,7 +276,7 @@ public class AssignmentToSharedWidgetTest extends OptionBaseTest {
     final var experiment = EXPERIMENT_STEPS.createExperiment(
         widget.getDevice(),
         page_1_id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());

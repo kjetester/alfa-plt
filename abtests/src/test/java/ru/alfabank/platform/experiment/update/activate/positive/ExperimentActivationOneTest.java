@@ -4,7 +4,6 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.RUNNING;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
@@ -59,7 +58,7 @@ public class ExperimentActivationOneTest extends BaseTest {
   public void beforeMethod() {
     final String date_from = getValidWidgetDateFrom();
     final String date_to = getValidWidgetDateTo();
-    pageId = PAGES_STEPS.createPage(date_from, date_to, true, getContentManager());
+    pageId = PAGES_STEPS.createPage(date_from, date_to, true, null, getContentManager());
     // Создание дерева виджетов по варианту №1 для DESKTOP версии страницы
     final var var_1_desktop_abTest_widget_1 =
         DRAFT_STEPS.createWidget(CREATED_PAGES.get(pageId), null, desktop, false, FOR_AB_TEST,
@@ -109,10 +108,10 @@ public class ExperimentActivationOneTest extends BaseTest {
             false, FOR_AB_TEST, false, List.of(RU), null, null, getContentManager());
     // Создание экспериментов и вариантов
     actualDesktopExperiment =
-        EXPERIMENT_STEPS.createExperiment(desktop, pageId, getRandomProductType(),
+        EXPERIMENT_STEPS.createExperiment(desktop, pageId, null,
             getValidExperimentEndDate(), .5D, getContentManager());
     actualMobileExperiment =
-        EXPERIMENT_STEPS.createExperiment(mobile, pageId, getRandomProductType(),
+        EXPERIMENT_STEPS.createExperiment(mobile, pageId, null,
             getValidExperimentEndDate(), .5D, getContentManager());
     final var desktop_default_option =
         OPTION_STEPS.createOption(true, List.of(var_1_desktop_default_widget_3.getUid()),

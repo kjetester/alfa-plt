@@ -2,6 +2,7 @@ package ru.alfabank.platform.businessobjects.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -9,16 +10,17 @@ import org.testng.TestNGException;
 
 public enum ProductType {
 
-  CC("Кредитные карты", "CC"),
-  PIL("Кредиты наличными", "PIL"),
-  DC("Дебетовые карты", "DC"),
-  MG("Ипотека", "MG"),
-  SME("Массовый бизнес", "SME"),
-  INV("Инвестиции", "INV"),
-  COM("Общие страницы и сервисы", "COM"),
-  ERR("Негатив", "ERR");
+  CREDIT_CARD_PRODUCT_TYPE("Кредитные карты", "CreditCard"),
+  PIL_PRODUCT_TYPE("Кредиты наличными", "PIL"),
+  DEBIT_CARD_PRODUCT_TYPE("Дебетовые карты", "DebitCard"),
+  MORTGAGE_PRODUCT_TYPE("Ипотека", "Mortgage"),
+  SME_PRODUCT_TYPE("Массовый бизнес", "SME"),
+  INVEST_PRODUCT_TYPE("Инвестиции", "Invest"),
+  COMMON_PRODUCT_TYPE("Общие страницы и сервисы", "Common"),
+  UNLISTED_PRODUCT_TYPE("Продукт не из списка", "Unlisted");
 
   String description;
+  @JsonValue
   String key;
 
   ProductType(String description, String key) {
@@ -33,19 +35,5 @@ public enum ProductType {
         new TestNGException(String.format(
             "Обнаружен невалидный productTypeKey: '%s'",
             key)));
-  }
-
-  /**
-   * Get random Product Type except ERR.
-   *
-   * @return ProductType
-   */
-  public static ProductType getRandomProductType() {
-    final var values = List.of(values());
-    ProductType result;
-    do {
-      result = values.get(new Random().nextInt(values.size()));
-    } while (result == ERR);
-    return result;
   }
 }

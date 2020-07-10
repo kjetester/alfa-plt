@@ -4,7 +4,6 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -23,6 +22,7 @@ public class AssignmentToAlreadyAssignedWidgetTest extends OptionBaseTest {
             null,
             null,
             true,
+            null,
             getContentManager());
     final var widget = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(pageId),
@@ -38,7 +38,7 @@ public class AssignmentToAlreadyAssignedWidgetTest extends OptionBaseTest {
     final var experiment = EXPERIMENT_STEPS.createExperiment(
         widget.getDevice(),
         pageId,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());

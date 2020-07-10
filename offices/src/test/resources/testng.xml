@@ -48,4 +48,41 @@
             <class name="ru.alfabank.platform.insert.metainfo.MetaInfoTest"/>
         </classes>
     </test>
+
+    <test name="Offices Update tests" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.office.OfficeUpdateTest"/>
+        </classes>
+    </test>
+    <test name="StatusCb Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.statuscb.StatusCbUpdateTest"/>
+        </classes>
+    </test>
+    <test name="Kinds Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.kinds.KindsUpdateTest"/>
+        </classes>
+    </test>
+    <test name="Locations Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.locations.LocationsUpdateTest"/>
+        </classes>
+    </test>
+    <test name="Service Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.service.ServiceUpdateTest"/>
+        </classes>
+    </test>
+    <test name="List of Operations Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.listofoperations.ListOfOperationsUpdateTest"/>
+        </classes>
+    </test>
+    <test name="Meta Info Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.metainfo.MetaInfoUpdateTest"/>
+        </classes>
+    </test>
+
 </suite>

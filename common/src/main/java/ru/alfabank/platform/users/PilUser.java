@@ -1,6 +1,6 @@
 package ru.alfabank.platform.users;
 
-import static ru.alfabank.platform.businessobjects.enums.Team.PIL;
+import static ru.alfabank.platform.businessobjects.enums.Team.PIL_TEAM;
 
 import java.time.Instant;
 import java.util.List;
@@ -35,7 +35,7 @@ public class PilUser extends User implements AccessibleUser {
 
   @Override
   public List<Team> getTeams() {
-    return List.of(PIL);
+    return List.of(PIL_TEAM);
   }
 
   /**

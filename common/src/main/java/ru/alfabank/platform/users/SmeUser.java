@@ -1,6 +1,6 @@
 package ru.alfabank.platform.users;
 
-import static ru.alfabank.platform.businessobjects.enums.Team.SME;
+import static ru.alfabank.platform.businessobjects.enums.Team.SME_TEAM;
 
 import java.time.Instant;
 import java.util.List;
@@ -35,7 +35,7 @@ public class SmeUser extends User implements AccessibleUser {
 
   @Override
   public List<Team> getTeams() {
-    return List.of(SME);
+    return List.of(SME_TEAM);
   }
 
   /**

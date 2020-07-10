@@ -5,14 +5,14 @@ import static rp.org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static ru.alfabank.platform.businessobjects.enums.CopyMethod.CURRENT;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
-import static ru.alfabank.platform.businessobjects.enums.Team.COMMON;
-import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD;
-import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD;
-import static ru.alfabank.platform.businessobjects.enums.Team.INVEST;
-import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE;
-import static ru.alfabank.platform.businessobjects.enums.Team.PIL;
-import static ru.alfabank.platform.businessobjects.enums.Team.SME;
-import static ru.alfabank.platform.businessobjects.enums.Team.UNCLAIMED;
+import static ru.alfabank.platform.businessobjects.enums.Team.COMMON_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.INVEST_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.PIL_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.SME_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.UNCLAIMED_TEAM;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -28,25 +28,27 @@ import ru.alfabank.platform.users.AccessibleUser;
 public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
 
   private static final Integer CREDIT_CARD_PAGE_ID =
-      PAGES_STEPS.createPage(List.of(CREDIT_CARD), CONTENT_MANAGER);
+      PAGES_STEPS.createPage(List.of(CREDIT_CARD_TEAM), CONTENT_MANAGER);
   private static final Integer DEBIT_CARD_PAGE_ID =
-      PAGES_STEPS.createPage(List.of(DEBIT_CARD), CONTENT_MANAGER);
+      PAGES_STEPS.createPage(List.of(DEBIT_CARD_TEAM), CONTENT_MANAGER);
   private static final Integer CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID =
-      PAGES_STEPS.createPage(List.of(CREDIT_CARD, DEBIT_CARD), CONTENT_MANAGER);
+      PAGES_STEPS.createPage(List.of(CREDIT_CARD_TEAM, DEBIT_CARD_TEAM), CONTENT_MANAGER);
   private static final Integer INVEST_PAGE_ID =
-      PAGES_STEPS.createPage(List.of(INVEST), CONTENT_MANAGER);
+      PAGES_STEPS.createPage(List.of(INVEST_TEAM), CONTENT_MANAGER);
   private static final Integer MORTGAGE_PAGE_ID =
-      PAGES_STEPS.createPage(List.of(MORTGAGE), CONTENT_MANAGER);
+      PAGES_STEPS.createPage(List.of(MORTGAGE_TEAM), CONTENT_MANAGER);
   private static final Integer INVEST_AND_MORTGAGE_PAGE_ID =
-      PAGES_STEPS.createPage(List.of(INVEST, MORTGAGE), CONTENT_MANAGER);
-  private static final Integer PIL_PAGE_ID = PAGES_STEPS.createPage(List.of(PIL), CONTENT_MANAGER);
-  private static final Integer SME_PAGE_ID = PAGES_STEPS.createPage(List.of(SME), CONTENT_MANAGER);
+      PAGES_STEPS.createPage(List.of(INVEST_TEAM, MORTGAGE_TEAM), CONTENT_MANAGER);
+  private static final Integer PIL_PAGE_ID =
+      PAGES_STEPS.createPage(List.of(PIL_TEAM), CONTENT_MANAGER);
+  private static final Integer SME_PAGE_ID =
+      PAGES_STEPS.createPage(List.of(SME_TEAM), CONTENT_MANAGER);
   private static final Integer PIL_AND_SME_PAGE_ID =
-      PAGES_STEPS.createPage(List.of(PIL, SME), CONTENT_MANAGER);
+      PAGES_STEPS.createPage(List.of(PIL_TEAM, SME_TEAM), CONTENT_MANAGER);
   private static final Integer COMMON_PAGE_ID =
-      PAGES_STEPS.createPage(List.of(COMMON), CONTENT_MANAGER);
+      PAGES_STEPS.createPage(List.of(COMMON_TEAM), CONTENT_MANAGER);
   private static final Integer CREDIT_CARD_AND_COMMON_PAGE_ID =
-      PAGES_STEPS.createPage(List.of(CREDIT_CARD, COMMON), CONTENT_MANAGER);
+      PAGES_STEPS.createPage(List.of(CREDIT_CARD_TEAM, COMMON_TEAM), CONTENT_MANAGER);
   private static final Integer UNCLAIMED_PAGE_ID = PAGES_STEPS.createPage(null, CONTENT_MANAGER);
 
   @Test(description = "Негативный тест просмотра страниц CS",
@@ -92,72 +94,73 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
   @DataProvider(name = "negativeCreatePageDataProvider")
   public static Object[][] negativeCreatePageDataProvider() {
     return new Object[][]{
-        {List.of(DEBIT_CARD), CREDIT_CARD_USER},
-        {List.of(INVEST), CREDIT_CARD_USER},
-        {List.of(MORTGAGE), CREDIT_CARD_USER},
-        {List.of(PIL), CREDIT_CARD_USER},
-        {List.of(SME), CREDIT_CARD_USER},
-        {List.of(COMMON), CREDIT_CARD_USER},
-        {UNCLAIMED.getId(), CREDIT_CARD_USER},
+        {List.of(DEBIT_CARD_TEAM), CREDIT_CARD_USER},
+        {List.of(INVEST_TEAM), CREDIT_CARD_USER},
+        {List.of(MORTGAGE_TEAM), CREDIT_CARD_USER},
+        {List.of(PIL_TEAM), CREDIT_CARD_USER},
+        {List.of(SME_TEAM), CREDIT_CARD_USER},
+        {List.of(COMMON_TEAM), CREDIT_CARD_USER},
+        {UNCLAIMED_TEAM.getId(), CREDIT_CARD_USER},
 
-        {List.of(CREDIT_CARD), DEBIT_CARD_USER},
-        {List.of(INVEST), DEBIT_CARD_USER},
-        {List.of(MORTGAGE), DEBIT_CARD_USER},
-        {List.of(PIL), DEBIT_CARD_USER},
-        {List.of(SME), DEBIT_CARD_USER},
-        {List.of(COMMON), DEBIT_CARD_USER},
-        {UNCLAIMED.getId(), DEBIT_CARD_USER},
+        {List.of(CREDIT_CARD_TEAM), DEBIT_CARD_USER},
+        {List.of(INVEST_TEAM), DEBIT_CARD_USER},
+        {List.of(MORTGAGE_TEAM), DEBIT_CARD_USER},
+        {List.of(PIL_TEAM), DEBIT_CARD_USER},
+        {List.of(SME_TEAM), DEBIT_CARD_USER},
+        {List.of(COMMON_TEAM), DEBIT_CARD_USER},
+        {UNCLAIMED_TEAM.getId(), DEBIT_CARD_USER},
 
-        {List.of(CREDIT_CARD), INVEST_USER},
-        {List.of(DEBIT_CARD), INVEST_USER},
-        {List.of(MORTGAGE), INVEST_USER},
-        {List.of(PIL), INVEST_USER},
-        {List.of(SME), INVEST_USER},
-        {List.of(COMMON), INVEST_USER},
-        {UNCLAIMED.getId(), INVEST_USER},
+        {List.of(CREDIT_CARD_TEAM), INVEST_USER},
+        {List.of(DEBIT_CARD_TEAM), INVEST_USER},
+        {List.of(MORTGAGE_TEAM), INVEST_USER},
+        {List.of(PIL_TEAM), INVEST_USER},
+        {List.of(SME_TEAM), INVEST_USER},
+        {List.of(COMMON_TEAM), INVEST_USER},
+        {UNCLAIMED_TEAM.getId(), INVEST_USER},
 
-        {List.of(CREDIT_CARD), MORTGAGE_USER},
-        {List.of(DEBIT_CARD), MORTGAGE_USER},
-        {List.of(INVEST), MORTGAGE_USER},
-        {List.of(PIL), MORTGAGE_USER},
-        {List.of(SME), MORTGAGE_USER},
-        {List.of(COMMON), MORTGAGE_USER},
-        {UNCLAIMED.getId(), MORTGAGE_USER},
+        {List.of(CREDIT_CARD_TEAM), MORTGAGE_USER},
+        {List.of(DEBIT_CARD_TEAM), MORTGAGE_USER},
+        {List.of(INVEST_TEAM), MORTGAGE_USER},
+        {List.of(PIL_TEAM), MORTGAGE_USER},
+        {List.of(SME_TEAM), MORTGAGE_USER},
+        {List.of(COMMON_TEAM), MORTGAGE_USER},
+        {UNCLAIMED_TEAM.getId(), MORTGAGE_USER},
 
-        {List.of(CREDIT_CARD), PIL_USER},
-        {List.of(DEBIT_CARD), PIL_USER},
-        {List.of(INVEST), PIL_USER},
-        {List.of(MORTGAGE), PIL_USER},
-        {List.of(SME), PIL_USER},
-        {List.of(COMMON), PIL_USER},
-        {UNCLAIMED.getId(), PIL_USER},
+        {List.of(CREDIT_CARD_TEAM), PIL_USER},
+        {List.of(DEBIT_CARD_TEAM), PIL_USER},
+        {List.of(INVEST_TEAM), PIL_USER},
+        {List.of(MORTGAGE_TEAM), PIL_USER},
+        {List.of(SME_TEAM), PIL_USER},
+        {List.of(COMMON_TEAM), PIL_USER},
+        {UNCLAIMED_TEAM.getId(), PIL_USER},
 
-        {List.of(CREDIT_CARD), SME_USER},
-        {List.of(DEBIT_CARD), SME_USER},
-        {List.of(INVEST), SME_USER},
-        {List.of(MORTGAGE), SME_USER},
-        {List.of(PIL), SME_USER},
-        {List.of(COMMON), SME_USER},
-        {UNCLAIMED.getId(), SME_USER},
+        {List.of(CREDIT_CARD_TEAM), SME_USER},
+        {List.of(DEBIT_CARD_TEAM), SME_USER},
+        {List.of(INVEST_TEAM), SME_USER},
+        {List.of(MORTGAGE_TEAM), SME_USER},
+        {List.of(PIL_TEAM), SME_USER},
+        {List.of(COMMON_TEAM), SME_USER},
+        {UNCLAIMED_TEAM.getId(), SME_USER},
 
-        {List.of(CREDIT_CARD), COMMON_USER},
-        {List.of(DEBIT_CARD), COMMON_USER},
-        {List.of(INVEST), COMMON_USER},
-        {List.of(MORTGAGE), COMMON_USER},
-        {List.of(PIL), COMMON_USER},
-        {List.of(SME), COMMON_USER},
-        {UNCLAIMED.getId(), COMMON_USER},
+        {List.of(CREDIT_CARD_TEAM), COMMON_USER},
+        {List.of(DEBIT_CARD_TEAM), COMMON_USER},
+        {List.of(INVEST_TEAM), COMMON_USER},
+        {List.of(MORTGAGE_TEAM), COMMON_USER},
+        {List.of(PIL_TEAM), COMMON_USER},
+        {List.of(SME_TEAM), COMMON_USER},
+        {UNCLAIMED_TEAM.getId(), COMMON_USER},
 
-        {List.of(CREDIT_CARD), UNCLAIMED_USER},
-        {List.of(DEBIT_CARD), UNCLAIMED_USER},
-        {List.of(INVEST), UNCLAIMED_USER},
-        {List.of(MORTGAGE), UNCLAIMED_USER},
-        {List.of(PIL), UNCLAIMED_USER},
-        {List.of(SME), UNCLAIMED_USER},
-        {List.of(COMMON), UNCLAIMED_USER},
+        {List.of(CREDIT_CARD_TEAM), UNCLAIMED_USER},
+        {List.of(DEBIT_CARD_TEAM), UNCLAIMED_USER},
+        {List.of(INVEST_TEAM), UNCLAIMED_USER},
+        {List.of(MORTGAGE_TEAM), UNCLAIMED_USER},
+        {List.of(PIL_TEAM), UNCLAIMED_USER},
+        {List.of(SME_TEAM), UNCLAIMED_USER},
+        {List.of(COMMON_TEAM), UNCLAIMED_USER},
 
-        {List.of(CREDIT_CARD, DEBIT_CARD, INVEST, MORTGAGE, PIL, SME, COMMON), AUDIT_VIEW_USER},
-        {UNCLAIMED.getId(), AUDIT_ROLLBACK_USER},
+        {List.of(CREDIT_CARD_TEAM, DEBIT_CARD_TEAM, INVEST_TEAM,
+            MORTGAGE_TEAM, PIL_TEAM, SME_TEAM, COMMON_TEAM), AUDIT_VIEW_USER},
+        {UNCLAIMED_TEAM.getId(), AUDIT_ROLLBACK_USER},
     };
   }
 
@@ -183,17 +186,17 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         {
             CREDIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD)).build(),
+                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
             CREDIT_CARD_USER
         }, {
         CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID,
         new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID))
-            .setTeamsList(List.of(CREDIT_CARD)).build(),
+            .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
         CREDIT_CARD_USER
         }, {
             DEBIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             CREDIT_CARD_USER
         }, {
             DEBIT_CARD_PAGE_ID,
@@ -203,7 +206,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             INVEST_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             CREDIT_CARD_USER
         }, {
             INVEST_PAGE_ID,
@@ -212,7 +215,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             MORTGAGE_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             CREDIT_CARD_USER
         }, {
             MORTGAGE_PAGE_ID,
@@ -221,7 +224,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             PIL_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             CREDIT_CARD_USER
         }, {
             PIL_PAGE_ID,
@@ -230,7 +233,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             SME_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             CREDIT_CARD_USER
         }, {
             SME_PAGE_ID,
@@ -239,7 +242,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             COMMON_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             CREDIT_CARD_USER
         }, {
             COMMON_PAGE_ID,
@@ -248,7 +251,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             unPageId,
             new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             CREDIT_CARD_USER
         }, {
             unPageId,
@@ -259,17 +262,17 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         {
             DEBIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             DEBIT_CARD_USER
         }, {
         CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID,
         new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID))
-            .setTeamsList(List.of(DEBIT_CARD, INVEST)).build(),
+            .setTeamsList(List.of(DEBIT_CARD_TEAM, INVEST_TEAM)).build(),
         DEBIT_CARD_USER
         }, {
             CREDIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD)).build(),
+                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
             DEBIT_CARD_USER
         }, {
             CREDIT_CARD_PAGE_ID,
@@ -279,7 +282,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             INVEST_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD)).build(),
+                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
             DEBIT_CARD_USER
         }, {
             INVEST_PAGE_ID,
@@ -288,7 +291,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             MORTGAGE_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD)).build(),
+                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
             DEBIT_CARD_USER
         }, {
             MORTGAGE_PAGE_ID,
@@ -297,7 +300,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             PIL_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD)).build(),
+                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
             DEBIT_CARD_USER
         }, {
             PIL_PAGE_ID,
@@ -306,7 +309,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             SME_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD)).build(),
+                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
             DEBIT_CARD_USER
         }, {
             SME_PAGE_ID,
@@ -315,7 +318,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             COMMON_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD)).build(),
+                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
             DEBIT_CARD_USER
         }, {
             COMMON_PAGE_ID,
@@ -324,7 +327,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             unPageId,
             new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(DEBIT_CARD)).build(),
+                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
             DEBIT_CARD_USER
         }, {
             unPageId,
@@ -335,17 +338,17 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         {
             INVEST_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             INVEST_USER
         }, {
             INVEST_AND_MORTGAGE_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(INVEST_AND_MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD)).build(),
+                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
             INVEST_USER
         }, {
             CREDIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(INVEST)).build(),
+                .setTeamsList(List.of(INVEST_TEAM)).build(),
             INVEST_USER
         }, {
             CREDIT_CARD_PAGE_ID,
@@ -355,7 +358,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             DEBIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(INVEST)).build(),
+                .setTeamsList(List.of(INVEST_TEAM)).build(),
             INVEST_USER
         }, {
             DEBIT_CARD_PAGE_ID,
@@ -365,7 +368,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             MORTGAGE_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(INVEST)).build(),
+                .setTeamsList(List.of(INVEST_TEAM)).build(),
             INVEST_USER
         }, {
             MORTGAGE_PAGE_ID,
@@ -374,7 +377,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             PIL_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(INVEST)).build(),
+                .setTeamsList(List.of(INVEST_TEAM)).build(),
             INVEST_USER
         }, {
             PIL_PAGE_ID,
@@ -383,7 +386,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             SME_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(INVEST)).build(),
+                .setTeamsList(List.of(INVEST_TEAM)).build(),
             INVEST_USER
         }, {
             SME_PAGE_ID,
@@ -392,7 +395,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             COMMON_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(INVEST)).build(),
+                .setTeamsList(List.of(INVEST_TEAM)).build(),
             INVEST_USER
         }, {
             COMMON_PAGE_ID,
@@ -401,7 +404,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             unPageId,
             new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(INVEST)).build(),
+                .setTeamsList(List.of(INVEST_TEAM)).build(),
             INVEST_USER
         }, {
             unPageId,
@@ -412,17 +415,17 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         {
             MORTGAGE_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             MORTGAGE_USER
         }, {
             INVEST_AND_MORTGAGE_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(INVEST_AND_MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE, SME)).build(),
+                .setTeamsList(List.of(MORTGAGE_TEAM, SME_TEAM)).build(),
             MORTGAGE_USER
         }, {
             CREDIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE)).build(),
+                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
             MORTGAGE_USER
         }, {
             CREDIT_CARD_PAGE_ID,
@@ -432,7 +435,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             DEBIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE)).build(),
+                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
             MORTGAGE_USER
         }, {
             DEBIT_CARD_PAGE_ID,
@@ -442,7 +445,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             INVEST_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE)).build(),
+                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
             MORTGAGE_USER
         }, {
             INVEST_PAGE_ID,
@@ -451,7 +454,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             PIL_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE)).build(),
+                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
             MORTGAGE_USER
         }, {
             PIL_PAGE_ID,
@@ -460,7 +463,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             SME_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE)).build(),
+                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
             MORTGAGE_USER
         }, {
             SME_PAGE_ID,
@@ -469,7 +472,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             COMMON_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE)).build(),
+                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
             MORTGAGE_USER
         }, {
             COMMON_PAGE_ID,
@@ -478,7 +481,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             unPageId,
             new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(MORTGAGE)).build(),
+                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
             MORTGAGE_USER
         }, {
             unPageId,
@@ -489,17 +492,17 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         {
             PIL_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             PIL_USER
         }, {
             PIL_AND_SME_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(PIL_AND_SME_PAGE_ID))
-                .setTeamsList(List.of(PIL)).build(),
+                .setTeamsList(List.of(PIL_TEAM)).build(),
             PIL_USER
         }, {
             CREDIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(PIL)).build(),
+                .setTeamsList(List.of(PIL_TEAM)).build(),
             PIL_USER
         }, {
             CREDIT_CARD_PAGE_ID,
@@ -509,7 +512,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             DEBIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(PIL)).build(),
+                .setTeamsList(List.of(PIL_TEAM)).build(),
             PIL_USER
         }, {
             DEBIT_CARD_PAGE_ID,
@@ -519,7 +522,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             INVEST_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(PIL)).build(),
+                .setTeamsList(List.of(PIL_TEAM)).build(),
             PIL_USER
         }, {
             INVEST_PAGE_ID,
@@ -528,7 +531,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             MORTGAGE_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(PIL)).build(),
+                .setTeamsList(List.of(PIL_TEAM)).build(),
             PIL_USER
         }, {
             MORTGAGE_PAGE_ID,
@@ -537,7 +540,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             SME_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(PIL)).build(),
+                .setTeamsList(List.of(PIL_TEAM)).build(),
             PIL_USER
         }, {
             SME_PAGE_ID,
@@ -546,7 +549,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             COMMON_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(PIL)).build(),
+                .setTeamsList(List.of(PIL_TEAM)).build(),
             PIL_USER
         }, {
             COMMON_PAGE_ID,
@@ -555,7 +558,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             unPageId,
             new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(PIL)).build(),
+                .setTeamsList(List.of(PIL_TEAM)).build(),
             PIL_USER
         }, {
             unPageId,
@@ -566,17 +569,17 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         {
             SME_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             SME_USER
         }, {
             PIL_AND_SME_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(PIL_AND_SME_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD, SME)).build(),
+                .setTeamsList(List.of(DEBIT_CARD_TEAM, SME_TEAM)).build(),
             SME_USER
         }, {
             CREDIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(SME)).build(),
+                .setTeamsList(List.of(SME_TEAM)).build(),
             SME_USER
         }, {
             CREDIT_CARD_PAGE_ID,
@@ -586,7 +589,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             DEBIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(SME)).build(),
+                .setTeamsList(List.of(SME_TEAM)).build(),
             SME_USER
         }, {
             DEBIT_CARD_PAGE_ID,
@@ -596,7 +599,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             INVEST_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(SME)).build(),
+                .setTeamsList(List.of(SME_TEAM)).build(),
             SME_USER
         }, {
             INVEST_PAGE_ID,
@@ -605,7 +608,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             MORTGAGE_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(SME)).build(),
+                .setTeamsList(List.of(SME_TEAM)).build(),
             SME_USER
         }, {
             MORTGAGE_PAGE_ID,
@@ -614,7 +617,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             PIL_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(SME)).build(),
+                .setTeamsList(List.of(SME_TEAM)).build(),
             SME_USER
         }, {
             PIL_PAGE_ID,
@@ -623,7 +626,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             COMMON_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(SME)).build(),
+                .setTeamsList(List.of(SME_TEAM)).build(),
             SME_USER
         }, {
             COMMON_PAGE_ID,
@@ -632,7 +635,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             unPageId,
             new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(SME)).build(),
+                .setTeamsList(List.of(SME_TEAM)).build(),
             SME_USER
         }, {
             unPageId,
@@ -643,17 +646,17 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         {
             COMMON_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             COMMON_USER
         }, {
             CREDIT_CARD_AND_COMMON_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_AND_COMMON_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD, COMMON)).build(),
+                .setTeamsList(List.of(DEBIT_CARD_TEAM, COMMON_TEAM)).build(),
             COMMON_USER
         }, {
             CREDIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(COMMON)).build(),
+                .setTeamsList(List.of(COMMON_TEAM)).build(),
             COMMON_USER
         }, {
             CREDIT_CARD_PAGE_ID,
@@ -663,7 +666,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             DEBIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(COMMON)).build(),
+                .setTeamsList(List.of(COMMON_TEAM)).build(),
             COMMON_USER
         }, {
             DEBIT_CARD_PAGE_ID,
@@ -673,7 +676,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             INVEST_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(COMMON)).build(),
+                .setTeamsList(List.of(COMMON_TEAM)).build(),
             COMMON_USER
         }, {
             INVEST_PAGE_ID,
@@ -682,7 +685,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             MORTGAGE_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(COMMON)).build(),
+                .setTeamsList(List.of(COMMON_TEAM)).build(),
             COMMON_USER
         }, {
             MORTGAGE_PAGE_ID,
@@ -691,7 +694,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             PIL_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(COMMON)).build(),
+                .setTeamsList(List.of(COMMON_TEAM)).build(),
             COMMON_USER
         }, {
             PIL_PAGE_ID,
@@ -700,7 +703,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             SME_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(COMMON)).build(),
+                .setTeamsList(List.of(COMMON_TEAM)).build(),
             COMMON_USER
         }, {
             SME_PAGE_ID,
@@ -709,7 +712,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             unPageId,
             new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(COMMON)).build(),
+                .setTeamsList(List.of(COMMON_TEAM)).build(),
             COMMON_USER
         }, {
             unPageId,
@@ -720,12 +723,12 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         {
             unPageId,
             new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(CREDIT_CARD)).build(),
+                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             UNCLAIMED_USER
         }, {
             CREDIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED)).build(),
+                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
             UNCLAIMED_USER
         }, {
             CREDIT_CARD_PAGE_ID,
@@ -735,7 +738,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             DEBIT_CARD_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED)).build(),
+                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
             UNCLAIMED_USER
         }, {
             DEBIT_CARD_PAGE_ID,
@@ -745,7 +748,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             INVEST_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED)).build(),
+                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
             UNCLAIMED_USER
         }, {
             INVEST_PAGE_ID,
@@ -754,7 +757,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             MORTGAGE_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED)).build(),
+                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
             UNCLAIMED_USER
         }, {
             MORTGAGE_PAGE_ID,
@@ -763,7 +766,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             PIL_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED)).build(),
+                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
             UNCLAIMED_USER
         }, {
             PIL_PAGE_ID,
@@ -772,7 +775,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             SME_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED)).build(),
+                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
             UNCLAIMED_USER
         }, {
             SME_PAGE_ID,
@@ -781,7 +784,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             COMMON_PAGE_ID,
             new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED)).build(),
+                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
             UNCLAIMED_USER
         }, {
             COMMON_PAGE_ID,
@@ -794,7 +797,7 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         }, {
             unPageId,
             new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(COMMON)).build(),
+                .setTeamsList(List.of(COMMON_TEAM)).build(),
             AUDIT_VIEW_USER
         }, {
             COMMON_PAGE_ID,

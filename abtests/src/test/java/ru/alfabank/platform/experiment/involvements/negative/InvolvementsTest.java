@@ -3,7 +3,6 @@ package ru.alfabank.platform.experiment.involvements.negative;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -22,7 +21,7 @@ public class InvolvementsTest extends InvolvementsBaseTest {
 
   private static final Logger LOGGER = LogManager.getLogger(InvolvementsTest.class);
 
-  private int pageId;
+  private Integer pageId;
 
   /**
    * Before method.
@@ -35,6 +34,7 @@ public class InvolvementsTest extends InvolvementsBaseTest {
         start,
         end,
         true,
+        null,
         getContentManager());
     final var widget_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(pageId),
@@ -50,7 +50,7 @@ public class InvolvementsTest extends InvolvementsBaseTest {
     final var experiment = EXPERIMENT_STEPS.createExperiment(
         widget_1.getDevice(),
         pageId,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());
@@ -92,10 +92,11 @@ public class InvolvementsTest extends InvolvementsBaseTest {
   public void beforeMethodInvolvementsCancelledExperimentTest() {
     final var start = getValidWidgetDateFrom();
     final var end = getValidExperimentEndDatePlusWeek();
-    final var pageId = PAGES_STEPS.createPage(
+    pageId = PAGES_STEPS.createPage(
         start,
         end,
         true,
+        null,
         getContentManager());
     final var widget_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(pageId),
@@ -111,7 +112,7 @@ public class InvolvementsTest extends InvolvementsBaseTest {
     final var experiment = EXPERIMENT_STEPS.createExperiment(
         widget_1.getDevice(),
         pageId,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());

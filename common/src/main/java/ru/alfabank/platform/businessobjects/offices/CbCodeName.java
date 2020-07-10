@@ -80,4 +80,16 @@ public enum CbCodeName {
         v.getTypeID().equals(typeId)).findFirst().orElseThrow(() ->
         new TestNGException(String.format("Несуществующий CbCodeName.typeId: '%s'", typeId)));
   }
+
+  /**
+   * Find value by code.
+   * @param code code
+   * @return value
+   */
+  @JsonCreator
+  public static CbCodeName findValue(@JsonProperty("code") String code) {
+    LOGGER.debug(String.format("Поиск 'statusCB' по code=%s", code));
+    return Arrays.stream(CbCodeName.values()).filter(v ->
+        v.getCode().equals(code)).findFirst().orElse(EMPTY);
+  }
 }

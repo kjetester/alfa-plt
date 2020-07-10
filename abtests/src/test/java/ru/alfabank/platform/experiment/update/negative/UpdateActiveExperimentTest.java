@@ -7,8 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.MG;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.MORTGAGE_PRODUCT_TYPE;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -54,7 +53,7 @@ public class UpdateActiveExperimentTest extends BaseTest {
     experiment = EXPERIMENT_STEPS.createExperiment(
         widget.getDevice(),
         page_id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         0.9,
         getContentManager());
@@ -165,7 +164,7 @@ public class UpdateActiveExperimentTest extends BaseTest {
     return new Object[][]{
         {"Изменение 'cookieValue'", randomAlphanumeric(2)},
         {"Изменение 'description'", randomAlphanumeric(2)},
-        {"Изменение 'productTypeKey'", MG},
+        {"Изменение 'productTypeKey'", MORTGAGE_PRODUCT_TYPE},
         {"Изменение 'endDate'", getValidExperimentEndDatePlusWeek()},
         {"Изменение 'trafficRate'", 0.11D},
         {"Изменение 'pageId'", 1},

@@ -5,7 +5,6 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -40,7 +39,7 @@ public class OptionUpdateTest extends OptionBaseTest {
   @BeforeClass
   public void beforeClass() {
     final var experimentEnd = getValidExperimentEndDatePlusWeek();
-    final var page_id = PAGES_STEPS.createPage(null, null, true, getContentManager());
+    final var page_id = PAGES_STEPS.createPage(null, null, true, null, getContentManager());
     final var widget_1 = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
         null,
@@ -198,7 +197,7 @@ public class OptionUpdateTest extends OptionBaseTest {
     experiment = EXPERIMENT_STEPS.createExperiment(
         widget_1.getDevice(),
         page_id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());

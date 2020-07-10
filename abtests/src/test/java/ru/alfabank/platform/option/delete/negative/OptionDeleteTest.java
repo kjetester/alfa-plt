@@ -5,7 +5,6 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -66,7 +65,7 @@ public class OptionDeleteTest extends OptionBaseTest {
     experiment = EXPERIMENT_STEPS.createExperiment(
         defaultWidget.getDevice(),
         page_id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDatePlusWeek(),
         .5D,
         getContentManager());
@@ -134,7 +133,7 @@ public class OptionDeleteTest extends OptionBaseTest {
     };
   }
 
-  @Test(description = "Позитивный тест удаления вариантов",
+  @Test(description = "Негативный тест удаления вариантов",
       dataProvider = "optionDeleteTestDataProvider")
   public void optionDeleteNegativeTest(
       @ParameterKey("Тест-кейс") final String testCase,

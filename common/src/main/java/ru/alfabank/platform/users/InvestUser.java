@@ -1,6 +1,6 @@
 package ru.alfabank.platform.users;
 
-import static ru.alfabank.platform.businessobjects.enums.Team.INVEST;
+import static ru.alfabank.platform.businessobjects.enums.Team.INVEST_TEAM;
 
 import java.time.Instant;
 import java.util.List;
@@ -35,7 +35,7 @@ public class InvestUser extends User implements AccessibleUser {
 
   @Override
   public List<Team> getTeams() {
-    return List.of(INVEST);
+    return List.of(INVEST_TEAM);
   }
 
   /**

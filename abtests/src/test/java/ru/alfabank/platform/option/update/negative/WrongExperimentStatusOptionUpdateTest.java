@@ -4,7 +4,6 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -64,7 +63,7 @@ public class WrongExperimentStatusOptionUpdateTest extends OptionBaseTest {
     experiment1 = EXPERIMENT_STEPS.createExperiment(
         desktop,
         page_1_id,
-        getRandomProductType(),
+        null,
         experiment_end,
         .5D,
         getContentManager());

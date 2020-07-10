@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 
 import io.restassured.response.Response;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Map;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -24,17 +25,13 @@ public class MetroSteps extends BaseSteps {
                                          final Double lon) {
     return Arrays.stream(
         getMetro(Map.of(
-            "count", 1,
+            "count", 50,
             "lat", lat,
             "lon", lon,
             "radius", 2000))
-            .as(Metro[].class))
-        .findFirst()
-        .orElse(
-            new Metro.Builder()
-                .setName("")
-                .build())
-        .getName();
+        .as(Metro[].class))
+        .min(Comparator.comparing(Metro::getDistance))
+        .orElse(new Metro.Builder().setName(null).build()).getName();
   }
 
   private Response getMetro(final Map<String, ?> queryParams) {

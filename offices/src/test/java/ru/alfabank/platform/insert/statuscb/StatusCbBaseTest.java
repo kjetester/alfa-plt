@@ -122,7 +122,7 @@ public class StatusCbBaseTest extends BaseTest {
                         .build()
                 )
             ),
-            List.of("statusCb", "OKVKU")
+            List.of("statusCB", "OKVKU")
         },
         {
             "statusCb == ERR",

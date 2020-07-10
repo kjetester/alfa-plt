@@ -2,23 +2,23 @@ package ru.alfabank.platform.businessobjects.offices;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
 import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
 import ru.alfabank.platform.businessobjects.cities.Cities;
 import ru.alfabank.platform.businessobjects.cities.Cities.City;
 import ru.alfabank.platform.businessobjects.cities.Cities.City.Builder;
+import ru.alfabank.platform.steps.offices.OfficesSteps;
 
 public class Offices extends AbstractBusinessObject {
 
-  // Временная метка полученного ответа от MDS
-  // Данная временная метка относится не к определённому отделению,
-  //    а имеет единственное значение общего времени формирования ответа.
-  // не сохраняется
   private final String timestamp;
-  // Массив с данными по офисам
-  // 1..N
   private final List<Office> offices;
 
   @JsonCreator
@@ -64,7 +64,7 @@ public class Offices extends AbstractBusinessObject {
     private final String linkHeadOffice;
     private final Integer vspCount;
     private final Boolean visibleSite;
-    private final Object statusCB;
+    private final CbCodeName statusCB;
     private final List<Kind> kinds;
     private final String addressOfficial;
     private final String addressSms;
@@ -240,47 +240,6 @@ public class Offices extends AbstractBusinessObject {
       this.metaInfo = metaInfo;
     }
 
-    /**
-     * Class constructor.
-     */
-    public Office() {
-      idMasterSystem = null;
-      pid = null;
-      mnemonic = null;
-      cityId = null;
-      pathUrl = null;
-      title = null;
-      description = null;
-      close = null;
-      closeFromDate = null;
-      closeToDate = null;
-      closeReason = null;
-      regNumberCb = null;
-      fullNameCB = null;
-      shortNameCB = null;
-      regDateCB = null;
-      openDate = null;
-      closeDate = null;
-      closeDateCB = null;
-      openDateActual = null;
-      phoneCB = null;
-      profitRus = null;
-      profitEng = null;
-      code5 = null;
-      linkBalance = null;
-      linkHeadOffice = null;
-      vspCount = null;
-      visibleSite = null;
-      statusCB = null;
-      kinds = null;
-      addressOfficial = null;
-      addressSms = null;
-      locations = null;
-      services = null;
-      listOfOperations = null;
-      metaInfo = null;
-    }
-
     public Integer getIdMasterSystem() {
       return idMasterSystem;
     }
@@ -389,7 +348,7 @@ public class Offices extends AbstractBusinessObject {
       return vspCount;
     }
 
-    public Boolean getVisibleSite() {
+    public Boolean isVisibleSite() {
       return visibleSite;
     }
 
@@ -489,8 +448,6 @@ public class Offices extends AbstractBusinessObject {
       softly.assertThat(0)
           .as("Проверка 'parking'")
           .isEqualTo(expectedOffice.getParking());
-      // softly.assertThat(this.getCityId()).isEqualTo(21);
-      // softly.assertThat(this.getMetroId()).isEqualTo(123);
       softly.assertAll();
     }
 
@@ -522,7 +479,7 @@ public class Offices extends AbstractBusinessObject {
       private String linkHeadOffice;
       private Integer vspCount;
       private Boolean visibleSite;
-      private Object statusCB;
+      private CbCodeName statusCB;
       private List<Kind> kinds;
       private String addressOfficial;
       private String addressSms;
@@ -667,7 +624,7 @@ public class Offices extends AbstractBusinessObject {
         return this;
       }
 
-      public Builder setStatusCB(Object statusCB) {
+      public Builder setStatusCB(CbCodeName statusCB) {
         this.statusCB = statusCB;
         return this;
       }
@@ -793,6 +750,8 @@ public class Offices extends AbstractBusinessObject {
 
     public static class Location extends AbstractBusinessObject {
 
+      private static final Logger LOGGER = LogManager.getLogger(LocalDateTime.class);
+
       private final String fiasId;
       private final String kladrId;
       private final Double lat;
@@ -808,7 +767,8 @@ public class Offices extends AbstractBusinessObject {
       private final String liter;
       private final String room;
       private final String placeComment;
-      private final String address;
+      @JsonIgnore
+      private String address;
 
       /**
        * Class constructor.
@@ -844,7 +804,7 @@ public class Offices extends AbstractBusinessObject {
                       @JsonProperty("liter") final String liter,
                       @JsonProperty("room") final String room,
                       @JsonProperty("placeComment") final String placeComment,
-                      final String address) {
+                      @JsonProperty("address") final String address) {
         this.fiasId = fiasId;
         this.kladrId = kladrId;
         this.lat = lat;
@@ -953,31 +913,34 @@ public class Offices extends AbstractBusinessObject {
       /**
        * Compare locations.
        * @param expectedLocation expectedLocation
+       * @param softly soft assertions
        */
-      public void equals(final Location expectedLocation) {
-        final var softly = new SoftAssertions();
-        softly.assertThat(this.getLat())
-            .as("Проверка широты")
+      public void equals(final Location expectedLocation, SoftAssertions softly) {
+        LOGGER.info(String.format("Проверяю маппинг широты: actual '%s' и expected '%s'",
+            this.getLat(), expectedLocation.getLat()));
+        softly.assertThat(this.getLat()).as("Проверка широты")
             .isEqualTo(expectedLocation.getLat());
-        softly.assertThat(this.getLon())
-            .as("Проверка долготы")
+        LOGGER.info(String.format("Проверяю маппинг долготы: actual '%s' и expected '%s'",
+            this.getLon(), expectedLocation.getLon()));
+        softly.assertThat(this.getLon()).as("Проверка долготы")
             .isEqualTo(expectedLocation.getLon());
-        softly.assertThat(this.getPostcode())
-            .as("Проверка почтового индекса")
+        LOGGER.info(String.format("Проверяю маппинг почтового индекса: actual '%s' и expected '%s'",
+            this.getPostcode(), expectedLocation.getPostcode()));
+        softly.assertThat(this.getPostcode()).as("Проверка почтового индекса")
             .isEqualTo(expectedLocation.getPostcode());
-        softly.assertThat(this.getSubjectOfFederation())
-            .as("Проверка региона")
+        LOGGER.info(String.format("Проверяю маппинг региона: actual '%s' и expected '%s'",
+            this.getSubjectOfFederation(), expectedLocation.getSubjectOfFederation()));
+        softly.assertThat(this.getSubjectOfFederation()).as("Проверка региона")
             .isEqualTo(expectedLocation.getSubjectOfFederation());
-        softly.assertThat(this.getAddress())
-            .as("Проверка адреса")
+        LOGGER.info(String.format("Проверяю маппинг адреса: actual '%s' и expected '%s'",
+            this.getAddress(), expectedLocation.getAddress()));
+        softly.assertThat(this.getAddress()).as("Проверка адреса")
             .isEqualTo(expectedLocation.getAddress());
-        softly.assertThat(this.getPlaceComment())
-            .as("Проверка комментария")
-            .isEqualTo(
-                expectedLocation.getPlaceComment() != null
-                    ? expectedLocation.getPlaceComment()
-                    : "");
-        softly.assertAll();
+        LOGGER.info(String.format("Проверяю маппинг комментария: actual '%s' и expected '%s'",
+            this.getPlaceComment(), expectedLocation.getPlaceComment()));
+        softly.assertThat(this.getPlaceComment()).as("Проверка комментария")
+            .isEqualTo(expectedLocation.getPlaceComment() != null
+                ? expectedLocation.getPlaceComment() : "");
       }
 
       public static class Builder {

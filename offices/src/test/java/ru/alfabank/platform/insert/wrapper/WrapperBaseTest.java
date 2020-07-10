@@ -146,14 +146,14 @@ public class WrapperBaseTest extends BaseTest {
             "wrapper.offices == [{}]",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(new Office())),
+                List.of(new Office.Builder().build())),
             List.of("null must not be null")
         },
         {
             "wrapper.offices == [{},{}]",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(new Office(), new Office())),
+                List.of(new Office.Builder().build(), new Office.Builder().build())),
             List.of("null must not be null")
         }
     };

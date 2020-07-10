@@ -3,7 +3,6 @@ package ru.alfabank.platform.experiment.update.activate.positive;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.RUNNING;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
@@ -54,7 +53,7 @@ public class ExperimentActivationTwoTest extends BaseTest {
             false, List.of(RU), null, null, getContentManager());
     actualExperiment =
         EXPERIMENT_STEPS.createExperiment(default_widget.getDevice(), page_id,
-            getRandomProductType(), getValidExperimentEndDate(), .5D, getContentManager());
+            null, getValidExperimentEndDate(), .5D, getContentManager());
     OPTION_STEPS.createOption(true, List.of(default_widget.getUid()), actualExperiment.getUuid(),
         .33D, getContentManager());
     OPTION_STEPS.createOption(false, List.of(abTest_widget.getUid()), actualExperiment.getUuid(),

@@ -39,7 +39,8 @@ public class KindsBaseTest extends BaseTest {
                             Kind.SB,
                             Kind.CIB,
                             Kind.NEW,
-                            Kind.RETAIL_ACLUB))
+                            Kind.RETAIL_ACLUB,
+                            Kind.ERR_KIND))
                         .build()
                 )
             ),
@@ -198,7 +199,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.ERR))
+                        .setKinds(List.of(Kind.ERR_KIND))
                         .build()
                 )
             ),

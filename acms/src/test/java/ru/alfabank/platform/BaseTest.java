@@ -1,13 +1,13 @@
 package ru.alfabank.platform;
 
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
-import static ru.alfabank.platform.businessobjects.enums.Team.COMMON;
-import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD;
-import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD;
-import static ru.alfabank.platform.businessobjects.enums.Team.INVEST;
-import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE;
-import static ru.alfabank.platform.businessobjects.enums.Team.PIL;
-import static ru.alfabank.platform.businessobjects.enums.Team.SME;
+import static ru.alfabank.platform.businessobjects.enums.Team.COMMON_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.INVEST_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.PIL_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.SME_TEAM;
 import static ru.alfabank.platform.helpers.UuidHelper.getShortRandUuid;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
@@ -148,13 +148,13 @@ public class BaseTest {
         .setDateFrom(LocalDateTime.now().toString())
         .setDateTo(LocalDateTime.now().plusMinutes(30).toString())
         .setTeamsList(List.of(
-            SME,
-            COMMON,
-            CREDIT_CARD,
-            DEBIT_CARD,
-            INVEST,
-            MORTGAGE,
-            PIL))
+            SME_TEAM,
+            COMMON_TEAM,
+            CREDIT_CARD_TEAM,
+            DEBIT_CARD_TEAM,
+            INVEST_TEAM,
+            MORTGAGE_TEAM,
+            PIL_TEAM))
         .setEnable(true)
         .build();
     LOGGER.info(String.format("Скелет новой страницы:\n\t %s", basePage.toString()));

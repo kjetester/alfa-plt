@@ -4,18 +4,18 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.CC;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.COM;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.DC;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.INV;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.MG;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.SME;
-import static ru.alfabank.platform.businessobjects.enums.Team.COMMON;
-import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD;
-import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD;
-import static ru.alfabank.platform.businessobjects.enums.Team.INVEST;
-import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.COMMON_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.CREDIT_CARD_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.DEBIT_CARD_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.INVEST_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.MORTGAGE_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.SME_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.Team.COMMON_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.INVEST_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE_TEAM;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -307,14 +307,14 @@ public class NegativeRoleModelTest extends OptionBaseTest {
   @DataProvider
   public static Object[][] negativeDataProvider() {
     return new Object[][]{
-        {CREDIT_CARD_USER, List.of(DEBIT_CARD), DC},
-        {DEBIT_CARD_USER, List.of(INVEST), INV},
-        {INVEST_USER, List.of(MORTGAGE), MG},
-        {MORTGAGE_USER, List.of(Team.PIL), PIL},
-        {PIL_USER, List.of(Team.SME), SME},
-        {SME_USER, List.of(COMMON), COM},
-        {COMMON_USER, List.of(CREDIT_CARD), CC},
-        {UNCLAIMED_USER, List.of(CREDIT_CARD), CC}
+        {CREDIT_CARD_USER, List.of(DEBIT_CARD_TEAM), DEBIT_CARD_PRODUCT_TYPE},
+        {DEBIT_CARD_USER, List.of(INVEST_TEAM), INVEST_PRODUCT_TYPE},
+        {INVEST_USER, List.of(MORTGAGE_TEAM), MORTGAGE_PRODUCT_TYPE},
+        {MORTGAGE_USER, List.of(Team.PIL_TEAM), PIL_PRODUCT_TYPE},
+        {PIL_USER, List.of(Team.SME_TEAM), SME_PRODUCT_TYPE},
+        {SME_USER, List.of(COMMON_TEAM), COMMON_PRODUCT_TYPE},
+        {COMMON_USER, List.of(CREDIT_CARD_TEAM), CREDIT_CARD_PRODUCT_TYPE},
+        {UNCLAIMED_USER, List.of(CREDIT_CARD_TEAM), CREDIT_CARD_PRODUCT_TYPE}
     };
   }
 }

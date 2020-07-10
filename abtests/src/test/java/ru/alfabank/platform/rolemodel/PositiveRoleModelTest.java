@@ -2,13 +2,14 @@ package ru.alfabank.platform.rolemodel;
 
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.CC;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.COM;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.DC;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.INV;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.MG;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.SME;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.COMMON_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.CREDIT_CARD_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.DEBIT_CARD_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.INVEST_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.MORTGAGE_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.SME_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.UNLISTED_PRODUCT_TYPE;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -315,14 +316,14 @@ public class PositiveRoleModelTest extends OptionBaseTest {
   @DataProvider
   public static Object[][] positiveDataProvider() {
     return new Object[][]{
-        {CREDIT_CARD_USER, DC},
-        {DEBIT_CARD_USER, CC},
-        {INVEST_USER, INV},
-        {MORTGAGE_USER, MG},
-        {PIL_USER, PIL},
-        {SME_USER, SME},
-        {COMMON_USER, COM},
-        {UNCLAIMED_USER, DC}
+        {CREDIT_CARD_USER, CREDIT_CARD_PRODUCT_TYPE},
+        {DEBIT_CARD_USER, DEBIT_CARD_PRODUCT_TYPE},
+        {INVEST_USER, INVEST_PRODUCT_TYPE},
+        {MORTGAGE_USER, MORTGAGE_PRODUCT_TYPE},
+        {PIL_USER, PIL_PRODUCT_TYPE},
+        {SME_USER, SME_PRODUCT_TYPE},
+        {COMMON_USER, COMMON_PRODUCT_TYPE},
+        {UNCLAIMED_USER, null}
     };
   }
 }

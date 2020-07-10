@@ -108,11 +108,12 @@ public class PagesSteps extends BaseSteps {
    * @param end       end date
    * @param isEnabled is enabled
    * @param user      user
-   * @return page id
+   * @return          page id
    */
   public Integer createPage(final String start,
                             final String end,
                             final Boolean isEnabled,
+                            final List<Team> teams,
                             final AccessibleUser user) {
     String pageUri = getShortRandUuid();
     var page = new Page.Builder()
@@ -121,6 +122,7 @@ public class PagesSteps extends BaseSteps {
         .setDateFrom(start)
         .setDateTo(end)
         .setEnable(isEnabled)
+        .setTeamsList(teams)
         .build();
     return createPage(page, user).then().extract().body().jsonPath().getInt("id");
   }

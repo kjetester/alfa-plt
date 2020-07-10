@@ -2,10 +2,19 @@ package ru.alfabank.platform.insert.listofoperations;
 
 import com.epam.reportportal.annotations.ParameterKey;
 import java.util.List;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.offices.Offices;
 
 public class ListOfOperationsTest extends ListOfOperationsBaseTest {
+
+  /**
+   * Clean up the DataBase.
+   */
+  @BeforeMethod
+  public void cleanUpDataBase() {
+    STEP.cleanUpDataBase();
+  }
 
   @Test(dataProvider = "listOfOperationsPositiveTestDataProvider")
   public void listOfOperationsPositiveTest(@ParameterKey("Test case")

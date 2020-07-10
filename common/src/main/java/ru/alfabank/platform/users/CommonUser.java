@@ -1,6 +1,6 @@
 package ru.alfabank.platform.users;
 
-import static ru.alfabank.platform.businessobjects.enums.Team.COMMON;
+import static ru.alfabank.platform.businessobjects.enums.Team.COMMON_TEAM;
 
 import java.time.Instant;
 import java.util.List;
@@ -35,7 +35,7 @@ public class CommonUser extends User implements AccessibleUser {
 
   @Override
   public List<Team> getTeams() {
-    return List.of(COMMON);
+    return List.of(COMMON_TEAM);
   }
 
   /**

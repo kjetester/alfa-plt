@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.businessobjects.enums.Status.CANCELLED;
 import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
@@ -54,7 +53,7 @@ public class ExperimentDeactivationTest extends BaseTest {
     final var actualExperiment = EXPERIMENT_STEPS.createExperiment(
         default_widget.getDevice(),
         page_id,
-        getRandomProductType(),
+        null,
         experiment_end_date,
         trafficRate,
         getContentManager());
@@ -126,7 +125,7 @@ public class ExperimentDeactivationTest extends BaseTest {
     var actualExperiment = EXPERIMENT_STEPS.createExperiment(
         default_widget.getDevice(),
         page_id,
-        getRandomProductType(),
+        null,
         experimentEndDate,
         trafficRate,
         getContentManager());

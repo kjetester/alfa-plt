@@ -4,7 +4,6 @@ import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -65,7 +64,7 @@ public class AssignmentToWrongWidgetTypeTest extends OptionBaseTest {
     final var experiment = EXPERIMENT_STEPS.createExperiment(
         widget1.getDevice(),
         page_id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());

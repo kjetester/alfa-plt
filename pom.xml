@@ -18,6 +18,7 @@
         <module>feedback</module>
         <module>cities</module>
         <module>offices</module>
+        <module>shorturl</module>
     </modules>
 
     <properties>

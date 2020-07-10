@@ -1,6 +1,6 @@
 package ru.alfabank.platform.users;
 
-import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE;
+import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE_TEAM;
 
 import java.time.Instant;
 import java.util.List;
@@ -35,7 +35,7 @@ public class MortgageUser extends User implements AccessibleUser {
 
   @Override
   public List<Team> getTeams() {
-    return List.of(MORTGAGE);
+    return List.of(MORTGAGE_TEAM);
   }
 
   /**

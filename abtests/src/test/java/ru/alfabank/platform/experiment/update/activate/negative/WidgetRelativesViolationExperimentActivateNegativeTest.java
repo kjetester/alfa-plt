@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -79,7 +78,7 @@ public class WidgetRelativesViolationExperimentActivateNegativeTest extends Base
     final var actualExperiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
         page_id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());
@@ -184,7 +183,7 @@ public class WidgetRelativesViolationExperimentActivateNegativeTest extends Base
     final var actualExperiment = EXPERIMENT_STEPS.createExperiment(
         device,
         page_id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());
@@ -268,7 +267,7 @@ public class WidgetRelativesViolationExperimentActivateNegativeTest extends Base
     final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
         page_id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());
@@ -360,7 +359,7 @@ public class WidgetRelativesViolationExperimentActivateNegativeTest extends Base
     final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
         page_id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());

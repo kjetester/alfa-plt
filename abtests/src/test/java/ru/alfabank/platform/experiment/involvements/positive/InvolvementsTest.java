@@ -5,7 +5,6 @@ import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -17,6 +16,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.abtests.Experiment;
 import ru.alfabank.platform.businessobjects.enums.Device;
+import ru.alfabank.platform.businessobjects.enums.Team;
 import ru.alfabank.platform.experiment.involvements.InvolvementsBaseTest;
 
 public class InvolvementsTest extends InvolvementsBaseTest {
@@ -46,7 +46,12 @@ public class InvolvementsTest extends InvolvementsBaseTest {
   public void beforeMethod() {
     final var date_from = getValidWidgetDateFrom();
     final var date_to = getValidExperimentEndDatePlusWeek();
-    pageId = PAGES_STEPS.createPage(date_from, date_to, true, getContentManager());
+    pageId = PAGES_STEPS.createPage(
+        date_from,
+        date_to,
+        true,
+        null,
+        getContentManager());
     final var default_desktop_widget = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(pageId),
         null,
@@ -94,14 +99,14 @@ public class InvolvementsTest extends InvolvementsBaseTest {
     final var desktop_experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
         pageId,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());
     final var mobile_experiment = EXPERIMENT_STEPS.createExperiment(
         mobile,
         pageId,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());

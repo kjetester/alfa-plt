@@ -4,13 +4,14 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.CC;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.ERR;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.CREDIT_CARD_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.UNLISTED_PRODUCT_TYPE;
 import static ru.alfabank.platform.businessobjects.enums.Status.RUNNING;
+import static ru.alfabank.platform.businessobjects.enums.Team.UNCLAIMED_TEAM;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
+import java.util.List;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
@@ -38,11 +39,11 @@ public class UpdateInactiveExperimentTest extends BaseTest {
   public void beforeMethod() {
     final var dateFrom = getValidWidgetDateFrom();
     final var dateTo = getValidExperimentEndDate();
-    final var page_id = PAGES_STEPS.createPage(dateFrom, dateTo, true, getContentManager());
+    final var page_id = PAGES_STEPS.createPage(dateFrom, dateTo, true, List.of(UNCLAIMED_TEAM), getContentManager());
     experiment = EXPERIMENT_STEPS.createExperiment(
         mobile,
         page_id,
-        getRandomProductType(),
+        UNLISTED_PRODUCT_TYPE,
         dateTo,
         .05,
         getContentManager());
@@ -74,14 +75,14 @@ public class UpdateInactiveExperimentTest extends BaseTest {
       case "enabled/description" -> changeSetBody = new Experiment.Builder()
           .setEnabled((Boolean) newValue).setDescription(randomAlphanumeric(100)).build();
       case "enabled/productTypeKey" -> changeSetBody = new Experiment.Builder()
-          .setEnabled((Boolean) newValue).setProductTypeKey(CC).build();
+          .setEnabled((Boolean) newValue).setProductTypeKey(CREDIT_CARD_PRODUCT_TYPE).build();
       case "enabled/endDate" -> changeSetBody = new Experiment.Builder()
           .setEnabled((Boolean) newValue).setEndDate(getValidExperimentEndDate()).build();
       case "enabled/trafficRate" -> changeSetBody = new Experiment.Builder()
           .setEnabled((Boolean) newValue).setTrafficRate(0.23D).build();
       case "enabled" -> changeSetBody = new Experiment.Builder().setEnabled((Boolean) newValue)
           .setCookieValue(randomAlphanumeric(100)).setDescription(randomAlphanumeric(100))
-          .setProductTypeKey(CC).setEndDate(getValidExperimentEndDate()).setTrafficRate(0.23D)
+          .setProductTypeKey(CREDIT_CARD_PRODUCT_TYPE).setEndDate(getValidExperimentEndDate()).setTrafficRate(0.23D)
           .build();
       case "pageId" -> changeSetBody = new Experiment.Builder().setPageId((Integer) newValue)
           .build();
@@ -151,7 +152,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         response.then().statusCode(SC_BAD_REQUEST);
         assertThat(response.getBody().jsonPath().getString("message"))
             .as("Проверка обрабоки некоррекнтого 'productTypeKey'")
-            .contains("Тип продукта '" + ERR + "' не существует");
+            .contains("Тип продукта '" + UNLISTED_PRODUCT_TYPE + "' не существует");
       }
       case "endDate" -> {
         response.then().statusCode(SC_BAD_REQUEST);
@@ -237,7 +238,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
         },
         {
             "Невалидное значение поля 'productTypeKey'",
-            ERR
+            UNLISTED_PRODUCT_TYPE
         },
         {
             "Указан 'endDate' менее чем +1 день",

@@ -1,12 +1,12 @@
 package ru.alfabank.platform.medacoll;
 
-import static ru.alfabank.platform.businessobjects.enums.Team.COMMON;
-import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD;
-import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD;
-import static ru.alfabank.platform.businessobjects.enums.Team.INVEST;
-import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE;
-import static ru.alfabank.platform.businessobjects.enums.Team.PIL;
-import static ru.alfabank.platform.businessobjects.enums.Team.SME;
+import static ru.alfabank.platform.businessobjects.enums.Team.COMMON_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.INVEST_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.PIL_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.SME_TEAM;
 import static ru.alfabank.platform.helpers.UuidHelper.getShortRandUuid;
 
 import java.time.LocalDateTime;
@@ -56,13 +56,13 @@ public class MedacollBaseTest extends BaseTest {
         .setDateTo(LocalDateTime.now().plusMinutes(30).toString())
         .setEnable(true)
         .setTeamsList(List.of(
-            CREDIT_CARD,
-            DEBIT_CARD,
-            INVEST,
-            MORTGAGE,
-            PIL,
-            SME,
-            COMMON))
+            CREDIT_CARD_TEAM,
+            DEBIT_CARD_TEAM,
+            INVEST_TEAM,
+            MORTGAGE_TEAM,
+            PIL_TEAM,
+            SME_TEAM,
+            COMMON_TEAM))
         .build();
     LOGGER.info(String.format("Скелет новой страницы:\n\t %s", basePage.toString()));
   }

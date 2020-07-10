@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.DEFAULT;
 import static ru.alfabank.platform.businessobjects.enums.ExperimentOptionName.FOR_AB_TEST;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
@@ -28,7 +27,8 @@ public class PageVisibleLimitedExperimentActivateNegativeTest extends BaseTest {
       @ParameterKey("Дата начала") final String dateFrom,
       @ParameterKey("Дата окончания") final String dateTo,
       @ParameterKey("Видимость") final Boolean isEnabled) {
-    final var page_id = PAGES_STEPS.createPage(dateFrom, dateTo, isEnabled, getContentManager());
+    final var page_id =
+        PAGES_STEPS.createPage(dateFrom, dateTo, isEnabled, null, getContentManager());
     final var default_widget = DRAFT_STEPS.createWidget(
         CREATED_PAGES.get(page_id),
         null,
@@ -54,7 +54,7 @@ public class PageVisibleLimitedExperimentActivateNegativeTest extends BaseTest {
     final var experiment = EXPERIMENT_STEPS.createExperiment(
         desktop,
         page_id,
-        getRandomProductType(),
+        null,
         getValidExperimentEndDate(),
         .5D,
         getContentManager());

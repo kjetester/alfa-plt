@@ -9,9 +9,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Arrays;
-import java.util.List;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.testng.TestNGException;
 
 @JsonInclude(Include.NON_NULL)
@@ -29,7 +31,10 @@ public enum Kind {
   CIB("CIB"),
   NEW("new"),
   RETAIL_ACLUB("retailAclub"),
-  ERR("err");
+  ERR_KIND("err"),
+  EMPTY_KIND("");
+
+  protected static final Logger LOGGER = LogManager.getLogger(Kind.class);
 
   public final String value;
 
@@ -38,10 +43,10 @@ public enum Kind {
   }
 
   @JsonCreator
-  static Kind findValue(final String kind) {
+  private static Kind findValue(@JsonProperty String kind) {
+    LOGGER.debug(String.format("Поиск 'Kind' по kind=%s", kind));
     return Arrays.stream(Kind.values()).filter(k ->
-        k.value.equals(kind)).findFirst().orElseThrow(() ->
-        new TestNGException(String.format("Обнаружен невалидный Kind: '%s'", kind)));
+        k.value.equals(kind)).findFirst().orElse(ERR_KIND);
   }
 
   @JsonValue

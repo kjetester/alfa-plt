@@ -6,13 +6,13 @@ import static ru.alfabank.platform.businessobjects.enums.Entity.PAGE;
 import static ru.alfabank.platform.businessobjects.enums.Entity.WIDGET;
 import static ru.alfabank.platform.businessobjects.enums.Method.CHANGE_LINKS;
 import static ru.alfabank.platform.businessobjects.enums.Method.CREATE;
-import static ru.alfabank.platform.businessobjects.enums.Team.COMMON;
-import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD;
-import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD;
-import static ru.alfabank.platform.businessobjects.enums.Team.INVEST;
-import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE;
-import static ru.alfabank.platform.businessobjects.enums.Team.PIL;
-import static ru.alfabank.platform.businessobjects.enums.Team.SME;
+import static ru.alfabank.platform.businessobjects.enums.Team.COMMON_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.INVEST_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.PIL_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.SME_TEAM;
 import static ru.alfabank.platform.businessobjects.enums.Version.V_1_0_0;
 import static ru.alfabank.platform.helpers.DriverHelper.getDriver;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
@@ -63,12 +63,12 @@ public class PageCreationTest extends BasePageTest {
                     .using(basePage)
                     .setDateTo(null)
                     .setTeamsList(List.of(
-                        SME,
-                        COMMON,
-                        CREDIT_CARD,
-                        DEBIT_CARD,
-                        INVEST, MORTGAGE,
-                        PIL))
+                        SME_TEAM,
+                        COMMON_TEAM,
+                        CREDIT_CARD_TEAM,
+                        DEBIT_CARD_TEAM,
+                        INVEST_TEAM, MORTGAGE_TEAM,
+                        PIL_TEAM))
                     .build());
     createdPages.put(page.getUri(), page);
     // CHECKS //
@@ -127,8 +127,8 @@ public class PageCreationTest extends BasePageTest {
                 .using(BaseTest.basePage)
                 .setDateFrom(null)
                 .setTeamsList(List.of(
-                    INVEST,
-                    MORTGAGE))
+                    INVEST_TEAM,
+                    MORTGAGE_TEAM))
                 .build());
     // создание виджета A
     Widget widgetA = new Widget.Builder()
@@ -222,8 +222,8 @@ public class PageCreationTest extends BasePageTest {
                     .using(BaseTest.basePage)
                     .setDateFrom(null)
                     .setTeamsList(List.of(
-                        INVEST,
-                        MORTGAGE))
+                        INVEST_TEAM,
+                        MORTGAGE_TEAM))
                     .setEnable(false)
                     .build());
     // создание виджета A

@@ -47,20 +47,20 @@ public class LocationsBaseTest extends BaseTest {
                         .setMnemonic(randomAlphanumeric(4))
                         .setLocations(List.of(
                             new Location.Builder()
-                                .setFiasId("9b646403-4605-456a-9320-22d5425748c5")
-                                .setKladrId("7700000000071640057")
+                                .setFiasId("4043b5bd-b5f2-4062-a6a7-7d8b5f0da21b")
+                                .setKladrId("2700000500000800002")
                                 .setLat(55.691273)
                                 .setLon(37.620186)
                                 .setPostcode(randomNumeric(15))
                                 .setFederalDistrict(randomAlphanumeric(255))
                                 .setSubjectOfFederation(randomAlphanumeric(65535))
                                 .setCity("Комсомольск-на-Амуре")
-                                .setStreet(randomAlphanumeric(65535))
-                                .setHouse(randomAlphanumeric(65535))
-                                .setBlock(randomAlphanumeric(65535))
-                                .setBuilding(randomAlphanumeric(65535))
-                                .setLiter(randomAlphanumeric(65535))
-                                .setRoom(randomAlphanumeric(65535))
+                                .setStreet(randomAlphanumeric(100))
+                                .setHouse(randomAlphanumeric(100))
+                                .setBlock(randomAlphanumeric(100))
+                                .setBuilding(randomAlphanumeric(100))
+                                .setLiter(randomAlphanumeric(100))
+                                .setRoom(randomAlphanumeric(100))
                                 .setPlaceComment(randomAlphanumeric(300))
                                 .build()
                             )
@@ -139,8 +139,8 @@ public class LocationsBaseTest extends BaseTest {
                             new Location.Builder()
                                 .setFiasId("a4cf8692-14d4-4218-a07a-49807d3cd7ad")
                                 .setKladrId("5900000500000280001")
-                                .setLat(55.7472054)
-                                .setLon(37.6229693)
+                                .setLat(58.8418156)
+                                .setLon(57.5491844)
                                 .setPostcode("618250")
                                 .setFederalDistrict("Приволжский")
                                 .setSubjectOfFederation("Пермский край")
@@ -320,6 +320,66 @@ public class LocationsBaseTest extends BaseTest {
                 )
             ),
             List.of("fiasId", "must not be null")
+        },
+        {
+            "locations.kladrId non digits",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setKladrId(randomAlphanumeric(19))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("kladrId", "must not be empty")
+        },
+        {
+            "locations.kladrId > 19",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setKladrId(randomNumeric(20))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("kladrId", "must not be empty")
+        },
+        {
+            "locations.kladrId < 19",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setKladrId(randomNumeric(18))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("kladrId", "must not be empty")
         },
         {
             "locations.kladrId == ''",
@@ -502,6 +562,26 @@ public class LocationsBaseTest extends BaseTest {
             List.of("postcode", "должно содержать только цифры")
         },
         {
+            "locations.federalDistrict.length > 500",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setFederalDistrict(randomAlphanumeric(501))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("federalDistrict", "must not be blank")
+        },
+        {
             "locations.federalDistrict == null",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
@@ -542,6 +622,26 @@ public class LocationsBaseTest extends BaseTest {
             List.of("federalDistrict", "must not be blank")
         },
         {
+            "locations.subjectOfFederation > 500",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setSubjectOfFederation(randomAlphanumeric(501))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("subjectOfFederation", "must not be blank")
+        },
+        {
             "locations.subjectOfFederation == ''",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
@@ -580,6 +680,26 @@ public class LocationsBaseTest extends BaseTest {
                 )
             ),
             List.of("subjectOfFederation", "must not be blank")
+        },
+        {
+            "locations.city.length > 300",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setCity(randomAlphanumeric(301))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("city", "must not be blank")
         },
         {
             "locations.city == null",
@@ -662,6 +782,126 @@ public class LocationsBaseTest extends BaseTest {
             List.of("street", "must not be blank")
         },
         {
+            "locations.street.length > 100",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setStreet(randomAlphanumeric(101))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("street", "size must be between 0 and 100")
+        },
+        {
+            "locations.house.length > 100",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setHouse(randomAlphanumeric(101))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("house", "size must be between 0 and 100")
+        },
+        {
+            "locations.block.length > 100",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setBlock(randomAlphanumeric(101))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("building", "size must be between 0 and 100")
+        },
+        {
+            "locations.building.length > 100",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setBuilding(randomAlphanumeric(101))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("building", "size must be between 0 and 100")
+        },
+        {
+            "locations.liter.length > 100",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setBlock(randomAlphanumeric(101))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("liter", "size must be between 0 and 100")
+        },
+        {
+            "locations.room.length > 100",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setRoom(randomAlphanumeric(101))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("room", "size must be between 0 and 100")
+        },
+        {
             "locations.placeComment.length > 300",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
@@ -679,7 +919,7 @@ public class LocationsBaseTest extends BaseTest {
                         ).build()
                 )
             ),
-            List.of("size must be between 0 and 300")
+            List.of("placeComment", "size must be between 0 and 300")
         },
     };
   }

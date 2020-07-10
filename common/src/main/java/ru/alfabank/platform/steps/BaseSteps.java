@@ -11,7 +11,9 @@ import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -32,6 +34,7 @@ public class BaseSteps {
   private static String METRO_BASE_URL;
   private static String FEEDBACK_BASE_URL;
   private static String OFFICES_BASE_URL;
+  private static String SHORT_URL_BASE_URL;
   private static final String URL_ENDING = ".ci.k8s.alfa.link/";
   private static final String PREFIX = "api/v1";
   // Content-Store paths
@@ -67,8 +70,15 @@ public class BaseSteps {
   private static String feedbackAdditionPath;
   // Offices paths
   private static String officesBasePath;
+  private static String officesImportPath;
   private static String officesInPath;
   private static String officesErrPath;
+  // Short Url paths
+  private static String shortUrlBasePath;
+  private static String shortUrlCreatePath;
+  private static String shortUrlCreateArrayPath;
+  private static String shortUrlReadPath;
+  private static String shortUrlUpdateDeletePath;
 
   // Content-Store request specifications
   private static final RequestSpecification BASE_CS_SPEC;
@@ -103,14 +113,23 @@ public class BaseSteps {
   private static final RequestSpecification FEEDBACK_BASE_SPEC;
   private static final RequestSpecification FEEDBACK_ADDITION_SPEC;
   // Offices request specifications
+  private static final RequestSpecification OFFICES_BASE_SPEC;
+  private static final RequestSpecification OFFICES_IMPORT_SPEC;
   private static final RequestSpecification OFFICES_QUEUE_IN_SPEC;
   private static final RequestSpecification OFFICES_QUEUE_ERR_SPEC;
+  // Short-url
+  private static final RequestSpecification SHORT_URL_BASE_SPEC;
+  private static final RequestSpecification SHORT_URL_CREATE_SPEC;
+  private static final RequestSpecification SHORT_URL_CREATE_ARRAY_SPEC;
+  private static final RequestSpecification SHORT_URL_READ_SPEC;
+  private static final RequestSpecification SHORT_URL_UPDATE_DELETE_SPEC;
 
   public static final LinkedHashMap<AccessibleUser, AccessToken> LOGGED_IN_USERS =
       new LinkedHashMap<>();
   public static final LinkedHashMap<Integer, Page> CREATED_PAGES = new LinkedHashMap<>();
   public static final LinkedHashMap<String, Experiment> CREATED_EXPERIMENTS = new LinkedHashMap<>();
   public static final LinkedHashMap<Integer, GeoGroup> CREATED_GEO_GROUPS = new LinkedHashMap<>();
+  public static final List<String> LIST_OF_CREATED_ENTITIES = new ArrayList<>();
 
   static {
     var environment = System.getProperty("env");
@@ -167,6 +186,14 @@ public class BaseSteps {
     FEEDBACK_BASE_SPEC = new RequestSpecBuilder()
         .addRequestSpecification(BASE_CS_SPEC)
         .setBaseUri(FEEDBACK_BASE_URL)
+        .build();
+    OFFICES_BASE_SPEC = new RequestSpecBuilder()
+        .addRequestSpecification(BASE_CS_SPEC)
+        .setBaseUri(OFFICES_BASE_URL)
+        .build();
+    SHORT_URL_BASE_SPEC = new RequestSpecBuilder()
+        .addRequestSpecification(BASE_CS_SPEC)
+        .setBaseUri(SHORT_URL_BASE_URL)
         .build();
     LOGGER.info("Устанавливаю конфгурацию HTTP запросов к /page-controller");
     PAGE_SPEC = new RequestSpecBuilder()
@@ -272,13 +299,35 @@ public class BaseSteps {
         .setBasePath(feedbackAdditionPath)
         .build();
     LOGGER.info("Устанавливаю конфгурацию HTTP запросов к /offices");
+    OFFICES_IMPORT_SPEC = new RequestSpecBuilder()
+        .addRequestSpecification(OFFICES_BASE_SPEC)
+        .setContentType("multipart/form-data")
+        .setBasePath(officesImportPath)
+        .build();
     OFFICES_QUEUE_IN_SPEC = new RequestSpecBuilder()
-        .addRequestSpecification(FEEDBACK_BASE_SPEC)
+        .addRequestSpecification(OFFICES_BASE_SPEC)
         .setBasePath(officesInPath)
         .build();
     OFFICES_QUEUE_ERR_SPEC = new RequestSpecBuilder()
-        .addRequestSpecification(FEEDBACK_BASE_SPEC)
+        .addRequestSpecification(OFFICES_BASE_SPEC)
         .setBasePath(officesErrPath)
+        .build();
+    LOGGER.info("Устанавливаю конфгурацию HTTP запросов к /short-url");
+    SHORT_URL_CREATE_SPEC = new RequestSpecBuilder()
+        .addRequestSpecification(SHORT_URL_BASE_SPEC)
+        .setBasePath(shortUrlCreatePath)
+        .build();
+    SHORT_URL_CREATE_ARRAY_SPEC = new RequestSpecBuilder()
+        .addRequestSpecification(SHORT_URL_BASE_SPEC)
+        .setBasePath(shortUrlCreateArrayPath)
+        .build();
+    SHORT_URL_READ_SPEC = new RequestSpecBuilder()
+        .addRequestSpecification(SHORT_URL_BASE_SPEC)
+        .setBasePath(shortUrlReadPath)
+        .build();
+    SHORT_URL_UPDATE_DELETE_SPEC = new RequestSpecBuilder()
+        .addRequestSpecification(SHORT_URL_BASE_SPEC)
+        .setBasePath(shortUrlUpdateDeletePath)
         .build();
   }
 
@@ -307,12 +356,14 @@ public class BaseSteps {
     METRO_BASE_URL = CS_BASE_URL;
     FEEDBACK_BASE_URL = CS_BASE_URL;
     OFFICES_BASE_URL = CS_BASE_URL;
+    SHORT_URL_BASE_URL = CS_BASE_URL;
     contentStoreBasePath = PREFIX + "/content-store";
     abTestsBasePath = PREFIX + "/ab-test";
     geoFacadeBasePath = PREFIX + "/geo-facade";
     metroBasePath = PREFIX + "/metro/";
     feedbackBasePath = PREFIX + "/feedback";
-    officesBasePath = PREFIX + "/offices/test/mq/offices";
+    officesBasePath = PREFIX + "/offices";
+    shortUrlBasePath = PREFIX + "/schuller/";
   }
 
   private static void getContentStoreFeatureEnvironmentSettings() {
@@ -325,6 +376,8 @@ public class BaseSteps {
     METRO_BASE_URL = String.format("http://feature-alfabankru-%s.metro.reviews%s",
         StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
     OFFICES_BASE_URL = String.format("http://feature-alfabankru-%s.offices.reviews%s",
+        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+    SHORT_URL_BASE_URL = String.format("http://feature-alfabankru-%s.short-url.reviews%s",
         StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
     contentStoreBasePath = "";
     abTestsBasePath = "";
@@ -359,8 +412,13 @@ public class BaseSteps {
     geoFacadeGeoGroupsCitiesPath = geoFacadeGeoGroupsPath + "/cities";
     geoFacadeCityPath = geoFacadeBasePath + "/city";
     feedbackAdditionPath = feedbackBasePath + "/feedbacks";
-    officesInPath = officesBasePath + "/in";
-    officesErrPath = officesBasePath + "/err";
+    officesImportPath = officesBasePath + "/rpc/offices/import/fromfile";
+    officesInPath = officesBasePath + "/test/mq/offices/in";
+    officesErrPath = officesBasePath + "/test/mq/offices/err";
+    shortUrlCreatePath = shortUrlBasePath;
+    shortUrlCreateArrayPath = shortUrlBasePath + "arrayLinks";
+    shortUrlReadPath = shortUrlBasePath;
+    shortUrlUpdateDeletePath = shortUrlBasePath + "{id}";
   }
 
   public static RequestSpecification getPageSpec() {
@@ -459,8 +517,28 @@ public class BaseSteps {
     return OFFICES_QUEUE_IN_SPEC;
   }
 
+  public static RequestSpecification getOfficesImportSpec() {
+    return OFFICES_IMPORT_SPEC;
+  }
+
   public static RequestSpecification getOfficesQueueErrSpec() {
     return OFFICES_QUEUE_ERR_SPEC;
+  }
+
+  public static RequestSpecification getShortUrlCreateSpec() {
+    return SHORT_URL_CREATE_SPEC;
+  }
+
+  public static RequestSpecification getShortUrlCreateArraySpec() {
+    return SHORT_URL_CREATE_ARRAY_SPEC;
+  }
+
+  public static RequestSpecification getShortUrlReadSpec() {
+    return SHORT_URL_READ_SPEC;
+  }
+
+  public static RequestSpecification getShortUrlUpdateDeleteSpec() {
+    return SHORT_URL_UPDATE_DELETE_SPEC;
   }
 
   /**

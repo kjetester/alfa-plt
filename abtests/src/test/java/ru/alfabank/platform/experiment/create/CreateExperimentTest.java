@@ -6,21 +6,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.all;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.CC;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.COM;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.DC;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.ERR;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.INV;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.MG;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.SME;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.CREDIT_CARD_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.COMMON_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.DEBIT_CARD_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.UNLISTED_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.INVEST_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.MORTGAGE_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.SME_PRODUCT_TYPE;
 import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
+import static ru.alfabank.platform.businessobjects.enums.Team.COMMON_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.INVEST_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.PIL_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.SME_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.UNCLAIMED_TEAM;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.TestNGException;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
@@ -28,8 +38,32 @@ import ru.alfabank.platform.businessobjects.abtests.Experiment;
 import ru.alfabank.platform.businessobjects.abtests.Experiment.Builder;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
+import ru.alfabank.platform.businessobjects.enums.Team;
 
 public class CreateExperimentTest extends BaseTest {
+
+  private Integer allTeamsPageId;
+  private Integer creditCardPageId;
+  private Integer pilPageId;
+  private Integer debitCardPageId;
+  private Integer mortgagePageId;
+  private Integer smePageId;
+  private Integer investPageId;
+  private Integer commonPageId;
+  private Integer unclaimedPageId;
+
+  @BeforeTest
+  public void createPages() {
+    allTeamsPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(CREDIT_CARD_TEAM, PIL_TEAM, DEBIT_CARD_TEAM, MORTGAGE_TEAM, SME_TEAM, INVEST_TEAM, COMMON_TEAM), getContentManager());
+    creditCardPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(CREDIT_CARD_TEAM), getContentManager());
+    pilPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(PIL_TEAM), getContentManager());
+    debitCardPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(DEBIT_CARD_TEAM), getContentManager());
+    mortgagePageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(MORTGAGE_TEAM), getContentManager());
+    smePageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(SME_TEAM), getContentManager());
+    investPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(INVEST_TEAM), getContentManager());
+    commonPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(COMMON_TEAM), getContentManager());
+    unclaimedPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, null, getContentManager());
+  }
 
   @Test(
       description = "Позитивный тест создания нового эксперимента",
@@ -105,15 +139,15 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
-            CC,
+            creditCardPageId,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D,
             mobile,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
-            CC,
+            creditCardPageId,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -121,15 +155,15 @@ public class CreateExperimentTest extends BaseTest {
             mobile,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
-            PIL,
+            pilPageId,
+            PIL_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             1.00D,
             desktop,
             randomAlphanumeric(1),
             randomAlphanumeric(1),
-            10,
-            PIL,
+            pilPageId,
+            PIL_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             1.00D
         },
@@ -137,15 +171,15 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(255),
             randomAlphanumeric(1000),
-            10,
-            DC,
+            debitCardPageId,
+            DEBIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.11D,
             mobile,
             randomAlphanumeric(255),
             randomAlphanumeric(1000),
-            10,
-            DC,
+            debitCardPageId,
+            DEBIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.11D
         },
@@ -153,15 +187,15 @@ public class CreateExperimentTest extends BaseTest {
             mobile,
             randomAlphanumeric(50),
             randomAlphanumeric(50),
-            10,
-            MG,
+            mortgagePageId,
+            MORTGAGE_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.11D,
             desktop,
             randomAlphanumeric(50),
             randomAlphanumeric(50),
-            10,
-            MG,
+            mortgagePageId,
+            MORTGAGE_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.11D
         },
@@ -169,15 +203,15 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(50),
             randomAlphanumeric(50),
-            10,
-            SME,
+            smePageId,
+            SME_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.11D,
             mobile,
             randomAlphanumeric(50),
             randomAlphanumeric(50),
-            10,
-            SME,
+            smePageId,
+            SME_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.11D
         },
@@ -185,15 +219,15 @@ public class CreateExperimentTest extends BaseTest {
             mobile,
             randomAlphanumeric(11),
             randomAlphanumeric(11),
-            10,
-            INV,
+            investPageId,
+            INVEST_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.11D,
             desktop,
             randomAlphanumeric(11),
             randomAlphanumeric(11),
-            10,
-            INV,
+            investPageId,
+            INVEST_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.11D
         },
@@ -201,15 +235,47 @@ public class CreateExperimentTest extends BaseTest {
             desktop,
             randomAlphanumeric(10),
             randomAlphanumeric(10),
-            10,
-            COM,
+            commonPageId,
+            COMMON_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.11D,
             mobile,
             randomAlphanumeric(10),
             randomAlphanumeric(10),
-            10,
-            COM,
+            commonPageId,
+            COMMON_PRODUCT_TYPE,
+            getValidExperimentEndDate(),
+            0.11D
+        },
+        {
+            desktop,
+            randomAlphanumeric(10),
+            randomAlphanumeric(10),
+            unclaimedPageId,
+            null,
+            getValidExperimentEndDate(),
+            0.11D,
+            mobile,
+            randomAlphanumeric(10),
+            randomAlphanumeric(10),
+            unclaimedPageId,
+            null,
+            getValidExperimentEndDate(),
+            0.11D
+        },
+        {
+            desktop,
+            randomAlphanumeric(10),
+            randomAlphanumeric(10),
+            allTeamsPageId,
+            PIL_PRODUCT_TYPE,
+            getValidExperimentEndDate(),
+            0.11D,
+            mobile,
+            randomAlphanumeric(10),
+            randomAlphanumeric(10),
+            allTeamsPageId,
+            PIL_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.11D
         }
@@ -218,7 +284,8 @@ public class CreateExperimentTest extends BaseTest {
 
   @Test(
       description = "Негативный тест создания нового эксперимента",
-      dataProvider = "Negative data provider")
+      dataProvider = "Negative data provider",
+      priority = 1)
   public void experimentCreationNegativeTest(
       @ParameterKey("testCase") final String testCase,
       @ParameterKey("device") final Device device,
@@ -339,7 +406,7 @@ public class CreateExperimentTest extends BaseTest {
           softly
               .assertThat(fieldViolations.get(0).toString())
               .as("Проверка обрабоки отсутствующего значения 'pageId'")
-              .contains("pageId", "Необходимо указать адрес страницы");
+              .contains("pageId", "Необходимо указать идентификатор страницы");
         } else {
           assertThat(fieldViolations)
               .as("Проверка отсутствия ошибок в 'fieldViolations'")
@@ -357,31 +424,10 @@ public class CreateExperimentTest extends BaseTest {
                   + pageId + " и device = " + device);
         }
       }
-      case "productType" -> {
-        if (productType != null && productType.equals(ERR)) {
-          softly
-              .assertThat(createResponse.getBody().asString())
-              .as("роверка обрабоки некоррекнтого значения 'productType'")
-              .contains("Тип продукта '" + productType + "' не существует");
-        } else {
-          softly
-              .assertThat(globalErrors)
-              .as("Проверка отсутствия ошибок в 'globalErrors'")
-              .isNullOrEmpty();
-          softly
-              .assertThat(fieldViolations)
-              .as("Проверка присутствия ошибок в 'fieldViolations'")
-              .isNotNull();
-          softly
-              .assertThat(fieldViolations.size())
-              .as("Проверка количества ошибок в 'fieldViolations'")
-              .isEqualTo(1);
-          softly
-              .assertThat(fieldViolations.get(0).toString())
-              .as("Проверка обрабоки отсутсвия значения 'productType'")
-              .contains("Необходимо указать ключ типа продукта");
-        }
-      }
+      case "productType" -> softly
+          .assertThat(createResponse.getBody().asString())
+          .as("Проверка обрабоки некоррекнтого значения 'productType'")
+          .contains("Тип продукта должен быть в списке команд страницы эксперимента");
       case "endDate" -> {
         softly
             .assertThat(globalErrors)
@@ -439,7 +485,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -449,7 +495,7 @@ public class CreateExperimentTest extends BaseTest {
             null,
             randomAlphanumeric(1),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -459,7 +505,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             null,
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -469,17 +515,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             null,
-            CC,
-            getValidExperimentEndDate(),
-            0.01D
-        },
-        {
-            "Отсутствует поле 'productType'",
-            desktop,
-            randomAlphanumeric(1),
-            randomAlphanumeric(1),
-            PAGES_STEPS.createEnabledPage(getContentManager()),
-            null,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -489,7 +525,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             null,
             0.01D
         },
@@ -499,7 +535,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             null
         },
@@ -509,7 +545,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -519,7 +555,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(0),
             randomAlphanumeric(1),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -529,7 +565,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(256),
             randomAlphanumeric(1),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -539,7 +575,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(0),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -549,7 +585,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(10001),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -559,7 +595,22 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             0,
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
+            getValidExperimentEndDate(),
+            0.01D
+        },
+        {
+            "Указан отличный от команды страницы 'productType'",
+            desktop,
+            randomAlphanumeric(1),
+            randomAlphanumeric(1),
+            PAGES_STEPS.createPage(
+                getValidWidgetDateFrom(),
+                getValidExperimentEndDatePlusWeek(),
+                true,
+                List.of(CREDIT_CARD_TEAM),
+                getContentManager()),
+            DEBIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -569,7 +620,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            ERR,
+            UNLISTED_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.01D
         },
@@ -579,7 +630,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getInvalidExperimentEndDate(),
             0.01D
         },
@@ -589,7 +640,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             0.00D
         },
@@ -599,7 +650,7 @@ public class CreateExperimentTest extends BaseTest {
             randomAlphanumeric(1),
             randomAlphanumeric(1),
             PAGES_STEPS.createEnabledPage(getContentManager()),
-            CC,
+            CREDIT_CARD_PRODUCT_TYPE,
             getValidExperimentEndDate(),
             1.01D
         }

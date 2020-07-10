@@ -13,14 +13,14 @@ import org.testng.TestNGException;
 @JsonInclude(Include.NON_NULL)
 public enum Team {
 
-  CREDIT_CARD(1, "CreditCard", "Кредитные карты", ProductType.CC),
-  DEBIT_CARD(2, "DebitCard", "Дебетовые карты", ProductType.DC),
-  INVEST(3, "Invest", "Инвестиции", ProductType.INV),
-  MORTGAGE(4, "Mortgage", "Ипотека", ProductType.MG),
-  PIL(5, "PIL", "Кредиты наличными", ProductType.PIL),
-  SME(6, "SME", "Массовый бизнес", ProductType.SME),
-  COMMON(7, "Common", "Общие страницы и сервисы", ProductType.COM),
-  UNCLAIMED(null, "Unclaimed", "Команда Ничьих Страниц", null);
+  CREDIT_CARD_TEAM(1, "CreditCard", "Кредитные карты", ProductType.CREDIT_CARD_PRODUCT_TYPE),
+  DEBIT_CARD_TEAM(2, "DebitCard", "Дебетовые карты", ProductType.DEBIT_CARD_PRODUCT_TYPE),
+  INVEST_TEAM(3, "Invest", "Инвестиции", ProductType.INVEST_PRODUCT_TYPE),
+  MORTGAGE_TEAM(4, "Mortgage", "Ипотека", ProductType.MORTGAGE_PRODUCT_TYPE),
+  PIL_TEAM(5, "PIL", "Кредиты наличными", ProductType.PIL_PRODUCT_TYPE),
+  SME_TEAM(6, "SME", "Массовый бизнес", ProductType.SME_PRODUCT_TYPE),
+  COMMON_TEAM(7, "Common", "Общие страницы и сервисы", ProductType.COMMON_PRODUCT_TYPE),
+  UNCLAIMED_TEAM(null, "Unclaimed", "Команда Ничьих Страниц", null);
 
   private final Integer id;
   private final String code;
@@ -54,7 +54,7 @@ public enum Team {
   @JsonCreator
   static Team findValue(@JsonProperty Integer id) {
     return Arrays.stream(Team.values()).filter(v ->
-        v.id == id).findFirst().orElseThrow(() ->
+        v.id.equals(id)).findFirst().orElseThrow(() ->
         new TestNGException(String.format("Обнаружен невалидный teamId: '%s'", id)));
   }
 

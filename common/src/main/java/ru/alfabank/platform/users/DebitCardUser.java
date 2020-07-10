@@ -1,6 +1,6 @@
 package ru.alfabank.platform.users;
 
-import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD;
+import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD_TEAM;
 
 import java.time.Instant;
 import java.util.List;
@@ -35,7 +35,7 @@ public class DebitCardUser extends User implements AccessibleUser {
 
   @Override
   public List<Team> getTeams() {
-    return List.of(DEBIT_CARD);
+    return List.of(DEBIT_CARD_TEAM);
   }
 
   /**

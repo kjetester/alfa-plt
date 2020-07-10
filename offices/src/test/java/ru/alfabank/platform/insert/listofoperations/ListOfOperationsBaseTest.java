@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.DataProvider;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.offices.Offices;
@@ -30,6 +31,7 @@ public class ListOfOperationsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
+                        .setListOfOperations(null)
                         .build()
                 )
             )
@@ -57,7 +59,7 @@ public class ListOfOperationsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setListOfOperations(operationsList)
+                        .setListOfOperations(ALL_OF_OPERATIONS_LIST)
                         .build()
                 )
             )
@@ -89,14 +91,17 @@ public class ListOfOperationsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setListOfOperations(List.of(new Operation(
-                            "10.1GiveSurety",
-                            randomAlphanumeric(21845),
-                            "random_codeCB_1",
-                            "random_categoryCB_1")))
-                        .build()
+                        .setListOfOperations(
+                            List.of(new Operation(
+                                "10.1GiveSurety",
+                                null,
+                                "random_codeCB_1",
+                                "random_categoryCB_1")
+                            )
+                        ).build()
                 )
-            )
+            ),
+            List.of("name", "must not be blank")
         },
     };
   }
@@ -107,6 +112,28 @@ public class ListOfOperationsBaseTest extends BaseTest {
    */
   @DataProvider
   public Object[][] listOfOperationsNegativeTestDataProvider() {
-    return new Object[0][];
+    return new Object[][] {
+      {
+        "listOfOperations.name.length == 0",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setListOfOperations(
+                            List.of(new Operation(
+                                "10.1GiveSurety",
+                                "",
+                                "random_codeCB_1",
+                                "random_categoryCB_1")
+                            )
+                        ).build()
+                )
+            ),
+          List.of("name", "must not be blank")
+      }
+    };
   }
 }

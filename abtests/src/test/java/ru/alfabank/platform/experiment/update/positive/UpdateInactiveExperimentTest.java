@@ -2,10 +2,19 @@ package ru.alfabank.platform.experiment.update.positive;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.getRandomProductType;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.CREDIT_CARD_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.DEBIT_CARD_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.Team.COMMON_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.DEBIT_CARD_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.INVEST_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.PIL_TEAM;
+import static ru.alfabank.platform.businessobjects.enums.Team.SME_TEAM;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -28,11 +37,23 @@ public class UpdateInactiveExperimentTest extends BaseTest {
   @BeforeMethod(description = "Создание неактивного эксперимента "
       + "для позитивного теста изменения неактивного эксперимента")
   public void beforeMethod() {
-    final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());
+    final var page_id = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(
+            CREDIT_CARD_TEAM,
+            PIL_TEAM,
+            DEBIT_CARD_TEAM,
+            MORTGAGE_TEAM,
+            SME_TEAM,
+            INVEST_TEAM,
+            COMMON_TEAM),
+        getContentManager());
     experiment = EXPERIMENT_STEPS.createExperiment(
         mobile,
         page_id,
-        getRandomProductType(),
+        CREDIT_CARD_PRODUCT_TYPE,
         getValidExperimentEndDate(),
         .05,
         getContentManager());
@@ -123,7 +144,7 @@ public class UpdateInactiveExperimentTest extends BaseTest {
             randomAlphanumeric(1000)},
         {
             "Изменение 'productTypeKey'",
-            getRandomProductType()
+            DEBIT_CARD_PRODUCT_TYPE
         },
         {
             "Минимальное значение 'trafficRate'",
