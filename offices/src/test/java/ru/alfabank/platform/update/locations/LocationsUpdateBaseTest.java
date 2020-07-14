@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import org.testng.annotations.DataProvider;
-import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.offices.Offices;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office.Location;
@@ -18,6 +17,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
@@ -44,14 +44,14 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         .using(BASE_OFFICE)
                         .setLocations(List.of(
                             new Location.Builder()
-                                .setFiasId("4043b5bd-b5f2-4062-a6a7-7d8b5f0da21b")
-                                .setKladrId("2700000500000800002")
-                                .setLat(55.691273)
-                                .setLon(37.620186)
+                                .setFiasId("8866e114-2bea-406a-86cb-bbe5f1506063")
+                                .setKladrId("78000000000071000")
+                                .setLat(59.921593)
+                                .setLon(30.355319)
                                 .setPostcode(randomNumeric(15))
                                 .setFederalDistrict(randomAlphanumeric(255))
-                                .setSubjectOfFederation(randomAlphanumeric(65535))
-                                .setCity("Комсомольск-на-Амуре")
+                                .setSubjectOfFederation(randomAlphanumeric(300))
+                                .setCity("Санкт-Петербург")
                                 .setStreet(randomAlphanumeric(100))
                                 .setHouse(randomAlphanumeric(100))
                                 .setBlock(randomAlphanumeric(100))
@@ -59,30 +59,6 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                                 .setLiter(randomAlphanumeric(100))
                                 .setRoom(randomAlphanumeric(100))
                                 .setPlaceComment(randomAlphanumeric(300))
-                                .build()
-                            )
-                        ).build()
-                )
-            )
-        },
-        {
-            "Min количество полей с min заполнением",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setLocations(List.of(
-                            new Location.Builder()
-                                .setFiasId("f55a327e-089e-4a9c-933b-a22a89793269")
-                                .setKladrId("7700000000071640057")
-                                .setLat(55.691273)
-                                .setLon(37.620186)
-                                .setPostcode("430005")
-                                .setFederalDistrict("Приволжский")
-                                .setSubjectOfFederation("Респ Мордовия")
-                                .setCity("Саранск")
-                                .setStreet("пр-кт Ленина")
                                 .build()
                             )
                         ).build()
@@ -107,12 +83,6 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                                 .setSubjectOfFederation("г Москва")
                                 .setCity("Москва")
                                 .setStreet("Софийская наб")
-                                .setHouse("34")
-                                .setBlock("1")
-                                .setBuilding("2")
-                                .setLiter("А")
-                                .setRoom("3")
-                                .setPlaceComment("Кремль")
                                 .build()
                             )
                         ).build()
@@ -128,16 +98,15 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         .using(BASE_OFFICE)
                         .setLocations(List.of(
                             new Location.Builder()
-                                .setFiasId("a4cf8692-14d4-4218-a07a-49807d3cd7ad")
+                                .setFiasId("4043b5bd-b5f2-4062-a6a7-7d8b5f0da21b")
                                 .setKladrId("5900000500000280001")
-                                .setLat(58.8418156)
-                                .setLon(57.5491844)
-                                .setPostcode("618250")
-                                .setFederalDistrict("Приволжский")
-                                .setSubjectOfFederation("Пермский край")
-                                .setCity("Губаха")
-                                .setStreet("ул Мичурина")
-                                .setHouse("2")
+                                .setLat(50.58858)
+                                .setLon(137.04987)
+                                .setPostcode("681007")
+                                .setFederalDistrict("Дальневосточный")
+                                .setSubjectOfFederation("Хабаровский край")
+                                .setCity("Комсомольск-на-Амуре")
+                                .setStreet("1-я Дальневосточная")
                                 .build()
                             )
                         ).build()
@@ -153,14 +122,14 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         .using(BASE_OFFICE)
                         .setLocations(List.of(
                             new Location.Builder()
-                                .setFiasId("f55a327e-089e-4a9c-933b-a22a89793269")
-                                .setKladrId("7700000000071640057")
-                                .setLat(55.691273)
-                                .setLon(37.620186)
-                                .setPostcode("430005")
+                                .setFiasId("a4cf8692-14d4-4218-a07a-49807d3cd7ad")
+                                .setKladrId("5900000500000280001")
+                                .setLat(58.8418156)
+                                .setLon(57.5491844)
+                                .setPostcode("618250")
                                 .setFederalDistrict("Приволжский")
-                                .setSubjectOfFederation("Респ Мордовия")
-                                .setCity("Саранск")
+                                .setSubjectOfFederation("Пермский край")
+                                .setCity("Губаха")
                                 .setStreet("пр-кт Ленина")
                                 .setHouse("1")
                                 .setBlock("3")
@@ -170,20 +139,20 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                                 .setPlaceComment(randomAlphanumeric(10))
                                 .build(),
                             new Location.Builder()
-                                .setFiasId("f55a327e-089e-4a9c-933b-a22a89793269")
-                                .setKladrId("7700000000071640057")
-                                .setLat(55.691273)
-                                .setLon(37.620186)
-                                .setPostcode("430005")
+                                .setFiasId("a4cf8692-14d4-4218-a07a-49807d3cd7ad")
+                                .setKladrId("5900000500000280001")
+                                .setLat(58.8418156)
+                                .setLon(57.5491844)
+                                .setPostcode("618250")
                                 .setFederalDistrict("Приволжский")
-                                .setSubjectOfFederation("Респ Мордовия")
-                                .setCity("Саранск")
-                                .setStreet("пр-кт Ленина")
-                                .setHouse("1")
-                                .setBlock("3")
-                                .setBuilding("5")
-                                .setLiter("А")
-                                .setRoom("223")
+                                .setSubjectOfFederation("Пермский край")
+                                .setCity("Губаха")
+                                .setStreet("пр-кт Андропова")
+                                .setHouse("2")
+                                .setBlock("4")
+                                .setBuilding("7")
+                                .setLiter("Б")
+                                .setRoom("332")
                                 .setPlaceComment(randomAlphanumeric(10))
                                 .build()
                             )
@@ -202,8 +171,8 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                             new Location.Builder()
                                 .setFiasId("2c248779-9d42-475b-addb-063bfdad8dac")
                                 .setKladrId("7700000000071640057")
-                                .setLat(55.691273)
-                                .setLon(37.620186)
+                                .setLat(59.049840)
+                                .setLon(57.646558)
                                 .setPostcode("618351")
                                 .setFederalDistrict("Приволжский")
                                 .setSubjectOfFederation("Пермский край")
@@ -214,24 +183,24 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                                 .setBuilding("4")
                                 .setLiter("Б")
                                 .setRoom("Н12")
-                                .setPlaceComment(randomAlphanumeric(10))
+                                .setPlaceComment("randomAlphanumeric(10)")
                                 .build(),
                             new Location.Builder()
                                 .setFiasId("8a3f8666-9121-419b-9bf7-55b5d3381349")
                                 .setKladrId("7700000000071640057")
-                                .setLat(55.691273)
-                                .setLon(37.620186)
+                                .setLat(59.049840)
+                                .setLon(57.646558)
                                 .setPostcode("618350")
                                 .setFederalDistrict("Приволжский")
                                 .setSubjectOfFederation("Пермский край")
                                 .setCity("Кизел")
-                                .setStreet("пер Водопьянова")
-                                .setHouse("25")
-                                .setBlock("4")
-                                .setBuilding("2")
-                                .setLiter("А")
+                                .setStreet("ул Борцов")
+                                .setHouse("3")
+                                .setBlock("1")
+                                .setBuilding("4")
+                                .setLiter("Б")
                                 .setRoom("Н12")
-                                .setPlaceComment(randomAlphanumeric(10))
+                                .setPlaceComment("randomAlphanumeric(10)")
                                 .build()
                             )
                         ).build()
@@ -243,6 +212,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
@@ -258,7 +228,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         .setLocations(List.of(
                             new Location.Builder()
                                 .using(BASE_LOCATION)
-                                .setFiasId("9b6464034605456a932022d5425748c5")
+                                .setFiasId(randomAlphanumeric(36))
                                 .build()
                             )
                         ).build()
@@ -267,7 +237,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
             List.of("UUID has to be represented by standard 36-char representation")
         },
         {
-            "locations.fiasId == ''",
+            "locations.fiasId.length == 0",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -303,7 +273,43 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
             List.of("fiasId", "must not be null")
         },
         {
-            "locations.kladrId == ''",
+            "locations.kladrId non digits",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setKladrId(randomAlphanumeric(19))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("kladrId", "должно содержать только цифры")
+        },
+        {
+            "locations.kladrId.length > 19",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setKladrId(randomNumeric(20))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("kladrId", "length must be between 1 and 19")
+        },
+        {
+            "locations.kladrId.length < 1",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -393,7 +399,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
             List.of("postcode", "must not be empty")
         },
         {
-            "locations.postcode == ''",
+            "locations.postcode.length == 0",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -465,6 +471,24 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
             List.of("postcode", "должно содержать только цифры")
         },
         {
+            "locations.federalDistrict.length > 255",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setFederalDistrict(randomAlphanumeric(256))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("federalDistrict", "size must be between 0 and 255")
+        },
+        {
             "locations.federalDistrict == null",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
@@ -483,7 +507,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
             List.of("federalDistrict", "must not be blank")
         },
         {
-            "locations.federalDistrict == ''",
+            "locations.federalDistrict.length == 0",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -501,7 +525,25 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
             List.of("federalDistrict", "must not be blank")
         },
         {
-            "locations.subjectOfFederation == ''",
+            "locations.subjectOfFederation.length > 300",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setSubjectOfFederation(randomAlphanumeric(301))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("subjectOfFederation", "size must be between 1 and 300")
+        },
+        {
+            "locations.subjectOfFederation.length < 1",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -537,6 +579,24 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
             List.of("subjectOfFederation", "must not be blank")
         },
         {
+            "locations.city.length > 300",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .using(BASE_LOCATION)
+                                .setCity(randomAlphanumeric(301))
+                                .build()
+                            )
+                        ).build()
+                )
+            ),
+            List.of("city", "size must be between 1 and 100")
+        },
+        {
             "locations.city == null",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
@@ -555,7 +615,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
             List.of("city", "must not be blank")
         },
         {
-            "locations.city == ''",
+            "locations.city.length == 0",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -591,7 +651,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
             List.of("street", "must not be blank")
         },
         {
-            "locations.street == ''",
+            "locations.street.length == 0",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -660,10 +720,10 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         ).build()
                 )
             ),
-            List.of("building", "size must be between 0 and 100")
+            List.of("block", "size must be between 0 and 100")
         },
         {
-            "locations.block.length > 100",
+            "locations.building.length > 100",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -690,7 +750,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         .setLocations(List.of(
                             new Location.Builder()
                                 .using(BASE_LOCATION)
-                                .setBlock(randomAlphanumeric(101))
+                                .setLiter(randomAlphanumeric(101))
                                 .build()
                             )
                         ).build()

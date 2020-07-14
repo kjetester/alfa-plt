@@ -24,11 +24,12 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
   public Object[][] officeUpdatePositiveTestDataProvider() {
-    return new Object[][] {
+    return new Object[][]{
         {
             "обновление с max количеством полей и их max значениями",
             new Offices(
@@ -38,8 +39,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                         .using(BASE_OFFICE)
                         .setIdMasterSystem(Integer.valueOf(randomNumeric(9)))
                         .setPathUrl(randomAlphanumeric(31))
-                        .setTitle(randomAlphanumeric(65535))
-                        .setDescription(randomAlphanumeric(65535))
+                        .setTitle(randomAlphanumeric(300))
+                        .setDescription(randomAlphanumeric(300))
                         .setClose(true)
                         .setCloseFromDate(LocalDate.now().minusDays(30).toString())
                         .setCloseToDate(LocalDate.now().plusDays(30).toString())
@@ -52,7 +53,7 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                         .setCloseDate(LocalDate.now().minusDays(30).toString())
                         .setCloseDateCB(LocalDate.now().minusDays(30).toString())
                         .setOpenDateActual(LocalDate.now().minusYears(10).toString())
-                        .setPhoneCB(randomAlphanumeric(65535))
+                        .setPhoneCB(randomAlphanumeric(100))
                         .setProfitRus(List.of(
                             randomAlphanumeric(50),
                             randomAlphanumeric(50),
@@ -74,25 +75,25 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                             randomAlphanumeric(50)
                         ))
                         .setCode5(randomAlphanumeric(5))
-                        .setLinkBalance(randomAlphanumeric(500))
-                        .setLinkHeadOffice(randomAlphanumeric(500))
-                        .setVspCount(99)
+                        .setLinkBalance(randomAlphanumeric(300))
+                        .setLinkHeadOffice(randomAlphanumeric(300))
+                        .setVspCount(5)
                         .setVisibleSite(true)
                         .setKinds(ALL_OF_KINDS_LIST)
-                        .setAddressOfficial(randomAlphanumeric(65535))
-                        .setAddressSms(randomAlphanumeric(65535))
+                        .setAddressOfficial(randomAlphanumeric(300))
+                        .setAddressSms(randomAlphanumeric(300))
                         .setLocations(List.of(
                             new Location.Builder()
-                                .setFiasId("8a3f8666-9121-419b-9bf7-55b5d3381349")
-                                .setKladrId("5900000700000800002")
-                                .setLat(59.0512783)
-                                .setLon(57.6471028)
-                                .setPostcode("618350")
-                                .setFederalDistrict("Приволжский")
-                                .setSubjectOfFederation("Пермский край")
-                                .setCity("г Кизел")
-                                .setStreet("пер Водопьянова")
-                                .setHouse("25")
+                                .setFiasId("dacd4c67-1562-48da-83f5-d93154ff4a58")
+                                .setKladrId(randomNumeric(19))
+                                .setLat(55.6917333)
+                                .setLon(37.660531)
+                                .setPostcode(randomNumeric(6))
+                                .setFederalDistrict("Центральный")
+                                .setSubjectOfFederation("Москва")
+                                .setCity("г Москва")
+                                .setStreet("пр-кт Андропова")
+                                .setHouse("18")
                                 .setBlock("1")
                                 .setBuilding("1")
                                 .setLiter("А")
@@ -100,22 +101,21 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                                 .setPlaceComment(randomAlphanumeric(300))
                                 .build(),
                             new Location.Builder()
-                                .setFiasId("8a3f8666-9121-419b-9bf7-55b5d3381349")
-                                .setKladrId("5900000700000800002")
-                                .setLat(59.0512783)
-                                .setLon(57.6471028)
-                                .setPostcode("618350")
-                                .setFederalDistrict("Приволжский")
-                                .setSubjectOfFederation("Пермский край")
-                                .setCity("г Кизел")
-                                .setStreet("пер Водопьянова")
-                                .setHouse("25")
-                                .setBlock("1")
-                                .setBuilding("1")
-                                .setLiter("А")
-                                .setRoom("22/2-Н")
+                                .setFiasId("fdaffeb4-e5c1-4e54-bd46-c555543ad706")
+                                .setKladrId("7700000000007500277")
+                                .setLat(55.6917421)
+                                .setLon(37.6627433)
+                                .setPostcode(randomNumeric(6))
+                                .setFederalDistrict("Центральный")
+                                .setSubjectOfFederation("Москва")
+                                .setCity("г Москва")
+                                .setStreet("пр-кт Андропова")
+                                .setHouse("18")
+                                .setBlock("7")
+                                .setRoom("202")
                                 .setPlaceComment(randomAlphanumeric(300))
-                                .build()))
+                                .build())
+                        )
                         .setServices(ALL_OF_SERVICES_LIST)
                         .setListOfOperations(ALL_OF_OPERATIONS_LIST)
                         .build()
@@ -151,7 +151,7 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                         .setCode5(randomAlphanumeric(1))
                         .setLinkBalance(randomAlphanumeric(1))
                         .setLinkHeadOffice(randomAlphanumeric(1))
-                        .setVspCount(0)
+                        .setVspCount(Integer.valueOf(randomNumeric(1)))
                         .setVisibleSite(false)
                         .setKinds(List.of(RETAIL_ACLUB))
                         .setAddressOfficial("Пермский край, г Кизел, пер Водопьянова, д 25")
@@ -159,7 +159,7 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                         .setLocations(List.of(
                             new Location.Builder()
                                 .setFiasId("8a3f8666-9121-419b-9bf7-55b5d3381349")
-                                .setKladrId("5900000700000800002")
+                                .setKladrId(randomNumeric(19))
                                 .setLat(59.0512783)
                                 .setLon(57.6471028)
                                 .setPostcode(randomNumeric(6))
@@ -187,11 +187,12 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
   public Object[][] officeUpdateNegativeTestDataProvider() {
-    return new Object[][] {
+    return new Object[][]{
         {
             "office.idMasterSystem == null",
             new Offices(
@@ -224,7 +225,21 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setPathUrl("")
+                        .using(BASE_OFFICE)
+                        .setPathUrl("")
+                        .build()
+                )
+            ),
+            List.of("pathUrl")
+        },
+        {
+            "office.pathUrl.length > 31",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPathUrl(randomAlphanumeric(32))
                         .build()
                 )
             ),
@@ -236,7 +251,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setTitle(null)
+                        .using(BASE_OFFICE)
+                        .setTitle(null)
                         .build()
                 )
             ),
@@ -248,7 +264,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setTitle("")
+                        .using(BASE_OFFICE)
+                        .setTitle("")
                         .build()
                 )
             ),
@@ -260,7 +277,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setClose(null)
+                        .using(BASE_OFFICE)
+                        .setClose(null)
                         .build()
                 )
             ),
@@ -272,7 +290,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setShortNameCB(null)
+                        .using(BASE_OFFICE)
+                        .setShortNameCB(null)
                         .build()
                 )
             ),
@@ -284,7 +303,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setShortNameCB("")
+                        .using(BASE_OFFICE)
+                        .setShortNameCB("")
                         .build()
                 )
             ),
@@ -296,7 +316,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setShortNameCB(randomAlphanumeric(301))
+                        .using(BASE_OFFICE)
+                        .setShortNameCB(randomAlphanumeric(301))
                         .build()
                 )
             ),
@@ -308,7 +329,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setOpenDate(null)
+                        .using(BASE_OFFICE)
+                        .setOpenDate(null)
                         .build()
                 )
             ),
@@ -320,7 +342,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setOpenDate("")
+                        .using(BASE_OFFICE)
+                        .setOpenDate("")
                         .build()
                 )
             ),
@@ -332,7 +355,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setOpenDate(randomAlphanumeric(5))
+                        .using(BASE_OFFICE)
+                        .setOpenDate(randomAlphanumeric(5))
                         .build()
                 )
             ),
@@ -344,7 +368,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setVisibleSite(null)
+                        .using(BASE_OFFICE)
+                        .setVisibleSite(null)
                         .build()
                 )
             ),
@@ -356,7 +381,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setStatusCB(null)
+                        .using(BASE_OFFICE)
+                        .setStatusCB(null)
                         .build()
                 )
             ),
@@ -368,7 +394,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setStatusCB(EMPTY)
+                        .using(BASE_OFFICE)
+                        .setStatusCB(EMPTY)
                         .build()
                 )
             ),
@@ -380,7 +407,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setKinds(null)
+                        .using(BASE_OFFICE)
+                        .setKinds(null)
                         .build()
                 )
             ),
@@ -392,7 +420,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setKinds(List.of())
+                        .using(BASE_OFFICE)
+                        .setKinds(List.of())
                         .build()
                 )
             ),
@@ -404,7 +433,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setAddressOfficial(null)
+                        .using(BASE_OFFICE)
+                        .setAddressOfficial(null)
                         .build()
                 )
             ),
@@ -416,7 +446,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setAddressOfficial("")
+                        .using(BASE_OFFICE)
+                        .setAddressOfficial("")
                         .build()
                 )
             ),
@@ -428,7 +459,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setLocations(null)
+                        .using(BASE_OFFICE)
+                        .setLocations(null)
                         .build()
                 )
             ),
@@ -440,7 +472,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setLocations(List.of())
+                        .using(BASE_OFFICE)
+                        .setLocations(List.of())
                         .build()
                 )
             ),
@@ -452,7 +485,8 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setMetaInfo(null)
+                        .using(BASE_OFFICE)
+                        .setMetaInfo(null)
                         .build()
                 )
             ),
@@ -464,12 +498,91 @@ public class OfficeUpdateBaseTest extends UpdateBaseTest {
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
                     new Office.Builder()
-                        .using(BASE_OFFICE).setMetaInfo(new MetaInfo())
+                        .using(BASE_OFFICE)
+                        .setMetaInfo(new MetaInfo())
                         .build()
                 )
             ),
             List.of("metaInfo")
-        }
+        },
+        {
+            "max количество полей с превышением max значений",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setIdMasterSystem(Integer.valueOf(randomNumeric(9)))
+                        .setPathUrl(randomAlphanumeric(31))
+                        .setTitle(randomAlphanumeric(301))
+                        .setDescription(randomAlphanumeric(301))
+                        .setClose(true)
+                        .setCloseFromDate(LocalDate.now().minusDays(30).toString())
+                        .setCloseToDate(LocalDate.now().plusDays(30).toString())
+                        .setCloseReason(MOVING.getValue())
+                        .setRegNumberCb(randomAlphanumeric(50))
+                        .setFullNameCB(randomAlphanumeric(300))
+                        .setShortNameCB(randomAlphanumeric(301))
+                        .setRegDateCB(LocalDate.now().minusYears(10).toString())
+                        .setOpenDate(LocalDate.now().minusYears(10).toString())
+                        .setCloseDate(LocalDate.now().minusDays(30).toString())
+                        .setCloseDateCB(LocalDate.now().minusDays(30).toString())
+                        .setOpenDateActual(LocalDate.now().minusYears(10).toString())
+                        .setPhoneCB(randomAlphanumeric(101))
+                        .setProfitRus(List.of(
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50)
+                        ))
+                        .setProfitEng(List.of(
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50)
+                        ))
+                        .setCode5(randomAlphanumeric(6))
+                        .setLinkBalance(randomAlphanumeric(301))
+                        .setLinkHeadOffice(randomAlphanumeric(301))
+                        .setVspCount(Integer.valueOf(randomNumeric(6)))
+                        .setVisibleSite(true)
+                        .setKinds(ALL_OF_KINDS_LIST)
+                        .setAddressOfficial(randomAlphanumeric(301))
+                        .setAddressSms(randomAlphanumeric(301))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .setFiasId("dacd4c67-1562-48da-83f5-d93154ff4a58")
+                                .setKladrId(randomNumeric(19))
+                                .setLat(55.6917333)
+                                .setLon(37.660531)
+                                .setPostcode(randomNumeric(6))
+                                .setFederalDistrict("Центральный")
+                                .setSubjectOfFederation("Москва")
+                                .setCity("г Москва")
+                                .setStreet("пр-кт Андропова")
+                                .setHouse("18")
+                                .setBlock("1")
+                                .setBuilding("1")
+                                .setLiter("А")
+                                .setRoom("22/2-Н")
+                                .setPlaceComment(randomAlphanumeric(300))
+                                .build()
+                        ))
+                        .setServices(ALL_OF_SERVICES_LIST)
+                        .setListOfOperations(ALL_OF_OPERATIONS_LIST)
+                        .build()
+                )
+            ),
+            List.of("title", "description", "shortNameCB", "phoneCB", "code5", "linkBalance", "linkHeadOffice", "vspCount", "addressOfficial", "addressSms")
+        },
     };
   }
 }

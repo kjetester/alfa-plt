@@ -18,11 +18,12 @@ public class MetaInfoBaseTest extends BaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
   public Object[][] metaInfoPositiveTestDataProvider() {
-    return new Object[][] {
+    return new Object[][]{
         {
             "Валидная операция и текущее время",
             new Offices(
@@ -90,11 +91,12 @@ public class MetaInfoBaseTest extends BaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
   public Object[][] metaInfoNegativeTestDataProvider() {
-    return new Object[][] {
+    return new Object[][]{
         {
             "metainfo.operation == err",
             new Offices(
@@ -118,7 +120,7 @@ public class MetaInfoBaseTest extends BaseTest {
             List.of("Cannot deserialize value of type `ru.alfabank.offices.enums.OperationType`")
         },
         {
-            "metainfo.operation == ''",
+            "metainfo.operation.length == 0",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -198,7 +200,7 @@ public class MetaInfoBaseTest extends BaseTest {
             List.of("metaInfo.changeDatetime", "null must not be null")
         },
         {
-            "metainfo.time == ''",
+            "metainfo.time.length == 0",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(

@@ -17,8 +17,7 @@ public class LocationsTest extends LocationsBaseTest {
   }
 
   @Test(dataProvider = "locationsPositiveTestDataProvider")
-  public void locationsPositiveTest(@ParameterKey("Test case")
-                                      final String testCase,
+  public void locationsPositiveTest(@ParameterKey("Test case") final String testCase,
                                     final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
     STEP.checkIfOfficesWereSaved(offices);
@@ -26,8 +25,7 @@ public class LocationsTest extends LocationsBaseTest {
   }
 
   @Test(dataProvider = "locationsNegativeTestDataProvider", priority = 1)
-  public void locationsNegativeTest(@ParameterKey("Test case")
-                                    final String testCase,
+  public void locationsNegativeTest(@ParameterKey("Test case") final String testCase,
                                     final Offices offices,
                                     final List<String> expectedErrorMessagesList) {
     STEP.sendMessageToInQueue(offices);

@@ -31,6 +31,7 @@ public class BaseSteps {
   private static String CS_BASE_URL;
   private static String AB_TEST_BASE_URL;
   private static String GEO_FACADE_BASE_URL;
+  private static String CITIES_BASE_URL;
   private static String METRO_BASE_URL;
   private static String FEEDBACK_BASE_URL;
   private static String OFFICES_BASE_URL;
@@ -63,6 +64,9 @@ public class BaseSteps {
   private static String geoFacadeGeoGroupsIdCitiesPath;
   private static String geoFacadeGeoGroupsCitiesPath;
   private static String geoFacadeCityPath;
+  // Cities paths
+  private static String citiesBasePath;
+  private static String cityPath;
   // Metro paths
   private static String metroBasePath;
   // Feedback paths
@@ -107,6 +111,9 @@ public class BaseSteps {
   private static final RequestSpecification GEO_FACADE_GEO_GROUPS_ID_CITIES_SPEC;
   private static final RequestSpecification GEO_FACADE_GEO_GROUPS_CITIES_SPEC;
   private static final RequestSpecification GEO_FACADE_CITY_SPEC;
+  // Cities request specifications
+  private static final RequestSpecification CITIES_SPEC;
+  private static final RequestSpecification CITY_SPEC;
   // Metro request specifications
   private static final RequestSpecification METRO_SPEC;
   // Feedback request specifications
@@ -182,6 +189,10 @@ public class BaseSteps {
     GEO_FACADE_BASE_SPEC = new RequestSpecBuilder()
         .addRequestSpecification(BASE_CS_SPEC)
         .setBaseUri(GEO_FACADE_BASE_URL)
+        .build();
+    CITIES_SPEC = new RequestSpecBuilder()
+        .addRequestSpecification(BASE_CS_SPEC)
+        .setBaseUri(CITIES_BASE_URL)
         .build();
     FEEDBACK_BASE_SPEC = new RequestSpecBuilder()
         .addRequestSpecification(BASE_CS_SPEC)
@@ -267,7 +278,7 @@ public class BaseSteps {
         .addRequestSpecification(BASE_AB_TEST_SPEC)
         .setBasePath(getDeletePatchOptionPath)
         .build();
-    LOGGER.info("Устанавливаю конфгурацию HTTP запросов к /geo-facade");
+    LOGGER.info("Устанавливаю конфгурацию HTTP запросов к /cities");
     GEO_FACADE_GEO_GROUPS_SPEC = new RequestSpecBuilder()
         .addRequestSpecification(GEO_FACADE_BASE_SPEC)
         .setBasePath(geoFacadeGeoGroupsPath)
@@ -287,6 +298,10 @@ public class BaseSteps {
     GEO_FACADE_CITY_SPEC = new RequestSpecBuilder()
         .addRequestSpecification(GEO_FACADE_BASE_SPEC)
         .setBasePath(geoFacadeCityPath)
+        .build();
+    CITY_SPEC = new RequestSpecBuilder()
+        .addRequestSpecification(CITIES_SPEC)
+        .setBasePath(cityPath)
         .build();
     LOGGER.info("Устанавливаю конфгурацию HTTP запросов к /metro");
     METRO_SPEC = new RequestSpecBuilder()
@@ -353,6 +368,7 @@ public class BaseSteps {
   private static void setEnv() {
     AB_TEST_BASE_URL = CS_BASE_URL;
     GEO_FACADE_BASE_URL = CS_BASE_URL;
+    CITIES_BASE_URL = CS_BASE_URL;
     METRO_BASE_URL = CS_BASE_URL;
     FEEDBACK_BASE_URL = CS_BASE_URL;
     OFFICES_BASE_URL = CS_BASE_URL;
@@ -360,6 +376,7 @@ public class BaseSteps {
     contentStoreBasePath = PREFIX + "/content-store";
     abTestsBasePath = PREFIX + "/ab-test";
     geoFacadeBasePath = PREFIX + "/geo-facade";
+    citiesBasePath = PREFIX + "/cities";
     metroBasePath = PREFIX + "/metro/";
     feedbackBasePath = PREFIX + "/feedback";
     officesBasePath = PREFIX + "/offices";
@@ -373,6 +390,8 @@ public class BaseSteps {
         StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
     GEO_FACADE_BASE_URL = String.format("http://feature-alfabankru-%s.geo-facade.reviews%s",
         StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+    CITIES_BASE_URL = String.format("http://feature-alfabankru-%s.cities.reviews%s",
+        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
     METRO_BASE_URL = String.format("http://feature-alfabankru-%s.metro.reviews%s",
         StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
     OFFICES_BASE_URL = String.format("http://feature-alfabankru-%s.offices.reviews%s",
@@ -382,6 +401,7 @@ public class BaseSteps {
     contentStoreBasePath = "";
     abTestsBasePath = "";
     geoFacadeBasePath = "";
+    citiesBasePath = "";
     metroBasePath = "";
     feedbackBasePath = "";
     officesBasePath = "";
@@ -411,6 +431,7 @@ public class BaseSteps {
     geoFacadeGeoGroupsIdCitiesPath = geoFacadeGeoGroupsIdPath + "/cities";
     geoFacadeGeoGroupsCitiesPath = geoFacadeGeoGroupsPath + "/cities";
     geoFacadeCityPath = geoFacadeBasePath + "/city";
+    cityPath = citiesBasePath + "/city";
     feedbackAdditionPath = feedbackBasePath + "/feedbacks";
     officesImportPath = officesBasePath + "/rpc/offices/import/fromfile";
     officesInPath = officesBasePath + "/test/mq/offices/in";
@@ -503,6 +524,10 @@ public class BaseSteps {
 
   public static RequestSpecification getGeoFacadeCitySpec() {
     return GEO_FACADE_CITY_SPEC;
+  }
+
+  public static RequestSpecification getCitySpec() {
+    return CITY_SPEC;
   }
 
   public static RequestSpecification getMetroSpec() {

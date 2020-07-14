@@ -23,6 +23,7 @@ public class FileTests {
 
   /**
    * BeforeTest.
+   *
    * @throws IOException IOException
    */
   @BeforeTest
@@ -35,12 +36,12 @@ public class FileTests {
   @Test
   public static void checkFiasIdIdDaDaTa() {
     officesList = offices.getOffices().stream().filter(office ->
-      office.getLocations().stream().anyMatch(location ->
-          given().baseUri("https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/address")
-              .contentType(ContentType.JSON)
-              .auth().oauth2("Token c700cdb63b3bb969dfad44120d06ba725e629373")
-              .body(String.format("{\"query\": \"%s\"}", location.getFiasId()))
-              .post().getBody().jsonPath().getList("suggestions").size() < 1)
+        office.getLocations().stream().anyMatch(location ->
+            given().baseUri("https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/address")
+                .contentType(ContentType.JSON)
+                .auth().oauth2("Token c700cdb63b3bb969dfad44120d06ba725e629373")
+                .body(String.format("{\"query\": \"%s\"}", location.getFiasId()))
+                .post().getBody().jsonPath().getList("suggestions").size() < 1)
     ).collect(Collectors.toList());
   }
 

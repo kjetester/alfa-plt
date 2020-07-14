@@ -5,34 +5,8 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 import static ru.alfabank.platform.businessobjects.offices.CbCodeName.EMPTY;
 import static ru.alfabank.platform.businessobjects.offices.CloseReason.MOVING;
-import static ru.alfabank.platform.businessobjects.offices.Kind.CIB;
-import static ru.alfabank.platform.businessobjects.offices.Kind.MMB;
-import static ru.alfabank.platform.businessobjects.offices.Kind.NEW;
 import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_ACLUB;
-import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_CIK;
-import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_STANDARD;
-import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_VIP;
-import static ru.alfabank.platform.businessobjects.offices.Kind.SB;
-import static ru.alfabank.platform.businessobjects.offices.Kind.VIP;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CASH_CHF;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CASH_GBP;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CASH_MAS;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CASH_OP;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CC;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CLIENT_OFFICE;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.DC;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.DISABLED;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.MOMENT_CARD;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.OFFICE_MB_IP;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.OVERDRAFT;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.PARTNER;
 import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.PIL;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.PILOT;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.POINT_ONE;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.POINT_TWO;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.SAFE;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.SERVICE_OFFICE;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.WIFI;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -51,13 +25,14 @@ public class OfficeBaseTest extends BaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
   public Object[][] officePositiveTestDataProvider() {
-    return new Object[][] {
+    return new Object[][]{
         {
-            "max количество полей с max значениями",
+            "max количество полей с их max значениями",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -67,8 +42,8 @@ public class OfficeBaseTest extends BaseTest {
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
                         .setPathUrl(randomAlphanumeric(31))
-                        .setTitle(randomAlphanumeric(65535))
-                        .setDescription(randomAlphanumeric(65535))
+                        .setTitle(randomAlphanumeric(300))
+                        .setDescription(randomAlphanumeric(300))
                         .setClose(true)
                         .setCloseFromDate(LocalDate.now().minusDays(30).toString())
                         .setCloseToDate(LocalDate.now().plusDays(30).toString())
@@ -81,7 +56,7 @@ public class OfficeBaseTest extends BaseTest {
                         .setCloseDate(LocalDate.now().minusDays(30).toString())
                         .setCloseDateCB(LocalDate.now().minusDays(30).toString())
                         .setOpenDateActual(LocalDate.now().minusYears(10).toString())
-                        .setPhoneCB(randomAlphanumeric(65535))
+                        .setPhoneCB(randomAlphanumeric(100))
                         .setProfitRus(List.of(
                             randomAlphanumeric(50),
                             randomAlphanumeric(50),
@@ -103,27 +78,17 @@ public class OfficeBaseTest extends BaseTest {
                             randomAlphanumeric(50)
                         ))
                         .setCode5(randomAlphanumeric(5))
-                        .setLinkBalance(randomAlphanumeric(500))
-                        .setLinkHeadOffice(randomAlphanumeric(500))
-                        .setVspCount(99)
+                        .setLinkBalance(randomAlphanumeric(300))
+                        .setLinkHeadOffice(randomAlphanumeric(300))
+                        .setVspCount(5)
                         .setVisibleSite(true)
-                        .setKinds(List.of(
-                            RETAIL_STANDARD,
-                            RETAIL_VIP,
-                            VIP,
-                            RETAIL_CIK,
-                            MMB,
-                            SB,
-                            CIB,
-                            NEW,
-                            RETAIL_ACLUB))
-                        .setAddressOfficial("115432, г Москва, Даниловский р-н, пр-кт Андропова,"
-                            + " д 18 к 1 соор 1 литера А, эт. 4, сектор АБ, каб. 22/2-Н")
-                        .setAddressSms("Москва, п-т Андропова, 18к1с1, АБ, каб. 22/2-Н")
+                        .setKinds(ALL_OF_KINDS_LIST)
+                        .setAddressOfficial(randomAlphanumeric(300))
+                        .setAddressSms(randomAlphanumeric(300))
                         .setLocations(List.of(
                             new Location.Builder()
                                 .setFiasId("dacd4c67-1562-48da-83f5-d93154ff4a58")
-                                .setKladrId("7700000000007500277")
+                                .setKladrId(randomNumeric(19))
                                 .setLat(55.6917333)
                                 .setLon(37.660531)
                                 .setPostcode(randomNumeric(6))
@@ -154,34 +119,14 @@ public class OfficeBaseTest extends BaseTest {
                                 .setPlaceComment(randomAlphanumeric(300))
                                 .build())
                         )
-                        .setServices(List.of(
-                            new Service(POINT_ONE.getCode(), POINT_ONE.getName()),
-                            new Service(POINT_TWO.getCode(), POINT_TWO.getName()),
-                            new Service(SERVICE_OFFICE.getCode(), SERVICE_OFFICE.getName()),
-                            new Service(CLIENT_OFFICE.getCode(), CLIENT_OFFICE.getName()),
-                            new Service(SAFE.getCode(), SAFE.getName()),
-                            new Service(DISABLED.getCode(), DISABLED.getName()),
-                            new Service(CASH_CHF.getCode(), CASH_CHF.getName()),
-                            new Service(CASH_GBP.getCode(), CASH_GBP.getName()),
-                            new Service(CASH_MAS.getCode(), CASH_MAS.getName()),
-                            new Service(CASH_OP.getCode(), CASH_OP.getName()),
-                            new Service(MOMENT_CARD.getCode(), MOMENT_CARD.getName()),
-                            new Service(WIFI.getCode(), WIFI.getName()),
-                            new Service(PARTNER.getCode(), PARTNER.getName()),
-                            new Service(OVERDRAFT.getCode(), OVERDRAFT.getName()),
-                            new Service(OFFICE_MB_IP.getCode(), OFFICE_MB_IP.getName()),
-                            new Service(PILOT.getCode(), PILOT.getName()),
-                            new Service(DC.getCode(), DC.getName()),
-                            new Service(CC.getCode(), CC.getName()),
-                            new Service(PIL.getCode(), PIL.getName())
-                        ))
+                        .setServices(ALL_OF_SERVICES_LIST)
                         .setListOfOperations(ALL_OF_OPERATIONS_LIST)
                         .build()
                 )
             )
         },
         {
-            "max количество полей с min значениями",
+            "max количество полей с их min значениями",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -211,7 +156,7 @@ public class OfficeBaseTest extends BaseTest {
                         .setCode5(randomAlphanumeric(1))
                         .setLinkBalance(randomAlphanumeric(1))
                         .setLinkHeadOffice(randomAlphanumeric(1))
-                        .setVspCount(0)
+                        .setVspCount(Integer.valueOf(randomNumeric(1)))
                         .setVisibleSite(false)
                         .setKinds(List.of(RETAIL_ACLUB))
                         .setAddressOfficial("Пермский край, г Кизел, пер Водопьянова, д 25")
@@ -219,7 +164,7 @@ public class OfficeBaseTest extends BaseTest {
                         .setLocations(List.of(
                             new Location.Builder()
                                 .setFiasId("8a3f8666-9121-419b-9bf7-55b5d3381349")
-                                .setKladrId("5900000700000800002")
+                                .setKladrId(randomNumeric(19))
                                 .setLat(59.0512783)
                                 .setLon(57.6471028)
                                 .setPostcode(randomNumeric(6))
@@ -247,11 +192,12 @@ public class OfficeBaseTest extends BaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
   public Object[][] officeNegativeTestDataProvider() {
-    return new Object[][] {
+    return new Object[][]{
         {
             "office.idMasterSystem == null",
             new Offices(
@@ -737,7 +683,87 @@ public class OfficeBaseTest extends BaseTest {
                 )
             ),
             List.of("metaInfo")
-        }
+        },
+        {
+            "max количество полей с превышением max значений",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setIdMasterSystem(Integer.valueOf(randomNumeric(9)))
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setPathUrl(randomAlphanumeric(31))
+                        .setTitle(randomAlphanumeric(301))
+                        .setDescription(randomAlphanumeric(301))
+                        .setClose(true)
+                        .setCloseFromDate(LocalDate.now().minusDays(30).toString())
+                        .setCloseToDate(LocalDate.now().plusDays(30).toString())
+                        .setCloseReason(MOVING.getValue())
+                        .setRegNumberCb(randomAlphanumeric(50))
+                        .setFullNameCB(randomAlphanumeric(300))
+                        .setShortNameCB(randomAlphanumeric(301))
+                        .setRegDateCB(LocalDate.now().minusYears(10).toString())
+                        .setOpenDate(LocalDate.now().minusYears(10).toString())
+                        .setCloseDate(LocalDate.now().minusDays(30).toString())
+                        .setCloseDateCB(LocalDate.now().minusDays(30).toString())
+                        .setOpenDateActual(LocalDate.now().minusYears(10).toString())
+                        .setPhoneCB(randomAlphanumeric(101))
+                        .setProfitRus(List.of(
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50)
+                        ))
+                        .setProfitEng(List.of(
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50),
+                            randomAlphanumeric(50)
+                        ))
+                        .setCode5(randomAlphanumeric(6))
+                        .setLinkBalance(randomAlphanumeric(301))
+                        .setLinkHeadOffice(randomAlphanumeric(301))
+                        .setVspCount(Integer.valueOf(randomNumeric(6)))
+                        .setVisibleSite(true)
+                        .setKinds(ALL_OF_KINDS_LIST)
+                        .setAddressOfficial(randomAlphanumeric(301))
+                        .setAddressSms(randomAlphanumeric(301))
+                        .setLocations(List.of(
+                            new Location.Builder()
+                                .setFiasId("dacd4c67-1562-48da-83f5-d93154ff4a58")
+                                .setKladrId(randomNumeric(19))
+                                .setLat(55.6917333)
+                                .setLon(37.660531)
+                                .setPostcode(randomNumeric(6))
+                                .setFederalDistrict("Центральный")
+                                .setSubjectOfFederation("Москва")
+                                .setCity("г Москва")
+                                .setStreet("пр-кт Андропова")
+                                .setHouse("18")
+                                .setBlock("1")
+                                .setBuilding("1")
+                                .setLiter("А")
+                                .setRoom("22/2-Н")
+                                .setPlaceComment(randomAlphanumeric(300))
+                                .build()
+                        ))
+                        .setServices(ALL_OF_SERVICES_LIST)
+                        .setListOfOperations(ALL_OF_OPERATIONS_LIST)
+                        .build()
+                )
+            ),
+            List.of("title", "description", "shortNameCB", "phoneCB", "code5", "linkBalance", "linkHeadOffice", "vspCount", "addressOfficial", "addressSms")
+        },
     };
   }
 }

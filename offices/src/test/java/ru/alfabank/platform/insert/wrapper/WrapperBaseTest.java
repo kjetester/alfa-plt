@@ -16,13 +16,14 @@ public class WrapperBaseTest extends BaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
   public Object[][] wrapperPositiveTestDataProvider() {
     String pid = randomNumeric(4);
-    return new Object[][] {
-        {   "Текущее время и два разных отделения",
+    return new Object[][]{
+        {"Текущее время и два разных отделения",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -37,7 +38,7 @@ public class WrapperBaseTest extends BaseTest {
                         .setMnemonic(randomAlphanumeric(4))
                         .build()))
         },
-        {   "Текущее время и два отделения с одинаковыми pid и разными mnemonic",
+        {"Текущее время и два отделения с одинаковыми pid и разными mnemonic",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -63,7 +64,7 @@ public class WrapperBaseTest extends BaseTest {
                         .setMnemonic(randomAlphanumeric(4))
                         .build()))
         },
-        {   "Текущее время плюс 1 час и два разных отделения",
+        {"Текущее время плюс 1 час и два разных отделения",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET))
                     .plus(1, HOURS).toString(),
@@ -79,7 +80,7 @@ public class WrapperBaseTest extends BaseTest {
                         .setMnemonic(randomAlphanumeric(4))
                         .build()))
         },
-        {   "Текущее время минус 1 час и одно отделение",
+        {"Текущее время минус 1 час и одно отделение",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET))
                     .minus(1, HOURS).toString(),
@@ -95,11 +96,12 @@ public class WrapperBaseTest extends BaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
   public Object[][] wrapperNegativeTestDataProvider() {
-    return new Object[][] {
+    return new Object[][]{
         {
             "wrapper.timestamp == no timeZone",
             new Offices(

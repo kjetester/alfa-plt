@@ -23,8 +23,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>13</maven.compiler.target>
-        <maven.compiler.source>13</maven.compiler.source>
+        <java.version>14</java.version>
         <testng.version>7.1.0</testng.version>
         <rest-assured.version>4.3.0</rest-assured.version>
         <selenium.version>4.0.0-alpha-5</selenium.version>
@@ -40,8 +39,8 @@
         <maven-plugins.version>3.0.0-M4</maven-plugins.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <galenframework.version>2.4.4</galenframework.version>
-        <reportportal.version>4.2.0</reportportal.version>
-        <reportportal.logger.version>4.0.1</reportportal.logger.version>
+        <agent-java-testng.version>5.0.4</agent-java-testng.version>
+        <logger-java-log4j.version>5.0.1</logger-java-log4j.version>
         <suite>src/test/resources/testng.xml</suite>
     </properties>
 
@@ -139,12 +138,12 @@
             <dependency>
                 <groupId>com.epam.reportportal</groupId>
                 <artifactId>agent-java-testng</artifactId>
-                <version>${reportportal.version}</version>
+                <version>${agent-java-testng.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.epam.reportportal</groupId>
                 <artifactId>logger-java-log4j</artifactId>
-                <version>${reportportal.logger.version}</version>
+                <version>${logger-java-log4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven.plugins</groupId>

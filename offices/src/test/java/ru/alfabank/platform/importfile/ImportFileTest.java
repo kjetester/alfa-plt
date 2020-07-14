@@ -9,10 +9,5 @@ public class ImportFileTest extends BaseTest {
   public void importFileTest() {
     STEP.importFileAssumingSuccess();
     STEP.checkOfficesFromFileMapping();
-    // STEP.checkKindsMapping();
-    STEP.checkListOfOperationsFromFileMapping();
-    STEP.checkLocationFromFileMapping();
-    STEP.checkServicesFromFileMapping();
-    STEP.checkChangeDateFromFileTimeMapping();
   }
 }

@@ -16,7 +16,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.businessobjects.abtests.Experiment;
 import ru.alfabank.platform.businessobjects.enums.Device;
-import ru.alfabank.platform.businessobjects.enums.Team;
 import ru.alfabank.platform.experiment.involvements.InvolvementsBaseTest;
 
 public class InvolvementsTest extends InvolvementsBaseTest {

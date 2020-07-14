@@ -54,15 +54,67 @@ public class CreateExperimentTest extends BaseTest {
 
   @BeforeTest
   public void createPages() {
-    allTeamsPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(CREDIT_CARD_TEAM, PIL_TEAM, DEBIT_CARD_TEAM, MORTGAGE_TEAM, SME_TEAM, INVEST_TEAM, COMMON_TEAM), getContentManager());
-    creditCardPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(CREDIT_CARD_TEAM), getContentManager());
-    pilPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(PIL_TEAM), getContentManager());
-    debitCardPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(DEBIT_CARD_TEAM), getContentManager());
-    mortgagePageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(MORTGAGE_TEAM), getContentManager());
-    smePageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(SME_TEAM), getContentManager());
-    investPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(INVEST_TEAM), getContentManager());
-    commonPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, List.of(COMMON_TEAM), getContentManager());
-    unclaimedPageId = PAGES_STEPS.createPage(getValidWidgetDateFrom(), getValidExperimentEndDatePlusWeek(), true, null, getContentManager());
+    allTeamsPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(
+            CREDIT_CARD_TEAM,
+            PIL_TEAM,
+            DEBIT_CARD_TEAM,
+            MORTGAGE_TEAM,
+            SME_TEAM,
+            INVEST_TEAM,
+            COMMON_TEAM),
+        getContentManager());
+    creditCardPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(CREDIT_CARD_TEAM),
+        getContentManager());
+    pilPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(PIL_TEAM),
+        getContentManager());
+    debitCardPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(DEBIT_CARD_TEAM),
+        getContentManager());
+    mortgagePageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(MORTGAGE_TEAM),
+        getContentManager());
+    smePageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(SME_TEAM),
+        getContentManager());
+    investPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(INVEST_TEAM),
+        getContentManager());
+    commonPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(COMMON_TEAM),
+        getContentManager());
+    unclaimedPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        null,
+        getContentManager());
   }
 
   @Test(

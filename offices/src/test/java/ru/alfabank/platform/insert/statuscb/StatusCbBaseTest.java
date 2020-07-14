@@ -24,6 +24,7 @@ public class StatusCbBaseTest extends BaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
@@ -104,6 +105,7 @@ public class StatusCbBaseTest extends BaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
@@ -137,7 +139,7 @@ public class StatusCbBaseTest extends BaseTest {
                         .build()
                 )
             ),
-            List.of("statusCb", "ERR")
+            List.of("statusCB", "ERR")
         },
         {
             "statusCb == NO_CODE",

@@ -16,6 +16,7 @@ public class KindsBaseTest extends BaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
@@ -43,16 +44,6 @@ public class KindsBaseTest extends BaseTest {
                             Kind.ERR_KIND))
                         .build()
                 )
-            ),
-            List.of(
-                Kind.Code.RETAIL,
-                Kind.Code.VIP,
-                Kind.Code.VIPMNGR,
-                Kind.Code.VIP_CLIENT,
-                Kind.Code.MORTGAGE,
-                Kind.Code.SME,
-                Kind.Code.CORPORATE,
-                Kind.Code.ACLUB
             )
         },
         {
@@ -67,8 +58,7 @@ public class KindsBaseTest extends BaseTest {
                         .setKinds(List.of(Kind.RETAIL_STANDARD))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.RETAIL)
+            )
         },
         {
             "Kinds == retailVip",
@@ -82,8 +72,7 @@ public class KindsBaseTest extends BaseTest {
                         .setKinds(List.of(Kind.RETAIL_VIP))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.RETAIL, Kind.Code.VIP)
+            )
         },
         {
             "Kinds == vip",
@@ -97,8 +86,7 @@ public class KindsBaseTest extends BaseTest {
                         .setKinds(List.of(Kind.VIP))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.RETAIL, Kind.Code.VIP, Kind.Code.VIPMNGR, Kind.Code.VIP_CLIENT)
+            )
         },
         {
             "Kinds == retailCIK",
@@ -112,8 +100,7 @@ public class KindsBaseTest extends BaseTest {
                         .setKinds(List.of(Kind.RETAIL_CIK))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.RETAIL, Kind.Code.MORTGAGE)
+            )
         },
         {
             "Kinds == MMB",
@@ -127,8 +114,7 @@ public class KindsBaseTest extends BaseTest {
                         .setKinds(List.of(Kind.MMB))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.SME)
+            )
         },
         {
             "Kinds == SB",
@@ -142,8 +128,7 @@ public class KindsBaseTest extends BaseTest {
                         .setKinds(List.of(Kind.SB))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.CORPORATE)
+            )
         },
         {
             "Kinds == CIB",
@@ -157,8 +142,7 @@ public class KindsBaseTest extends BaseTest {
                         .setKinds(List.of(Kind.CIB))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.CORPORATE)
+            )
         },
         {
             "Kinds == new",
@@ -172,8 +156,7 @@ public class KindsBaseTest extends BaseTest {
                         .setKinds(List.of(Kind.NEW))
                         .build()
                 )
-            ),
-            List.of()
+            )
         },
         {
             "Kinds == retailAclub",
@@ -187,8 +170,7 @@ public class KindsBaseTest extends BaseTest {
                         .setKinds(List.of(Kind.RETAIL_ACLUB))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.ACLUB, Kind.Code.VIP)
+            )
         },
         {
             "Kinds == undefined value",
@@ -202,14 +184,14 @@ public class KindsBaseTest extends BaseTest {
                         .setKinds(List.of(Kind.ERR_KIND))
                         .build()
                 )
-            ),
-            List.of()
+            )
         }
     };
   }
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider

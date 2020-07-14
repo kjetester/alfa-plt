@@ -1,7 +1,5 @@
 package ru.alfabank.platform.update.statuscb;
 
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
-import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 import static ru.alfabank.platform.businessobjects.offices.CbCodeName.BRANCH;
 import static ru.alfabank.platform.businessobjects.offices.CbCodeName.DO;
 import static ru.alfabank.platform.businessobjects.offices.CbCodeName.ERR;
@@ -16,7 +14,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import org.testng.annotations.DataProvider;
-import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.offices.Offices;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office;
 import ru.alfabank.platform.update.UpdateBaseTest;
@@ -25,6 +22,7 @@ public class StatusCbUpdateBaseTest extends UpdateBaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
@@ -37,8 +35,6 @@ public class StatusCbUpdateBaseTest extends UpdateBaseTest {
                 List.of(
                     new Office.Builder()
                         .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
                         .setStatusCB(DO)
                         .build()
                 )
@@ -51,8 +47,6 @@ public class StatusCbUpdateBaseTest extends UpdateBaseTest {
                 List.of(
                     new Office.Builder()
                         .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
                         .setStatusCB(KKO)
                         .build()
                 )
@@ -65,8 +59,6 @@ public class StatusCbUpdateBaseTest extends UpdateBaseTest {
                 List.of(
                     new Office.Builder()
                         .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
                         .setStatusCB(RO)
                         .build()
                 )
@@ -79,8 +71,6 @@ public class StatusCbUpdateBaseTest extends UpdateBaseTest {
                 List.of(
                     new Office.Builder()
                         .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
                         .setStatusCB(OO)
                         .build()
                 )
@@ -93,8 +83,6 @@ public class StatusCbUpdateBaseTest extends UpdateBaseTest {
                 List.of(
                     new Office.Builder()
                         .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
                         .setStatusCB(BRANCH)
                         .build()
                 )
@@ -105,6 +93,7 @@ public class StatusCbUpdateBaseTest extends UpdateBaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
@@ -117,8 +106,6 @@ public class StatusCbUpdateBaseTest extends UpdateBaseTest {
                 List.of(
                     new Office.Builder()
                         .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
                         .setStatusCB(OKVKU)
                         .build()
                 )
@@ -132,13 +119,11 @@ public class StatusCbUpdateBaseTest extends UpdateBaseTest {
                 List.of(
                     new Office.Builder()
                         .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
                         .setStatusCB(ERR)
                         .build()
                 )
             ),
-            List.of("statusCb", "ERR")
+            List.of("statusCB", "ERR")
         },
         {
             "statusCb == NO_CODE",
@@ -147,8 +132,6 @@ public class StatusCbUpdateBaseTest extends UpdateBaseTest {
                 List.of(
                     new Office.Builder()
                         .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
                         .setStatusCB(NO_CODE)
                         .build()
                 )
@@ -162,8 +145,6 @@ public class StatusCbUpdateBaseTest extends UpdateBaseTest {
                 List.of(
                     new Office.Builder()
                         .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
                         .setStatusCB(NO_NAME)
                         .build()
                 )

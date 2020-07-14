@@ -28,7 +28,7 @@ target/
 *.settings/
 *.factorypath
 
-# Allure Files
-.allure/
-allure-results/
+# Report Portal
+*.lock
+*.sync
 

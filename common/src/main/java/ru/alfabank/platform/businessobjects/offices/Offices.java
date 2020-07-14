@@ -18,6 +18,8 @@ import ru.alfabank.platform.steps.offices.OfficesSteps;
 
 public class Offices extends AbstractBusinessObject {
 
+  private static final Logger LOGGER = LogManager.getLogger(Offices.class);
+
   private final String timestamp;
   private final List<Office> offices;
 
@@ -61,6 +63,7 @@ public class Offices extends AbstractBusinessObject {
     private final List<String> profitEng;
     private final String code5;
     private final String linkBalance;
+    @JsonProperty("linkHeadoffice")
     private final String linkHeadOffice;
     private final Integer vspCount;
     private final Boolean visibleSite;
@@ -405,6 +408,10 @@ public class Offices extends AbstractBusinessObject {
      * @param expectedOffice expected
      */
     public void equals(final Office expectedOffice) {
+      LOGGER.info(String.format(
+          "Сравнение офиса\nACTUAL:\n'%s'\nEXPECTED:\n'%s'",
+          describeBusinessObject(this),
+          describeBusinessObject(expectedOffice)));
       final var softly = new SoftAssertions();
       softly.assertThat(this.getPid())
           .as("Проверка 'Pid'")
@@ -436,18 +443,18 @@ public class Offices extends AbstractBusinessObject {
       softly.assertThat(this.getStatusCB())
           .as("Проверка 'StatusCB'")
           .isEqualTo(expectedOffice.getStatusCB());
-      softly.assertThat(0)
+      softly.assertThat(this.getBranchID())
           .as("Проверка 'branchID'")
-          .isEqualTo(expectedOffice.getBranchID());
-      softly.assertThat(0)
+          .isEqualTo(0);
+      softly.assertThat(this.getUseInCosmo())
           .as("Проверка 'useInCosmo'")
-          .isEqualTo(expectedOffice.getUseInCosmo());
-      softly.assertThat(0)
+          .isEqualTo(0);
+      softly.assertThat(this.getIsOnReconstruction())
           .as("Проверка 'isOnReconstruction'")
-          .isEqualTo(expectedOffice.getIsOnReconstruction());
-      softly.assertThat(0)
+          .isEqualTo(0);
+      softly.assertThat(this.getParking())
           .as("Проверка 'parking'")
-          .isEqualTo(expectedOffice.getParking());
+          .isEqualTo(0);
       softly.assertAll();
     }
 

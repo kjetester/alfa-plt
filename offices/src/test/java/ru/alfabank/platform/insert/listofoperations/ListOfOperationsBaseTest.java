@@ -6,7 +6,6 @@ import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.DataProvider;
 import ru.alfabank.platform.BaseTest;
 import ru.alfabank.platform.businessobjects.offices.Offices;
@@ -17,11 +16,12 @@ public class ListOfOperationsBaseTest extends BaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
   public Object[][] listOfOperationsPositiveTestDataProvider() {
-    return new Object[][] {
+    return new Object[][]{
         {
             "listOfOperations == null",
             new Offices(
@@ -51,6 +51,68 @@ public class ListOfOperationsBaseTest extends BaseTest {
             )
         },
         {
+            "listOfOperations == different name",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setListOfOperations(
+                            List.of(new Operation(
+                                "10.1GiveSurety",
+                                randomAlphanumeric(300),
+                                randomAlphanumeric(100),
+                                randomAlphanumeric(300))
+                            )
+                        ).build()
+                )
+            )
+        },
+        {
+            "listOfOperations.codeCB == null\n"
+                + "&& listOfOperations.categoryCB == null",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setListOfOperations(
+                            List.of(new Operation(
+                                "10.1GiveSurety",
+                                randomAlphanumeric(300),
+                                null,
+                                null)
+                            )
+                        ).build()
+                )
+            )
+        },
+        {
+            "listOfOperations.codeCB.length == 0\n"
+                + "&& listOfOperations.categoryCB.length == 0",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setListOfOperations(
+                            List.of(new Operation(
+                                "10.1GiveSurety",
+                                randomAlphanumeric(300),
+                                randomAlphanumeric(0),
+                                randomAlphanumeric(0))
+                            )
+                        ).build()
+                )
+            )
+        },
+        {
             "listOfOperations == ALL",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
@@ -74,47 +136,27 @@ public class ListOfOperationsBaseTest extends BaseTest {
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
                         .setListOfOperations(List.of(new Operation(
-                            "random_code_1",
-                            "random_name_1",
-                            "random_codeCB_1",
-                            "random_categoryCB_1")))
+                            randomAlphanumeric(15),
+                            randomAlphanumeric(300),
+                            randomAlphanumeric(100),
+                            randomAlphanumeric(300))))
                         .build()
                 )
             )
-        },
-        {
-            "listOfOperations == different name",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setListOfOperations(
-                            List.of(new Operation(
-                                "10.1GiveSurety",
-                                null,
-                                "random_codeCB_1",
-                                "random_categoryCB_1")
-                            )
-                        ).build()
-                )
-            ),
-            List.of("name", "must not be blank")
         },
     };
   }
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
   public Object[][] listOfOperationsNegativeTestDataProvider() {
-    return new Object[][] {
-      {
-        "listOfOperations.name.length == 0",
+    return new Object[][]{
+        {
+            "listOfOperations.code == null",
             new Offices(
                 LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
                 List.of(
@@ -124,16 +166,121 @@ public class ListOfOperationsBaseTest extends BaseTest {
                         .setMnemonic(randomAlphanumeric(4))
                         .setListOfOperations(
                             List.of(new Operation(
-                                "10.1GiveSurety",
-                                "",
-                                "random_codeCB_1",
-                                "random_categoryCB_1")
+                                null,
+                                randomAlphanumeric(300),
+                                randomAlphanumeric(100),
+                                randomAlphanumeric(300))
                             )
                         ).build()
                 )
             ),
-          List.of("name", "must not be blank")
-      }
+            List.of("code", "must not be blank")
+        },
+        {
+            "listOfOperations.code.length == 0",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setListOfOperations(
+                            List.of(new Operation(
+                                randomAlphanumeric(0),
+                                randomAlphanumeric(300),
+                                randomAlphanumeric(100),
+                                randomAlphanumeric(300))
+                            )
+                        ).build()
+                )
+            ),
+            List.of("code", "must not be blank")
+        },
+        {
+            "listOfOperations.code.length > 15",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setListOfOperations(
+                            List.of(new Operation(
+                                randomAlphanumeric(16),
+                                randomAlphanumeric(300),
+                                randomAlphanumeric(100),
+                                randomAlphanumeric(300))
+                            )
+                        ).build()
+                )
+            ),
+            List.of("code", "length must be between 0 and 15")
+        },
+        {
+            "listOfOperations.name.length == 0",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setListOfOperations(
+                            List.of(new Operation(
+                                randomAlphanumeric(15),
+                                randomAlphanumeric(0),
+                                randomAlphanumeric(100),
+                                randomAlphanumeric(300))
+                            )
+                        ).build()
+                )
+            ),
+            List.of("name", "must not be blank")
+        },
+        {
+            "listOfOperations.name == null",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setListOfOperations(
+                            List.of(new Operation(
+                                randomAlphanumeric(15),
+                                null,
+                                randomAlphanumeric(100),
+                                randomAlphanumeric(300))
+                            )
+                        ).build()
+                )
+            ),
+            List.of("name", "must not be blank")
+        },
+        {
+            "listOfOperations.name.length > 300",
+            new Offices(
+                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
+                List.of(
+                    new Office.Builder()
+                        .using(BASE_OFFICE)
+                        .setPid(randomNumeric(4))
+                        .setMnemonic(randomAlphanumeric(4))
+                        .setListOfOperations(
+                            List.of(new Operation(
+                                randomAlphanumeric(15),
+                                randomAlphanumeric(301),
+                                randomAlphanumeric(100),
+                                randomAlphanumeric(300))
+                            )
+                        ).build()
+                )
+            ),
+            List.of("name", "length must be between 0 and 300")
+        },
     };
   }
 }

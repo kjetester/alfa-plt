@@ -17,16 +17,14 @@ public class WrapperTest extends WrapperBaseTest {
   }
 
   @Test(dataProvider = "wrapperPositiveTestDataProvider")
-  public void wrapperPositiveTest(@ParameterKey("Test case")
-                                    final String testCase,
+  public void wrapperPositiveTest(@ParameterKey("Test case") final String testCase,
                                   final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
     STEP.checkIfOfficesWereSaved(offices);
   }
 
   @Test(dataProvider = "wrapperNegativeTestDataProvider", priority = 1)
-  public void wrapperNegativeTest(@ParameterKey("Test case")
-                                    final String testCase,
+  public void wrapperNegativeTest(@ParameterKey("Test case") final String testCase,
                                   final Offices offices,
                                   final List<String> expectedErrorMessagesList) {
     STEP.sendMessageToInQueue(offices);

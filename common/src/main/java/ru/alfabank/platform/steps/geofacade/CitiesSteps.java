@@ -1,6 +1,8 @@
 package ru.alfabank.platform.steps.geofacade;
 
 import static io.restassured.RestAssured.given;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.Response;
 import java.util.List;
@@ -46,10 +48,11 @@ public class CitiesSteps extends BaseSteps {
     LOGGER.info("Выполняю запрос на получение мета по городам:\n"
         + queryParams.toString());
     final var response = given()
-        .spec(getGeoFacadeCitySpec())
+        .spec(getCitySpec())
         .queryParams(queryParams)
         .get();
     describeResponse(LOGGER, response);
+    assertThat(response.statusCode()).isEqualTo(SC_OK);
     return response;
   }
 }

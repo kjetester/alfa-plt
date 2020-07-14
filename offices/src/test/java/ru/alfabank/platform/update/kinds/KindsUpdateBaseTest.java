@@ -1,8 +1,5 @@
 package ru.alfabank.platform.update.kinds;
 
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
-import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
-
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -16,6 +13,7 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
@@ -41,16 +39,6 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
                             Kind.ERR_KIND))
                         .build()
                 )
-            ),
-            List.of(
-                Kind.Code.RETAIL,
-                Kind.Code.VIP,
-                Kind.Code.VIPMNGR,
-                Kind.Code.VIP_CLIENT,
-                Kind.Code.MORTGAGE,
-                Kind.Code.SME,
-                Kind.Code.CORPORATE,
-                Kind.Code.ACLUB
             )
         },
         {
@@ -63,8 +51,7 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
                         .setKinds(List.of(Kind.RETAIL_STANDARD))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.RETAIL)
+            )
         },
         {
             "Kinds == retailVip",
@@ -76,8 +63,7 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
                         .setKinds(List.of(Kind.RETAIL_VIP))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.RETAIL, Kind.Code.VIP)
+            )
         },
         {
             "Kinds == vip",
@@ -89,8 +75,7 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
                         .setKinds(List.of(Kind.VIP))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.RETAIL, Kind.Code.VIP, Kind.Code.VIPMNGR, Kind.Code.VIP_CLIENT)
+            )
         },
         {
             "Kinds == retailCIK",
@@ -102,8 +87,7 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
                         .setKinds(List.of(Kind.RETAIL_CIK))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.RETAIL, Kind.Code.MORTGAGE)
+            )
         },
         {
             "Kinds == MMB",
@@ -115,8 +99,7 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
                         .setKinds(List.of(Kind.MMB))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.SME)
+            )
         },
         {
             "Kinds == SB",
@@ -128,8 +111,7 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
                         .setKinds(List.of(Kind.SB))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.CORPORATE)
+            )
         },
         {
             "Kinds == CIB",
@@ -141,8 +123,7 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
                         .setKinds(List.of(Kind.CIB))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.CORPORATE)
+            )
         },
         {
             "Kinds == new",
@@ -154,8 +135,7 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
                         .setKinds(List.of(Kind.NEW))
                         .build()
                 )
-            ),
-            List.of()
+            )
         },
         {
             "Kinds == retailAclub",
@@ -167,8 +147,7 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
                         .setKinds(List.of(Kind.RETAIL_ACLUB))
                         .build()
                 )
-            ),
-            List.of(Kind.Code.ACLUB, Kind.Code.VIP)
+            )
         },
         {
             "Kinds == undefined value",
@@ -180,14 +159,14 @@ public class KindsUpdateBaseTest extends UpdateBaseTest {
                         .setKinds(List.of(Kind.ERR_KIND))
                         .build()
                 )
-            ),
-            List.of()
+            )
         }
     };
   }
 
   /**
    * Data Provider.
+   *
    * @return test data
    */
   @DataProvider
