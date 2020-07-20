@@ -17,6 +17,7 @@ public class MetroSteps extends BaseSteps {
 
   /**
    * Get nearest metro station name in 2 km.
+   *
    * @param lat lat
    * @param lon lon
    * @return metro station
@@ -29,7 +30,7 @@ public class MetroSteps extends BaseSteps {
             "lat", lat,
             "lon", lon,
             "radius", 2000))
-        .as(Metro[].class))
+            .as(Metro[].class))
         .min(Comparator.comparing(Metro::getDistance))
         .orElse(new Metro.Builder().setName(null).build()).getName();
   }
@@ -37,7 +38,7 @@ public class MetroSteps extends BaseSteps {
   private Response getMetro(final Map<String, ?> queryParams) {
     LOGGER.info("Выполняю запрос на получение списка станций метро:\n"
         + queryParams.toString());
-    final var response =  given()
+    final var response = given()
         .spec(getMetroSpec())
         .queryParams(queryParams)
         .get();

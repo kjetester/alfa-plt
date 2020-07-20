@@ -6,14 +6,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.enums.Device.all;
 import static ru.alfabank.platform.businessobjects.enums.Device.desktop;
 import static ru.alfabank.platform.businessobjects.enums.Device.mobile;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.CREDIT_CARD_PRODUCT_TYPE;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.COMMON_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.CREDIT_CARD_PRODUCT_TYPE;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.DEBIT_CARD_PRODUCT_TYPE;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.UNLISTED_PRODUCT_TYPE;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.INVEST_PRODUCT_TYPE;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.MORTGAGE_PRODUCT_TYPE;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL_PRODUCT_TYPE;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.SME_PRODUCT_TYPE;
+import static ru.alfabank.platform.businessobjects.enums.ProductType.UNLISTED_PRODUCT_TYPE;
 import static ru.alfabank.platform.businessobjects.enums.Status.DISABLED;
 import static ru.alfabank.platform.businessobjects.enums.Team.COMMON_TEAM;
 import static ru.alfabank.platform.businessobjects.enums.Team.CREDIT_CARD_TEAM;
@@ -22,7 +22,6 @@ import static ru.alfabank.platform.businessobjects.enums.Team.INVEST_TEAM;
 import static ru.alfabank.platform.businessobjects.enums.Team.MORTGAGE_TEAM;
 import static ru.alfabank.platform.businessobjects.enums.Team.PIL_TEAM;
 import static ru.alfabank.platform.businessobjects.enums.Team.SME_TEAM;
-import static ru.alfabank.platform.businessobjects.enums.Team.UNCLAIMED_TEAM;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
 import com.epam.reportportal.annotations.ParameterKey;
@@ -30,7 +29,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.TestNGException;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.alfabank.platform.BaseTest;
@@ -38,84 +36,8 @@ import ru.alfabank.platform.businessobjects.abtests.Experiment;
 import ru.alfabank.platform.businessobjects.abtests.Experiment.Builder;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ProductType;
-import ru.alfabank.platform.businessobjects.enums.Team;
 
 public class CreateExperimentTest extends BaseTest {
-
-  private Integer allTeamsPageId;
-  private Integer creditCardPageId;
-  private Integer pilPageId;
-  private Integer debitCardPageId;
-  private Integer mortgagePageId;
-  private Integer smePageId;
-  private Integer investPageId;
-  private Integer commonPageId;
-  private Integer unclaimedPageId;
-
-  @BeforeTest
-  public void createPages() {
-    allTeamsPageId = PAGES_STEPS.createPage(
-        getValidWidgetDateFrom(),
-        getValidExperimentEndDatePlusWeek(),
-        true,
-        List.of(
-            CREDIT_CARD_TEAM,
-            PIL_TEAM,
-            DEBIT_CARD_TEAM,
-            MORTGAGE_TEAM,
-            SME_TEAM,
-            INVEST_TEAM,
-            COMMON_TEAM),
-        getContentManager());
-    creditCardPageId = PAGES_STEPS.createPage(
-        getValidWidgetDateFrom(),
-        getValidExperimentEndDatePlusWeek(),
-        true,
-        List.of(CREDIT_CARD_TEAM),
-        getContentManager());
-    pilPageId = PAGES_STEPS.createPage(
-        getValidWidgetDateFrom(),
-        getValidExperimentEndDatePlusWeek(),
-        true,
-        List.of(PIL_TEAM),
-        getContentManager());
-    debitCardPageId = PAGES_STEPS.createPage(
-        getValidWidgetDateFrom(),
-        getValidExperimentEndDatePlusWeek(),
-        true,
-        List.of(DEBIT_CARD_TEAM),
-        getContentManager());
-    mortgagePageId = PAGES_STEPS.createPage(
-        getValidWidgetDateFrom(),
-        getValidExperimentEndDatePlusWeek(),
-        true,
-        List.of(MORTGAGE_TEAM),
-        getContentManager());
-    smePageId = PAGES_STEPS.createPage(
-        getValidWidgetDateFrom(),
-        getValidExperimentEndDatePlusWeek(),
-        true,
-        List.of(SME_TEAM),
-        getContentManager());
-    investPageId = PAGES_STEPS.createPage(
-        getValidWidgetDateFrom(),
-        getValidExperimentEndDatePlusWeek(),
-        true,
-        List.of(INVEST_TEAM),
-        getContentManager());
-    commonPageId = PAGES_STEPS.createPage(
-        getValidWidgetDateFrom(),
-        getValidExperimentEndDatePlusWeek(),
-        true,
-        List.of(COMMON_TEAM),
-        getContentManager());
-    unclaimedPageId = PAGES_STEPS.createPage(
-        getValidWidgetDateFrom(),
-        getValidExperimentEndDatePlusWeek(),
-        true,
-        null,
-        getContentManager());
-  }
 
   @Test(
       description = "Позитивный тест создания нового эксперимента",
@@ -186,6 +108,67 @@ public class CreateExperimentTest extends BaseTest {
    */
   @DataProvider(name = "Positive data provider")
   public Object[][] positiveDataProvider() {
+    final var allTeamsPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(
+            CREDIT_CARD_TEAM,
+            PIL_TEAM,
+            DEBIT_CARD_TEAM,
+            MORTGAGE_TEAM,
+            SME_TEAM,
+            INVEST_TEAM,
+            COMMON_TEAM),
+        getContentManager());
+    final var creditCardPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(CREDIT_CARD_TEAM),
+        getContentManager());
+    final var pilPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(PIL_TEAM),
+        getContentManager());
+    final var debitCardPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(DEBIT_CARD_TEAM),
+        getContentManager());
+    final var mortgagePageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(MORTGAGE_TEAM),
+        getContentManager());
+    final var smePageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(SME_TEAM),
+        getContentManager());
+    final var investPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(INVEST_TEAM),
+        getContentManager());
+    final var commonPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        List.of(COMMON_TEAM),
+        getContentManager());
+    final var unclaimedPageId = PAGES_STEPS.createPage(
+        getValidWidgetDateFrom(),
+        getValidExperimentEndDatePlusWeek(),
+        true,
+        null,
+        getContentManager());
     return new Object[][]{
         {
             desktop,

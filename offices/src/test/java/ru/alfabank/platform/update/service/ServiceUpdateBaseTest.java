@@ -29,26 +29,29 @@ public class ServiceUpdateBaseTest extends UpdateBaseTest {
                     new Office.Builder()
                         .using(BASE_OFFICE)
                         .setServices(List.of(
-                            new Service(POINT_ONE.getCode(), POINT_ONE.getName()),
-                            new Service(POINT_TWO.getCode(), POINT_TWO.getName()),
-                            new Service(SERVICE_OFFICE.getCode(), SERVICE_OFFICE.getName()),
-                            new Service(CLIENT_OFFICE.getCode(), CLIENT_OFFICE.getName()),
-                            new Service(SAFE.getCode(), SAFE.getName()),
-                            new Service(DISABLED.getCode(), DISABLED.getName()),
-                            new Service(CASH_CHF.getCode(), CASH_CHF.getName()),
-                            new Service(CASH_GBP.getCode(), CASH_GBP.getName()),
-                            new Service(CASH_MAS.getCode(), CASH_MAS.getName()),
-                            new Service(CASH_OP.getCode(), CASH_OP.getName()),
-                            new Service(MOMENT_CARD.getCode(), MOMENT_CARD.getName()),
-                            new Service(WIFI.getCode(), WIFI.getName()),
-                            new Service(PARTNER.getCode(), PARTNER.getName()),
-                            new Service(OVERDRAFT.getCode(), OVERDRAFT.getName()),
-                            new Service(OFFICE_MB_IP.getCode(), OFFICE_MB_IP.getName()),
-                            new Service(PILOT.getCode(), PILOT.getName()),
-                            new Service(DC.getCode(), DC.getName()),
-                            new Service(CC.getCode(), CC.getName()),
-                            new Service(PIL.getCode(), PIL.getName()),
-                            new Service(ERR.getCode(), DISABLED.getName())))
+                            new Service(POINT_ONE_SERVICE.getCode(), POINT_ONE_SERVICE.getName()),
+                            new Service(POINT_TWO_SERVICE.getCode(), POINT_TWO_SERVICE.getName()),
+                            new Service(SERVICE_OFFICE_SERVICE.getCode(), SERVICE_OFFICE_SERVICE.getName()),
+                            new Service(CLIENT_OFFICE_SERVICE.getCode(), CLIENT_OFFICE_SERVICE.getName()),
+                            new Service(CASH_MAS_SERVICE.getCode(), CASH_MAS_SERVICE.getName()),
+                            new Service(SAFE_SERVICE.getCode(), SAFE_SERVICE.getName()),
+                            new Service(DISABLED_SERVICE.getCode(), DISABLED_SERVICE.getName()),
+                            new Service(CASH_GBP_SERVICE.getCode(), CASH_GBP_SERVICE.getName()),
+                            new Service(CASH_CHF_SERVICE.getCode(), CASH_CHF_SERVICE.getName()),
+                            new Service(MOMENT_CARD_SERVICE.getCode(), MOMENT_CARD_SERVICE.getName()),
+                            new Service(WIFI_SERVICE.getCode(), WIFI_SERVICE.getName()),
+                            new Service(PARTNER_SERVICE.getCode(), PARTNER_SERVICE.getName()),
+                            new Service(OVERDRAFT_SERVICE.getCode(), OVERDRAFT_SERVICE.getName()),
+                            new Service(CASH_OP_SERVICE.getCode(), CASH_OP_SERVICE.getName()),
+                            new Service(OFFICE_MB_IP_SERVICE.getCode(), OFFICE_MB_IP_SERVICE.getName()),
+                            new Service(MORTGAGE_SERVICE.getCode(), MORTGAGE_SERVICE.getName()),
+                            new Service(DC_SERVICE.getCode(), DC_SERVICE.getName()),
+                            new Service(CC_SERVICE.getCode(), CC_SERVICE.getName()),
+                            new Service(PIL_SERVICE.getCode(), PIL_SERVICE.getName()),
+                            new Service(INVESTMENT_SERVICE.getCode(), INVESTMENT_SERVICE.getName()),
+                            new Service(SHARE_SERVICE.getCode(), SHARE_SERVICE.getName()),
+                            new Service(COURIER_SERVICE.getCode(), COURIER_SERVICE.getName()),
+                            new Service(ERR_SERVICE.getCode(), DISABLED_SERVICE.getName())))
                         .build()
                 )
             )
@@ -61,7 +64,7 @@ public class ServiceUpdateBaseTest extends UpdateBaseTest {
                     new Office.Builder()
                         .using(BASE_OFFICE)
                         .setServices(List.of(
-                            new Service(DISABLED.getCode(), DISABLED.getName())))
+                            new Service(DISABLED_SERVICE.getCode(), DISABLED_SERVICE.getName())))
                         .build()
                 )
             )
@@ -74,7 +77,7 @@ public class ServiceUpdateBaseTest extends UpdateBaseTest {
                     new Office.Builder()
                         .using(BASE_OFFICE)
                         .setServices(List.of(
-                            new Service(ERR.getCode(), DISABLED.getName())))
+                            new Service(ERR_SERVICE.getCode(), DISABLED_SERVICE.getName())))
                         .build()
                 )
             )
@@ -112,7 +115,7 @@ public class ServiceUpdateBaseTest extends UpdateBaseTest {
                     new Office.Builder()
                         .using(BASE_OFFICE)
                         .setServices(List.of(
-                            new Service(null, DISABLED.getName())))
+                            new Service(null, DISABLED_SERVICE.getName())))
                         .build()
                 )
             ),
@@ -126,7 +129,7 @@ public class ServiceUpdateBaseTest extends UpdateBaseTest {
                     new Office.Builder()
                         .using(BASE_OFFICE)
                         .setServices(List.of(
-                            new Service("", DISABLED.getName())))
+                            new Service("", DISABLED_SERVICE.getName())))
                         .build()
                 )
             ),
@@ -140,7 +143,7 @@ public class ServiceUpdateBaseTest extends UpdateBaseTest {
                     new Office.Builder()
                         .using(BASE_OFFICE)
                         .setServices(List.of(
-                            new Service(DISABLED.getCode(), null)))
+                            new Service(DISABLED_SERVICE.getCode(), null)))
                         .build()
                 )
             ),
@@ -154,7 +157,7 @@ public class ServiceUpdateBaseTest extends UpdateBaseTest {
                     new Office.Builder()
                         .using(BASE_OFFICE)
                         .setServices(List.of(
-                            new Service(DISABLED.getCode(), "")))
+                            new Service(DISABLED_SERVICE.getCode(), "")))
                         .build()
                 )
             ),

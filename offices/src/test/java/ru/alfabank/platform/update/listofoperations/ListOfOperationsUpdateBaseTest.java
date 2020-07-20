@@ -121,10 +121,10 @@ public class ListOfOperationsUpdateBaseTest extends UpdateBaseTest {
                     new Office.Builder()
                         .using(BASE_OFFICE)
                         .setListOfOperations(List.of(new Operation(
-                            randomAlphanumeric(15),
-                            randomAlphanumeric(300),
-                            randomAlphanumeric(100),
-                            randomAlphanumeric(300))))
+                            "random_code_1",
+                            "random_name_1",
+                            "random_codeCB_1",
+                            "random_categoryCB_1")))
                         .build()
                 )
             )
@@ -195,7 +195,7 @@ public class ListOfOperationsUpdateBaseTest extends UpdateBaseTest {
                         ).build()
                 )
             ),
-            List.of("code", "length must be between 0 and 15")
+            List.of("code", "size must be between 1 and 15")
         },
         {
             "listOfOperations.name.length == 0",
@@ -252,7 +252,7 @@ public class ListOfOperationsUpdateBaseTest extends UpdateBaseTest {
                         ).build()
                 )
             ),
-            List.of("name", "length must be between 0 and 300")
+            List.of("name", "size must be between 1 and 300")
         },
     };
   }

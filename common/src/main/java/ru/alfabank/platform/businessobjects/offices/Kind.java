@@ -22,15 +22,15 @@ import org.testng.TestNGException;
 @JsonFormat(shape = STRING)
 public enum Kind {
 
-  RETAIL_STANDARD("retailStandart"),
-  RETAIL_VIP("retailVip"),
-  VIP("vip"),
-  RETAIL_CIK("retailCIK"),
-  MMB("MMB"),
-  SB("SB"),
-  CIB("CIB"),
-  NEW("new"),
-  RETAIL_ACLUB("retailAclub"),
+  RETAIL_STANDARD_KIND("retailStandart"),
+  RETAIL_VIP_KIND("retailVip"),
+  VIP_KIND("vip"),
+  RETAIL_CIK_KIND("retailCIK"),
+  MMB_KIND("MMB"),
+  SB_KIND("SB"),
+  CIB_KIND("CIB"),
+  NEW_KIND("new"),
+  RETAIL_ACLUB_KIND("retailAclub"),
   ERR_KIND("err"),
   EMPTY_KIND("");
 
@@ -78,6 +78,7 @@ public enum Kind {
 
     /**
      * Find value by code.
+     *
      * @param code code
      * @return value
      */
@@ -85,8 +86,9 @@ public enum Kind {
     public static Code findValue(final String code) {
       return Arrays.stream(Code.values()).filter(c ->
           c.value.equals(code)).findFirst().orElseThrow(() ->
-          new TestNGException(
-              String.format("Обнаружен невалидный DepartmentFeature.Code: '%s'", code)));
+          new TestNGException(String.format(
+              "Обнаружен невалидный (kind.code) DepartmentFeature.Code: '%s'",
+              code)));
     }
   }
 }

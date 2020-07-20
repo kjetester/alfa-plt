@@ -11,6 +11,7 @@ import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.descri
 import static ru.alfabank.platform.businessobjects.offices.CbCodeName.OKVKU;
 import static ru.alfabank.platform.helpers.DataBaseHelper.getConnection;
 
+import com.epam.reportportal.annotations.Step;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.response.Response;
 import java.io.File;
@@ -35,6 +36,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.testng.TestNGException;
 import ru.alfabank.platform.businessobjects.cities.Cities.City;
 import ru.alfabank.platform.businessobjects.offices.CbCodeName;
+import ru.alfabank.platform.businessobjects.offices.FileImportResponse;
 import ru.alfabank.platform.businessobjects.offices.Kind.Code;
 import ru.alfabank.platform.businessobjects.offices.Offices;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office;
@@ -51,7 +53,7 @@ public class OfficesSteps extends BaseSteps {
   private static final Logger LOGGER = LogManager.getLogger(OfficesSteps.class);
   private static final File INIT_FILE = new File("src/test/resources/uws.json");
 
-  private static Offices expectedOffices;
+  public static Offices expectedOffices;
 
   public void cleanUpDataBase() {
     final var query1 = """
@@ -83,7 +85,7 @@ public class OfficesSteps extends BaseSteps {
 
   public void ensureErrMessageExistsAndCheckItsContent(final List<String> expectedErrorMessagesList) {
     LOGGER.info("Проверяю наличие сообщения в DLQ и его контент");
-    final var response = checkErrQueueMessage();
+    final var response = checkErrQueueMessage(15);
     assertThat(response.getStatusCode()).as("Проверка наличия сообщения в DLQ").isEqualTo(SC_OK);
     final var errMsg = response.getBody().jsonPath().getString("errorMessages");
     assertThat(errMsg).contains(expectedErrorMessagesList);
@@ -105,6 +107,8 @@ public class OfficesSteps extends BaseSteps {
     if (offices.getOffices() != null) {
       for (Office office : offices.getOffices()) {
         if (office != null) {
+          LOGGER.info(String.format("Проверка отсутствия офиса с 'pid=%s' и 'mnemonic=%s' в БД",
+              office.getPid(), office.getMnemonic()));
           checkOfficeExistenceInDataBase(office, false);
         }
       }
@@ -114,6 +118,8 @@ public class OfficesSteps extends BaseSteps {
   public void checkIfOfficesWereSaved(final Offices offices) {
     for (Office office : offices.getOffices()) {
       if (office != null) {
+        LOGGER.info(String.format("Проверка нилачия офиса с 'pid=%s' и 'mnemonic=%s' в БД",
+            office.getPid(), office.getMnemonic()));
         checkOfficeExistenceInDataBase(office, true);
       }
     }
@@ -125,6 +131,7 @@ public class OfficesSteps extends BaseSteps {
     return officesList.get(0);
   }
 
+  @Step
   public void checkOfficeMapping(final Offices expectedOfficesList) {
     expectedOfficesList.getOffices().stream()
         .filter(actualOffice -> actualOffice.getStatusCB() != OKVKU)
@@ -132,11 +139,11 @@ public class OfficesSteps extends BaseSteps {
           final var actualOfficesList = getOfficesListFromDataBase(
               expectedOffice.getPid(),
               expectedOffice.getMnemonic());
-      assertThat(actualOfficesList.size())
-          .as("Проверка, что искомый офис сохранен и только в одном экземпляре")
-          .isEqualTo(1);
-      actualOfficesList.forEach(actualOffice -> actualOffice.equals(expectedOffice));
-    });
+          assertThat(actualOfficesList.size())
+              .as("Проверка, что искомый офис сохранен и только в одном экземпляре")
+              .isEqualTo(1);
+          actualOfficesList.forEach(actualOffice -> actualOffice.equals(expectedOffice));
+        });
   }
 
   public void checkOfficeWasNotChanged(final Office office) {
@@ -144,91 +151,108 @@ public class OfficesSteps extends BaseSteps {
   }
 
   public ArrayList<Code> getOfficeKindsCodesFromDataBase(final Office office) {
-    return getCodesFromDataBase(office.getPid(), office.getMnemonic());
+    return getKindCodesFromDataBase(office.getPid(), office.getMnemonic());
   }
 
+  @Step
   public void checkKindsMapping(final Offices offices) {
-    LOGGER.info("Проверяю маппинг связей kinds в БД");
+    LOGGER.info("Проверяю маппинг связей 'kinds' в БД");
     offices.getOffices().forEach(office -> {
-      final var actualCodesList = getCodesFromDataBase(office.getPid(), office.getMnemonic());
-      final var expectedCodesSet = new HashSet<Code>();
+      final var actualKindCodesList = getKindCodesFromDataBase(office.getPid(), office.getMnemonic());
+      final var expectedKindCodesSet = new HashSet<Code>();
       office.getKinds().forEach(kind -> {
         switch (kind) {
-          case RETAIL_STANDARD -> expectedCodesSet.add(Code.RETAIL);
-          case RETAIL_VIP -> {
-            expectedCodesSet.add(Code.RETAIL);
-            expectedCodesSet.add(Code.VIP);
+          case RETAIL_STANDARD_KIND -> expectedKindCodesSet.add(Code.RETAIL);
+          case RETAIL_VIP_KIND -> {
+            expectedKindCodesSet.add(Code.RETAIL);
+            expectedKindCodesSet.add(Code.VIP);
           }
-          case VIP -> {
-            expectedCodesSet.add(Code.RETAIL);
-            expectedCodesSet.add(Code.VIP);
-            expectedCodesSet.add(Code.VIPMNGR);
-            expectedCodesSet.add(Code.VIP_CLIENT);
+          case VIP_KIND -> {
+            expectedKindCodesSet.add(Code.RETAIL);
+            expectedKindCodesSet.add(Code.VIP);
+            expectedKindCodesSet.add(Code.VIPMNGR);
+            expectedKindCodesSet.add(Code.VIP_CLIENT);
           }
-          case RETAIL_CIK -> {
-            expectedCodesSet.add(Code.RETAIL);
-            expectedCodesSet.add(Code.MORTGAGE);
+          case RETAIL_CIK_KIND -> {
+            expectedKindCodesSet.add(Code.RETAIL);
+            expectedKindCodesSet.add(Code.MORTGAGE);
           }
-          case MMB -> expectedCodesSet.add(Code.SME);
-          case SB -> expectedCodesSet.add(Code.CORPORATE);
-          case CIB -> expectedCodesSet.add(Code.CORPORATE);
-          case RETAIL_ACLUB -> {
-            expectedCodesSet.add(Code.VIP);
-            expectedCodesSet.add(Code.ACLUB);
+          case MMB_KIND -> expectedKindCodesSet.add(Code.SME);
+          case SB_KIND, CIB_KIND -> expectedKindCodesSet.add(Code.CORPORATE);
+          case RETAIL_ACLUB_KIND -> {
+            expectedKindCodesSet.add(Code.VIP);
+            expectedKindCodesSet.add(Code.ACLUB);
           }
         }
       });
-      final var expectedCodesList = new ArrayList<>(expectedCodesSet);
+      final var expectedCodesList = new ArrayList<>(expectedKindCodesSet);
       expectedCodesList.sort(naturalOrder());
       LOGGER.info(String.format(
           "Проверяю соответствие actual '%s' и expectedCodesList '%s'",
-          actualCodesList,
-          expectedCodesSet));
-      assertThat(actualCodesList).isEqualTo(expectedCodesList);
+          actualKindCodesList,
+          expectedKindCodesSet));
+      assertThat(actualKindCodesList).isEqualTo(expectedCodesList);
     });
   }
 
+  @Step
   public void checkKindsWereNotChanged(final Office office, final ArrayList<Code> expectedCodesList) {
     LOGGER.info("Проверяю маппинг связей kinds в БД");
-      final var actual = getCodesFromDataBase(office.getPid(), office.getMnemonic());
-      final var expected = new ArrayList<>(expectedCodesList);
-      expected.sort(naturalOrder());
-      LOGGER.info(String.format(
-          "Проверяю соответствие actual '%s' и expected '%s'",
-          actual,
-          expectedCodesList));
-      assertThat(actual).isEqualTo(expected);
+    final var actual = getKindCodesFromDataBase(office.getPid(), office.getMnemonic());
+    final var expected = new ArrayList<>(expectedCodesList);
+    expected.sort(naturalOrder());
+    LOGGER.info(String.format(
+        "Проверяю соответствие actual '%s' и expected '%s'",
+        actual,
+        expectedCodesList));
+    assertThat(actual).isEqualTo(expected);
   }
 
+  @Step
   public void checkServicesMapping(final Offices offices) {
-    LOGGER.info("Проверяю маппинг связей services в БД");
+    LOGGER.info("Проверяю маппинг связей 'services' в БД");
     for (Office office : offices.getOffices()) {
       final ArrayList<ServiceCodeName> actualServiceCodesList = getServiceCodesListFromDataBase(office);
       final ArrayList<ServiceCodeName> expectedServiceCodesList = getServiceCodeNames(office);
-        LOGGER.info(String.format(
-            "Проверяю соответствие actual '%s' и expected '%s'",
-            actualServiceCodesList, expectedServiceCodesList));
-        assertThat(actualServiceCodesList).isEqualTo(expectedServiceCodesList);
+      LOGGER.info(String.format(
+          "Проверяю соответствие actual '%s' и expected '%s'",
+          actualServiceCodesList, expectedServiceCodesList));
+      assertThat(actualServiceCodesList).isEqualTo(expectedServiceCodesList);
     }
   }
 
+  @Step
+  public void checkServiceCodesListWasNotChanged(final Office office,
+                                                 final ArrayList<ServiceCodeName> expectedServiceCodesList) {
+    LOGGER.info("Проверяю маппинг связей services в БД");
+    final ArrayList<ServiceCodeName> actualServiceCodesList = getServiceCodesListFromDataBase(office);
+    LOGGER.info(String.format(
+        "Проверяю соответствие actual '%s' и expected '%s'",
+        actualServiceCodesList, expectedServiceCodesList));
+    assertThat(actualServiceCodesList).isEqualTo(expectedServiceCodesList);
+  }
+
+  @Step
   public ArrayList<ServiceCodeName> getServiceCodesListFromDataBase(final Office office) {
+    return getCodesListFromDataBase(String.format("""
+            SELECT dept.DepartmentID,
+                   feat.code,
+                   feat.Description
+              FROM alfabank_ru_old.Department dept
+              JOIN alfabank_ru_old.DepartmentToDepartmentFeature d2df
+                ON dept.DepartmentID = d2df.DepartmentID
+              JOIN alfabank_ru_old.DepartmentFeature feat
+                ON d2df.DepartmentFeatureID = feat.DepartmentFeatureID
+             WHERE dept.pid = '%s'
+               AND dept.MnemonicCode = '%s';""",
+        office.getPid(), office.getMnemonic()));
+  }
+
+  private ArrayList<ServiceCodeName> getCodesListFromDataBase(final String query) {
     final var actualServiceCodesList = new ArrayList<ServiceCodeName>();
     try {
-      LOGGER.info("Ожидание обработки сообщения - 5 сек.");
+      LOGGER.debug("Ожидание обработки сообщения - 5 сек.");
       TimeUnit.SECONDS.sleep(5);
-      final var query = String.format("""
-              SELECT dept.DepartmentID,
-                     feat.code,
-                     feat.Description
-                FROM alfabank_ru_old.Department dept
-                JOIN alfabank_ru_old.DepartmentToDepartmentFeature d2df
-                  ON dept.DepartmentID = d2df.DepartmentID
-                JOIN alfabank_ru_old.DepartmentFeature feat
-                  ON d2df.DepartmentFeatureID = feat.DepartmentFeatureID
-               WHERE dept.pid = '%s'
-                 AND dept.MnemonicCode = '%s';""",
-          office.getPid(), office.getMnemonic());
       LOGGER.info(String.format("Выполняю запрос в БД:\n'%s'\n", query));
       final ResultSet rs = getConnection().prepareStatement(query).executeQuery();
       while (rs.next()) {
@@ -248,21 +272,12 @@ public class OfficesSteps extends BaseSteps {
     return actualServiceCodesList;
   }
 
-  public void checkServiceCodesListWasNotChanged(final Office office,
-                                                 final ArrayList<ServiceCodeName> expectedServiceCodesList) {
-    LOGGER.info("Проверяю маппинг связей services в БД");
-    final ArrayList<ServiceCodeName> actualServiceCodesList = getServiceCodesListFromDataBase(office);
-      LOGGER.info(String.format(
-          "Проверяю соответствие actual '%s' и expected '%s'",
-          actualServiceCodesList, expectedServiceCodesList));
-      assertThat(actualServiceCodesList).isEqualTo(expectedServiceCodesList);
-  }
-
+  @Step
   public void checkListOfOperationsMapping(final Offices offices) {
     LOGGER.info("Проверяю маппинг связей ListOfOperations в БД");
-    for (Office office : offices.getOffices()) {
+    for (var office : offices.getOffices()) {
       try {
-        LOGGER.info("Ожидание обработки сообщения - 5 сек.");
+        LOGGER.debug("Ожидание обработки сообщения - 5 сек.");
         TimeUnit.SECONDS.sleep(5);
         final var query = String.format("""
                 SELECT dept.DepartmentID,
@@ -322,16 +337,17 @@ public class OfficesSteps extends BaseSteps {
     }
   }
 
+  @Step
   public void checkLocationMapping(final Offices offices) {
     for (Office office : offices.getOffices()) {
       assert office.getLocations().size() > 0;
       final var mapOfActual = getMetroNameCityIdLocationFromDataBase(office);
       final var location = office.getLocations().stream()
-            .findFirst().orElseThrow();
+          .findFirst().orElseThrow();
       final var expectedMetroName = new MetroSteps()
           .getNearestMetroNameIn2km(location.getLat(), location.getLon());
       final var expectedCityId = new CitiesSteps()
-          .getCityListWithMetaByName(List.of(location.getCity()))
+          .getCityListWithMetaByName(List.of(location.getCity().trim().replaceAll("г ", "")))
           .stream().map(City::getAjsonId).findFirst().orElse(0);
       final var expectedLocation = new Builder()
           .setLat(location.getLat())
@@ -358,21 +374,21 @@ public class OfficesSteps extends BaseSteps {
 
   public Map<String, Object> getMetroNameCityIdLocationFromDataBase(final Office office) {
     try {
-      LOGGER.info("Ожидание обработки сообщения - 5 сек.");
+      LOGGER.debug("Ожидание обработки сообщения - 5 сек.");
       TimeUnit.SECONDS.sleep(5);
       final var query = String.format("""
-            SELECT m.metroName,
-                   d.CityID,d.Latitude,
-                   d.Longitude,
-                   d.postcode,
-                   d.Region,
-                   d.Address,
-                   d.pathDescription
-              FROM alfabank_ru_old.Department d
-         LEFT JOIN alfabank_ru_old.metro m on m.metroID = d.MetroID
-             WHERE d.MnemonicCode = '%s'
-               AND d.pid = '%s';""",
-        office.getMnemonic(), office.getPid());
+                 SELECT m.metroName,
+                        d.CityID,d.Latitude,
+                        d.Longitude,
+                        d.postcode,
+                        d.Region,
+                        d.Address,
+                        d.pathDescription
+                   FROM alfabank_ru_old.Department d
+              LEFT JOIN alfabank_ru_old.metro m on m.metroID = d.MetroID
+                  WHERE d.MnemonicCode = '%s'
+                    AND d.pid = '%s';""",
+          office.getMnemonic(), office.getPid());
       final ResultSet rs;
       LOGGER.info(String.format("Выполняю запрос в БД: '%s'", query));
       rs = getConnection().prepareStatement(query).executeQuery();
@@ -408,6 +424,7 @@ public class OfficesSteps extends BaseSteps {
     checkMetroNameCityIdLocation(mapOfExpected, mapOfActual);
   }
 
+  @Step
   public void checkChangeDateTimeMapping(final Offices offices) {
     LOGGER.info("Проверяю маппинг связей ChangeDateTime в БД");
     for (Office office : offices.getOffices()) {
@@ -419,7 +436,7 @@ public class OfficesSteps extends BaseSteps {
 
   public Instant getChangedDateTimeFromDataBase(final Office office) {
     try {
-      LOGGER.info("Ожидание обработки сообщения - 5 сек.");
+      LOGGER.debug("Ожидание обработки сообщения - 5 сек.");
       TimeUnit.SECONDS.sleep(5);
       final var query = String.format("""
               SELECT dept.changed
@@ -446,9 +463,9 @@ public class OfficesSteps extends BaseSteps {
         .isCloseTo(expectedTimestamp, within(1, SECONDS));
   }
 
-  private Response checkErrQueueMessage() {
+  private Response checkErrQueueMessage(int delay) {
     try {
-      TimeUnit.SECONDS.sleep(15);
+      TimeUnit.SECONDS.sleep(delay);
     } catch (InterruptedException e) {
       LOGGER.error(e.getMessage());
       throw new TestNGException(e.toString());
@@ -502,25 +519,31 @@ public class OfficesSteps extends BaseSteps {
 
   private void ensureErrMessagesAreAbsent() {
     LOGGER.info("Проверяю отсутствие сообщения в DLQ");
-    assertThat(checkErrQueueMessage().getStatusCode())
+    assertThat(checkErrQueueMessage(15).getStatusCode()).isEqualTo(SC_NO_CONTENT);
+  }
+
+  private void ensureErrMessagesAreAbsent(int delay) {
+    LOGGER.info("Проверяю отсутствие сообщения в DLQ");
+    assertThat(checkErrQueueMessage(delay).getStatusCode())
         .as("Проверка отсутствия сообщения в DLQ")
         .isEqualTo(SC_NO_CONTENT);
   }
 
-  private ArrayList<Code> getCodesFromDataBase(final String pid, String mnemonic) {
+  private ArrayList<Code> getKindCodesFromDataBase(final String pid, String mnemonic) {
     try {
       LOGGER.info("Ожидание обработки сообщения - 5 сек.");
       TimeUnit.SECONDS.sleep(5);
       final var query = String.format("""
-                SELECT dept.DepartmentID,
-                       feat.code
-                  FROM alfabank_ru_old.Department dept
-                  JOIN alfabank_ru_old.DepartmentToDepartmentFeature d2df
-                    ON dept.DepartmentID = d2df.DepartmentID
-                  JOIN alfabank_ru_old.DepartmentFeature feat
-                    ON d2df.DepartmentFeatureID = feat.DepartmentFeatureID
-                 WHERE dept.pid = '%s'
-                   AND dept.MnemonicCode = '%s';""",
+              SELECT dept.DepartmentID,
+                     feat.code,
+                     feat.Description
+                FROM alfabank_ru_old.Department dept
+                JOIN alfabank_ru_old.DepartmentToDepartmentFeature d2df
+                  ON dept.DepartmentID = d2df.DepartmentID
+                JOIN alfabank_ru_old.DepartmentFeature feat
+                  ON d2df.DepartmentFeatureID = feat.DepartmentFeatureID
+               WHERE dept.pid = '%s'
+                 AND dept.MnemonicCode = '%s';""",
           pid, mnemonic);
       LOGGER.info(String.format("Выполняю запрос в БД:\n'%s'\n", query));
       final ResultSet rs = getConnection().prepareStatement(query).executeQuery();
@@ -616,10 +639,10 @@ public class OfficesSteps extends BaseSteps {
       throw new TestNGException(e.toString());
     }
     final var query = String.format("""
-        SELECT COUNT(*)
-          FROM alfabank_ru_old.Department
-         WHERE MnemonicCode = '%s'
-           AND pid = '%s';""",
+            SELECT COUNT(*)
+              FROM alfabank_ru_old.Department
+             WHERE MnemonicCode = '%s'
+               AND pid = '%s';""",
         office.getMnemonic(),
         office.getPid()
     );
@@ -638,46 +661,28 @@ public class OfficesSteps extends BaseSteps {
     }
   }
 
+  @Step
   public void importFileAssumingSuccess() {
     assertThat(importFile().getStatusCode()).isEqualTo(SC_OK);
-    ensureErrMessagesAreAbsent();
+    ensureErrMessagesAreAbsent(30);
   }
 
   private Response importFile() {
-    LOGGER.info("Отправляю сообщение с файлом:\n"
-        + describeBusinessObject(INIT_FILE));
+    LOGGER.info("Отправляю сообщение с файлом:\n" + describeBusinessObject(INIT_FILE));
     final var response = given().spec(getOfficesImportSpec()).multiPart(INIT_FILE).post();
     describeResponse(LOGGER, response);
-    return response;
-  }
-
-  public void checkOfficesFromFileMapping() {
+    final var notImportedOfficesIdMasterSystemList = response.as(FileImportResponse.class)
+        .getErrorDetails().stream().map(Office::getIdMasterSystem).collect(Collectors.toList());
     try {
-      expectedOffices = new ObjectMapper().readValue(INIT_FILE, Offices.class);
+      final var offices = new ObjectMapper().readValue(INIT_FILE, Offices.class);
+      expectedOffices = new Offices(
+          offices.getTimestamp(),
+          offices.getOffices().stream().filter(office ->
+              !notImportedOfficesIdMasterSystemList.contains(office.getIdMasterSystem()))
+              .collect(Collectors.toList()));
     } catch (IOException e) {
       LOGGER.error(e.getStackTrace());
     }
-    checkOfficeMapping(expectedOffices);
-    checkKindsMapping(expectedOffices);
-    checkListOfOperationsFromFileMapping();
-    checkLocationFromFileMapping();
-    checkServicesFromFileMapping();
-    checkChangeDateFromFileTimeMapping();
-  }
-
-  private void checkListOfOperationsFromFileMapping() {
-    checkListOfOperationsMapping(expectedOffices);
-  }
-
-  private void checkLocationFromFileMapping() {
-    checkLocationMapping(expectedOffices);
-  }
-
-  private void checkServicesFromFileMapping() {
-    checkServicesMapping(expectedOffices);
-  }
-
-  private void checkChangeDateFromFileTimeMapping() {
-    checkChangeDateTimeMapping(expectedOffices);
+    return response;
   }
 }

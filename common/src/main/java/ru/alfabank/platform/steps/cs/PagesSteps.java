@@ -108,7 +108,7 @@ public class PagesSteps extends BaseSteps {
    * @param end       end date
    * @param isEnabled is enabled
    * @param user      user
-   * @return          page id
+   * @return page id
    */
   public Integer createPage(final String start,
                             final String end,

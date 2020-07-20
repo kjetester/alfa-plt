@@ -306,7 +306,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         ).build()
                 )
             ),
-            List.of("kladrId", "length must be between 1 and 19")
+            List.of("kladrId", "size must be between 1 and 19")
         },
         {
             "locations.kladrId.length < 1",
@@ -324,7 +324,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         ).build()
                 )
             ),
-            List.of("kladrId", "must not be empty")
+            List.of("kladrId", "must not be blank")
         },
         {
             "locations.kladrId == null",
@@ -342,7 +342,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         ).build()
                 )
             ),
-            List.of("kladrId", "must not be empty")
+            List.of("kladrId", "must not be blank")
         },
         {
             "locations.lat == null",
@@ -396,7 +396,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         ).build()
                 )
             ),
-            List.of("postcode", "must not be empty")
+            List.of("postcode", "must not be blank")
         },
         {
             "locations.postcode.length == 0",
@@ -414,7 +414,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         ).build()
                 )
             ),
-            List.of("postcode", "must not be empty")
+            List.of("postcode", "must not be blank")
         },
         {
             "locations.postcode.length < 6",
@@ -486,7 +486,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         ).build()
                 )
             ),
-            List.of("federalDistrict", "size must be between 0 and 255")
+            List.of("federalDistrict", "size must be between 1 and 255")
         },
         {
             "locations.federalDistrict == null",
@@ -684,7 +684,7 @@ public class LocationsUpdateBaseTest extends UpdateBaseTest {
                         ).build()
                 )
             ),
-            List.of("street", "size must be between 0 and 100")
+            List.of("street", "size must be between 1 and 100")
         },
         {
             "locations.house.length > 100",

@@ -35,6 +35,7 @@ public class ShortUrl extends AbstractBusinessObject {
 
   /**
    * Class creator.
+   *
    * @param builder short url
    */
   public ShortUrl(Builder builder) {
@@ -52,6 +53,7 @@ public class ShortUrl extends AbstractBusinessObject {
 
   /**
    * Class creator.
+   *
    * @param redirectUrl  redirectUrl
    * @param shortId      shortId
    * @param from         from
@@ -127,6 +129,7 @@ public class ShortUrl extends AbstractBusinessObject {
 
   /**
    * Compare two short urls.
+   *
    * @param expected expected short url
    */
   public void equalsTo(final ShortUrl expected) {
@@ -228,6 +231,7 @@ public class ShortUrl extends AbstractBusinessObject {
 
     /**
      * Reuse shortUrl.
+     *
      * @param shortUrl shortUrl
      * @return builder
      */

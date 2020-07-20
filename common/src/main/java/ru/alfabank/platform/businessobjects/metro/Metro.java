@@ -1,7 +1,6 @@
 package ru.alfabank.platform.businessobjects.metro;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
 
@@ -46,6 +45,7 @@ public class Metro extends AbstractBusinessObject {
 
   /**
    * Class constructor.
+   *
    * @param builder builder
    */
   public Metro(final Builder builder) {

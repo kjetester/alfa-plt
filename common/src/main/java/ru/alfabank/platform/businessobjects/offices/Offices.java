@@ -2,8 +2,6 @@ package ru.alfabank.platform.businessobjects.offices;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,10 +9,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
 import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
-import ru.alfabank.platform.businessobjects.cities.Cities;
-import ru.alfabank.platform.businessobjects.cities.Cities.City;
-import ru.alfabank.platform.businessobjects.cities.Cities.City.Builder;
-import ru.alfabank.platform.steps.offices.OfficesSteps;
 
 public class Offices extends AbstractBusinessObject {
 
@@ -90,6 +84,7 @@ public class Offices extends AbstractBusinessObject {
 
     /**
      * Class constructor.
+     *
      * @param builder builder
      */
     public Office(Builder builder) {
@@ -137,40 +132,41 @@ public class Offices extends AbstractBusinessObject {
 
     /**
      * Class constructor.
-     * @param idMasterSystem idMasterSystem
-     * @param pid pid
-     * @param mnemonic mnemonic
-     * @param pathUrl pathUrl
-     * @param title title
-     * @param description description
-     * @param close close
-     * @param closeFromDate closeFromDate
-     * @param closeToDate closeToDate
-     * @param closeReason closeReason
-     * @param regNumberCb regNumberCb
-     * @param fullNameCB fullNameCB
-     * @param shortNameCB shortNameCB
-     * @param regDateCB regDateCB
-     * @param openDate openDate
-     * @param closeDate closeDate
-     * @param closeDateCB closeDateCB
-     * @param openDateActual openDateActual
-     * @param phoneCB phoneCB
-     * @param profitRus profitRus
-     * @param profitEng profitEng
-     * @param code5 code5
-     * @param linkBalance linkBalance
-     * @param linkHeadOffice linkHeadOffice
-     * @param vspCount vspCount
-     * @param visibleSite visibleSite
-     * @param statusCB statusCB
-     * @param kinds kinds
-     * @param addressOfficial addressOfficial
-     * @param addressSms addressSms
-     * @param locations locations
-     * @param services services
+     *
+     * @param idMasterSystem   idMasterSystem
+     * @param pid              pid
+     * @param mnemonic         mnemonic
+     * @param pathUrl          pathUrl
+     * @param title            title
+     * @param description      description
+     * @param close            close
+     * @param closeFromDate    closeFromDate
+     * @param closeToDate      closeToDate
+     * @param closeReason      closeReason
+     * @param regNumberCb      regNumberCb
+     * @param fullNameCB       fullNameCB
+     * @param shortNameCB      shortNameCB
+     * @param regDateCB        regDateCB
+     * @param openDate         openDate
+     * @param closeDate        closeDate
+     * @param closeDateCB      closeDateCB
+     * @param openDateActual   openDateActual
+     * @param phoneCB          phoneCB
+     * @param profitRus        profitRus
+     * @param profitEng        profitEng
+     * @param code5            code5
+     * @param linkBalance      linkBalance
+     * @param linkHeadOffice   linkHeadOffice
+     * @param vspCount         vspCount
+     * @param visibleSite      visibleSite
+     * @param statusCB         statusCB
+     * @param kinds            kinds
+     * @param addressOfficial  addressOfficial
+     * @param addressSms       addressSms
+     * @param locations        locations
+     * @param services         services
      * @param listOfOperations listOfOperations
-     * @param metaInfo metaInfo
+     * @param metaInfo         metaInfo
      */
     @JsonCreator
     private Office(@JsonProperty("idMasterSystem") final Integer idMasterSystem,
@@ -405,6 +401,7 @@ public class Offices extends AbstractBusinessObject {
 
     /**
      * Compare offices.
+     *
      * @param expectedOffice expected
      */
     public void equals(final Office expectedOffice) {
@@ -703,6 +700,7 @@ public class Offices extends AbstractBusinessObject {
 
       /**
        * Reusing existed office.
+       *
        * @param office office
        * @return this
        */
@@ -779,21 +777,22 @@ public class Offices extends AbstractBusinessObject {
 
       /**
        * Class constructor.
-       * @param fiasId fiasId
-       * @param kladrId kladrId
-       * @param lat lat
-       * @param lon lon
-       * @param postcode postcode
-       * @param federalDistrict federalDistrict
+       *
+       * @param fiasId              fiasId
+       * @param kladrId             kladrId
+       * @param lat                 lat
+       * @param lon                 lon
+       * @param postcode            postcode
+       * @param federalDistrict     federalDistrict
        * @param subjectOfFederation subjectOfFederation
-       * @param city city
-       * @param street street
-       * @param house house
-       * @param block block
-       * @param building building
-       * @param liter liter
-       * @param room room
-       * @param placeComment placeComment
+       * @param city                city
+       * @param street              street
+       * @param house               house
+       * @param block               block
+       * @param building            building
+       * @param liter               liter
+       * @param room                room
+       * @param placeComment        placeComment
        */
       @JsonCreator
       public Location(@JsonProperty("fiasId") final String fiasId,
@@ -832,6 +831,7 @@ public class Offices extends AbstractBusinessObject {
 
       /**
        * Class constructor.
+       *
        * @param builder builder
        */
       public Location(Builder builder) {
@@ -919,8 +919,9 @@ public class Offices extends AbstractBusinessObject {
 
       /**
        * Compare locations.
+       *
        * @param expectedLocation expectedLocation
-       * @param softly soft assertions
+       * @param softly           soft assertions
        */
       public void equals(final Location expectedLocation, SoftAssertions softly) {
         LOGGER.info(String.format("Проверяю маппинг широты: actual '%s' и expected '%s'",
@@ -1055,6 +1056,7 @@ public class Offices extends AbstractBusinessObject {
 
         /**
          * Reusing location.
+         *
          * @param location location
          * @return builder
          */
@@ -1114,9 +1116,10 @@ public class Offices extends AbstractBusinessObject {
 
       /**
        * Class constructor.
-       * @param code code
-       * @param name name
-       * @param codeCB codeCB
+       *
+       * @param code       code
+       * @param name       name
+       * @param codeCB     codeCB
        * @param categoryCB categoryCB
        */
       @JsonCreator

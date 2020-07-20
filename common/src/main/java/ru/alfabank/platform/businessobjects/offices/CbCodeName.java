@@ -41,7 +41,8 @@ public enum CbCodeName {
   private Integer typeID;
 
   @JsonCreator
-  CbCodeName() {}
+  CbCodeName() {
+  }
 
   @JsonCreator
   CbCodeName(@JsonProperty("code") final String code,
@@ -71,6 +72,7 @@ public enum CbCodeName {
 
   /**
    * Find value by typeId.
+   *
    * @param typeId typeId
    * @return value
    */
@@ -83,6 +85,7 @@ public enum CbCodeName {
 
   /**
    * Find value by code.
+   *
    * @param code code
    * @return value
    */

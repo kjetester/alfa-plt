@@ -5,9 +5,12 @@ import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
 
 public class ShortUrls extends AbstractBusinessObject {
 
-  @JsonProperty("redirect_url") private String redirectUrl;
-  @JsonProperty("short") private String shortUrl;
-  @JsonProperty("status") private String status;
+  @JsonProperty("redirect_url")
+  private String redirectUrl;
+  @JsonProperty("short")
+  private String shortUrl;
+  @JsonProperty("status")
+  private String status;
 
   public String getRedirectUrl() {
     return redirectUrl;

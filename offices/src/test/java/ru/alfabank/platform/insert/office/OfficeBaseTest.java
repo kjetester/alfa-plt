@@ -5,8 +5,8 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 import static ru.alfabank.platform.businessobjects.offices.CbCodeName.EMPTY;
 import static ru.alfabank.platform.businessobjects.offices.CloseReason.MOVING;
-import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_ACLUB;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.PIL;
+import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_ACLUB_KIND;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.PIL_SERVICE;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -158,7 +158,7 @@ public class OfficeBaseTest extends BaseTest {
                         .setLinkHeadOffice(randomAlphanumeric(1))
                         .setVspCount(Integer.valueOf(randomNumeric(1)))
                         .setVisibleSite(false)
-                        .setKinds(List.of(RETAIL_ACLUB))
+                        .setKinds(List.of(RETAIL_ACLUB_KIND))
                         .setAddressOfficial("Пермский край, г Кизел, пер Водопьянова, д 25")
                         .setAddressSms("Пермский кр, Кизел, Водопьянова, 25")
                         .setLocations(List.of(
@@ -179,7 +179,7 @@ public class OfficeBaseTest extends BaseTest {
                                 .setRoom("22/2-Н")
                                 .setPlaceComment(randomAlphanumeric(1))
                                 .build()))
-                        .setServices(List.of(new Service(PIL.getCode(), PIL.getName())))
+                        .setServices(List.of(new Service(PIL_SERVICE.getCode(), PIL_SERVICE.getName())))
                         .setListOfOperations(List.of(new Operation(
                             randomAlphanumeric(5),
                             randomAlphanumeric(5),

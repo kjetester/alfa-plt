@@ -14,6 +14,7 @@ public class DataBaseHelper {
 
   /**
    * Get JDBC connection.
+   *
    * @return connection
    * @throws SQLException SQLException
    */

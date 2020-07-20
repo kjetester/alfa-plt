@@ -8,6 +8,7 @@
     <listeners>
         <listener class-name="ru.alfabank.platform.utils.RetryListener"/>
     </listeners>
+
     <test name="Wrapper Test" enabled="true" thread-count="1">
         <classes>
             <class name="ru.alfabank.platform.insert.wrapper.WrapperTest"/>
@@ -82,6 +83,12 @@
     <test name="Meta Info Update Test" enabled="true" thread-count="1">
         <classes>
             <class name="ru.alfabank.platform.update.metainfo.MetaInfoUpdateTest"/>
+        </classes>
+    </test>
+
+    <test name="Import test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.importfile.ImportFileTest"/>
         </classes>
     </test>
 

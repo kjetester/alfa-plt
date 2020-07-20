@@ -1,6 +1,5 @@
 package ru.alfabank.platform.businessobjects.feedback;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.assertj.core.api.Assertions.within;
 

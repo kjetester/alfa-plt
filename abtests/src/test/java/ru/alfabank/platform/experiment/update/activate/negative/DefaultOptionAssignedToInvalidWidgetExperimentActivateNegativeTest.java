@@ -97,20 +97,13 @@ public class DefaultOptionAssignedToInvalidWidgetExperimentActivateNegativeTest 
       + "\n\t1. Вариант привязан к виджету с некорренктыми параметрами",
       dataProvider = "dataProvider")
   public void defaultOptionAssignedToInvalidWidgetExperimentActivateNegativeTest(
-      @ParameterKey("Test Case")
-      final String testCase,
-      @ParameterKey("Is Widget for default option enabled")
-      final Boolean isDefaultWidgeEnabled,
-      @ParameterKey("Widget ExperimentOptionName for default option")
-      final ExperimentOptionName defaultOptionName,
-      @ParameterKey("Is Widget for default option default")
-      final Boolean defaultWidget1,
-      @ParameterKey("Is Widget for NON default option enabled")
-      final Boolean isAbTestWidgetEnabled,
-      @ParameterKey("Widget ExperimentOptionName for NON default option")
-      final ExperimentOptionName abTestOptionName,
-      @ParameterKey("Is Widget for NON default option default")
-      final Boolean defaultWidget2) {
+      @ParameterKey("Test Case") final String testCase,
+      @ParameterKey("Is Widget for default option enabled") final Boolean isDefaultWidgeEnabled,
+      @ParameterKey("Widget ExperimentOptionName for default option") final ExperimentOptionName defaultOptionName,
+      @ParameterKey("Is Widget for default option default") final Boolean defaultWidget1,
+      @ParameterKey("Is Widget for NON default option enabled") final Boolean isAbTestWidgetEnabled,
+      @ParameterKey("Widget ExperimentOptionName for NON default option") final ExperimentOptionName abTestOptionName,
+      @ParameterKey("Is Widget for NON default option default") final Boolean defaultWidget2) {
     if (defaultWidget.isEnabled() != isDefaultWidgeEnabled
         || !defaultWidget.getExperimentOptionName().equals(defaultOptionName)
         || defaultWidget.isDefaultWidget() != defaultWidget1) {

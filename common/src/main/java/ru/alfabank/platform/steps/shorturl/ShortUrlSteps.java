@@ -6,8 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.describeBusinessObject;
 
 import io.restassured.response.Response;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +23,7 @@ public class ShortUrlSteps extends BaseSteps {
 
   /**
    * Create short URL.
+   *
    * @param body body
    */
   public void createShortUrlAssumingSuccess(ShortUrl body) {
@@ -37,6 +36,7 @@ public class ShortUrlSteps extends BaseSteps {
 
   /**
    * Create array of short URLs.
+   *
    * @param body body
    */
   public void createArrayOfShortUrlsAssumingSuccess(List<String> body) {
@@ -63,6 +63,7 @@ public class ShortUrlSteps extends BaseSteps {
 
   /**
    * Check Saved Short Url.
+   *
    * @param expected expected
    */
   public void checkSavedShortUrl(ShortUrl expected) {
@@ -127,6 +128,7 @@ public class ShortUrlSteps extends BaseSteps {
 
   /**
    * Delete All Created Entities.
+   *
    * @param createdEntitiesIdsList createdEntitiesIdsList
    */
   public void deleteAllCreatedEntities(List<String> createdEntitiesIdsList) {

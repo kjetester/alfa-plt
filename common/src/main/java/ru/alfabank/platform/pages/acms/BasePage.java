@@ -78,9 +78,9 @@ public class BasePage {
     input.click();
     desirableValues.stream().map(Object::toString)
         .collect(Collectors.toList()).forEach(value -> {
-          LOGGER.info(String.format("Устанавливаю значение: '%s'", value));
-          getDriver().switchTo().activeElement().sendKeys(value, Keys.ENTER);
-        });
+      LOGGER.info(String.format("Устанавливаю значение: '%s'", value));
+      getDriver().switchTo().activeElement().sendKeys(value, Keys.ENTER);
+    });
     getDriver().switchTo().activeElement().sendKeys(Keys.ESCAPE);
   }
 

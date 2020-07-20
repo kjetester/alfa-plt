@@ -3,7 +3,6 @@ package ru.alfabank.platform;
 import static ru.alfabank.platform.helpers.KeycloakHelper.logoutAllUsers;
 
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.AfterTest;
 import ru.alfabank.platform.steps.geofacade.CitiesSteps;
 import ru.alfabank.platform.steps.geofacade.GeoSteps;
 

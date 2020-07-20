@@ -9,7 +9,6 @@ import static ru.alfabank.platform.businessobjects.enums.ProductType.INVEST_PROD
 import static ru.alfabank.platform.businessobjects.enums.ProductType.MORTGAGE_PRODUCT_TYPE;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.PIL_PRODUCT_TYPE;
 import static ru.alfabank.platform.businessobjects.enums.ProductType.SME_PRODUCT_TYPE;
-import static ru.alfabank.platform.businessobjects.enums.ProductType.UNLISTED_PRODUCT_TYPE;
 import static ru.alfabank.platform.helpers.GeoGroupHelper.RU;
 import static ru.alfabank.platform.steps.BaseSteps.CREATED_PAGES;
 import static ru.alfabank.platform.users.ContentManager.getContentManager;

@@ -12,9 +12,10 @@ public class Pagination extends AbstractBusinessObject {
 
   /**
    * Class constructor.
-   * @param limit limit
-   * @param offset offset
-   * @param sort sort
+   *
+   * @param limit      limit
+   * @param offset     offset
+   * @param sort       sort
    * @param totalCount total count
    */
   @JsonCreator

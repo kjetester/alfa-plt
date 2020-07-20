@@ -13,8 +13,6 @@ public class KubernetesPortForwarder implements AutoCloseable {
   private static final Logger LOGGER = LogManager.getLogger(KubernetesPortForwarder.class);
   private static final ExecutorService FORWARDER = Executors.newSingleThreadExecutor();
   private static final Object FORWARD_MONITOR = new Object();
-  private static final String forwardCommand =
-      "kubectl -n alfabankru-develop port-forward mysql-mysql-master-0 3306:3306";
 
   private volatile boolean isForwarded = false;
 
@@ -36,6 +34,9 @@ public class KubernetesPortForwarder implements AutoCloseable {
         if (isForwarded) {
           return;
         }
+        final var forwardCommand = String.format(
+            "kubectl -n alfabankru-%s port-forward mysql-mysql-master-0 3306:3306",
+            System.getProperty("env").contains("preprod") ? "preprod" : "develop");
         try {
           Process forwardProcess = Runtime.getRuntime().exec(forwardCommand);
           BufferedReader stdInput = new BufferedReader(new

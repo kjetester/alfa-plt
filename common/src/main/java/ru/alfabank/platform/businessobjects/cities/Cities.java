@@ -7,7 +7,6 @@ import java.util.stream.IntStream;
 import org.assertj.core.api.SoftAssertions;
 import org.jetbrains.annotations.NotNull;
 import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
-import ru.alfabank.platform.businessobjects.contentstore.Widget;
 
 public class Cities extends AbstractBusinessObject {
 
@@ -27,7 +26,7 @@ public class Cities extends AbstractBusinessObject {
         this.getCities().get(i).equals(expected.getCities().get(i)));
   }
 
-  public static class City extends AbstractBusinessObject  implements Comparable<City> {
+  public static class City extends AbstractBusinessObject implements Comparable<City> {
 
     private final String fiasId;
     private final String fiasName;

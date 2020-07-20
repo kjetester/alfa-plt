@@ -13,6 +13,7 @@ public class BaseTest {
 
   /**
    * Positive test data provider.
+   *
    * @return Positive test data
    */
   @DataProvider
@@ -278,6 +279,7 @@ public class BaseTest {
 
   /**
    * Negative test data provider.
+   *
    * @return Negative test data
    */
   @DataProvider

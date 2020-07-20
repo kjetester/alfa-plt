@@ -166,6 +166,9 @@ public class BaseSteps {
         "URI '%s' установлен в качестве базового для FEEDBACK",
         FEEDBACK_BASE_URL));
     LOGGER.info(String.format(
+        "URI '%s' установлен в качестве базового для FEEDBACK",
+        FEEDBACK_BASE_URL));
+    LOGGER.info(String.format(
         "URI '%s' установлен в качестве базового для OFFICES",
         OFFICES_BASE_URL));
     LOGGER.info("Устанавливаю базовую конфгурацию HTTP запросов");

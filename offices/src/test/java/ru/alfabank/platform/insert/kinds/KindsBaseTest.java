@@ -2,13 +2,13 @@ package ru.alfabank.platform.insert.kinds;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
+import static ru.alfabank.platform.businessobjects.offices.Kind.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import org.testng.annotations.DataProvider;
 import ru.alfabank.platform.BaseTest;
-import ru.alfabank.platform.businessobjects.offices.Kind;
 import ru.alfabank.platform.businessobjects.offices.Offices;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office;
 
@@ -32,16 +32,16 @@ public class KindsBaseTest extends BaseTest {
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
                         .setKinds(List.of(
-                            Kind.RETAIL_STANDARD,
-                            Kind.RETAIL_VIP,
-                            Kind.VIP,
-                            Kind.RETAIL_CIK,
-                            Kind.MMB,
-                            Kind.SB,
-                            Kind.CIB,
-                            Kind.NEW,
-                            Kind.RETAIL_ACLUB,
-                            Kind.ERR_KIND))
+                            RETAIL_STANDARD_KIND,
+                            RETAIL_VIP_KIND,
+                            VIP_KIND,
+                            RETAIL_CIK_KIND,
+                            MMB_KIND,
+                            SB_KIND,
+                            CIB_KIND,
+                            NEW_KIND,
+                            RETAIL_ACLUB_KIND,
+                            ERR_KIND))
                         .build()
                 )
             )
@@ -55,7 +55,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.RETAIL_STANDARD))
+                        .setKinds(List.of(RETAIL_STANDARD_KIND))
                         .build()
                 )
             )
@@ -69,7 +69,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.RETAIL_VIP))
+                        .setKinds(List.of(RETAIL_STANDARD_KIND))
                         .build()
                 )
             )
@@ -83,7 +83,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.VIP))
+                        .setKinds(List.of(VIP_KIND))
                         .build()
                 )
             )
@@ -97,7 +97,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.RETAIL_CIK))
+                        .setKinds(List.of(RETAIL_CIK_KIND))
                         .build()
                 )
             )
@@ -111,7 +111,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.MMB))
+                        .setKinds(List.of(MMB_KIND))
                         .build()
                 )
             )
@@ -125,7 +125,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.SB))
+                        .setKinds(List.of(SB_KIND))
                         .build()
                 )
             )
@@ -139,7 +139,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.CIB))
+                        .setKinds(List.of(CIB_KIND))
                         .build()
                 )
             )
@@ -153,7 +153,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.NEW))
+                        .setKinds(List.of(NEW_KIND))
                         .build()
                 )
             )
@@ -167,7 +167,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.RETAIL_ACLUB))
+                        .setKinds(List.of(RETAIL_ACLUB_KIND))
                         .build()
                 )
             )
@@ -181,7 +181,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.ERR_KIND))
+                        .setKinds(List.of(ERR_KIND))
                         .build()
                 )
             )

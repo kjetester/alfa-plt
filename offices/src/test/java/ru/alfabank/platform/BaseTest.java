@@ -2,9 +2,38 @@ package ru.alfabank.platform;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
-import static ru.alfabank.platform.businessobjects.offices.Kind.MMB;
+import static ru.alfabank.platform.businessobjects.offices.Kind.CIB_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.MMB_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.NEW_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_ACLUB_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_CIK_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_STANDARD_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_VIP_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.SB_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.VIP_KIND;
 import static ru.alfabank.platform.businessobjects.offices.Operations.UPDATE;
-import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.*;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CASH_CHF_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CASH_GBP_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CASH_MAS_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CASH_OP_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CC_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.CLIENT_OFFICE_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.COURIER_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.DC_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.DISABLED_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.INVESTMENT_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.MOMENT_CARD_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.MORTGAGE_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.OFFICE_MB_IP_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.OVERDRAFT_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.PARTNER_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.PIL_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.POINT_ONE_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.POINT_TWO_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.SAFE_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.SERVICE_OFFICE_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.SHARE_SERVICE;
+import static ru.alfabank.platform.businessobjects.offices.ServiceCodeName.WIFI_SERVICE;
 
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -18,10 +47,8 @@ import java.util.List;
 import org.testng.TestNGException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.DataProvider;
 import ru.alfabank.platform.businessobjects.offices.CbCodeName;
 import ru.alfabank.platform.businessobjects.offices.Kind;
-import ru.alfabank.platform.businessobjects.offices.Offices;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office.Location;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office.MetaInfo;
@@ -44,35 +71,38 @@ public class BaseTest {
   static {
     try {
       ALL_OF_KINDS_LIST = List.of(
-          Kind.RETAIL_STANDARD,
-          Kind.RETAIL_VIP,
-          Kind.VIP,
-          Kind.RETAIL_CIK,
-          Kind.MMB,
-          Kind.SB,
-          Kind.CIB,
-          Kind.NEW,
-          Kind.RETAIL_ACLUB);
+          RETAIL_STANDARD_KIND,
+          RETAIL_VIP_KIND,
+          VIP_KIND,
+          RETAIL_CIK_KIND,
+          MMB_KIND,
+          SB_KIND,
+          CIB_KIND,
+          NEW_KIND,
+          RETAIL_ACLUB_KIND);
       ALL_OF_SERVICES_LIST = List.of(
-          new Service(POINT_ONE.getCode(), POINT_ONE.getName()),
-          new Service(POINT_TWO.getCode(), POINT_TWO.getName()),
-          new Service(SERVICE_OFFICE.getCode(), SERVICE_OFFICE.getName()),
-          new Service(CLIENT_OFFICE.getCode(), CLIENT_OFFICE.getName()),
-          new Service(SAFE.getCode(), SAFE.getName()),
-          new Service(DISABLED.getCode(), DISABLED.getName()),
-          new Service(CASH_CHF.getCode(), CASH_CHF.getName()),
-          new Service(CASH_GBP.getCode(), CASH_GBP.getName()),
-          new Service(CASH_MAS.getCode(), CASH_MAS.getName()),
-          new Service(CASH_OP.getCode(), CASH_OP.getName()),
-          new Service(MOMENT_CARD.getCode(), MOMENT_CARD.getName()),
-          new Service(WIFI.getCode(), WIFI.getName()),
-          new Service(PARTNER.getCode(), PARTNER.getName()),
-          new Service(OVERDRAFT.getCode(), OVERDRAFT.getName()),
-          new Service(OFFICE_MB_IP.getCode(), OFFICE_MB_IP.getName()),
-          new Service(PILOT.getCode(), PILOT.getName()),
-          new Service(DC.getCode(), DC.getName()),
-          new Service(CC.getCode(), CC.getName()),
-          new Service(PIL.getCode(), PIL.getName())
+          new Service(POINT_ONE_SERVICE.getCode(), POINT_ONE_SERVICE.getName()),
+          new Service(POINT_TWO_SERVICE.getCode(), POINT_TWO_SERVICE.getName()),
+          new Service(SERVICE_OFFICE_SERVICE.getCode(), SERVICE_OFFICE_SERVICE.getName()),
+          new Service(CLIENT_OFFICE_SERVICE.getCode(), CLIENT_OFFICE_SERVICE.getName()),
+          new Service(CASH_MAS_SERVICE.getCode(), CASH_MAS_SERVICE.getName()),
+          new Service(SAFE_SERVICE.getCode(), SAFE_SERVICE.getName()),
+          new Service(DISABLED_SERVICE.getCode(), DISABLED_SERVICE.getName()),
+          new Service(CASH_GBP_SERVICE.getCode(), CASH_GBP_SERVICE.getName()),
+          new Service(CASH_CHF_SERVICE.getCode(), CASH_CHF_SERVICE.getName()),
+          new Service(MOMENT_CARD_SERVICE.getCode(), MOMENT_CARD_SERVICE.getName()),
+          new Service(WIFI_SERVICE.getCode(), WIFI_SERVICE.getName()),
+          new Service(PARTNER_SERVICE.getCode(), PARTNER_SERVICE.getName()),
+          new Service(OVERDRAFT_SERVICE.getCode(), OVERDRAFT_SERVICE.getName()),
+          new Service(CASH_OP_SERVICE.getCode(), CASH_OP_SERVICE.getName()),
+          new Service(OFFICE_MB_IP_SERVICE.getCode(), OFFICE_MB_IP_SERVICE.getName()),
+          new Service(MORTGAGE_SERVICE.getCode(), MORTGAGE_SERVICE.getName()),
+          new Service(DC_SERVICE.getCode(), DC_SERVICE.getName()),
+          new Service(CC_SERVICE.getCode(), CC_SERVICE.getName()),
+          new Service(PIL_SERVICE.getCode(), PIL_SERVICE.getName()),
+          new Service(INVESTMENT_SERVICE.getCode(), INVESTMENT_SERVICE.getName()),
+          new Service(SHARE_SERVICE.getCode(), SHARE_SERVICE.getName()),
+          new Service(COURIER_SERVICE.getCode(), COURIER_SERVICE.getName())
       );
       MappingIterator<Operation> mi = new CsvMapper()
           .readerFor(Operation.class)
@@ -119,7 +149,7 @@ public class BaseTest {
         .setOpenDate(LocalDate.now().toString())
         .setVisibleSite(true)
         .setStatusCB(CbCodeName.DO)
-        .setKinds(List.of(MMB))
+        .setKinds(List.of(MMB_KIND))
         .setAddressOfficial(randomAlphanumeric(4))
         .setLocations(List.of(BASE_LOCATION))
         .setListOfOperations(ALL_OF_OPERATIONS_LIST)
@@ -129,191 +159,6 @@ public class BaseTest {
         .setIsOnReconstruction(0)
         .setParking(0)
         .build();
-  }
-
-  /**
-   * Data Provider.
-   *
-   * @return test data
-   */
-  @DataProvider
-  public static Object[][] kindsPositiveTestDataProvider() {
-    return new Object[][]{
-        {
-            "Kinds == ALL",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(
-                            Kind.RETAIL_STANDARD,
-                            Kind.RETAIL_VIP,
-                            Kind.VIP,
-                            Kind.RETAIL_CIK,
-                            Kind.MMB,
-                            Kind.SB,
-                            Kind.CIB,
-                            Kind.NEW,
-                            Kind.RETAIL_ACLUB,
-                            Kind.ERR_KIND))
-                        .build()
-                )
-            )
-        },
-        {
-            "Kinds == retailStandart",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.RETAIL_STANDARD))
-                        .build()
-                )
-            )
-        },
-        {
-            "Kinds == retailVip",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.RETAIL_VIP))
-                        .build()
-                )
-            )
-        },
-        {
-            "Kinds == vip",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.VIP))
-                        .build()
-                )
-            )
-        },
-        {
-            "Kinds == retailCIK",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.RETAIL_CIK))
-                        .build()
-                )
-            )
-        },
-        {
-            "Kinds == MMB",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.MMB))
-                        .build()
-                )
-            )
-        },
-        {
-            "Kinds == SB",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.SB))
-                        .build()
-                )
-            )
-        },
-        {
-            "Kinds == CIB",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.CIB))
-                        .build()
-                )
-            )
-        },
-        {
-            "Kinds == new",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.NEW))
-                        .build()
-                )
-            )
-        },
-        {
-            "Kinds == retailAclub",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.RETAIL_ACLUB))
-                        .build()
-                )
-            )
-        },
-        {
-            "Kinds == undefined value",
-            new Offices(
-                LocalDateTime.now().atOffset(ZoneOffset.of(TIME_ZONE_OFFSET)).toString(),
-                List.of(
-                    new Office.Builder()
-                        .using(BASE_OFFICE)
-                        .setPid(randomNumeric(4))
-                        .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(Kind.ERR_KIND))
-                        .build()
-                )
-            )
-        }
-    };
-  }
-
-  /**
-   * Data Provider.
-   *
-   * @return test data
-   */
-  @DataProvider
-  public static Object[][] kindsNegativeTestDataProvider() {
-    return new Object[0][];
   }
 
   /**

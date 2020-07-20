@@ -31,13 +31,14 @@ public class ExperimentDeletionTest extends BaseTest {
   /**
    * Before method.
    */
-  @BeforeMethod(description = "Выполнение предусловий:\n"
-      + "\t1. Создание страницы"
-      + "\t2. Создание корневого виджета по-умолчанию"
-      + "\t3. Создание корневого виджета для АБ-теста"
-      + "\t4. Создание эксперимента"
-      + "\t5. Создание варианта по-умолчанию"
-      + "\t6. Создание варианта АБ-теста",
+  @BeforeMethod(description = """
+      Выполнение предусловий:
+      \t1. Создание страницы
+      \t2. Создание корневого виджета по-умолчанию
+      \t3. Создание корневого виджета для АБ-теста
+      \t4. Создание эксперимента
+      \t5. Создание варианта по-умолчанию
+      \t6. Создание варианта АБ-теста""",
       onlyForGroups = "disabledExperimentDeletionPositiveTest")
   public void beforeDisabledExperimentDeletionPositiveTestMethod() {
     final var page_id = PAGES_STEPS.createEnabledPage(getContentManager());

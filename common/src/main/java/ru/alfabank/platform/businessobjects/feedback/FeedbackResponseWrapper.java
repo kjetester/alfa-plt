@@ -12,10 +12,8 @@ public class FeedbackResponseWrapper extends AbstractBusinessObject {
   private final Pagination pagination;
 
   @JsonCreator
-  public FeedbackResponseWrapper(@JsonProperty("data")
-                                 final List<Feedback> data,
-                                 @JsonProperty("pagination")
-                                 final Pagination pagination) {
+  public FeedbackResponseWrapper(@JsonProperty("data") final List<Feedback> data,
+                                 @JsonProperty("pagination") final Pagination pagination) {
     this.data = data;
     this.pagination = pagination;
   }

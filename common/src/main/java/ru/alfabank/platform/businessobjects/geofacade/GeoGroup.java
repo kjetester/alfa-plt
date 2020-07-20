@@ -1,13 +1,11 @@
 package ru.alfabank.platform.businessobjects.geofacade;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.Instant;
 import java.util.List;
-import java.util.stream.IntStream;
 import org.assertj.core.api.SoftAssertions;
 import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
 

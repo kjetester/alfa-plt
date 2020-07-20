@@ -33,11 +33,11 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
     final var softly = new SoftAssertions();
     PAGES_STEPS.getPagesList(getContentManager()).stream()
         .filter(PagesSteps.distinctByKey(Page::getTeams)).forEach(page -> {
-          softly.assertThat(PAGES_STEPS.getPage(page.getId(), desktop, user).getStatusCode())
-              .isEqualTo(SC_OK);
-          softly.assertThat(PAGES_STEPS.getPage(page.getId(), mobile, user).getStatusCode())
-              .isEqualTo(SC_OK);
-        });
+      softly.assertThat(PAGES_STEPS.getPage(page.getId(), desktop, user).getStatusCode())
+          .isEqualTo(SC_OK);
+      softly.assertThat(PAGES_STEPS.getPage(page.getId(), mobile, user).getStatusCode())
+          .isEqualTo(SC_OK);
+    });
     softly.assertAll();
   }
 
@@ -91,23 +91,23 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
             CREDIT_CARD_USER
         },
         {
-           List.of(DEBIT_CARD_TEAM),
+            List.of(DEBIT_CARD_TEAM),
             DEBIT_CARD_USER
         },
         {
-           List.of(INVEST_TEAM),
+            List.of(INVEST_TEAM),
             INVEST_USER
         },
         {
-           List.of(MORTGAGE_TEAM),
+            List.of(MORTGAGE_TEAM),
             MORTGAGE_USER
         },
         {
-           List.of(PIL_TEAM),
+            List.of(PIL_TEAM),
             PIL_USER
         },
         {
-           List.of(SME_TEAM),
+            List.of(SME_TEAM),
             SME_USER
         },
         {
@@ -171,7 +171,7 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
             new Page.Builder().using(CREATED_PAGES.get(dcPageId)).setEnable(false).build(),
             DEBIT_CARD_USER
         },
-            {
+        {
             ccDcPageId,
             new Page.Builder().using(CREATED_PAGES.get(ccDcPageId)).setEnable(false).build(),
             DEBIT_CARD_USER
@@ -193,7 +193,7 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
             new Page.Builder().using(CREATED_PAGES.get(mrtPageId)).setEnable(false).build(),
             MORTGAGE_USER
         },
-            {
+        {
             invMrtPageId,
             new Page.Builder().using(CREATED_PAGES.get(invMrtPageId)).setEnable(false).build(),
             MORTGAGE_USER
@@ -412,7 +412,7 @@ public class PositivePageOperationsRoleModelTest extends RoleModelBaseTest {
         {
             PAGES_STEPS.createPage(List.of(CREDIT_CARD_TEAM, COMMON_TEAM), CONTENT_MANAGER),
             CONTENT_MANAGER
-            },
+        },
         {
             PAGES_STEPS.createPage(null, CONTENT_MANAGER),
             CONTENT_MANAGER

@@ -57,11 +57,11 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
     final var softly = new SoftAssertions();
     PAGES_STEPS.getPagesList(getContentManager()).stream()
         .filter(PagesSteps.distinctByKey(Page::getTeams)).forEach(page -> {
-          softly.assertThat(PAGES_STEPS.getPage(page.getId(), desktop, user).getStatusCode())
-              .isEqualTo(SC_FORBIDDEN);
-          softly.assertThat(PAGES_STEPS.getPage(page.getId(), mobile, user).getStatusCode())
-              .isEqualTo(SC_FORBIDDEN);
-        });
+      softly.assertThat(PAGES_STEPS.getPage(page.getId(), desktop, user).getStatusCode())
+          .isEqualTo(SC_FORBIDDEN);
+      softly.assertThat(PAGES_STEPS.getPage(page.getId(), mobile, user).getStatusCode())
+          .isEqualTo(SC_FORBIDDEN);
+    });
     softly.assertAll();
   }
 
@@ -193,71 +193,71 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID))
             .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
         CREDIT_CARD_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
-            CREDIT_CARD_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            CREDIT_CARD_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
-            CREDIT_CARD_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
-            CREDIT_CARD_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
-            CREDIT_CARD_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
-            CREDIT_CARD_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
-            CREDIT_CARD_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
-            CREDIT_CARD_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
-            CREDIT_CARD_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
-            CREDIT_CARD_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
-            CREDIT_CARD_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
-            CREDIT_CARD_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
-            CREDIT_CARD_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
-            CREDIT_CARD_USER
-        },
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
+        CREDIT_CARD_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        CREDIT_CARD_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
+            .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
+        CREDIT_CARD_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
+        CREDIT_CARD_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
+            .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
+        CREDIT_CARD_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
+        CREDIT_CARD_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
+            .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
+        CREDIT_CARD_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
+        CREDIT_CARD_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
+            .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
+        CREDIT_CARD_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
+        CREDIT_CARD_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
+            .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
+        CREDIT_CARD_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
+        CREDIT_CARD_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId))
+            .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
+        CREDIT_CARD_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
+        CREDIT_CARD_USER
+    },
         // DEBIT_CARD_USER
         {
             DEBIT_CARD_PAGE_ID,
@@ -269,71 +269,71 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
         new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_AND_DEBIT_CARD_PAGE_ID))
             .setTeamsList(List.of(DEBIT_CARD_TEAM, INVEST_TEAM)).build(),
         DEBIT_CARD_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
-            DEBIT_CARD_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            DEBIT_CARD_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
-            DEBIT_CARD_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
-            DEBIT_CARD_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
-            DEBIT_CARD_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
-            DEBIT_CARD_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
-            DEBIT_CARD_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
-            DEBIT_CARD_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
-            DEBIT_CARD_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
-            DEBIT_CARD_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
-            DEBIT_CARD_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
-            DEBIT_CARD_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
-            DEBIT_CARD_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
-            DEBIT_CARD_USER
-        },
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
+        DEBIT_CARD_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        DEBIT_CARD_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
+            .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
+        DEBIT_CARD_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
+        DEBIT_CARD_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
+            .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
+        DEBIT_CARD_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
+        DEBIT_CARD_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
+            .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
+        DEBIT_CARD_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
+        DEBIT_CARD_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
+            .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
+        DEBIT_CARD_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
+        DEBIT_CARD_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
+            .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
+        DEBIT_CARD_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
+        DEBIT_CARD_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId))
+            .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
+        DEBIT_CARD_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
+        DEBIT_CARD_USER
+    },
         // INVEST_USER
         {
             INVEST_PAGE_ID,
@@ -341,76 +341,76 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
                 .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             INVEST_USER
         }, {
-            INVEST_AND_MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_AND_MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
-            INVEST_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(INVEST_TEAM)).build(),
-            INVEST_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            INVEST_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(INVEST_TEAM)).build(),
-            INVEST_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            INVEST_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(INVEST_TEAM)).build(),
-            INVEST_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
-            INVEST_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(INVEST_TEAM)).build(),
-            INVEST_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
-            INVEST_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(INVEST_TEAM)).build(),
-            INVEST_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
-            INVEST_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(INVEST_TEAM)).build(),
-            INVEST_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
-            INVEST_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(INVEST_TEAM)).build(),
-            INVEST_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
-            INVEST_USER
-        },
+        INVEST_AND_MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_AND_MORTGAGE_PAGE_ID))
+            .setTeamsList(List.of(DEBIT_CARD_TEAM)).build(),
+        INVEST_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(INVEST_TEAM)).build(),
+        INVEST_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        INVEST_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(INVEST_TEAM)).build(),
+        INVEST_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        INVEST_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
+            .setTeamsList(List.of(INVEST_TEAM)).build(),
+        INVEST_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
+        INVEST_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
+            .setTeamsList(List.of(INVEST_TEAM)).build(),
+        INVEST_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
+        INVEST_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
+            .setTeamsList(List.of(INVEST_TEAM)).build(),
+        INVEST_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
+        INVEST_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
+            .setTeamsList(List.of(INVEST_TEAM)).build(),
+        INVEST_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
+        INVEST_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId))
+            .setTeamsList(List.of(INVEST_TEAM)).build(),
+        INVEST_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
+        INVEST_USER
+    },
         // MORTGAGE_USER
         {
             MORTGAGE_PAGE_ID,
@@ -418,76 +418,76 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
                 .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             MORTGAGE_USER
         }, {
-            INVEST_AND_MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_AND_MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE_TEAM, SME_TEAM)).build(),
-            MORTGAGE_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
-            MORTGAGE_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            MORTGAGE_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
-            MORTGAGE_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            MORTGAGE_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
-            MORTGAGE_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
-            MORTGAGE_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
-            MORTGAGE_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
-            MORTGAGE_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
-            MORTGAGE_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
-            MORTGAGE_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
-            MORTGAGE_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
-            MORTGAGE_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
-            MORTGAGE_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
-            MORTGAGE_USER
-        },
+        INVEST_AND_MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_AND_MORTGAGE_PAGE_ID))
+            .setTeamsList(List.of(MORTGAGE_TEAM, SME_TEAM)).build(),
+        MORTGAGE_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
+        MORTGAGE_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        MORTGAGE_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
+        MORTGAGE_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        MORTGAGE_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
+            .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
+        MORTGAGE_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
+        MORTGAGE_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
+            .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
+        MORTGAGE_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
+        MORTGAGE_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
+            .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
+        MORTGAGE_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
+        MORTGAGE_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
+            .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
+        MORTGAGE_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
+        MORTGAGE_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId))
+            .setTeamsList(List.of(MORTGAGE_TEAM)).build(),
+        MORTGAGE_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
+        MORTGAGE_USER
+    },
         // PIL_USER
         {
             PIL_PAGE_ID,
@@ -495,76 +495,76 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
                 .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             PIL_USER
         }, {
-            PIL_AND_SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_AND_SME_PAGE_ID))
-                .setTeamsList(List.of(PIL_TEAM)).build(),
-            PIL_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(PIL_TEAM)).build(),
-            PIL_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            PIL_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(PIL_TEAM)).build(),
-            PIL_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            PIL_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(PIL_TEAM)).build(),
-            PIL_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
-            PIL_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(PIL_TEAM)).build(),
-            PIL_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
-            PIL_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(PIL_TEAM)).build(),
-            PIL_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
-            PIL_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(PIL_TEAM)).build(),
-            PIL_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
-            PIL_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(PIL_TEAM)).build(),
-            PIL_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
-            PIL_USER
-        },
+        PIL_AND_SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_AND_SME_PAGE_ID))
+            .setTeamsList(List.of(PIL_TEAM)).build(),
+        PIL_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(PIL_TEAM)).build(),
+        PIL_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        PIL_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(PIL_TEAM)).build(),
+        PIL_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        PIL_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
+            .setTeamsList(List.of(PIL_TEAM)).build(),
+        PIL_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
+        PIL_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
+            .setTeamsList(List.of(PIL_TEAM)).build(),
+        PIL_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
+        PIL_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
+            .setTeamsList(List.of(PIL_TEAM)).build(),
+        PIL_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
+        PIL_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
+            .setTeamsList(List.of(PIL_TEAM)).build(),
+        PIL_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
+        PIL_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId))
+            .setTeamsList(List.of(PIL_TEAM)).build(),
+        PIL_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
+        PIL_USER
+    },
         // SME_USER
         {
             SME_PAGE_ID,
@@ -572,76 +572,76 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
                 .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             SME_USER
         }, {
-            PIL_AND_SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_AND_SME_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD_TEAM, SME_TEAM)).build(),
-            SME_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(SME_TEAM)).build(),
-            SME_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            SME_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(SME_TEAM)).build(),
-            SME_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            SME_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(SME_TEAM)).build(),
-            SME_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
-            SME_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(SME_TEAM)).build(),
-            SME_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
-            SME_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(SME_TEAM)).build(),
-            SME_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
-            SME_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(SME_TEAM)).build(),
-            SME_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
-            SME_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(SME_TEAM)).build(),
-            SME_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
-            SME_USER
-        },
+        PIL_AND_SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_AND_SME_PAGE_ID))
+            .setTeamsList(List.of(DEBIT_CARD_TEAM, SME_TEAM)).build(),
+        SME_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(SME_TEAM)).build(),
+        SME_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        SME_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(SME_TEAM)).build(),
+        SME_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        SME_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
+            .setTeamsList(List.of(SME_TEAM)).build(),
+        SME_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
+        SME_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
+            .setTeamsList(List.of(SME_TEAM)).build(),
+        SME_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
+        SME_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
+            .setTeamsList(List.of(SME_TEAM)).build(),
+        SME_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
+        SME_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
+            .setTeamsList(List.of(SME_TEAM)).build(),
+        SME_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
+        SME_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId))
+            .setTeamsList(List.of(SME_TEAM)).build(),
+        SME_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
+        SME_USER
+    },
         // COMMON_USER
         {
             COMMON_PAGE_ID,
@@ -649,76 +649,76 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
                 .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             COMMON_USER
         }, {
-            CREDIT_CARD_AND_COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_AND_COMMON_PAGE_ID))
-                .setTeamsList(List.of(DEBIT_CARD_TEAM, COMMON_TEAM)).build(),
-            COMMON_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(COMMON_TEAM)).build(),
-            COMMON_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            COMMON_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(COMMON_TEAM)).build(),
-            COMMON_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            COMMON_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(COMMON_TEAM)).build(),
-            COMMON_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
-            COMMON_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(COMMON_TEAM)).build(),
-            COMMON_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
-            COMMON_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(COMMON_TEAM)).build(),
-            COMMON_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
-            COMMON_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(COMMON_TEAM)).build(),
-            COMMON_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
-            COMMON_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(COMMON_TEAM)).build(),
-            COMMON_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
-            COMMON_USER
-        },
+        CREDIT_CARD_AND_COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_AND_COMMON_PAGE_ID))
+            .setTeamsList(List.of(DEBIT_CARD_TEAM, COMMON_TEAM)).build(),
+        COMMON_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(COMMON_TEAM)).build(),
+        COMMON_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        COMMON_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(COMMON_TEAM)).build(),
+        COMMON_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        COMMON_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
+            .setTeamsList(List.of(COMMON_TEAM)).build(),
+        COMMON_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
+        COMMON_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
+            .setTeamsList(List.of(COMMON_TEAM)).build(),
+        COMMON_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
+        COMMON_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
+            .setTeamsList(List.of(COMMON_TEAM)).build(),
+        COMMON_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
+        COMMON_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
+            .setTeamsList(List.of(COMMON_TEAM)).build(),
+        COMMON_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
+        COMMON_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId))
+            .setTeamsList(List.of(COMMON_TEAM)).build(),
+        COMMON_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
+        COMMON_USER
+    },
         // UNCLAIMED_USER
         {
             unPageId,
@@ -726,88 +726,88 @@ public class NegativePageOperationsRoleModelTest extends RoleModelBaseTest {
                 .setTeamsList(List.of(CREDIT_CARD_TEAM)).build(),
             UNCLAIMED_USER
         }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
-            UNCLAIMED_USER
-        }, {
-            CREDIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            UNCLAIMED_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
-            UNCLAIMED_USER
-        }, {
-            DEBIT_CARD_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
-                .setEnable(false).build(),
-            UNCLAIMED_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
-            UNCLAIMED_USER
-        }, {
-            INVEST_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
-            UNCLAIMED_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
-            UNCLAIMED_USER
-        }, {
-            MORTGAGE_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
-            UNCLAIMED_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
-            UNCLAIMED_USER
-        }, {
-            PIL_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
-            UNCLAIMED_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
-            UNCLAIMED_USER
-        }, {
-            SME_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
-            UNCLAIMED_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
-                .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
-            UNCLAIMED_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
-            UNCLAIMED_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
-            AUDIT_VIEW_USER
-        }, {
-            unPageId,
-            new Page.Builder().using(CREATED_PAGES.get(unPageId))
-                .setTeamsList(List.of(COMMON_TEAM)).build(),
-            AUDIT_VIEW_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
-            AUDIT_ROLLBACK_USER
-        }, {
-            COMMON_PAGE_ID,
-            new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setTeamsList(null).build(),
-            AUDIT_ROLLBACK_USER
-        }
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
+        UNCLAIMED_USER
+    }, {
+        CREDIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(CREDIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        UNCLAIMED_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
+        UNCLAIMED_USER
+    }, {
+        DEBIT_CARD_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(DEBIT_CARD_PAGE_ID))
+            .setEnable(false).build(),
+        UNCLAIMED_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID))
+            .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
+        UNCLAIMED_USER
+    }, {
+        INVEST_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(INVEST_PAGE_ID)).setEnable(false).build(),
+        UNCLAIMED_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID))
+            .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
+        UNCLAIMED_USER
+    }, {
+        MORTGAGE_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(MORTGAGE_PAGE_ID)).setEnable(false).build(),
+        UNCLAIMED_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID))
+            .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
+        UNCLAIMED_USER
+    }, {
+        PIL_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(PIL_PAGE_ID)).setEnable(false).build(),
+        UNCLAIMED_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID))
+            .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
+        UNCLAIMED_USER
+    }, {
+        SME_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(SME_PAGE_ID)).setEnable(false).build(),
+        UNCLAIMED_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID))
+            .setTeamsList(List.of(UNCLAIMED_TEAM)).build(),
+        UNCLAIMED_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
+        UNCLAIMED_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId)).setEnable(false).build(),
+        AUDIT_VIEW_USER
+    }, {
+        unPageId,
+        new Page.Builder().using(CREATED_PAGES.get(unPageId))
+            .setTeamsList(List.of(COMMON_TEAM)).build(),
+        AUDIT_VIEW_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setEnable(false).build(),
+        AUDIT_ROLLBACK_USER
+    }, {
+        COMMON_PAGE_ID,
+        new Page.Builder().using(CREATED_PAGES.get(COMMON_PAGE_ID)).setTeamsList(null).build(),
+        AUDIT_ROLLBACK_USER
+    }
     };
   }
 

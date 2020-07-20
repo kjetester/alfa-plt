@@ -190,17 +190,17 @@ public class PropertyAndPropertyValuePage extends BasePage {
     LOGGER.debug("Собираю строку из вэлью");
     waitForElementBecomesClickable(getDriver().findElement(propertySelector))
         .findElements(propertyValueSpansSelector).forEach(e -> {
-          String className = e.getAttribute("class");
-          if (className.contains("whitespace")) {
-            LOGGER.debug("Добавляю к строке: 'пробел'");
-            stringBuilder.append(" ");
-          } else if (className.contains("·")) {
-            LOGGER.debug("Игнорирую разметку");
-          } else {
-            LOGGER.debug(String.format("Добавляю к строке: '%s'", e.getText()));
-            stringBuilder.append(e.getText());
-          }
-        });
+      String className = e.getAttribute("class");
+      if (className.contains("whitespace")) {
+        LOGGER.debug("Добавляю к строке: 'пробел'");
+        stringBuilder.append(" ");
+      } else if (className.contains("·")) {
+        LOGGER.debug("Игнорирую разметку");
+      } else {
+        LOGGER.debug(String.format("Добавляю к строке: '%s'", e.getText()));
+        stringBuilder.append(e.getText());
+      }
+    });
     String res = stringBuilder.toString().replaceAll("[\"]", "");
     LOGGER.debug(String.format("Собрана строка: '%s'", res));
     return res;

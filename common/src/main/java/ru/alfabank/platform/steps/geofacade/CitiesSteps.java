@@ -40,6 +40,7 @@ public class CitiesSteps extends BaseSteps {
 
   /**
    * Get cities list bu cities names.
+   *
    * @param queryParams query params
    * @return response
    */
