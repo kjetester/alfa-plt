@@ -11,7 +11,7 @@ public class OfficeUpdateTest extends OfficeUpdateBaseTest {
   public void officeUpdatePositiveTest(@ParameterKey("Test case") final String testCase,
                                        final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
-    STEP.checkOfficeMapping(offices);
+    STEP.checkOfficesMapping(offices);
   }
 
   @Test(dataProvider = "officeUpdateNegativeTestDataProvider", priority = 1)

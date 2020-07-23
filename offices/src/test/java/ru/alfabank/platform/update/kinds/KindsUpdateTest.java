@@ -11,7 +11,7 @@ public class KindsUpdateTest extends KindsUpdateBaseTest {
   public void kindsUpdatePositiveTest(@ParameterKey("Test case") final String testCase,
                                       final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
-    STEP.checkKindsMapping(offices);
+    STEP.checkOfficesKindsMapping(offices);
   }
 
   @Test(dataProvider = "kindsUpdateNegativeTestDataProvider", priority = 1)

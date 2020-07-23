@@ -20,7 +20,7 @@ public class MetaInfoTest extends MetaInfoBaseTest {
   public void metaInfoPositiveTest(@ParameterKey("Test case") final String testCase,
                                    final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
-    STEP.checkChangeDateTimeMapping(offices);
+    STEP.checkOfficesChangeDateTimeMapping(offices);
   }
 
   @Test(dataProvider = "metaInfoNegativeTestDataProvider", priority = 1)

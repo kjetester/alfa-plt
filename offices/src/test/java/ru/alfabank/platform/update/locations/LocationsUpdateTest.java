@@ -12,7 +12,7 @@ public class LocationsUpdateTest extends LocationsUpdateBaseTest {
                                           final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
     STEP.checkIfOfficesWereSaved(offices);
-    STEP.checkLocationMapping(offices);
+    STEP.checkOfficesLocationMapping(offices);
   }
 
   @Test(dataProvider = "locationsUpdateNegativeTestDataProvider", priority = 1)

@@ -132,22 +132,27 @@ public class OfficesSteps extends BaseSteps {
   }
 
   @Step
-  public void checkOfficeMapping(final Offices expectedOfficesList) {
-    expectedOfficesList.getOffices().stream()
-        .filter(actualOffice -> actualOffice.getStatusCB() != OKVKU)
-        .forEach(expectedOffice -> {
-          final var actualOfficesList = getOfficesListFromDataBase(
-              expectedOffice.getPid(),
-              expectedOffice.getMnemonic());
-          assertThat(actualOfficesList.size())
-              .as("Проверка, что искомый офис сохранен и только в одном экземпляре")
-              .isEqualTo(1);
-          actualOfficesList.forEach(actualOffice -> actualOffice.equals(expectedOffice));
-        });
+  public void checkOfficesMapping(final Offices expectedOfficesList) {
+    for (Office expectedOffice : expectedOfficesList.getOffices()) {
+      checkOfficeMapping(expectedOffice);
+    }
+  }
+
+  @Step
+  public void checkOfficeMapping(Office office) {
+    if (office.getStatusCB() != OKVKU) {
+      final var actualOfficesList = getOfficesListFromDataBase(
+          office.getPid(),
+          office.getMnemonic());
+      assertThat(actualOfficesList.size())
+          .as("Проверка, что искомый офис сохранен и только в одном экземпляре")
+          .isEqualTo(1);
+      actualOfficesList.forEach(actualOffice -> actualOffice.equals(office));
+    }
   }
 
   public void checkOfficeWasNotChanged(final Office office) {
-    checkOfficeMapping(new Offices(null, List.of(office)));
+    checkOfficesMapping(new Offices(null, List.of(office)));
   }
 
   public ArrayList<Code> getOfficeKindsCodesFromDataBase(final Office office) {
@@ -155,44 +160,49 @@ public class OfficesSteps extends BaseSteps {
   }
 
   @Step
-  public void checkKindsMapping(final Offices offices) {
+  public void checkOfficesKindsMapping(final Offices offices) {
     LOGGER.info("Проверяю маппинг связей 'kinds' в БД");
-    offices.getOffices().forEach(office -> {
-      final var actualKindCodesList = getKindCodesFromDataBase(office.getPid(), office.getMnemonic());
-      final var expectedKindCodesSet = new HashSet<Code>();
-      office.getKinds().forEach(kind -> {
-        switch (kind) {
-          case RETAIL_STANDARD_KIND -> expectedKindCodesSet.add(Code.RETAIL);
-          case RETAIL_VIP_KIND -> {
-            expectedKindCodesSet.add(Code.RETAIL);
-            expectedKindCodesSet.add(Code.VIP);
-          }
-          case VIP_KIND -> {
-            expectedKindCodesSet.add(Code.RETAIL);
-            expectedKindCodesSet.add(Code.VIP);
-            expectedKindCodesSet.add(Code.VIPMNGR);
-            expectedKindCodesSet.add(Code.VIP_CLIENT);
-          }
-          case RETAIL_CIK_KIND -> {
-            expectedKindCodesSet.add(Code.RETAIL);
-            expectedKindCodesSet.add(Code.MORTGAGE);
-          }
-          case MMB_KIND -> expectedKindCodesSet.add(Code.SME);
-          case SB_KIND, CIB_KIND -> expectedKindCodesSet.add(Code.CORPORATE);
-          case RETAIL_ACLUB_KIND -> {
-            expectedKindCodesSet.add(Code.VIP);
-            expectedKindCodesSet.add(Code.ACLUB);
-          }
+    for (Office office : offices.getOffices()) {
+      checkOfficeKindsMapping(office);
+    }
+  }
+
+  @Step
+  public void checkOfficeKindsMapping(Office office) {
+    final var actualKindCodesList = getKindCodesFromDataBase(office.getPid(), office.getMnemonic());
+    final var expectedKindCodesSet = new HashSet<Code>();
+    office.getKinds().forEach(kind -> {
+      switch (kind) {
+        case RETAIL_STANDARD_KIND -> expectedKindCodesSet.add(Code.RETAIL);
+        case RETAIL_VIP_KIND -> {
+          expectedKindCodesSet.add(Code.RETAIL);
+          expectedKindCodesSet.add(Code.VIP);
         }
-      });
-      final var expectedCodesList = new ArrayList<>(expectedKindCodesSet);
-      expectedCodesList.sort(naturalOrder());
-      LOGGER.info(String.format(
-          "Проверяю соответствие actual '%s' и expectedCodesList '%s'",
-          actualKindCodesList,
-          expectedKindCodesSet));
-      assertThat(actualKindCodesList).isEqualTo(expectedCodesList);
+        case VIP_KIND -> {
+          expectedKindCodesSet.add(Code.RETAIL);
+          expectedKindCodesSet.add(Code.VIP);
+          expectedKindCodesSet.add(Code.VIPMNGR);
+          expectedKindCodesSet.add(Code.VIP_CLIENT);
+        }
+        case RETAIL_CIK_KIND -> {
+          expectedKindCodesSet.add(Code.RETAIL);
+          expectedKindCodesSet.add(Code.MORTGAGE);
+        }
+        case MMB_KIND -> expectedKindCodesSet.add(Code.SME);
+        case SB_KIND, CIB_KIND -> expectedKindCodesSet.add(Code.CORPORATE);
+        case RETAIL_ACLUB_KIND -> {
+          expectedKindCodesSet.add(Code.VIP);
+          expectedKindCodesSet.add(Code.ACLUB);
+        }
+      }
     });
+    final var expectedCodesList = new ArrayList<>(expectedKindCodesSet);
+    expectedCodesList.sort(naturalOrder());
+    LOGGER.info(String.format(
+        "Проверяю соответствие actual '%s' и expectedCodesList '%s'",
+        actualKindCodesList,
+        expectedKindCodesSet));
+    assertThat(actualKindCodesList).isEqualTo(expectedCodesList);
   }
 
   @Step
@@ -209,16 +219,21 @@ public class OfficesSteps extends BaseSteps {
   }
 
   @Step
-  public void checkServicesMapping(final Offices offices) {
+  public void checkOfficesServicesMapping(final Offices offices) {
     LOGGER.info("Проверяю маппинг связей 'services' в БД");
     for (Office office : offices.getOffices()) {
-      final ArrayList<ServiceCodeName> actualServiceCodesList = getServiceCodesListFromDataBase(office);
-      final ArrayList<ServiceCodeName> expectedServiceCodesList = getServiceCodeNames(office);
-      LOGGER.info(String.format(
-          "Проверяю соответствие actual '%s' и expected '%s'",
-          actualServiceCodesList, expectedServiceCodesList));
-      assertThat(actualServiceCodesList).isEqualTo(expectedServiceCodesList);
+      checkOfficeServicesMapping(office);
     }
+  }
+
+  @Step
+  public void checkOfficeServicesMapping(Office office) {
+    final ArrayList<ServiceCodeName> actualServiceCodesList = getServiceCodesListFromDataBase(office);
+    final ArrayList<ServiceCodeName> expectedServiceCodesList = getServiceCodeNames(office);
+    LOGGER.info(String.format(
+        "Проверяю соответствие actual '%s' и expected '%s'",
+        actualServiceCodesList, expectedServiceCodesList));
+    assertThat(actualServiceCodesList).isEqualTo(expectedServiceCodesList);
   }
 
   @Step
@@ -273,103 +288,113 @@ public class OfficesSteps extends BaseSteps {
   }
 
   @Step
-  public void checkListOfOperationsMapping(final Offices offices) {
+  public void checkOfficesListOfOperationsMapping(final Offices offices) {
     LOGGER.info("Проверяю маппинг связей ListOfOperations в БД");
     for (var office : offices.getOffices()) {
-      try {
-        LOGGER.debug("Ожидание обработки сообщения - 5 сек.");
-        TimeUnit.SECONDS.sleep(5);
-        final var query = String.format("""
-                SELECT dept.DepartmentID,
-                       feat.abbr,
-                       feat.title,
-                       feat.title_html
-                  FROM alfabank_ru_old.Department dept
-                  JOIN alfabank_ru_old.DepartmentToDepartmentIBFeature d2dIbF
-                    ON dept.DepartmentID = d2dIbF.department_id
-                  JOIN alfabank_ru_old.DepartmentIBFeature feat
-                    ON d2dIbF.feature_id = feat.id
-                 WHERE dept.pid = '%s'
-                   AND dept.MnemonicCode = '%s';""",
-            office.getPid(), office.getMnemonic());
-        LOGGER.info(String.format("Выполняю запрос в БД:\n'%s'\n", query));
-        final ResultSet rs = getConnection().prepareStatement(query).executeQuery();
-        final var actualCodesList = new ArrayList<String>();
-        final var actualNamesList = new ArrayList<String>();
-        final var actualNamesHtmlList = new ArrayList<String>();
-        while (rs.next()) {
-          actualCodesList.add(rs.getString("abbr"));
-          actualNamesList.add(rs.getString("title"));
-          actualNamesHtmlList.add(rs.getString("title_html"));
-        }
-        actualCodesList.sort(naturalOrder());
-        final List<String> expectedCodesList;
-        final List<String> expectedNamesList;
-        if (office.getListOfOperations() != null) {
-          expectedCodesList = office.getListOfOperations().stream()
-              .filter(operation -> !operation.getCode().contains("random"))
-              .map(Operation::getCode).sorted(naturalOrder()).collect(Collectors.toList());
-          expectedNamesList = office.getListOfOperations().stream()
-              .filter(operation -> !operation.getName().contains("random"))
-              .map(Operation::getName).sorted(naturalOrder()).collect(Collectors.toList());
-        } else {
-          expectedCodesList = List.of();
-          expectedNamesList = List.of();
-        }
-        LOGGER.info(String.format(
-            "Проверяю соответствие actualCodesList '%s' и expectedCodesList '%s'",
-            actualCodesList, expectedCodesList));
-        assertThat(actualCodesList).isEqualTo(expectedCodesList);
-        actualNamesList.sort(naturalOrder());
-        LOGGER.info(String.format(
-            "Проверяю соответствие actualNamesList '%s' и expectedNamesList '%s'",
-            actualNamesList, expectedNamesList));
-        assertThat(actualNamesList).isEqualTo(expectedNamesList);
-        LOGGER.info(String.format(
-            "Проверяю соответствие actualNamesHtmlList '%s' и expectedNamesList '%s'",
-            actualNamesHtmlList, expectedNamesList));
-        actualNamesHtmlList.sort(naturalOrder());
-        assertThat(actualNamesHtmlList).isEqualTo(expectedNamesList);
-      } catch (SQLException | InterruptedException e) {
-        LOGGER.error(e.toString());
-        throw new TestNGException(e.toString());
-      }
+      checkOfficeListOfOperationsMapping(office);
     }
   }
 
   @Step
-  public void checkLocationMapping(final Offices offices) {
-    for (Office office : offices.getOffices()) {
-      assert office.getLocations().size() > 0;
-      final var mapOfActual = getMetroNameCityIdLocationFromDataBase(office);
-      final var location = office.getLocations().stream()
-          .findFirst().orElseThrow();
-      final var expectedMetroName = new MetroSteps()
-          .getNearestMetroNameIn2km(location.getLat(), location.getLon());
-      final var expectedCityId = new CitiesSteps()
-          .getCityListWithMetaByName(List.of(location.getCity().trim().replaceAll("г ", "")))
-          .stream().map(City::getAjsonId).findFirst().orElse(0);
-      final var expectedLocation = new Builder()
-          .setLat(location.getLat())
-          .setLon(location.getLon())
-          .setPostcode(location.getPostcode())
-          .setFederalDistrict(location.getFederalDistrict())
-          .setPlaceComment(location.getPlaceComment())
-          .setAddress(composeAddress(office.getLocations()))
-          .build();
-      final Map<String, Object> mapOfExpected;
-      if (expectedMetroName != null) {
-        mapOfExpected = Map.of(
-            "MetroName", expectedMetroName,
-            "CityId", expectedCityId,
-            "Location", expectedLocation);
-      } else {
-        mapOfExpected = Map.of(
-            "CityId", expectedCityId,
-            "Location", expectedLocation);
+  public void checkOfficeListOfOperationsMapping(Office office) {
+    try {
+      LOGGER.debug("Ожидание обработки сообщения - 5 сек.");
+      TimeUnit.SECONDS.sleep(5);
+      final var query = String.format("""
+              SELECT dept.DepartmentID,
+                     feat.abbr,
+                     feat.title,
+                     feat.title_html
+                FROM alfabank_ru_old.Department dept
+                JOIN alfabank_ru_old.DepartmentToDepartmentIBFeature d2dIbF
+                  ON dept.DepartmentID = d2dIbF.department_id
+                JOIN alfabank_ru_old.DepartmentIBFeature feat
+                  ON d2dIbF.feature_id = feat.id
+               WHERE dept.pid = '%s'
+                 AND dept.MnemonicCode = '%s';""",
+          office.getPid(), office.getMnemonic());
+      LOGGER.info(String.format("Выполняю запрос в БД:\n'%s'\n", query));
+      final ResultSet rs = getConnection().prepareStatement(query).executeQuery();
+      final var actualCodesList = new ArrayList<String>();
+      final var actualNamesList = new ArrayList<String>();
+      final var actualNamesHtmlList = new ArrayList<String>();
+      while (rs.next()) {
+        actualCodesList.add(rs.getString("abbr"));
+        actualNamesList.add(rs.getString("title"));
+        actualNamesHtmlList.add(rs.getString("title_html"));
       }
-      checkMetroNameCityIdLocation(mapOfActual, mapOfExpected);
+      actualCodesList.sort(naturalOrder());
+      final List<String> expectedCodesList;
+      final List<String> expectedNamesList;
+      if (office.getListOfOperations() != null) {
+        expectedCodesList = office.getListOfOperations().stream()
+            .filter(operation -> !operation.getCode().contains("random"))
+            .map(Operation::getCode).sorted(naturalOrder()).collect(Collectors.toList());
+        expectedNamesList = office.getListOfOperations().stream()
+            .filter(operation -> !operation.getName().contains("random"))
+            .map(Operation::getName).sorted(naturalOrder()).collect(Collectors.toList());
+      } else {
+        expectedCodesList = List.of();
+        expectedNamesList = List.of();
+      }
+      LOGGER.info(String.format(
+          "Проверяю соответствие actualCodesList '%s' и expectedCodesList '%s'",
+          actualCodesList, expectedCodesList));
+      assertThat(actualCodesList).isEqualTo(expectedCodesList);
+      actualNamesList.sort(naturalOrder());
+      LOGGER.info(String.format(
+          "Проверяю соответствие actualNamesList '%s' и expectedNamesList '%s'",
+          actualNamesList, expectedNamesList));
+      assertThat(actualNamesList).isEqualTo(expectedNamesList);
+      LOGGER.info(String.format(
+          "Проверяю соответствие actualNamesHtmlList '%s' и expectedNamesList '%s'",
+          actualNamesHtmlList, expectedNamesList));
+      actualNamesHtmlList.sort(naturalOrder());
+      assertThat(actualNamesHtmlList).isEqualTo(expectedNamesList);
+    } catch (SQLException | InterruptedException e) {
+      LOGGER.error(e.toString());
+      throw new TestNGException(e.toString());
     }
+  }
+
+  @Step
+  public void checkOfficesLocationMapping(final Offices offices) {
+    for (Office office : offices.getOffices()) {
+      checkOfficeLocationMapping(office);
+    }
+  }
+
+  @Step
+  public void checkOfficeLocationMapping(Office office) {
+    assert office.getLocations().size() > 0;
+    final var mapOfActual = getMetroNameCityIdLocationFromDataBase(office);
+    final var location = office.getLocations().stream()
+        .findFirst().orElseThrow();
+    final var expectedMetroName = new MetroSteps()
+        .getNearestMetroNameIn2km(location.getLat(), location.getLon());
+    final var expectedCityId = new CitiesSteps()
+        .getCityListWithMetaByName(List.of(location.getCity().trim().replaceAll("г ", "")))
+        .stream().map(City::getAjsonId).findFirst().orElse(0);
+    final var expectedLocation = new Builder()
+        .setLat(location.getLat())
+        .setLon(location.getLon())
+        .setPostcode(location.getPostcode())
+        .setFederalDistrict(location.getFederalDistrict())
+        .setPlaceComment(location.getPlaceComment())
+        .setAddress(composeAddress(office.getLocations()))
+        .build();
+    final Map<String, Object> mapOfExpected;
+    if (expectedMetroName != null) {
+      mapOfExpected = Map.of(
+          "MetroName", expectedMetroName,
+          "CityId", expectedCityId,
+          "Location", expectedLocation);
+    } else {
+      mapOfExpected = Map.of(
+          "CityId", expectedCityId,
+          "Location", expectedLocation);
+    }
+    checkMetroNameCityIdLocation(mapOfActual, mapOfExpected);
   }
 
   public Map<String, Object> getMetroNameCityIdLocationFromDataBase(final Office office) {
@@ -425,13 +450,18 @@ public class OfficesSteps extends BaseSteps {
   }
 
   @Step
-  public void checkChangeDateTimeMapping(final Offices offices) {
+  public void checkOfficesChangeDateTimeMapping(final Offices offices) {
     LOGGER.info("Проверяю маппинг связей ChangeDateTime в БД");
     for (Office office : offices.getOffices()) {
-      final var expectedTimestamp = Instant.parse(office.getMetaInfo().getChangeDatetime());
-      assertThat(getChangedDateTimeFromDataBase(office))
-          .isCloseTo(expectedTimestamp, within(1, SECONDS));
+      checkOfficeChangeDateTimeMapping(office);
     }
+  }
+
+  @Step
+  public void checkOfficeChangeDateTimeMapping(Office office) {
+    final var expectedTimestamp = Instant.parse(office.getMetaInfo().getChangeDatetime());
+    assertThat(getChangedDateTimeFromDataBase(office))
+        .isCloseTo(expectedTimestamp, within(1, SECONDS));
   }
 
   public Instant getChangedDateTimeFromDataBase(final Office office) {
@@ -525,7 +555,6 @@ public class OfficesSteps extends BaseSteps {
   private void ensureErrMessagesAreAbsent(int delay) {
     LOGGER.info("Проверяю отсутствие сообщения в DLQ");
     assertThat(checkErrQueueMessage(delay).getStatusCode())
-        .as("Проверка отсутствия сообщения в DLQ")
         .isEqualTo(SC_NO_CONTENT);
   }
 

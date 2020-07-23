@@ -141,14 +141,19 @@ public class BaseSteps {
   static {
     var environment = System.getProperty("env");
     LOGGER.info("Тестовая среда - " + environment);
-    if (environment.contains("preprod")) {
-      getPreProdEnvironmentSettings();
-    } else if (environment.contains("acms_feature")) {
-      getAcmsFeatureEnvironmentSettings();
-    } else if (environment.contains("cs_feature")) {
-      getContentStoreFeatureEnvironmentSettings();
-    } else {
-      getDevelopEnvironmentSettings();
+    switch (environment) {
+      case "develop" -> getDevelopEnvironmentSettings();
+      case "preprod" -> getPreProdEnvironmentSettings();
+      case "acms_feature" -> getAcmsFeatureEnvironmentSettings();
+      case "cs_feature" -> getContentStoreFeatureEnvironmentSettings();
+      case "prod" -> getProdEnvironmentSettings();
+      default -> throw new IllegalArgumentException("""
+              Указана некорректная тестовая среда. Доступны:
+              1. develop
+              2. preprod
+              3. acms_feature-####
+              4. cs_feature-####
+              5. prod""");
     }
     LOGGER.info(String.format(
         "URI '%s' установлен в качестве базового для CS",
@@ -408,6 +413,12 @@ public class BaseSteps {
     metroBasePath = "";
     feedbackBasePath = "";
     officesBasePath = "";
+    setUpEndpoints();
+  }
+
+  private static void getProdEnvironmentSettings() {
+    CS_BASE_URL = "http://alfabank.ru";
+    setEnv();
     setUpEndpoints();
   }
 

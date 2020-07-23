@@ -20,7 +20,7 @@ public class ServiceTest extends ServiceBaseTest {
   public void servicePositiveTest(@ParameterKey("Test case") final String testCase,
                                   final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
-    STEP.checkServicesMapping(offices);
+    STEP.checkOfficesServicesMapping(offices);
   }
 
   @Test(dataProvider = "serviceNegativeTestDataProvider", priority = 1)

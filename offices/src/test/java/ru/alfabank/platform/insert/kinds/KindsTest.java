@@ -20,7 +20,7 @@ public class KindsTest extends KindsBaseTest {
   public void kindsPositiveTest(@ParameterKey("Test case") final String testCase,
                                 final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
-    STEP.checkKindsMapping(offices);
+    STEP.checkOfficesKindsMapping(offices);
   }
 
   @Test(dataProvider = "kindsNegativeTestDataProvider", priority = 1)

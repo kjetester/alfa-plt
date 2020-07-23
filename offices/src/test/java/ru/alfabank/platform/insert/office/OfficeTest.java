@@ -20,7 +20,7 @@ public class OfficeTest extends OfficeBaseTest {
   public void officePositiveTest(@ParameterKey("Test case") final String testCase,
                                  final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
-    STEP.checkOfficeMapping(offices);
+    STEP.checkOfficesMapping(offices);
   }
 
   @Test(dataProvider = "officeNegativeTestDataProvider", priority = 1)

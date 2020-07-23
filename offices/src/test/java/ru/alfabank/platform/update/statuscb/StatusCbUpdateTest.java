@@ -11,7 +11,7 @@ public class StatusCbUpdateTest extends StatusCbUpdateBaseTest {
   public void statusCbUpdatePositiveTest(@ParameterKey("Test case") final String testCase,
                                          final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
-    STEP.checkOfficeMapping(offices);
+    STEP.checkOfficesMapping(offices);
   }
 
   @Test(dataProvider = "statusCbUpdateNegativeTestDataProvider", priority = 1)

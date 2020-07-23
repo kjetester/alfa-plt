@@ -22,15 +22,16 @@ public class DataBaseHelper {
     if (connection == null || connection.isClosed()) {
       try (final var portForwarder = new KubernetesPortForwarder()) {
         portForwarder.ensureForwarded();
-        try {
-          connection = DriverManager.getConnection(
-              "jdbc:mysql://localhost:3306",
-              "alfabank_ru_old",
-              "alfabank_ru_old");
-        } catch (SQLException e) {
-          LOGGER.error(e);
-          portForwarder.ensureForwarded();
-          getConnection();
+        switch (System.getProperty("env")) {
+          case "develop", "preprod" -> connection = DriverManager.getConnection(
+              "jdbc:mysql://localhost:3306", "alfabank_ru_old", "alfabank_ru_old");
+          case "prod" -> connection = DriverManager.getConnection("jdbc:mysql://localhost:3306",
+              System.getProperty("dblogin"), System.getProperty("dbpassword"));
+          default -> throw new IllegalArgumentException("""
+              Указана некорректная тестовая среда. Доступны:
+              1. develop
+              2. preprod
+              3. prod""");
         }
       }
     }

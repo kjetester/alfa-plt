@@ -11,7 +11,7 @@ public class ListOfOperationsUpdateTest extends ListOfOperationsUpdateBaseTest {
   public void listOfOperationsUpdatePositiveTest(@ParameterKey("Test case") final String testCase,
                                                  final Offices offices) {
     STEP.sendMessageToInQueueAssumingSuccess(offices);
-    STEP.checkListOfOperationsMapping(offices);
+    STEP.checkOfficesListOfOperationsMapping(offices);
   }
 
   @Test(dataProvider = "listOfOperationsUpdateNegativeTestDataProvider", priority = 1)

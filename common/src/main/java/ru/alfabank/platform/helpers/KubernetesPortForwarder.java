@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.maven.surefire.shade.common.org.apache.commons.lang3.StringUtils;
 
 public class KubernetesPortForwarder implements AutoCloseable {
 
@@ -34,9 +35,17 @@ public class KubernetesPortForwarder implements AutoCloseable {
         if (isForwarded) {
           return;
         }
-        final var forwardCommand = String.format(
-            "kubectl -n alfabankru-%s port-forward mysql-mysql-master-0 3306:3306",
-            System.getProperty("env").contains("preprod") ? "preprod" : "develop");
+        final String forwardCommand;
+        switch (System.getProperty("env")) {
+          case "develop" -> forwardCommand = "kubectl -n alfabankru-develop port-forward mysql-mysql-master-0 3306:3306";
+          case "preprod" -> forwardCommand = "kubectl -n alfabankru-preprod port-forward mysql-mysql-master-0 3306:3306";
+          case "prod" -> forwardCommand = "kubectl -n alfabankru-infra port-forward service/tcp-proxy-mysql 3306:3306";
+          default -> throw new IllegalArgumentException("""
+              Указана некорректная тестовая среда. Доступны:
+              1. develop
+              2. preprod
+              3. prod""");
+        }
         try {
           Process forwardProcess = Runtime.getRuntime().exec(forwardCommand);
           BufferedReader stdInput = new BufferedReader(new

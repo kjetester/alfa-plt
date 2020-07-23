@@ -1,12 +1,11 @@
 package ru.alfabank.platform.importfile;
 
-import static ru.alfabank.platform.steps.offices.OfficesSteps.expectedOffices;
-
+import com.epam.reportportal.annotations.ParameterKey;
 import com.epam.reportportal.annotations.Step;
 import org.testng.annotations.Test;
-import ru.alfabank.platform.BaseTest;
+import ru.alfabank.platform.businessobjects.offices.Offices.Office;
 
-public class ImportFileTest extends BaseTest {
+public class ImportFileTest extends ImportBaseTest {
 
   @Test
   @Step
@@ -14,39 +13,77 @@ public class ImportFileTest extends BaseTest {
     STEP.importFileAssumingSuccess();
   }
 
-  @Test(dependsOnMethods = "importFileTest", priority = 1)
+  @Test(
+      dependsOnMethods = "importFileTest",
+      dataProvider = "importedOffice",
+      priority = 1)
   @Step
-  public void officeMappingTest() {
-    STEP.checkOfficeMapping(expectedOffices);
+  public void officeMappingTest(@ParameterKey("MS ID") final Integer masterSystemId,
+                                @ParameterKey("PID") final String pid,
+                                @ParameterKey("Mnemonic") final String mnemonic,
+                                final Office expectedOffice) {
+    STEP.checkOfficeMapping(expectedOffice);
   }
 
-  @Test(dependsOnMethods = "importFileTest", priority = 2)
+  @Test(
+      dependsOnMethods = "importFileTest",
+      dataProvider = "importedOffice",
+      priority = 2)
   @Step
-  public void locationMappingTest() {
-    STEP.checkLocationMapping(expectedOffices);
+  public void locationMappingTest(@ParameterKey("MS ID") final Integer masterSystemId,
+                                  @ParameterKey("PID") final String pid,
+                                  @ParameterKey("Mnemonic") final String mnemonic,
+                                  final Office expectedOffice) {
+    STEP.checkOfficeLocationMapping(expectedOffice);
   }
 
-  @Test(dependsOnMethods = "importFileTest", priority = 3, enabled = false)
+  @Test(
+      dependsOnMethods = "importFileTest",
+      dataProvider = "importedOffice",
+      priority = 3,
+      enabled = false)
   @Step
-  public void kindsMappingTest() {
-    STEP.checkKindsMapping(expectedOffices);
+  public void kindsMappingTest(@ParameterKey("MS ID") final Integer masterSystemId,
+                               @ParameterKey("PID") final String pid,
+                               @ParameterKey("Mnemonic") final String mnemonic,
+                               final Office expectedOffice) {
+    STEP.checkOfficeKindsMapping(expectedOffice);
   }
 
-  @Test(dependsOnMethods = "importFileTest", priority = 4, enabled = false)
+  @Test(
+      dependsOnMethods = "importFileTest",
+      dataProvider = "importedOffice",
+      priority = 4,
+      enabled = false)
   @Step
-  public void servicesMappingTest() {
-    STEP.checkServicesMapping(expectedOffices);
+  public void servicesMappingTest(@ParameterKey("MS ID") final Integer masterSystemId,
+                                  @ParameterKey("PID") final String pid,
+                                  @ParameterKey("Mnemonic") final String mnemonic,
+                                  final Office expectedOffice) {
+    STEP.checkOfficeServicesMapping(expectedOffice);
   }
 
-  @Test(dependsOnMethods = "importFileTest", priority = 5)
+  @Test(
+      dependsOnMethods = "importFileTest",
+      dataProvider = "importedOffice",
+      priority = 5)
   @Step
-  public void listOfOperationsMappingTest() {
-    STEP.checkListOfOperationsMapping(expectedOffices);
+  public void listOfOperationsMappingTest(@ParameterKey("MS ID") final Integer masterSystemId,
+                                          @ParameterKey("PID") final String pid,
+                                          @ParameterKey("Mnemonic") final String mnemonic,
+                                          final Office expectedOffice) {
+    STEP.checkOfficeListOfOperationsMapping(expectedOffice);
   }
 
-  @Test(dependsOnMethods = "importFileTest", priority = 6)
+  @Test(
+      dependsOnMethods = "importFileTest",
+      dataProvider = "importedOffice",
+      priority = 6)
   @Step
-  public void changeDateTimeMappingTest() {
-    STEP.checkChangeDateTimeMapping(expectedOffices);
+  public void changeDateTimeMappingTest(@ParameterKey("MS ID") final Integer masterSystemId,
+                                        @ParameterKey("PID") final String pid,
+                                        @ParameterKey("Mnemonic") final String mnemonic,
+                                        final Office expectedOffice) {
+    STEP.checkOfficeChangeDateTimeMapping(expectedOffice);
   }
 }

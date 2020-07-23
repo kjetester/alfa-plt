@@ -22,6 +22,9 @@
 8. `mvn clean -pl offices -Denv=preprod -am test`
 9. `mvn clean -pl tranbilog -Denv=preprod -am test`
 
+####Prod stage
+1. `mvn clean -pl offices -Denv=preprod -Ddblogin={login} -Ddbpassword={password} -am test`
+
 ####ACMS-feature stage
 1. `mvn clean -pl abtests -Denv=acms_feature-#### -am test`
 2. `mvn clean -pl acms -Denv=acms_feature-#### -am test`
