@@ -48,14 +48,14 @@ public class FileTests {
   @Test
   public static void checkKindsAndIsVisibleSite() {
     officesList = offices.getOffices().stream().filter(office ->
-        office.getKinds().contains(EMPTY_KIND) && office.isVisibleSite())
+        office.getKinds().contains(EMPTY_KIND) && office.getVisibleSite())
         .collect(Collectors.toList());
   }
 
   @Test
   public static void checkStatusCbAndIsVisibleSite() {
     officesList = offices.getOffices().stream().filter(office ->
-        office.getStatusCB().equals(CbCodeName.OKVKU) && office.isVisibleSite())
+        office.getStatusCB().equals(CbCodeName.OKVKU) && office.getVisibleSite())
         .collect(Collectors.toList());
   }
 

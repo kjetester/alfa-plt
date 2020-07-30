@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Getter;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
@@ -34,52 +35,53 @@ public class Offices extends AbstractBusinessObject {
 
   public static class Office extends AbstractBusinessObject {
 
-    private final Integer idMasterSystem;
-    private final String pid;
-    private final String mnemonic;
-    private final String pathUrl;
-    private final String title;
-    private final String description;
-    private final Boolean close;
-    private final String closeFromDate;
-    private final String closeToDate;
-    private final String closeReason;
-    private final String regNumberCb;
-    private final String fullNameCB;
-    private final String shortNameCB;
-    private final String regDateCB;
-    private final String openDate;
-    private final String closeDate;
-    private final String closeDateCB;
-    private final String openDateActual;
-    private final String phoneCB;
-    private final List<String> profitRus;
-    private final List<String> profitEng;
-    private final String code5;
-    private final String linkBalance;
-    @JsonProperty("linkHeadoffice")
+    @Getter private final Integer idMasterSystem;
+    @Getter private final String pid;
+    @Getter private final String mnemonic;
+    @Getter private final String pathUrl;
+    @Getter private final String title;
+    @Getter private final String description;
+    @Getter private final Boolean close;
+    @Getter private final String closeFromDate;
+    @Getter private final String closeToDate;
+    @Getter private final String closeReason;
+    @Getter private final String regNumberCb;
+    @Getter private final String fullNameCB;
+    @Getter private final String shortNameCB;
+    @Getter private final String regDateCB;
+    @Getter private final String openDate;
+    @Getter private final String closeDate;
+    @Getter private final String closeDateCB;
+    @Getter private final String openDateActual;
+    @Getter private final String phoneCB;
+    @Getter private final List<String> profitRus;
+    @Getter private final List<String> profitEng;
+    @Getter private final String code5;
+    @Getter private final String linkBalance;
+    @JsonProperty("linkHeadoffice") @Getter
     private final String linkHeadOffice;
-    private final Integer vspCount;
-    private final Boolean visibleSite;
-    private final CbCodeName statusCB;
-    private final List<Kind> kinds;
-    private final String addressOfficial;
-    private final String addressSms;
-    private final List<Location> locations;
-    private final List<Service> services;
-    private final List<Operation> listOfOperations;
-    private final MetaInfo metaInfo;
-    @JsonIgnore
+    @Getter private final Integer vspCount;
+    @Getter private final Boolean visibleSite;
+    @Getter private final CbCodeName statusCB;
+    @Getter private final List<Kind> kinds;
+    @Getter private final String addressOfficial;
+    @Getter private final String addressSms;
+    @Getter private final List<Location> locations;
+    @Getter private final List<Service> services;
+    @Getter private final List<Operation> listOfOperations;
+    @Getter private final MetaInfo metaInfo;
+    @Getter private List<String> messages;
+    @JsonIgnore @Getter
     private Integer branchID;
-    @JsonIgnore
+    @JsonIgnore @Getter
     private Integer useInCosmo;
-    @JsonIgnore
+    @JsonIgnore @Getter
     private Integer isOnReconstruction;
-    @JsonIgnore
+    @JsonIgnore @Getter
     private Integer parking;
-    @JsonIgnore
+    @JsonIgnore @Getter
     private Integer cityId;
-    @JsonIgnore
+    @JsonIgnore @Getter
     private Integer metroId;
 
     /**
@@ -202,7 +204,8 @@ public class Offices extends AbstractBusinessObject {
                    @JsonProperty("locations") final List<Location> locations,
                    @JsonProperty("services") final List<Service> services,
                    @JsonProperty("listOfOperations") final List<Operation> listOfOperations,
-                   @JsonProperty("metaInfo") final MetaInfo metaInfo) {
+                   @JsonProperty("metaInfo") final MetaInfo metaInfo,
+                   @JsonProperty("messages") final List<String> messages) {
       this.idMasterSystem = idMasterSystem;
       this.pid = pid;
       this.mnemonic = mnemonic;
@@ -237,166 +240,7 @@ public class Offices extends AbstractBusinessObject {
       this.services = services;
       this.listOfOperations = listOfOperations;
       this.metaInfo = metaInfo;
-    }
-
-    public Integer getIdMasterSystem() {
-      return idMasterSystem;
-    }
-
-    public String getPid() {
-      return pid;
-    }
-
-    public String getMnemonic() {
-      return mnemonic;
-    }
-
-    public Integer getCityId() {
-      return cityId;
-    }
-
-    public Integer getMetroId() {
-      return metroId;
-    }
-
-    public String getPathUrl() {
-      return pathUrl;
-    }
-
-    public String getTitle() {
-      return title;
-    }
-
-    public String getDescription() {
-      return description;
-    }
-
-    public Boolean getClose() {
-      return close;
-    }
-
-    public String getCloseFromDate() {
-      return closeFromDate;
-    }
-
-    public String getCloseToDate() {
-      return closeToDate;
-    }
-
-    public String getCloseReason() {
-      return closeReason;
-    }
-
-    public String getRegNumberCb() {
-      return regNumberCb;
-    }
-
-    public String getFullNameCB() {
-      return fullNameCB;
-    }
-
-    public String getShortNameCB() {
-      return shortNameCB;
-    }
-
-    public String getRegDateCB() {
-      return regDateCB;
-    }
-
-    public String getOpenDate() {
-      return openDate;
-    }
-
-    public String getCloseDate() {
-      return closeDate;
-    }
-
-    public String getCloseDateCB() {
-      return closeDateCB;
-    }
-
-    public String getOpenDateActual() {
-      return openDateActual;
-    }
-
-    public String getPhoneCB() {
-      return phoneCB;
-    }
-
-    public List<String> getProfitRus() {
-      return profitRus;
-    }
-
-    public List<String> getProfitEng() {
-      return profitEng;
-    }
-
-    public String getCode5() {
-      return code5;
-    }
-
-    public String getLinkBalance() {
-      return linkBalance;
-    }
-
-    public String getLinkHeadOffice() {
-      return linkHeadOffice;
-    }
-
-    public Integer getVspCount() {
-      return vspCount;
-    }
-
-    public Boolean isVisibleSite() {
-      return visibleSite;
-    }
-
-    public Object getStatusCB() {
-      return statusCB;
-    }
-
-    public List<Kind> getKinds() {
-      return kinds;
-    }
-
-    public String getAddressOfficial() {
-      return addressOfficial;
-    }
-
-    public String getAddressSms() {
-      return addressSms;
-    }
-
-    public List<Location> getLocations() {
-      return locations;
-    }
-
-    public List<Service> getServices() {
-      return services;
-    }
-
-    public List<Operation> getListOfOperations() {
-      return listOfOperations;
-    }
-
-    public MetaInfo getMetaInfo() {
-      return metaInfo;
-    }
-
-    public Integer getBranchID() {
-      return branchID;
-    }
-
-    public Integer getUseInCosmo() {
-      return useInCosmo;
-    }
-
-    public Integer getIsOnReconstruction() {
-      return isOnReconstruction;
-    }
-
-    public Integer getParking() {
-      return parking;
+      this.messages = messages;
     }
 
     /**
@@ -405,10 +249,7 @@ public class Offices extends AbstractBusinessObject {
      * @param expectedOffice expected
      */
     public void equals(final Office expectedOffice) {
-      LOGGER.info(String.format(
-          "Сравнение офиса\nACTUAL:\n'%s'\nEXPECTED:\n'%s'",
-          describeBusinessObject(this),
-          describeBusinessObject(expectedOffice)));
+      logComparingObjects(LOGGER, this, expectedOffice);
       final var softly = new SoftAssertions();
       softly.assertThat(this.getPid())
           .as("Проверка 'Pid'")
@@ -418,25 +259,25 @@ public class Offices extends AbstractBusinessObject {
           .isEqualTo(expectedOffice.getMnemonic());
       softly.assertThat(this.getPathUrl())
           .as("Проверка 'PathUrl'")
-          .isEqualTo(expectedOffice.getPathUrl());
+          .isEqualTo(trimNullable(expectedOffice.getPathUrl()));
       softly.assertThat(this.getTitle())
           .as("Проверка 'Title'")
-          .isEqualTo(expectedOffice.getTitle());
+          .isEqualTo(trimNullable(expectedOffice.getTitle()));
       softly.assertThat(this.getDescription())
           .as("Проверка 'Description'")
-          .isEqualTo(expectedOffice.getDescription());
+          .isEqualTo(trimNullable(expectedOffice.getDescription()));
       softly.assertThat(this.getClose())
           .as("Проверка 'Close'")
           .isEqualTo(expectedOffice.getClose());
       softly.assertThat(this.getShortNameCB())
           .as("Проверка 'ShortNameCB'")
-          .isEqualTo(expectedOffice.getShortNameCB());
+          .isEqualTo(trimNullable(expectedOffice.getShortNameCB()));
       softly.assertThat(this.getOpenDate())
           .as("Проверка 'OpenDate'")
           .isEqualTo(expectedOffice.getOpenDate());
       softly.assertThat(this.getPhoneCB())
           .as("Проверка 'PhoneCB'")
-          .isEqualTo(expectedOffice.getPhoneCB());
+          .isEqualTo(trimNullable(expectedOffice.getPhoneCB()));
       softly.assertThat(this.getStatusCB())
           .as("Проверка 'StatusCB'")
           .isEqualTo(expectedOffice.getStatusCB());
@@ -453,6 +294,8 @@ public class Offices extends AbstractBusinessObject {
           .as("Проверка 'parking'")
           .isEqualTo(0);
       softly.assertAll();
+      logComparingResult(LOGGER, String.format("pid=%s' & 'mnemonic=%s",
+          this.getPid(), this.getMnemonic()));
     }
 
     public static class Builder {
@@ -757,23 +600,23 @@ public class Offices extends AbstractBusinessObject {
 
       private static final Logger LOGGER = LogManager.getLogger(LocalDateTime.class);
 
-      private final String fiasId;
-      private final String kladrId;
-      private final Double lat;
-      private final Double lon;
-      private final String postcode;
-      private final String federalDistrict;
-      private final String subjectOfFederation;
-      private final String city;
-      private final String street;
-      private final String house;
-      private final String block;
-      private final String building;
-      private final String liter;
-      private final String room;
-      private final String placeComment;
+      @Getter private final String fiasId;
+      @Getter private final String kladrId;
+      @Getter private final Double lat;
+      @Getter private final Double lon;
+      @Getter private final String postcode;
+      @Getter private final String federalDistrict;
+      @Getter private final String subjectOfFederation;
+      @Getter private final String city;
+      @Getter private final String street;
+      @Getter private final String house;
+      @Getter private final String block;
+      @Getter private final String building;
+      @Getter private final String liter;
+      @Getter private final String room;
+      @Getter private final String placeComment;
       @JsonIgnore
-      private String address;
+      @Getter private final String address;
 
       /**
        * Class constructor.
@@ -851,70 +694,6 @@ public class Offices extends AbstractBusinessObject {
         this.room = builder.room;
         this.placeComment = builder.placeComment;
         this.address = builder.address;
-      }
-
-      public String getFiasId() {
-        return fiasId;
-      }
-
-      public String getKladrId() {
-        return kladrId;
-      }
-
-      public Double getLat() {
-        return lat;
-      }
-
-      public Double getLon() {
-        return lon;
-      }
-
-      public String getPostcode() {
-        return postcode;
-      }
-
-      public String getFederalDistrict() {
-        return federalDistrict;
-      }
-
-      public String getSubjectOfFederation() {
-        return subjectOfFederation;
-      }
-
-      public String getCity() {
-        return city;
-      }
-
-      public String getStreet() {
-        return street;
-      }
-
-      public String getHouse() {
-        return house;
-      }
-
-      public String getBlock() {
-        return block;
-      }
-
-      public String getBuilding() {
-        return building;
-      }
-
-      public String getLiter() {
-        return liter;
-      }
-
-      public String getRoom() {
-        return room;
-      }
-
-      public String getPlaceComment() {
-        return placeComment;
-      }
-
-      public String getAddress() {
-        return address;
       }
 
       /**
@@ -1084,8 +863,8 @@ public class Offices extends AbstractBusinessObject {
 
     public static class Service extends AbstractBusinessObject {
 
-      private String code;
-      private String name;
+      @Getter private String code;
+      @Getter private String name;
 
       @JsonCreator
       public Service(@JsonProperty("code") final String code,
@@ -1097,22 +876,14 @@ public class Offices extends AbstractBusinessObject {
       public Service() {
 
       }
-
-      public String getCode() {
-        return code;
-      }
-
-      public String getName() {
-        return name;
-      }
     }
 
     public static class Operation extends AbstractBusinessObject {
 
-      private final String code;
-      private final String name;
-      private final String codeCB;
-      private final String categoryCB;
+      @Getter private final String code;
+      @Getter private final String name;
+      @Getter private final String codeCB;
+      @Getter private final String categoryCB;
 
       /**
        * Class constructor.
@@ -1132,20 +903,12 @@ public class Offices extends AbstractBusinessObject {
         this.codeCB = codeCB;
         this.categoryCB = categoryCB;
       }
-
-      public String getCode() {
-        return code;
-      }
-
-      public String getName() {
-        return name;
-      }
     }
 
     public static class MetaInfo extends AbstractBusinessObject {
 
-      private String operation;
-      private String changeDatetime;
+      @Getter private String operation;
+      @Getter private String changeDatetime;
 
       @JsonCreator
       public MetaInfo(@JsonProperty("operation") final String operation,
@@ -1157,10 +920,6 @@ public class Offices extends AbstractBusinessObject {
       @JsonCreator
       public MetaInfo() {
 
-      }
-
-      public String getChangeDatetime() {
-        return changeDatetime;
       }
     }
   }

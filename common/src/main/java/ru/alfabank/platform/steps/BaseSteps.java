@@ -586,7 +586,7 @@ public class BaseSteps {
    * @param logger   Logger
    * @param response Response
    */
-  protected static void describeResponse(final Logger logger, final Response response) {
+  public static void describeResponse(final Logger logger, final Response response) {
     logger.info(String.format("Получен ответ: %d\n%s",
         response.getStatusCode(),
         response.prettyPrint()));

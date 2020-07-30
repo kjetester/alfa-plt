@@ -3,9 +3,11 @@ package ru.alfabank.platform.importfile;
 import static ru.alfabank.platform.steps.offices.OfficesSteps.expectedOffices;
 
 import org.testng.annotations.DataProvider;
-import ru.alfabank.platform.BaseTest;
+import ru.alfabank.platform.steps.offices.OfficesSteps;
 
-public class ImportBaseTest extends BaseTest {
+public class ImportBaseTest {
+
+  protected static final OfficesSteps STEP = new OfficesSteps();
 
   /**
    * Test data provider.
@@ -13,7 +15,7 @@ public class ImportBaseTest extends BaseTest {
    */
   @DataProvider
   public Object[][] importedOffice() {
-    final var offices = expectedOffices.getOffices();
+    final var offices = expectedOffices;
     final var size = offices.size();
     final var res = new Object[size][4];
     for (int i = 0; i < size; i++) {

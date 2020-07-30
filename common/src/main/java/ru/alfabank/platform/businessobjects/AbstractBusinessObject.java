@@ -50,7 +50,15 @@ public abstract class AbstractBusinessObject {
         describeBusinessObject(expectedObject)));
   }
 
-  protected void logComparingResult(final Logger logger, final String value) {
-    logger.info(String.format("Объект с uuid'%s' корректен", value));
+  protected void logComparingResult(final Logger logger, final String someId) {
+    logger.info(String.format("Объект '%s' корректен", someId));
+  }
+
+  protected String trimNullable(final String s) {
+    if (s != null) {
+      return s.trim();
+    } else {
+      return s;
+    }
   }
 }
