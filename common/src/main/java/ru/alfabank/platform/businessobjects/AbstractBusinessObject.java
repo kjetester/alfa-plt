@@ -42,7 +42,7 @@ public abstract class AbstractBusinessObject {
    * @param actualObject   actualObject
    * @param expectedObject expectedObject
    */
-  protected void logComparingObjects(final Logger logger,
+  public static void logComparingObjects(final Logger logger,
                                      final Object actualObject,
                                      final Object expectedObject) {
     logger.debug(String.format("Сравнение объектов:\nACTUAL.\t\t%s\nEXPECTED.\t%s",

@@ -1,5 +1,7 @@
 package ru.alfabank.platform.businessobjects.offices;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,8 +10,10 @@ import java.util.List;
 import lombok.Getter;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import ru.alfabank.platform.businessobjects.AbstractBusinessObject;
+import ru.alfabank.platform.businessobjects.offices.Offices.Office.MetaInfo;
 
 public class Offices extends AbstractBusinessObject {
 

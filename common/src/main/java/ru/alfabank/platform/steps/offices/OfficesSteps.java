@@ -1,6 +1,7 @@
 package ru.alfabank.platform.steps.offices;
 
 import static io.restassured.RestAssured.given;
+import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Comparator.naturalOrder;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
@@ -8,6 +9,7 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.describeBusinessObject;
+import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.logComparingObjects;
 import static ru.alfabank.platform.businessobjects.offices.CbCodeName.OKVKU;
 import static ru.alfabank.platform.helpers.DataBaseHelper.getConnection;
 
@@ -27,12 +29,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
+import org.testng.Assert;
 import org.testng.TestNGException;
+import ru.alfabank.platform.businessobjects.abtests.Option;
 import ru.alfabank.platform.businessobjects.offices.CbCodeName;
 import ru.alfabank.platform.businessobjects.offices.FileImportResponse;
 import ru.alfabank.platform.businessobjects.offices.Kind.Code;
@@ -52,6 +57,7 @@ public class OfficesSteps extends BaseSteps {
   private static final File INIT_FILE = new File("src/test/resources/uws.json");
 
   public static List<Office> expectedOffices;
+  private Instant expectedTimestamp;
 
   public void cleanUpDataBase() {
     final var query1 = """
@@ -255,7 +261,6 @@ public class OfficesSteps extends BaseSteps {
   private ArrayList<ServiceCodeName> getCodesListFromDataBase(final String query) {
     final var actualServiceCodesList = new ArrayList<ServiceCodeName>();
     try {
-      LOGGER.debug("Ожидание обработки сообщения - 0 сек.");
       TimeUnit.SECONDS.sleep(0);
       LOGGER.info(String.format("Выполняю запрос в БД:\n'%s'\n", query));
       final ResultSet rs = getConnection().prepareStatement(query).executeQuery();
@@ -285,7 +290,6 @@ public class OfficesSteps extends BaseSteps {
 
   public void checkOfficeListOfOperationsMapping(Office office) {
     try {
-      LOGGER.debug("Ожидание обработки сообщения - 0 сек.");
       TimeUnit.SECONDS.sleep(0);
       final var query = String.format("""
               SELECT dept.DepartmentID,
@@ -392,7 +396,6 @@ public class OfficesSteps extends BaseSteps {
 
   public Map<String, Object> getMetroNameCityIdLocationFromDataBase(final Office office) {
     try {
-      LOGGER.debug("Ожидание обработки сообщения - 0 сек.");
       TimeUnit.SECONDS.sleep(0);
       final var query = String.format("""
                  SELECT m.metroName,
@@ -410,25 +413,31 @@ public class OfficesSteps extends BaseSteps {
       final ResultSet rs;
       LOGGER.info(String.format("Выполняю запрос в БД: '%s'", query));
       rs = getConnection().prepareStatement(query).executeQuery();
-      rs.next();
-      final var metroName = rs.getString("metroName");
-      final var actualLocation = new Location.Builder()
-          .setLat(rs.getDouble("Latitude"))
-          .setLon(rs.getDouble("Longitude"))
-          .setPostcode(rs.getString("postcode"))
-          .setFederalDistrict(rs.getString("Region"))
-          .setAddress(rs.getString("Address"))
-          .setPlaceComment(rs.getString("pathDescription"))
-          .build();
-      if (metroName != null) {
-        return Map.of(
-            "MetroName", metroName,
-            "CityId", rs.getInt("CityID"),
-            "Location", actualLocation);
+      if (!rs.next()) {
+        Assert.fail("Запрос ничего не вернул");
+        return null;
       } else {
-        return Map.of(
-            "CityId", rs.getInt("CityID"),
-            "Location", actualLocation);
+        do {
+          final var metroName = rs.getString("metroName");
+          final var actualLocation = new Builder()
+              .setLat(rs.getDouble("Latitude"))
+              .setLon(rs.getDouble("Longitude"))
+              .setPostcode(rs.getString("postcode"))
+              .setFederalDistrict(rs.getString("Region"))
+              .setAddress(rs.getString("Address"))
+              .setPlaceComment(rs.getString("pathDescription"))
+              .build();
+          if (metroName != null) {
+            return Map.of(
+                "MetroName", metroName,
+                "CityId", rs.getInt("CityID"),
+                "Location", actualLocation);
+          } else {
+            return Map.of(
+                "CityId", rs.getInt("CityID"),
+                "Location", actualLocation);
+          }
+        } while (rs.next());
       }
     } catch (SQLException | InterruptedException e) {
       LOGGER.error(e.toString());
@@ -443,21 +452,21 @@ public class OfficesSteps extends BaseSteps {
   }
 
   public void checkOfficesChangeDateTimeMapping(final Offices offices) {
-    LOGGER.info("Проверяю маппинг связей ChangeDateTime в БД");
+    LOGGER.info("Проверяю маппинг ChangeDateTime в БД");
     for (Office office : offices.getOffices()) {
       checkOfficeChangeDateTimeMapping(office);
     }
   }
 
   public void checkOfficeChangeDateTimeMapping(Office office) {
-    final var expectedTimestamp = Instant.parse(office.getMetaInfo().getChangeDatetime());
-    assertThat(getChangedDateTimeFromDataBase(office))
-        .isCloseTo(expectedTimestamp, within(1, SECONDS));
+    final var changedDateTimeFromDataBase = getChangedDateTimeFromDataBase(office);
+    logComparingObjects(LOGGER, changedDateTimeFromDataBase, expectedTimestamp);
+    assertThat(changedDateTimeFromDataBase)
+        .isCloseTo(expectedTimestamp, within(30, SECONDS));
   }
 
   public Instant getChangedDateTimeFromDataBase(final Office office) {
     try {
-      LOGGER.debug("Ожидание обработки сообщения - 0 сек.");
       TimeUnit.SECONDS.sleep(0);
       final var query = String.format("""
               SELECT dept.changed
@@ -467,10 +476,16 @@ public class OfficesSteps extends BaseSteps {
           office.getPid(), office.getMnemonic());
       LOGGER.info(String.format("Выполняю запрос в БД:\n'%s'\n", query));
       final ResultSet rs = getConnection().prepareStatement(query).executeQuery();
-      rs.next();
-      final var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-      return LocalDateTime.parse(rs.getString("changed"), dateTimeFormatter)
-          .atZone(ZoneId.of("Z")).toInstant();
+      if (!rs.next()) {
+        Assert.fail("Запрос ничего не вернул");
+        return null;
+      } else {
+        do {
+          final var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+          return LocalDateTime.parse(rs.getString("changed"), dateTimeFormatter)
+              .atZone(ZoneId.of("Z")).toInstant();
+        } while (rs.next());
+      }
     } catch (SQLException | InterruptedException e) {
       LOGGER.error(e.toString());
       throw new TestNGException(e.toString());
@@ -596,26 +611,31 @@ public class OfficesSteps extends BaseSteps {
       LOGGER.info(String.format("Выполняю запрос в БД: '%s'", query));
       rs = getConnection().prepareStatement(query).executeQuery();
       final var actualOfficesList = new ArrayList<Office>();
-      while (rs.next()) {
-        final var officeFromDataBase = new Office.Builder()
-            .setPid(rs.getString("pid"))
-            .setMnemonic(rs.getString("MnemonicCode"))
-            .setPathUrl(rs.getString("Path"))
-            .setTitle(rs.getString("Title"))
-            .setDescription(rs.getString("Description"))
-            .setClose(rs.getInt("Enabled") == 0)
-            .setShortNameCB(rs.getString("IBTitle"))
-            .setOpenDate(rs.getString("DateStart"))
-            .setPhoneCB(rs.getString("Phone"))
-            .setStatusCB(CbCodeName.findValueByTypeId(rs.getInt("TypeID")))
-            .setBranchID(rs.getInt("BranchID"))
-            .setUseInCosmo(rs.getInt("useInCosmo"))
-            .setIsOnReconstruction(rs.getInt("isOnReconstruction"))
-            .setParking(rs.getInt("parking"))
-            .setCityId(rs.getInt("CityID"))
-            .setMetroId(rs.getInt("MetroID"))
-            .build();
-        actualOfficesList.add(officeFromDataBase);
+      if (!rs.next()) {
+        Assert.fail("Запрос ничего не вернул");
+        return null;
+      } else {
+        do {
+          final var officeFromDataBase = new Office.Builder()
+              .setPid(rs.getString("pid"))
+              .setMnemonic(rs.getString("MnemonicCode"))
+              .setPathUrl(rs.getString("Path"))
+              .setTitle(rs.getString("Title"))
+              .setDescription(rs.getString("Description"))
+              .setClose(rs.getInt("Enabled") == 0)
+              .setShortNameCB(rs.getString("IBTitle"))
+              .setOpenDate(rs.getString("DateStart"))
+              .setPhoneCB(rs.getString("Phone"))
+              .setStatusCB(CbCodeName.findValueByTypeId(rs.getInt("TypeID")))
+              .setBranchID(rs.getInt("BranchID"))
+              .setUseInCosmo(rs.getInt("useInCosmo"))
+              .setIsOnReconstruction(rs.getInt("isOnReconstruction"))
+              .setParking(rs.getInt("parking"))
+              .setCityId(rs.getInt("CityID"))
+              .setMetroId(rs.getInt("MetroID"))
+              .build();
+          actualOfficesList.add(officeFromDataBase);
+        } while (rs.next());
       }
       return actualOfficesList;
     } catch (SQLException | InterruptedException e) {
@@ -684,17 +704,8 @@ public class OfficesSteps extends BaseSteps {
   public void importFileAssumingSuccess() {
     final var importFileResponse = importFile();
     assertThat(importFileResponse.getStatusCode()).as("Сервис ответил ошибкой").isEqualTo(SC_OK);
-    final var notImportedOfficesList = new ArrayList<>();
-    importFileResponse.as(FileImportResponse.class).getErrorDetails().forEach(office -> {
-      if (office.getMessages().stream().anyMatch(message -> !message.contains(OKVKU.getCode()))) {
-        notImportedOfficesList.add(office.getIdMasterSystem());
-      }
-    });
-    assertThat(notImportedOfficesList.size()).as("Есть незагруженные отделения").isEqualTo(0);
     try {
-      expectedOffices =
-          new ObjectMapper().readValue(INIT_FILE, Offices.class).getOffices().stream().filter(o ->
-              o.getStatusCB() != OKVKU).collect(Collectors.toList());
+      expectedOffices = new ObjectMapper().readValue(INIT_FILE, Offices.class).getOffices();
     } catch (IOException e) {
       LOGGER.error(e.getStackTrace());
     }
@@ -704,6 +715,7 @@ public class OfficesSteps extends BaseSteps {
     LOGGER.info("Отправляю сообщение с файлом:\n" + describeBusinessObject(INIT_FILE));
     final var response = given().spec(getOfficesImportSpec()).multiPart(INIT_FILE).post();
     describeResponse(LOGGER, response);
+    expectedTimestamp = Instant.now();
     return response;
   }
 }
