@@ -8,7 +8,7 @@
 5. `mvn clean -pl tranbilog -Denv=develop -am test`
 6. `mvn clean -pl geofacade -Denv=develop -am test`
 7. `mvn clean -pl feedback -Denv=develop -am test`
-8. `mvn clean -pl offices -Denv=develop -am test`
+8. `mvn clean -pl offices -Denv=develop -Ddblogin={login} -Ddbpassword={password} -am test`
 9. `mvn clean -pl tranbilog -Denv=develop -am test`
 
 ####PreProd stage
@@ -19,11 +19,11 @@
 5. `mvn clean -pl tranbilog -Denv=preprod -am test`
 6. `mvn clean -pl geofacade -Denv=preprod -am test`
 7. `mvn clean -pl feedback -Denv=preprod -am test`
-8. `mvn clean -pl offices -Denv=preprod -am test`
+8. `mvn clean -pl offices -Denv=preprod -Ddblogin={login} -Ddbpassword={password} -am test`
 9. `mvn clean -pl tranbilog -Denv=preprod -am test`
 
 ####Prod stage
-1. `mvn clean -pl offices -Denv=preprod -Ddblogin={login} -Ddbpassword={password} -am test`
+1. `mvn clean -pl offices -Denv=prod -Ddblogin={login} -Ddbpassword={password} -am test`
 
 ####ACMS-feature stage
 1. `mvn clean -pl abtests -Denv=acms_feature-#### -am test`
@@ -33,8 +33,7 @@
 5. `mvn clean -pl tranbilog -Denv=acms_feature-#### -am test`
 6. `mvn clean -pl geofacade -Denv=acms_feature-#### -am test`
 7. `mvn clean -pl feedback -Denv=acms_feature-#### -am test`
-8. `mvn clean -pl offices -Denv=acms_feature-#### -am test`
-9. `mvn clean -pl tranbilog -Denv=acms_feature-#### -am test`
+8. `mvn clean -pl tranbilog -Denv=acms_feature-#### -am test`
 
 ####CS-feature stage
 1. `mvn clean -pl abtests -Denv=cs_feature-#### -am test`
@@ -44,5 +43,4 @@
 5. `mvn clean -pl tranbilog -Denv=cs_feature-#### -am test`
 6. `mvn clean -pl geofacade -Denv=cs_feature-#### -am test`
 7. `mvn clean -pl feedback -Denv=cs_feature-#### -am test`
-8. `mvn clean -pl offices -Denv=cs_feature-#### -am test`
-9. `mvn clean -pl tranbilog -Denv=cs_feature-#### -am test`
+8. `mvn clean -pl tranbilog -Denv=cs_feature-#### -am test`
