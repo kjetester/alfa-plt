@@ -417,7 +417,7 @@ public class BaseSteps {
   }
 
   private static void getProdEnvironmentSettings() {
-    CS_BASE_URL = "http://alfabank.ru";
+    CS_BASE_URL = "https://alfabank.ru";
     setEnv();
     setUpEndpoints();
   }

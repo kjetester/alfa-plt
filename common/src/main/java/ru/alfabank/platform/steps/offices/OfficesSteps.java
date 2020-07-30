@@ -686,19 +686,15 @@ public class OfficesSteps extends BaseSteps {
     assertThat(importFileResponse.getStatusCode()).as("Сервис ответил ошибкой").isEqualTo(SC_OK);
     final var notImportedOfficesList = new ArrayList<>();
     importFileResponse.as(FileImportResponse.class).getErrorDetails().forEach(office -> {
-      if (office.getMessages().stream().anyMatch(message ->
-          !message.contains(OKVKU.getCode()) && !message.contains("d047ebcf-704a-46fe-a1c6-58456737b179"))) {
+      if (office.getMessages().stream().anyMatch(message -> !message.contains(OKVKU.getCode()))) {
         notImportedOfficesList.add(office.getIdMasterSystem());
       }
     });
     assertThat(notImportedOfficesList.size()).as("Есть незагруженные отделения").isEqualTo(0);
-    LOGGER.error(describeBusinessObject(notImportedOfficesList));
     try {
-      expectedOffices = new ObjectMapper().readValue(INIT_FILE, Offices.class)
-          .getOffices().stream().filter(o ->
-              o.getStatusCB() != OKVKU || o.getLocations().stream().noneMatch(location ->
-                  location.getFiasId().equals("d047ebcf-704a-46fe-a1c6-58456737b179"))
-          ).collect(Collectors.toList());
+      expectedOffices =
+          new ObjectMapper().readValue(INIT_FILE, Offices.class).getOffices().stream().filter(o ->
+              o.getStatusCB() != OKVKU).collect(Collectors.toList());
     } catch (IOException e) {
       LOGGER.error(e.getStackTrace());
     }

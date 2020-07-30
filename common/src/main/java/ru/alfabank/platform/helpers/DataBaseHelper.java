@@ -3,6 +3,7 @@ package ru.alfabank.platform.helpers;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -22,17 +23,12 @@ public class DataBaseHelper {
     if (connection == null || connection.isClosed()) {
       try (final var portForwarder = new KubernetesPortForwarder()) {
         portForwarder.ensureForwarded();
-        switch (System.getProperty("env")) {
-          case "develop", "preprod" -> connection = DriverManager.getConnection(
-              "jdbc:mysql://localhost:3306", "alfabank_ru_old", "alfabank_ru_old");
-          case "prod" -> connection = DriverManager.getConnection("jdbc:mysql://localhost:3306",
-              System.getProperty("dblogin"), System.getProperty("dbpassword"));
-          default -> throw new IllegalArgumentException("""
-              Указана некорректная тестовая среда. Доступны:
-              1. develop
-              2. preprod
-              3. prod""");
-        }
+        final var url = "jdbc:mysql://localhost:3306";
+        final var props = new java.util.Properties();
+        props.put("user", System.getProperty("dblogin"));
+        props.put("password", System.getProperty("dbpassword"));
+        props.put("serverTimezone", "UTC");
+        connection = DriverManager.getConnection(url, props);
       }
     }
     return connection;
