@@ -28,6 +28,7 @@ public enum ServiceCodeName {
   INVESTMENT_SERVICE("investment", "Оформление инвестиционных продуктов"),
   SHARE_SERVICE("share", "Агентский пункт по размещению и выкупу паев"),
   COURIER_SERVICE("courier", "Услуга «Альфа-курьер»"),
+  BIO_SERVICE("bio", "Сбор биометрических данных"),
   ERR_SERVICE("err", "Ошибка");
 
   private final String code;
