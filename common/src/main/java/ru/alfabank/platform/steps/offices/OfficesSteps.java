@@ -180,9 +180,7 @@ public class OfficesSteps extends BaseSteps {
         }
         case VIP_KIND -> {
           expectedKindCodesSet.add(Code.RETAIL);
-          expectedKindCodesSet.add(Code.VIP);
           expectedKindCodesSet.add(Code.VIPMNGR);
-          expectedKindCodesSet.add(Code.VIP_CLIENT);
         }
         case RETAIL_CIK_KIND -> {
           expectedKindCodesSet.add(Code.RETAIL);
@@ -191,7 +189,6 @@ public class OfficesSteps extends BaseSteps {
         case MMB_KIND -> expectedKindCodesSet.add(Code.SME);
         case SB_KIND, CIB_KIND -> expectedKindCodesSet.add(Code.CORPORATE);
         case RETAIL_ACLUB_KIND -> {
-          expectedKindCodesSet.add(Code.VIP);
           expectedKindCodesSet.add(Code.ACLUB);
         }
       }
