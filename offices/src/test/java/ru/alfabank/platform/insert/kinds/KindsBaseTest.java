@@ -2,7 +2,16 @@ package ru.alfabank.platform.insert.kinds;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
-import static ru.alfabank.platform.businessobjects.offices.Kind.*;
+import static ru.alfabank.platform.businessobjects.offices.Kind.CIB_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.ERR_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.MMB_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.NEW_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_ACLUB_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_CIK_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_STANDARD_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.RETAIL_VIP_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.SB_KIND;
+import static ru.alfabank.platform.businessobjects.offices.Kind.VIP_KIND;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -69,7 +78,7 @@ public class KindsBaseTest extends BaseTest {
                         .using(BASE_OFFICE)
                         .setPid(randomNumeric(4))
                         .setMnemonic(randomAlphanumeric(4))
-                        .setKinds(List.of(RETAIL_STANDARD_KIND))
+                        .setKinds(List.of(RETAIL_VIP_KIND))
                         .build()
                 )
             )

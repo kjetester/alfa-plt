@@ -39,7 +39,7 @@
         <maven-plugins.version>3.0.0-M4</maven-plugins.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <galenframework.version>2.4.4</galenframework.version>
-        <agent-java-testng.version>5.0.4</agent-java-testng.version>
+        <agent-java-testng.version>5.0.6</agent-java-testng.version>
         <logger-java-log4j.version>5.0.1</logger-java-log4j.version>
         <suite>src/test/resources/testng.xml</suite>
     </properties>

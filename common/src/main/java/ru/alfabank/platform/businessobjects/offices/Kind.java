@@ -56,14 +56,14 @@ public enum Kind {
 
   public enum Code {
 
-    VIP("vip"),
-    VIPMNGR("vipmngr"),
+    VIP_CODE("vip"),
+    VIPMNGR_CODE("vipmngr"),
     VIP_CLIENT("vip-client"),
-    RETAIL("retail"),
-    MORTGAGE("mortgage"),
-    SME("sme"),
-    CORPORATE("corporate"),
-    ACLUB("aclub");
+    RETAIL_CODE("retail"),
+    MORTGAGE_CODE("mortgage"),
+    SME_CODE("sme"),
+    CORPORATE_CODE("corporate"),
+    ACLUB_CODE("aclub");
 
     String value;
 

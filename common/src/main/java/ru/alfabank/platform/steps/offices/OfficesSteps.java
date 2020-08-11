@@ -1,7 +1,6 @@
 package ru.alfabank.platform.steps.offices;
 
 import static io.restassured.RestAssured.given;
-import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Comparator.naturalOrder;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
@@ -11,6 +10,13 @@ import static org.assertj.core.api.Assertions.within;
 import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.describeBusinessObject;
 import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.logComparingObjects;
 import static ru.alfabank.platform.businessobjects.offices.CbCodeName.OKVKU;
+import static ru.alfabank.platform.businessobjects.offices.Kind.Code.ACLUB_CODE;
+import static ru.alfabank.platform.businessobjects.offices.Kind.Code.CORPORATE_CODE;
+import static ru.alfabank.platform.businessobjects.offices.Kind.Code.MORTGAGE_CODE;
+import static ru.alfabank.platform.businessobjects.offices.Kind.Code.RETAIL_CODE;
+import static ru.alfabank.platform.businessobjects.offices.Kind.Code.SME_CODE;
+import static ru.alfabank.platform.businessobjects.offices.Kind.Code.VIPMNGR_CODE;
+import static ru.alfabank.platform.businessobjects.offices.Kind.Code.VIP_CODE;
 import static ru.alfabank.platform.helpers.DataBaseHelper.getConnection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +35,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.log4j.LogManager;
@@ -37,9 +42,7 @@ import org.apache.log4j.Logger;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.Assert;
 import org.testng.TestNGException;
-import ru.alfabank.platform.businessobjects.abtests.Option;
 import ru.alfabank.platform.businessobjects.offices.CbCodeName;
-import ru.alfabank.platform.businessobjects.offices.FileImportResponse;
 import ru.alfabank.platform.businessobjects.offices.Kind.Code;
 import ru.alfabank.platform.businessobjects.offices.Offices;
 import ru.alfabank.platform.businessobjects.offices.Offices.Office;
@@ -173,24 +176,19 @@ public class OfficesSteps extends BaseSteps {
     final var expectedKindCodesSet = new HashSet<Code>();
     office.getKinds().forEach(kind -> {
       switch (kind) {
-        case RETAIL_STANDARD_KIND -> expectedKindCodesSet.add(Code.RETAIL);
-        case RETAIL_VIP_KIND -> {
-          expectedKindCodesSet.add(Code.RETAIL);
-          expectedKindCodesSet.add(Code.VIP);
-        }
+        case RETAIL_STANDARD_KIND -> expectedKindCodesSet.add(RETAIL_CODE);
+        case RETAIL_VIP_KIND -> expectedKindCodesSet.add(VIP_CODE);
         case VIP_KIND -> {
-          expectedKindCodesSet.add(Code.RETAIL);
-          expectedKindCodesSet.add(Code.VIPMNGR);
+          expectedKindCodesSet.add(RETAIL_CODE);
+          expectedKindCodesSet.add(VIPMNGR_CODE);
         }
         case RETAIL_CIK_KIND -> {
-          expectedKindCodesSet.add(Code.RETAIL);
-          expectedKindCodesSet.add(Code.MORTGAGE);
+          expectedKindCodesSet.add(RETAIL_CODE);
+          expectedKindCodesSet.add(MORTGAGE_CODE);
         }
-        case MMB_KIND -> expectedKindCodesSet.add(Code.SME);
-        case SB_KIND, CIB_KIND -> expectedKindCodesSet.add(Code.CORPORATE);
-        case RETAIL_ACLUB_KIND -> {
-          expectedKindCodesSet.add(Code.ACLUB);
-        }
+        case MMB_KIND -> expectedKindCodesSet.add(SME_CODE);
+        case SB_KIND, CIB_KIND -> expectedKindCodesSet.add(CORPORATE_CODE);
+        case RETAIL_ACLUB_KIND -> expectedKindCodesSet.add(ACLUB_CODE);
       }
     });
     final var expectedCodesList = new ArrayList<>(expectedKindCodesSet);
@@ -553,6 +551,7 @@ public class OfficesSteps extends BaseSteps {
   private void ensureErrMessagesAreAbsent() {
     LOGGER.info("Проверяю отсутствие сообщения в DLQ");
     assertThat(checkErrQueueMessage(15).getStatusCode()).isEqualTo(SC_NO_CONTENT);
+
   }
 
   private void ensureErrMessagesAreAbsent(int delay) {
