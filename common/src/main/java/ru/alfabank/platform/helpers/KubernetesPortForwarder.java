@@ -37,9 +37,8 @@ public class KubernetesPortForwarder implements AutoCloseable {
         }
         final String forwardCommand;
         switch (System.getProperty("env")) {
-          case "develop" -> forwardCommand = "kubectl port-forward mysql-mysql-master-0 3306:3306";
-          case "preprod" -> forwardCommand = "kubectl port-forward mysql-mysql-master-0 3306:3306";
-          case "prod" -> forwardCommand = "kubectl -n alfabankru-infra port-forward service/tcp-proxy-mysql 3306:3306";
+          case "develop", "preprod" -> forwardCommand = "kubectl port-forward mysql-mysql-master-0 3306:3306";
+          case "prod" -> forwardCommand = "kubectl port-forward service/tcp-proxy-mysql 3306:3306";
           default -> throw new IllegalArgumentException("""
               Указана некорректная тестовая среда. Доступны:
               1. develop
