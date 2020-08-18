@@ -16,6 +16,7 @@ import static ru.alfabank.platform.businessobjects.offices.Kind.Code.MORTGAGE_CO
 import static ru.alfabank.platform.businessobjects.offices.Kind.Code.RETAIL_CODE;
 import static ru.alfabank.platform.businessobjects.offices.Kind.Code.SME_CODE;
 import static ru.alfabank.platform.businessobjects.offices.Kind.Code.VIPMNGR_CODE;
+import static ru.alfabank.platform.businessobjects.offices.Kind.Code.A55_CODE;
 import static ru.alfabank.platform.businessobjects.offices.Kind.Code.VIP_CODE;
 import static ru.alfabank.platform.helpers.DataBaseHelper.getConnection;
 
@@ -116,7 +117,7 @@ public class OfficesSteps extends BaseSteps {
         if (office != null) {
           LOGGER.info(String.format("Проверка отсутствия офиса с 'pid=%s' и 'mnemonic=%s' в БД",
               office.getPid(), office.getMnemonic()));
-          checkOfficeExistenceInDataBase(office, false);
+          checkOfficeExistenceInMySql(office, false);
         }
       }
     }
@@ -127,7 +128,8 @@ public class OfficesSteps extends BaseSteps {
       if (office != null) {
         LOGGER.info(String.format("Проверка нилачия офиса с 'pid=%s' и 'mnemonic=%s' в БД",
             office.getPid(), office.getMnemonic()));
-        checkOfficeExistenceInDataBase(office, true);
+        checkOfficeExistenceInMySql(office, true);
+        checkOfficeExistenceInPostgres(office, true);
       }
     }
   }
@@ -177,7 +179,11 @@ public class OfficesSteps extends BaseSteps {
     office.getKinds().forEach(kind -> {
       switch (kind) {
         case RETAIL_STANDARD_KIND -> expectedKindCodesSet.add(RETAIL_CODE);
-        case RETAIL_VIP_KIND -> expectedKindCodesSet.add(VIP_CODE);
+        case RETAIL_VIP_KIND -> {
+          expectedKindCodesSet.add(VIP_CODE);
+          expectedKindCodesSet.add(A55_CODE);
+          expectedKindCodesSet.add(RETAIL_CODE);
+        }
         case VIP_KIND -> {
           expectedKindCodesSet.add(RETAIL_CODE);
           expectedKindCodesSet.add(VIPMNGR_CODE);
@@ -666,14 +672,39 @@ public class OfficesSteps extends BaseSteps {
     softly.assertAll();
   }
 
-  private void checkOfficeExistenceInDataBase(final Office office,
-                                              final boolean shouldBeSaved) {
+  private void checkOfficeExistenceInMySql(final Office office,
+                                           final boolean shouldBeSaved) {
     try {
       TimeUnit.SECONDS.sleep(5);
     } catch (InterruptedException e) {
       LOGGER.error(e.getMessage());
       throw new TestNGException(e.toString());
     }
+    final var query = String.format("""
+            SELECT COUNT(*)
+              FROM alfabank_ru_old.Department
+             WHERE MnemonicCode = '%s'
+               AND pid = '%s';""",
+        office.getMnemonic(),
+        office.getPid()
+    );
+    try {
+      final ResultSet rs;
+      rs = getConnection().prepareStatement(query).executeQuery();
+      rs.next();
+      final var count = rs.getInt(1);
+      if (shouldBeSaved && count == 0) {
+        deleteErrQueueMessage();
+      }
+      assertThat(count).isEqualTo(shouldBeSaved ? 1 : 0);
+    } catch (SQLException e) {
+      LOGGER.error(e.toString());
+      throw new TestNGException(e.toString());
+    }
+  }
+
+  private void checkOfficeExistenceInPostgres(final Office office,
+                                              final boolean shouldBeSaved) {
     final var query = String.format("""
             SELECT COUNT(*)
               FROM alfabank_ru_old.Department

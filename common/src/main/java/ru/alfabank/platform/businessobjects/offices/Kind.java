@@ -57,6 +57,7 @@ public enum Kind {
   public enum Code {
 
     VIP_CODE("vip"),
+    A55_CODE("a55"),
     VIPMNGR_CODE("vipmngr"),
     VIP_CLIENT("vip-client"),
     RETAIL_CODE("retail"),

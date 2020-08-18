@@ -3,6 +3,7 @@ package ru.alfabank.platform.helpers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.log4j.LogManager;
@@ -36,8 +37,8 @@ public class KubernetesPortForwarder implements AutoCloseable {
         }
         final String forwardCommand;
         switch (System.getProperty("env")) {
-          case "develop" -> forwardCommand = "kubectl -n alfabankru-develop port-forward mysql-mysql-master-0 3306:3306";
-          case "preprod" -> forwardCommand = "kubectl -n alfabankru-preprod port-forward mysql-mysql-master-0 3306:3306";
+          case "develop" -> forwardCommand = "kubectl port-forward mysql-mysql-master-0 3306:3306";
+          case "preprod" -> forwardCommand = "kubectl port-forward mysql-mysql-master-0 3306:3306";
           case "prod" -> forwardCommand = "kubectl -n alfabankru-infra port-forward service/tcp-proxy-mysql 3306:3306";
           default -> throw new IllegalArgumentException("""
               Указана некорректная тестовая среда. Доступны:
