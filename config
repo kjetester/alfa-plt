@@ -1,0 +1,65 @@
+apiVersion: v1
+clusters:
+- cluster:
+    insecure-skip-tls-verify: true
+    server: https://api.k8s.alfa.link
+  name: alfa-cluster
+- cluster:
+    insecure-skip-tls-verify: true
+    server: https://api.k8ng.alfa.link
+  name: alfa-cluster-new
+contexts:
+- context:
+    cluster: alfa-cluster
+    namespace: alfabankru-develop
+    user: alfa-cluster-admin
+  name: alfa-dev
+- context:
+    cluster: alfa-cluster-new
+    namespace: develop
+    user: alfa-cluster-admin-new
+  name: alfa-dev-new
+- context:
+    cluster: alfa-cluster
+    namespace: infra
+    user: alfa-cluster-admin
+  name: alfa-infra
+- context:
+    cluster: alfa-cluster-new
+    namespace: infra
+    user: alfa-cluster-admin-new
+  name: alfa-infra-new
+- context:
+    cluster: alfa-cluster
+    namespace: alfabankru-preprod
+    user: alfa-cluster-admin
+  name: alfa-preprod
+- context:
+    cluster: alfa-cluster-new
+    namespace: preprod
+    user: alfa-cluster-admin-new
+  name: alfa-preprod-new
+- context:
+    cluster: alfa-cluster
+    namespace: alfabankru-reviews
+    user: alfa-cluster-admin
+  name: alfa-rw
+- context:
+    cluster: alfa-cluster-new
+    namespace: reviews
+    user: alfa-cluster-admin-new
+  name: alfa-rw-new
+- context:
+    cluster: docker-desktop
+    user: docker-desktop
+  name: docker-desktop
+current-context: alfa-dev
+kind: Config
+preferences: {}
+users:
+- name: alfa-cluster-admin
+  user:
+    token: {token}
+- name: alfa-cluster-admin-new
+  user:
+    token: {token}
