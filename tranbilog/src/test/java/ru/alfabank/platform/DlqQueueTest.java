@@ -123,19 +123,13 @@ public class DlqQueueTest extends BaseTest {
   public void positiveTest(
       @ParameterKey("status") final String status) throws InterruptedException {
     LOGGER.info(String.format("Условие: статус '%s'", status));
-    Body modifiedBody;
-    switch (status.toLowerCase()) {
-      case "error":
-        modifiedBody = new Body.BodyBuilder().using(defaultBody).setStatus(status)
-            .setFeedBackData(feedBackData).build();
-        break;
-      case "ok":
-        modifiedBody = new Body.BodyBuilder().using(defaultBody).setStatus(status)
-            .setFeedBackData(null).build();
-        break;
-      default:
-        throw new TestNGException("Что-то пошло не так");
-    }
+    Body modifiedBody = switch (status.toLowerCase()) {
+      case "error" -> new Body.BodyBuilder().using(defaultBody).setStatus(status)
+          .setFeedBackData(feedBackData).build();
+      case "ok" -> new Body.BodyBuilder().using(defaultBody).setStatus(status)
+          .setFeedBackData(null).build();
+      default -> throw new TestNGException("Что-то пошло не так");
+    };
     Response writeRes = given().spec(writeSpec).body(new RabbitBody(modifiedBody)).when().post();
     LOGGER.info(writeRes.asString());
     assertThat(writeRes.getStatusCode()).isEqualTo(200);
@@ -183,39 +177,23 @@ public class DlqQueueTest extends BaseTest {
       @ParameterKey("param") final String param,
       @ParameterKey("value") final Object value) throws InterruptedException {
     LOGGER.info(String.format("Условие: '%s' -> '%s'", param, value));
-    Body modifiedBody;
-    switch (param) {
-      case "businessUid":
-        modifiedBody = new Body.BodyBuilder().using(defaultBody)
-            .setBusinessUid(value).setStatus("ok").build();
-        break;
-      case "clientDate":
-        modifiedBody = new Body.BodyBuilder().using(defaultBody)
-            .setClientDate(value).setStatus("ok").build();
-        break;
-      case "referer":
-        modifiedBody = new Body.BodyBuilder().using(defaultBody)
-            .setReferer(value).setStatus("ok").build();
-        break;
-      case "recipient":
-        modifiedBody = new Body.BodyBuilder().using(defaultBody)
-            .setRecipient(value).setStatus("ok").build();
-        break;
-      case "feedBackData":
-        modifiedBody = new Body.BodyBuilder().using(defaultBody)
-            .setFeedBackData(value).setStatus("error").build();
-        break;
-      case "clientData":
-        modifiedBody = new Body.BodyBuilder().using(defaultBody)
-            .setClientData(value).setStatus("ok").build();
-        break;
-      case "data":
-        modifiedBody = new Body.BodyBuilder().using(defaultBody)
-            .setData(value).setStatus("ok").build();
-        break;
-      default:
-        throw new TestNGException("Что-то пошло не так");
-    }
+    Body modifiedBody = switch (param) {
+      case "businessUid" -> new Body.BodyBuilder().using(defaultBody)
+          .setBusinessUid(value).setStatus("ok").build();
+      case "clientDate" -> new Body.BodyBuilder().using(defaultBody)
+          .setClientDate(value).setStatus("ok").build();
+      case "referer" -> new Body.BodyBuilder().using(defaultBody)
+          .setReferer(value).setStatus("ok").build();
+      case "recipient" -> new Body.BodyBuilder().using(defaultBody)
+          .setRecipient(value).setStatus("ok").build();
+      case "feedBackData" -> new Body.BodyBuilder().using(defaultBody)
+          .setFeedBackData(value).setStatus("error").build();
+      case "clientData" -> new Body.BodyBuilder().using(defaultBody)
+          .setClientData(value).setStatus("ok").build();
+      case "data" -> new Body.BodyBuilder().using(defaultBody)
+          .setData(value).setStatus("ok").build();
+      default -> throw new TestNGException("Что-то пошло не так");
+    };
     Response writeRes = given().spec(writeSpec).body(new RabbitBody(modifiedBody)).when().post();
     LOGGER.info(String.format("Получен ответ: \n%s", writeRes.asString()));
     assertThat(writeRes.getStatusCode()).as("Статус код должен быть '200'").isEqualTo(200);

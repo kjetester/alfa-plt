@@ -1,0 +1,88 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="Offices suite"
+       thread-count="1"
+       configfailurepolicy="continue"
+       parallel="true"
+       verbose="5">
+    <listeners>
+        <listener class-name="ru.alfabank.platform.utils.RetryListener"/>
+    </listeners>
+    <test name="Wrapper Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.insert.wrapper.WrapperTest"/>
+        </classes>
+    </test>
+    <test name="Offices tests" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.insert.office.OfficeTest"/>
+        </classes>
+    </test>
+    <test name="StatusCb Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.insert.statuscb.StatusCbTest"/>
+        </classes>
+    </test>
+    <test name="Kinds Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.insert.kinds.KindsTest"/>
+        </classes>
+    </test>
+    <test name="Locations Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.insert.locations.LocationsTest"/>
+        </classes>
+    </test>
+    <test name="Service Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.insert.service.ServiceTest"/>
+        </classes>
+    </test>
+    <test name="List of Operations Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.insert.listofoperations.ListOfOperationsTest"/>
+        </classes>
+    </test>
+    <test name="Meta Info Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.insert.metainfo.MetaInfoTest"/>
+        </classes>
+    </test>
+
+    <test name="Offices Update tests" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.office.OfficeUpdateTest"/>
+        </classes>
+    </test>
+    <test name="StatusCb Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.statuscb.StatusCbUpdateTest"/>
+        </classes>
+    </test>
+    <test name="Kinds Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.kinds.KindsUpdateTest"/>
+        </classes>
+    </test>
+    <test name="Locations Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.locations.LocationsUpdateTest"/>
+        </classes>
+    </test>
+    <test name="Service Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.service.ServiceUpdateTest"/>
+        </classes>
+    </test>
+    <test name="List of Operations Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.listofoperations.ListOfOperationsUpdateTest"/>
+        </classes>
+    </test>
+    <test name="Meta Info Update Test" enabled="true" thread-count="1">
+        <classes>
+            <class name="ru.alfabank.platform.update.metainfo.MetaInfoUpdateTest"/>
+        </classes>
+    </test>
+
+</suite>

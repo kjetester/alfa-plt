@@ -15,6 +15,6 @@ public class AuditBaseTest extends BaseTest {
 
   @AfterTest
   public void afterTest() {
-    PAGES_STEPS.deleteCreatedPages();
+    PAGES_STEPS.deleteAllCreatedPages();
   }
 }

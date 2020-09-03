@@ -46,7 +46,10 @@ public class WrapperDraft extends AbstractBusinessObject {
      * @param uid    uid
      */
     @JsonCreator
-    public OperationDraft(Object data, String entity, String method, Object uid) {
+    public OperationDraft(final Object data,
+                          final String entity,
+                          final String method,
+                          final Object uid) {
       this.data = data;
       this.entity = entity;
       this.method = method;

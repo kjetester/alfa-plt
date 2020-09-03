@@ -94,14 +94,14 @@ public class WidgetRelativesViolationExperimentActivateNegativeTest extends Base
         actualExperiment.getUuid(),
         .5D,
         getContentManager());
-    DRAFT_STEPS.changeWidgetABtestProps(
+    DRAFT_STEPS.changeWidgetAbTestProps(
         default_widget_1_1,
         page_id,
         false,
         DEFAULT,
         true,
         getContentManager());
-    DRAFT_STEPS.changeWidgetABtestProps(
+    DRAFT_STEPS.changeWidgetAbTestProps(
         default_widget_1_2,
         page_id,
         false,
@@ -199,7 +199,7 @@ public class WidgetRelativesViolationExperimentActivateNegativeTest extends Base
         actualExperiment.getUuid(),
         .5D,
         getContentManager());
-    DRAFT_STEPS.changeWidgetABtestProps(
+    DRAFT_STEPS.changeWidgetAbTestProps(
         widget_2,
         page_id,
         false,
@@ -283,7 +283,7 @@ public class WidgetRelativesViolationExperimentActivateNegativeTest extends Base
         experiment.getUuid(),
         .5D,
         getContentManager());
-    DRAFT_STEPS.changeWidgetABtestProps(
+    DRAFT_STEPS.changeWidgetAbTestProps(
         default_widget_2,
         page_id,
         false,
@@ -375,14 +375,14 @@ public class WidgetRelativesViolationExperimentActivateNegativeTest extends Base
         experiment.getUuid(),
         .5D,
         getContentManager());
-    DRAFT_STEPS.changeWidgetABtestProps(
+    DRAFT_STEPS.changeWidgetAbTestProps(
         abTest_widget_2_1,
         page_id,
         true,
         DEFAULT,
         true,
         getContentManager());
-    DRAFT_STEPS.changeWidgetABtestProps(
+    DRAFT_STEPS.changeWidgetAbTestProps(
         abTest_widget_2_2,
         page_id,
         false,

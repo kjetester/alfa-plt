@@ -107,13 +107,13 @@ public class DefaultOptionAssignedToInvalidWidgetExperimentActivateNegativeTest 
     if (defaultWidget.isEnabled() != isDefaultWidgeEnabled
         || !defaultWidget.getExperimentOptionName().equals(defaultOptionName)
         || defaultWidget.isDefaultWidget() != defaultWidget1) {
-      DRAFT_STEPS.changeWidgetABtestProps(defaultWidget, pageId, isDefaultWidgeEnabled,
+      DRAFT_STEPS.changeWidgetAbTestProps(defaultWidget, pageId, isDefaultWidgeEnabled,
           defaultOptionName, defaultWidget1, getContentManager());
     }
     if (abTestWidget.isEnabled() != isAbTestWidgetEnabled
         || !abTestWidget.getExperimentOptionName().equals(abTestOptionName)
         || abTestWidget.isDefaultWidget() != defaultWidget2) {
-      DRAFT_STEPS.changeWidgetABtestProps(abTestWidget, pageId, isAbTestWidgetEnabled,
+      DRAFT_STEPS.changeWidgetAbTestProps(abTestWidget, pageId, isAbTestWidgetEnabled,
           abTestOptionName, defaultWidget2, getContentManager());
     }
     final var result = EXPERIMENT_STEPS.runExperimentAssumingFail(experiment, getContentManager());

@@ -6,14 +6,19 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.alfabank.platform.businessobjects.AbstractBusinessObject.describeBusinessObject;
 import static ru.alfabank.platform.businessobjects.enums.Entity.PAGE;
+import static ru.alfabank.platform.businessobjects.enums.Entity.PROPERTY;
+import static ru.alfabank.platform.businessobjects.enums.Entity.PROPERTY_VALUE;
 import static ru.alfabank.platform.businessobjects.enums.Entity.WIDGET;
 import static ru.alfabank.platform.businessobjects.enums.Localization.RU;
 import static ru.alfabank.platform.businessobjects.enums.Method.CHANGE;
 import static ru.alfabank.platform.businessobjects.enums.Method.CHANGE_LINKS;
 import static ru.alfabank.platform.businessobjects.enums.Method.CREATE;
+import static ru.alfabank.platform.businessobjects.enums.Method.DELETE;
 import static ru.alfabank.platform.businessobjects.enums.Version.V_1_0_0;
 import static ru.alfabank.platform.helpers.UuidHelper.getNewUuid;
+import static ru.alfabank.platform.users.ContentManager.getContentManager;
 
+import com.fasterxml.jackson.databind.node.TextNode;
 import io.restassured.response.Response;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,11 +28,14 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import ru.alfabank.platform.businessobjects.contentstore.Page;
+import ru.alfabank.platform.businessobjects.contentstore.Property;
+import ru.alfabank.platform.businessobjects.contentstore.Value;
 import ru.alfabank.platform.businessobjects.contentstore.Widget;
 import ru.alfabank.platform.businessobjects.contentstore.draft.DataDraft;
 import ru.alfabank.platform.businessobjects.contentstore.draft.WrapperDraft;
 import ru.alfabank.platform.businessobjects.enums.Device;
 import ru.alfabank.platform.businessobjects.enums.ExperimentOptionName;
+import ru.alfabank.platform.businessobjects.geofacade.GeoGroup;
 import ru.alfabank.platform.steps.BaseSteps;
 import ru.alfabank.platform.users.AccessibleUser;
 
@@ -36,7 +44,30 @@ public class DraftSteps extends BaseSteps {
   private static final Logger LOGGER = LogManager.getLogger(DraftSteps.class);
 
   /**
-   * Create new widget at page level.
+   * Create default desktop root enabled undated widget by 'content-manager' user.
+   *
+   * @param pageId       page ID
+   * @param geoGroupList geo groups list
+   * @return created widget
+   */
+  public Widget createDefaultDesktopRootEnabledUndatedWidgetByContentManager(
+      final int pageId,
+      final List<String> geoGroupList) {
+    return createWidget(
+        CREATED_PAGES.get(pageId),
+        null,
+        Device.desktop,
+        true,
+        ExperimentOptionName.DEFAULT,
+        true,
+        geoGroupList,
+        null,
+        null,
+        getContentManager());
+  }
+
+  /**
+   * Create new widget.
    *
    * @param page                 page
    * @param parentWidget         parent widget
@@ -85,7 +116,8 @@ public class DraftSteps extends BaseSteps {
             .setVersion(widget.getVersion())
             .setExperimentOptionName(widget.getExperimentOptionName())
             .isDefaultWidget(widget.isDefaultWidget())
-            .setCityGroups(List.of("ru"))
+            //FIXME: replace
+            .setCityGroups(widget.getGeo().size() > 0 ? widget.getGeo() : List.of("ru"))
             .setDateFrom(widget.getDateFrom())
             .setDateTo(widget.getDateTo())
             .build(),
@@ -121,16 +153,7 @@ public class DraftSteps extends BaseSteps {
     final var draft = new WrapperDraft(
         List.of(widgetCreationOperation, widgetPlacementOperation),
         widget.getDevice());
-    LOGGER.info("Выполняю запрос сохранения черновика\n" + describeBusinessObject(draft));
-    final var response =
-        given()
-            .spec(getDraftSpec())
-            .auth().oauth2(user.getJwt().getAccessToken())
-            .pathParam("pageId", page.getId())
-            .body(draft)
-            .put();
-    describeResponse(LOGGER, response);
-    assertThat(response.getStatusCode()).isEqualTo(SC_OK);
+    saveDraft(page.getId(), user, draft);
     publishDraft(page.getId(), device, user);
     if (parentWidget == null) {
       CREATED_PAGES.get(page.getId()).getWidgetList().add(widget);
@@ -174,17 +197,7 @@ public class DraftSteps extends BaseSteps {
         CHANGE.toString(),
         changedWidget.getUid());
     var draft = new WrapperDraft(List.of(widgetChangingOperation), widget.getDevice());
-    LOGGER.info("Выполняю запрос сохранения черновика\n" + describeBusinessObject(draft));
-    var response =
-        given()
-            .spec(getDraftSpec())
-            .auth().oauth2(user.getJwt().getAccessToken())
-            .pathParam("pageId", pageId)
-            .body(draft)
-            .when().put()
-            .then().extract().response();
-    describeResponse(LOGGER, response);
-    assertThat(response.getStatusCode()).isEqualTo(SC_OK);
+    saveDraft(pageId, user, draft);
     publishDraft(pageId, widget.getDevice(), user);
   }
 
@@ -198,7 +211,7 @@ public class DraftSteps extends BaseSteps {
    * @param isDefaultWidget      isDefaultWidget
    * @param user                 user
    */
-  public void changeWidgetABtestProps(final Widget widget,
+  public void changeWidgetAbTestProps(final Widget widget,
                                       final Integer pageId,
                                       final Boolean isEnabled,
                                       final ExperimentOptionName experimentOptionName,
@@ -229,18 +242,23 @@ public class DraftSteps extends BaseSteps {
     var draft = new WrapperDraft(
         List.of(widgetChangingOperation),
         widget.getDevice());
+    saveDraft(pageId, user, draft);
+    publishDraft(pageId, widget.getDevice(), user);
+  }
+
+  private void saveDraft(final Integer pageId,
+                         final AccessibleUser user,
+                         final WrapperDraft draft) {
     LOGGER.info("Выполняю запрос сохранения черновика\n" + describeBusinessObject(draft));
-    var response =
+    final var response =
         given()
             .spec(getDraftSpec())
             .auth().oauth2(user.getJwt().getAccessToken())
             .pathParam("pageId", pageId)
             .body(draft)
-            .when().put()
-            .then().extract().response();
+            .put();
     describeResponse(LOGGER, response);
     assertThat(response.getStatusCode()).isEqualTo(SC_OK);
-    publishDraft(pageId, widget.getDevice(), user);
   }
 
   /**
@@ -305,5 +323,57 @@ public class DraftSteps extends BaseSteps {
     assertThat(response.getStatusCode()).isEqualTo(SC_OK);
     publishDraft(page.getId(), widget.getDevice(), user);
     CREATED_PAGES.get(page.getId()).getWidgetList().add(widget);
+  }
+
+  /**
+   * Create a property with a value by 'content-manager' user.
+   *
+   * @param pageId        created page ID
+   * @param widget               widget
+   * @param valueGeoGroupList    geo group list for the property value
+   */
+  public Property createPropertyWithValueByContentManager(final Integer pageId,
+                                                      final Widget widget,
+                                                      final List<String> valueGeoGroupList) {
+    final var value = new Value.Builder()
+        .setUid(getNewUuid())
+        .setValue(new TextNode(""))
+        .build();
+    final var property = new Property.Builder()
+        .setUid(getNewUuid())
+        .setName(randomAlphanumeric(10))
+        .setValues(List.of(value))
+        .build();
+    final var propertyCreationOperation = new WrapperDraft.OperationDraft(
+        new DataDraft.Builder()
+            .setName(property.getName())
+            .forWidget(widget.getUid())
+            .build(),
+        PROPERTY.toString(),
+        CREATE.toString(),
+        property.getUid());
+    final var valueCreationOperation = new WrapperDraft.OperationDraft(
+        new DataDraft.Builder()
+            .forProperty(property.getUid())
+            .setValue(value.getValue())
+            .setCityGroups(valueGeoGroupList)
+            .build(),
+        PROPERTY_VALUE.toString(),
+        CREATE.toString(),
+        value.getUid());
+    final var draft = new WrapperDraft(
+        List.of(propertyCreationOperation, valueCreationOperation),
+        widget.getDevice());
+    saveDraft(pageId, getContentManager(), draft);
+    publishDraft(pageId, widget.getDevice(), getContentManager());
+    return property;
+  }
+
+  public void deleteWidget(final Integer pageId, final Widget widget) {
+    final var draft = new WrapperDraft(
+        List.of(new WrapperDraft.OperationDraft(null, WIDGET.toString(), DELETE.toString(), widget.getUid())),
+        widget.getDevice());
+    saveDraft(pageId, getContentManager(), draft);
+    publishDraft(pageId, widget.getDevice(), getContentManager());
   }
 }

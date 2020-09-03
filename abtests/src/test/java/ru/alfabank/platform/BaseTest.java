@@ -57,7 +57,7 @@ public class BaseTest {
    */
   @AfterSuite(description = "Удаление созданных страниц")
   public void afterSuite() {
-    PAGES_STEPS.deleteCreatedPages();
+    PAGES_STEPS.deleteAllCreatedPages();
     logoutAllUsers();
   }
 

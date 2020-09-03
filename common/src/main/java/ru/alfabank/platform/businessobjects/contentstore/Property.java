@@ -20,7 +20,6 @@ public class Property extends AbstractBusinessObject implements Comparable<Prope
 
   private String uid;
   private String name;
-  private String device;
   private List<Value> values;
 
   /**
@@ -28,20 +27,27 @@ public class Property extends AbstractBusinessObject implements Comparable<Prope
    *
    * @param uid    uid
    * @param name   name
-   * @param device device
    * @param values values
    */
   @JsonCreator
   public Property(
       @JsonProperty("uid") String uid,
       @JsonProperty("name") String name,
-      @JsonProperty("device") String device,
       @JsonProperty("values") List<Value> values) {
     this.uid = uid;
     this.name = name;
-    this.device = device;
     this.values = values;
     Collections.sort(values);
+  }
+
+  /**
+   * Class constructor.
+   * @param builder builder
+   */
+  public Property(final Builder builder) {
+    this.uid = builder.uid;
+    this.name = builder.name;
+    this.values = builder.values;
   }
 
   public String getUid() {
@@ -58,14 +64,6 @@ public class Property extends AbstractBusinessObject implements Comparable<Prope
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getDevice() {
-    return device;
-  }
-
-  public void setDevice(String device) {
-    this.device = device;
   }
 
   public List<Value> getValues() {
@@ -93,10 +91,6 @@ public class Property extends AbstractBusinessObject implements Comparable<Prope
         .assertThat(this.getName())
         .as("Проверка наименований")
         .isEqualTo(expectedPropery.getName());
-    softly
-        .assertThat(this.getDevice())
-        .as("Проверка девайса")
-        .isEqualTo(expectedPropery.getDevice());
     softly
         .assertThat(this.getUid())
         .as("Проверка UID при 'SHARE' или 'CURRENT' и признаке переиспользования")
@@ -127,10 +121,6 @@ public class Property extends AbstractBusinessObject implements Comparable<Prope
         .assertThat(expected.getName())
         .as("Проверка наименований")
         .isEqualTo(this.getName());
-    softly
-        .assertThat(expected.getDevice())
-        .as("Проверка девайса")
-        .isEqualTo(this.getDevice());
     if (method.equals(CopyMethod.SHARE) || (method.equals(CopyMethod.CURRENT) && isReused)) {
       softly
           .assertThat(expected.getUid())
@@ -150,5 +140,31 @@ public class Property extends AbstractBusinessObject implements Comparable<Prope
   @Override
   public int compareTo(@NotNull Property property) {
     return getName().compareTo(property.getName());
+  }
+
+  public static class Builder {
+
+    private String uid;
+    private String name;
+    private List<Value> values;
+
+    public Builder setUid(String uid) {
+      this.uid = uid;
+      return this;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder setValues(List<Value> values) {
+      this.values = values;
+      return this;
+    }
+
+    public Property build() {
+      return new Property(this);
+    }
   }
 }

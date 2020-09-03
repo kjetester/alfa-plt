@@ -2,7 +2,7 @@
 
 <suite name="Geo Facade suite"
        configfailurepolicy="continue"
-       parallel="true"
+       parallel="false"
        verbose="5">
     <listeners>
         <listener class-name="ru.alfabank.platform.utils.RetryListener"/>
@@ -10,6 +10,11 @@
     <test name="Geo group creation test" enabled="true">
         <classes>
             <class name="ru.alfabank.platform.geogroups.creation.GeoGroupCreationTest"/>
+        </classes>
+    </test>
+    <test name="Geo group deletion test" enabled="true">
+        <classes>
+            <class name="ru.alfabank.platform.geogroups.deletion.GeoGroupDeletionTest"/>
         </classes>
     </test>
 </suite>

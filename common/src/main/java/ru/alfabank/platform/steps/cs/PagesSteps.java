@@ -48,10 +48,19 @@ public class PagesSteps extends BaseSteps {
   }
 
   /**
-   * Create new enabled page.
+   * Create a new enabled page whit the 'content-manager' user.
+   *
+   * @return page ID
+   */
+  public Integer createEnabledPage() {
+    return createEnabledPage(getContentManager());
+  }
+
+  /**
+   * Create a new enabled page using some special user.
    *
    * @param user user
-   * @return pege ID
+   * @return page ID
    */
   public Integer createEnabledPage(final AccessibleUser user) {
     String pageUri = getShortRandUuid();
@@ -286,7 +295,7 @@ public class PagesSteps extends BaseSteps {
   /**
    * Delete created pages.
    */
-  public void deleteCreatedPages() {
+  public void deleteAllCreatedPages() {
     final var pagesCount = CREATED_PAGES.size();
     LOGGER.info(String.format("Страниц к удалению: %d", pagesCount));
     if (pagesCount > 0) {
