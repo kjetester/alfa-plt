@@ -141,18 +141,18 @@ public class BaseSteps {
   static {
     var environment = System.getProperty("env");
     LOGGER.info("Тестовая среда - " + environment);
-    switch (environment) {
+    switch (StringUtils.substringBefore(environment, "-")) {
+      case "feature" -> getAcmsFeatureEnvironmentSettings();
+      case "review" -> getReviewEnvironmentSettings();
       case "develop" -> getDevelopEnvironmentSettings();
       case "preprod" -> getPreProdEnvironmentSettings();
-      case "acms_feature" -> getAcmsFeatureEnvironmentSettings();
-      case "cs_feature" -> getContentStoreFeatureEnvironmentSettings();
       case "prod" -> getProdEnvironmentSettings();
       default -> throw new IllegalArgumentException("""
               Указана некорректная тестовая среда. Доступны:
-              1. develop
-              2. preprod
-              3. acms_feature-####
-              4. cs_feature-####
+              1. feature-####
+              2. review-####
+              3. develop
+              4. preprod
               5. prod""");
     }
     LOGGER.info(String.format(
@@ -354,6 +354,41 @@ public class BaseSteps {
         .build();
   }
 
+  private static void getAcmsFeatureEnvironmentSettings() {
+    CS_BASE_URL = String.format("http://acms-feature-alfabankru-%s.alfabankru-reviews%s",
+        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+    setEnv();
+    setUpEndpoints();
+  }
+
+  private static void getReviewEnvironmentSettings() {
+    CS_BASE_URL = String.format("http://content-store-feature-alfabankru-%s.alfabankru.reviews%s",
+        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+    AB_TEST_BASE_URL = String.format("http://ab-testing-feature-alfabankru-%s.alfabankru.reviews%s",
+        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+    GEO_FACADE_BASE_URL = String.format("http://geo-facade-feature-alfabankru-%s.alfabankru.reviews%s",
+        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+    CITIES_BASE_URL = String.format("http://cities-feature-alfabankru-%s.alfabankru.reviews%s",
+        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+    METRO_BASE_URL = String.format("http://metro-feature-alfabankru-%s.alfabankru.reviews%s",
+        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+    FEEDBACK_BASE_URL = String.format("http://feedback-feature-alfabankru-%s.alfabankru.reviews%s",
+        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+    OFFICES_BASE_URL = String.format("http://offices-feature-alfabankru-%s.alfabankru-reviews%s",
+        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+    SHORT_URL_BASE_URL = String.format("http://short-url-feature-alfabankru-%s.alfabankru.reviews%s",
+        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+    contentStoreBasePath = "";
+    abTestsBasePath = "";
+    geoFacadeBasePath = "";
+    citiesBasePath = "";
+    metroBasePath = "";
+    feedbackBasePath = "";
+    officesBasePath = "";
+    shortUrlBasePath = "";
+    setUpEndpoints();
+  }
+
   private static void getDevelopEnvironmentSettings() {
     CS_BASE_URL = "http://develop" + URL_ENDING;
     setEnv();
@@ -366,9 +401,8 @@ public class BaseSteps {
     setUpEndpoints();
   }
 
-  private static void getAcmsFeatureEnvironmentSettings() {
-    CS_BASE_URL = String.format("http://acms-feature-alfabankru-%s.alfabankru-reviews%s",
-        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
+  private static void getProdEnvironmentSettings() {
+    CS_BASE_URL = "https://alfabank.ru";
     setEnv();
     setUpEndpoints();
   }
@@ -389,37 +423,6 @@ public class BaseSteps {
     feedbackBasePath = PREFIX + "/feedback";
     officesBasePath = PREFIX + "/offices";
     shortUrlBasePath = PREFIX + "/schuller/";
-  }
-
-  private static void getContentStoreFeatureEnvironmentSettings() {
-    CS_BASE_URL = String.format("http://feature-alfabankru-%s.content-store.reviews%s",
-        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
-    AB_TEST_BASE_URL = String.format("http://feature-alfabankru-%s.ab-testing.reviews%s",
-        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
-    GEO_FACADE_BASE_URL = String.format("http://feature-alfabankru-%s.geo-facade.reviews%s",
-        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
-    CITIES_BASE_URL = String.format("http://feature-alfabankru-%s.cities.reviews%s",
-        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
-    METRO_BASE_URL = String.format("http://feature-alfabankru-%s.metro.reviews%s",
-        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
-    OFFICES_BASE_URL = String.format("http://feature-alfabankru-%s.offices.reviews%s",
-        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
-    SHORT_URL_BASE_URL = String.format("http://feature-alfabankru-%s.short-url.reviews%s",
-        StringUtils.substringAfter(System.getProperty("env"), "-"), URL_ENDING);
-    contentStoreBasePath = "";
-    abTestsBasePath = "";
-    geoFacadeBasePath = "";
-    citiesBasePath = "";
-    metroBasePath = "";
-    feedbackBasePath = "";
-    officesBasePath = "";
-    setUpEndpoints();
-  }
-
-  private static void getProdEnvironmentSettings() {
-    CS_BASE_URL = "https://alfabank.ru";
-    setEnv();
-    setUpEndpoints();
   }
 
   private static void setUpEndpoints() {

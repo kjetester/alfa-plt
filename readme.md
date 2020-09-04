@@ -10,9 +10,11 @@
    1. Replace ```{token}``` value
 
 ####Before running tests execute
+1. For review @k8s ```kubectl config use-context alfa-rw```
 1. For develop @k8s ```kubectl config use-context alfa-dev```
 1. For preprod @k8s ```kubectl config use-context alfa-preprod```
 1. For dev @k8s ```kubectl config use-context alfa-infra```
+1. For review @k8ng ```kubectl config use-context alfa-rw-new```
 1. For develop @k8ng ```kubectl config use-context alfa-dev-new```
 1. For preprod @k8ng ```kubectl config use-context alfa-preprod-new```
 1. For dev @k8ng ```kubectl config use-context alfa-infra-new```

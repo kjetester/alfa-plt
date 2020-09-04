@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.log4j.LogManager;
@@ -136,7 +137,7 @@ public class OfficesSteps extends BaseSteps {
 
   public Office getOfficeFromDataBase(final Office office) {
     final var officesList = getOfficesListFromDataBase(office.getPid(), office.getMnemonic());
-    assert officesList.size() == 1;
+    assert Objects.requireNonNull(officesList).size() == 1;
     return officesList.get(0);
   }
 
@@ -151,7 +152,7 @@ public class OfficesSteps extends BaseSteps {
       final var actualOfficesList = getOfficesListFromDataBase(
           office.getPid(),
           office.getMnemonic());
-      assertThat(actualOfficesList.size())
+      assertThat(Objects.requireNonNull(actualOfficesList).size())
           .as("Проверка, что искомый офис сохранен и только в одном экземпляре")
           .isEqualTo(1);
       actualOfficesList.forEach(actualOffice -> actualOffice.equals(office));
