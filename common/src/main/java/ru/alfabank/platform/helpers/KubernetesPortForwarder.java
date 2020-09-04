@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -36,14 +37,17 @@ public class KubernetesPortForwarder implements AutoCloseable {
           return;
         }
         final String forwardCommand;
-        switch (System.getProperty("env")) {
-          case "develop", "preprod" -> forwardCommand = "kubectl port-forward mysql-mysql-master-0 3306:3306";
+        switch (StringUtils.substringBefore(System.getProperty("env"), "-")) {
+          case "feature", "review", "develop", "preprod" ->
+              forwardCommand = "kubectl port-forward mysql-mysql-master-0 3306:3306";
           case "prod" -> forwardCommand = "kubectl port-forward service/tcp-proxy-mysql 3306:3306";
           default -> throw new IllegalArgumentException("""
               Указана некорректная тестовая среда. Доступны:
-              1. develop
-              2. preprod
-              3. prod""");
+              1. feature-####
+              2. review-####
+              3. develop
+              4. preprod
+              5. prod""");
         }
         try {
           Process forwardProcess = Runtime.getRuntime().exec(forwardCommand);
